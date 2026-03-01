@@ -1,0 +1,80 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{572A5ADD-B6C5-4DA9-8F89-B5C4CBE7FF18}|Integrador de Modelos de ML\\Integrador de Modelos de ML.csproj|c:\\users\\luizh\\onedrive\\desktop\\github\\projetos\\integrador de modelos de ml\\integrador de modelos de ml\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{572A5ADD-B6C5-4DA9-8F89-B5C4CBE7FF18}|Integrador de Modelos de ML\\Integrador de Modelos de ML.csproj|solutionrelative:integrador de modelos de ml\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{572A5ADD-B6C5-4DA9-8F89-B5C4CBE7FF18}|Integrador de Modelos de ML\\Integrador de Modelos de ML.csproj|c:\\users\\luizh\\onedrive\\desktop\\github\\projetos\\integrador de modelos de ml\\integrador de modelos de ml\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{572A5ADD-B6C5-4DA9-8F89-B5C4CBE7FF18}|Integrador de Modelos de ML\\Integrador de Modelos de ML.csproj|solutionrelative:integrador de modelos de ml\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{572A5ADD-B6C5-4DA9-8F89-B5C4CBE7FF18}|Integrador de Modelos de ML\\Integrador de Modelos de ML.csproj|c:\\users\\luizh\\onedrive\\desktop\\github\\projetos\\integrador de modelos de ml\\integrador de modelos de ml\\mainwindow.xaml||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{572A5ADD-B6C5-4DA9-8F89-B5C4CBE7FF18}|Integrador de Modelos de ML\\Integrador de Modelos de ML.csproj|solutionrelative:integrador de modelos de ml\\mainwindow.xaml||{8B382828-6202-11D1-8870-0000F87579D2}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 1,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedHeight": 284,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\Integrador de Modelos de ML\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "Integrador de Modelos de ML\\MainWindow.xaml",
+              "ToolTip": "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\Integrador de Modelos de ML\\MainWindow.xaml",
+              "RelativeToolTip": "Integrador de Modelos de ML\\MainWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-03-01T17:54:05.594Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\Integrador de Modelos de ML\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "Integrador de Modelos de ML\\MainWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\Integrador de Modelos de ML\\MainWindow.xaml.cs",
+              "RelativeToolTip": "Integrador de Modelos de ML\\MainWindow.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-01T17:54:04.383Z",
+              "EditorCaption": ""
+            }
+          ]
+        },
+        {
+          "DockedHeight": 116,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\Integrador de Modelos de ML\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "Integrador de Modelos de ML\\MainWindow.xaml",
+              "ToolTip": "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\Integrador de Modelos de ML\\MainWindow.xaml",
+              "RelativeToolTip": "Integrador de Modelos de ML\\MainWindow.xaml",
+              "ViewState": "AgIAAAcAAAAAAAAAAADgvwkAAAALAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-03-01T17:56:53.183Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
