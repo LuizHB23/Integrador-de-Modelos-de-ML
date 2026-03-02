@@ -20,5 +20,11 @@ namespace Integrador_de_Modelos_de_ML
         {
             InitializeComponent();
         }
+
+        private void BtnInserirModelo_Click(object sender, RoutedEventArgs e)
+        {
+            MainFrame.Navigate(null);
+            throw new NotImplementedException();
+        }
     }
 }
