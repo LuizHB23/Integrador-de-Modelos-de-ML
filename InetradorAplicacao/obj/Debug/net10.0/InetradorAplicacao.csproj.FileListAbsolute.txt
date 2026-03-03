@@ -1,0 +1,16 @@
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\InetradorAplicacao\bin\Debug\net10.0\InetradorAplicacao.deps.json
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\InetradorAplicacao\bin\Debug\net10.0\InetradorAplicacao.dll
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\InetradorAplicacao\bin\Debug\net10.0\InetradorAplicacao.pdb
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\InetradorAplicacao\bin\Debug\net10.0\IntegradorDominio.dll
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\InetradorAplicacao\bin\Debug\net10.0\IntegradorDominio.pdb
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\InetradorAplicacao\obj\Debug\net10.0\InetradorAplicacao.csproj.AssemblyReference.cache
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\InetradorAplicacao\obj\Debug\net10.0\InetradorAplicacao.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\InetradorAplicacao\obj\Debug\net10.0\InetradorAplicacao.AssemblyInfoInputs.cache
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\InetradorAplicacao\obj\Debug\net10.0\InetradorAplicacao.AssemblyInfo.cs
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\InetradorAplicacao\obj\Debug\net10.0\InetradorAplicacao.csproj.CoreCompileInputs.cache
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\InetradorAplicacao\obj\Debug\net10.0\InetradorAplicacao.sourcelink.json
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\InetradorAplicacao\obj\Debug\net10.0\Inetrado.43E476C8.Up2Date
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\InetradorAplicacao\obj\Debug\net10.0\InetradorAplicacao.dll
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\InetradorAplicacao\obj\Debug\net10.0\refint\InetradorAplicacao.dll
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\InetradorAplicacao\obj\Debug\net10.0\InetradorAplicacao.pdb
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\InetradorAplicacao\obj\Debug\net10.0\ref\InetradorAplicacao.dll

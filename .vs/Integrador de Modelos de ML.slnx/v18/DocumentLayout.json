@@ -3,36 +3,52 @@
   "WorkspaceRootPath": "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{775ADFD9-5E14-F935-B5BC-71A1C82F09DF}|Integrador de Modelos de ML\\Integrador de Modelos de ML.csproj|c:\\users\\luizh\\onedrive\\desktop\\github\\projetos\\integrador de modelos de ml\\integrador de modelos de ml\\pages\\inserirmodelo.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{775ADFD9-5E14-F935-B5BC-71A1C82F09DF}|Integrador de Modelos de ML\\Integrador de Modelos de ML.csproj|solutionrelative:integrador de modelos de ml\\pages\\inserirmodelo.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{775ADFD9-5E14-F935-B5BC-71A1C82F09DF}|Integrador de Modelos de ML\\Integrador de Modelos de ML.csproj|c:\\users\\luizh\\onedrive\\desktop\\github\\projetos\\integrador de modelos de ml\\integrador de modelos de ml\\pages\\inserirmodelo.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{775ADFD9-5E14-F935-B5BC-71A1C82F09DF}|Integrador de Modelos de ML\\Integrador de Modelos de ML.csproj|solutionrelative:integrador de modelos de ml\\pages\\inserirmodelo.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{775ADFD9-5E14-F935-B5BC-71A1C82F09DF}|Integrador de Modelos de ML\\Integrador de Modelos de ML.csproj|c:\\users\\luizh\\onedrive\\desktop\\github\\projetos\\integrador de modelos de ml\\integrador de modelos de ml\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{775ADFD9-5E14-F935-B5BC-71A1C82F09DF}|Integrador de Modelos de ML\\Integrador de Modelos de ML.csproj|solutionrelative:integrador de modelos de ml\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+      "AbsoluteMoniker": "D:0:0:{36183AFF-D74A-4BD2-8234-D9DE388D26F7}|InetradorAplicacao\\InetradorAplicacao.csproj|c:\\users\\luizh\\onedrive\\desktop\\github\\projetos\\integrador de modelos de ml\\inetradoraplicacao\\gerenciador\\modelogerenciador.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{36183AFF-D74A-4BD2-8234-D9DE388D26F7}|InetradorAplicacao\\InetradorAplicacao.csproj|solutionrelative:inetradoraplicacao\\gerenciador\\modelogerenciador.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{775ADFD9-5E14-F935-B5BC-71A1C82F09DF}|Integrador de Modelos de ML\\Integrador de Modelos de ML.csproj|c:\\users\\luizh\\onedrive\\desktop\\github\\projetos\\integrador de modelos de ml\\integrador de modelos de ml\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{775ADFD9-5E14-F935-B5BC-71A1C82F09DF}|Integrador de Modelos de ML\\Integrador de Modelos de ML.csproj|solutionrelative:integrador de modelos de ml\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+      "AbsoluteMoniker": "D:0:0:{775ADFD9-5E14-F935-B5BC-71A1C82F09DF}|Integrador de Modelos de ML\\Integrador de Modelos de ML.csproj|c:\\users\\luizh\\onedrive\\desktop\\github\\projetos\\integrador de modelos de ml\\integrador de modelos de ml\\pages\\inserirmodelo.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{775ADFD9-5E14-F935-B5BC-71A1C82F09DF}|Integrador de Modelos de ML\\Integrador de Modelos de ML.csproj|solutionrelative:integrador de modelos de ml\\pages\\inserirmodelo.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{775ADFD9-5E14-F935-B5BC-71A1C82F09DF}|Integrador de Modelos de ML\\Integrador de Modelos de ML.csproj|c:\\users\\luizh\\onedrive\\desktop\\github\\projetos\\integrador de modelos de ml\\integrador de modelos de ml\\pages\\home.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{775ADFD9-5E14-F935-B5BC-71A1C82F09DF}|Integrador de Modelos de ML\\Integrador de Modelos de ML.csproj|solutionrelative:integrador de modelos de ml\\pages\\home.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+      "AbsoluteMoniker": "D:0:0:{678F55CA-EC03-49AA-A474-0BBACA577C9C}|IntegradorDominio\\IntegradorDominio.csproj|c:\\users\\luizh\\onedrive\\desktop\\github\\projetos\\integrador de modelos de ml\\integradordominio\\modelo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{678F55CA-EC03-49AA-A474-0BBACA577C9C}|IntegradorDominio\\IntegradorDominio.csproj|solutionrelative:integradordominio\\modelo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{36183AFF-D74A-4BD2-8234-D9DE388D26F7}|InetradorAplicacao\\InetradorAplicacao.csproj|c:\\users\\luizh\\onedrive\\desktop\\github\\projetos\\integrador de modelos de ml\\inetradoraplicacao\\gerenciador\\igerenciador.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{36183AFF-D74A-4BD2-8234-D9DE388D26F7}|InetradorAplicacao\\InetradorAplicacao.csproj|solutionrelative:inetradoraplicacao\\gerenciador\\igerenciador.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{775ADFD9-5E14-F935-B5BC-71A1C82F09DF}|Integrador de Modelos de ML\\Integrador de Modelos de ML.csproj|c:\\users\\luizh\\onedrive\\desktop\\github\\projetos\\integrador de modelos de ml\\integrador de modelos de ml\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{775ADFD9-5E14-F935-B5BC-71A1C82F09DF}|Integrador de Modelos de ML\\Integrador de Modelos de ML.csproj|solutionrelative:integrador de modelos de ml\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{775ADFD9-5E14-F935-B5BC-71A1C82F09DF}|Integrador de Modelos de ML\\Integrador de Modelos de ML.csproj|c:\\users\\luizh\\onedrive\\desktop\\github\\projetos\\integrador de modelos de ml\\integrador de modelos de ml\\pages\\home.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{775ADFD9-5E14-F935-B5BC-71A1C82F09DF}|Integrador de Modelos de ML\\Integrador de Modelos de ML.csproj|solutionrelative:integrador de modelos de ml\\pages\\home.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{775ADFD9-5E14-F935-B5BC-71A1C82F09DF}|Integrador de Modelos de ML\\Integrador de Modelos de ML.csproj|c:\\users\\luizh\\onedrive\\desktop\\github\\projetos\\integrador de modelos de ml\\integrador de modelos de ml\\pages\\home.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{775ADFD9-5E14-F935-B5BC-71A1C82F09DF}|Integrador de Modelos de ML\\Integrador de Modelos de ML.csproj|solutionrelative:integrador de modelos de ml\\pages\\home.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{36183AFF-D74A-4BD2-8234-D9DE388D26F7}|InetradorAplicacao\\InetradorAplicacao.csproj|c:\\users\\luizh\\onedrive\\desktop\\github\\projetos\\integrador de modelos de ml\\inetradoraplicacao\\dto\\modelodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{36183AFF-D74A-4BD2-8234-D9DE388D26F7}|InetradorAplicacao\\InetradorAplicacao.csproj|solutionrelative:inetradoraplicacao\\dto\\modelodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{36183AFF-D74A-4BD2-8234-D9DE388D26F7}|InetradorAplicacao\\InetradorAplicacao.csproj|c:\\users\\luizh\\onedrive\\desktop\\github\\projetos\\integrador de modelos de ml\\inetradoraplicacao\\inetradoraplicacao.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{36183AFF-D74A-4BD2-8234-D9DE388D26F7}|InetradorAplicacao\\InetradorAplicacao.csproj|solutionrelative:inetradoraplicacao\\inetradoraplicacao.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
       "AbsoluteMoniker": "D:0:0:{775ADFD9-5E14-F935-B5BC-71A1C82F09DF}|Integrador de Modelos de ML\\Integrador de Modelos de ML.csproj|c:\\users\\luizh\\onedrive\\desktop\\github\\projetos\\integrador de modelos de ml\\integrador de modelos de ml\\integrador de modelos de ml.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{775ADFD9-5E14-F935-B5BC-71A1C82F09DF}|Integrador de Modelos de ML\\Integrador de Modelos de ML.csproj|solutionrelative:integrador de modelos de ml\\integrador de modelos de ml.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{775ADFD9-5E14-F935-B5BC-71A1C82F09DF}|Integrador de Modelos de ML\\Integrador de Modelos de ML.csproj|c:\\users\\luizh\\onedrive\\desktop\\github\\projetos\\integrador de modelos de ml\\integrador de modelos de ml\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{775ADFD9-5E14-F935-B5BC-71A1C82F09DF}|Integrador de Modelos de ML\\Integrador de Modelos de ML.csproj|solutionrelative:integrador de modelos de ml\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{775ADFD9-5E14-F935-B5BC-71A1C82F09DF}|Integrador de Modelos de ML\\Integrador de Modelos de ML.csproj|c:\\users\\luizh\\onedrive\\desktop\\github\\projetos\\integrador de modelos de ml\\integrador de modelos de ml\\pages\\home.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{775ADFD9-5E14-F935-B5BC-71A1C82F09DF}|Integrador de Modelos de ML\\Integrador de Modelos de ML.csproj|solutionrelative:integrador de modelos de ml\\pages\\home.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -42,7 +58,7 @@
       "DocumentGroups": [
         {
           "DockedHeight": 792,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Bookmark",
@@ -50,32 +66,59 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "App.xaml",
-              "DocumentMoniker": "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\Integrador de Modelos de ML\\App.xaml",
-              "RelativeDocumentMoniker": "Integrador de Modelos de ML\\App.xaml",
-              "ToolTip": "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\Integrador de Modelos de ML\\App.xaml",
-              "RelativeToolTip": "Integrador de Modelos de ML\\App.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-03-03T00:33:03.186Z",
+              "DocumentIndex": 4,
+              "Title": "IGerenciador.cs",
+              "DocumentMoniker": "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\InetradorAplicacao\\Gerenciador\\IGerenciador.cs",
+              "RelativeDocumentMoniker": "InetradorAplicacao\\Gerenciador\\IGerenciador.cs",
+              "ToolTip": "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\InetradorAplicacao\\Gerenciador\\IGerenciador.cs",
+              "RelativeToolTip": "InetradorAplicacao\\Gerenciador\\IGerenciador.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-03T16:19:35.544Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "ModeloGerenciador.cs",
+              "DocumentMoniker": "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\InetradorAplicacao\\Gerenciador\\ModeloGerenciador.cs",
+              "RelativeDocumentMoniker": "InetradorAplicacao\\Gerenciador\\ModeloGerenciador.cs",
+              "ToolTip": "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\InetradorAplicacao\\Gerenciador\\ModeloGerenciador.cs",
+              "RelativeToolTip": "InetradorAplicacao\\Gerenciador\\ModeloGerenciador.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-03T16:05:44.782Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Modelo.cs",
+              "DocumentMoniker": "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\IntegradorDominio\\Modelo.cs",
+              "RelativeDocumentMoniker": "IntegradorDominio\\Modelo.cs",
+              "ToolTip": "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\IntegradorDominio\\Modelo.cs",
+              "RelativeToolTip": "IntegradorDominio\\Modelo.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-03T15:55:35.14Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
               "Title": "InserirModelo.xaml.cs",
               "DocumentMoniker": "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\Integrador de Modelos de ML\\Pages\\InserirModelo.xaml.cs",
               "RelativeDocumentMoniker": "Integrador de Modelos de ML\\Pages\\InserirModelo.xaml.cs",
               "ToolTip": "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\Integrador de Modelos de ML\\Pages\\InserirModelo.xaml.cs",
               "RelativeToolTip": "Integrador de Modelos de ML\\Pages\\InserirModelo.xaml.cs",
-              "ViewState": "AgIAAAoAAAAAAAAAAADgvyQAAAANAAAAAAAAAA==",
+              "ViewState": "AgIAABgAAAAAAAAAAAAowDQAAAAyAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-02T21:09:22.596Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "InserirModelo.xaml",
               "DocumentMoniker": "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\Integrador de Modelos de ML\\Pages\\InserirModelo.xaml",
               "RelativeDocumentMoniker": "Integrador de Modelos de ML\\Pages\\InserirModelo.xaml",
@@ -87,19 +130,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "MainWindow.xaml",
-              "DocumentMoniker": "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\Integrador de Modelos de ML\\MainWindow.xaml",
-              "RelativeDocumentMoniker": "Integrador de Modelos de ML\\MainWindow.xaml",
-              "ToolTip": "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\Integrador de Modelos de ML\\MainWindow.xaml",
-              "RelativeToolTip": "Integrador de Modelos de ML\\MainWindow.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-03-01T17:54:05.594Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "Home.xaml",
               "DocumentMoniker": "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\Integrador de Modelos de ML\\Pages\\Home.xaml",
               "RelativeDocumentMoniker": "Integrador de Modelos de ML\\Pages\\Home.xaml",
@@ -111,7 +142,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 11,
               "Title": "Home.xaml.cs",
               "DocumentMoniker": "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\Integrador de Modelos de ML\\Pages\\Home.xaml.cs",
               "RelativeDocumentMoniker": "Integrador de Modelos de ML\\Pages\\Home.xaml.cs",
@@ -119,8 +150,7 @@
               "RelativeToolTip": "Integrador de Modelos de ML\\Pages\\Home.xaml.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-02T21:26:35.058Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-02T21:26:35.058Z"
             },
             {
               "$type": "Document",
@@ -138,14 +168,53 @@
             {
               "$type": "Document",
               "DocumentIndex": 7,
+              "Title": "ModeloDTO.cs",
+              "DocumentMoniker": "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\InetradorAplicacao\\DTO\\ModeloDTO.cs",
+              "RelativeDocumentMoniker": "InetradorAplicacao\\DTO\\ModeloDTO.cs",
+              "ToolTip": "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\InetradorAplicacao\\DTO\\ModeloDTO.cs",
+              "RelativeToolTip": "InetradorAplicacao\\DTO\\ModeloDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-03T15:59:28.186Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "InetradorAplicacao",
+              "DocumentMoniker": "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\InetradorAplicacao\\InetradorAplicacao.csproj",
+              "RelativeDocumentMoniker": "InetradorAplicacao\\InetradorAplicacao.csproj",
+              "ToolTip": "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\InetradorAplicacao\\InetradorAplicacao.csproj",
+              "RelativeToolTip": "InetradorAplicacao\\InetradorAplicacao.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-03-03T16:00:14.9Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
               "Title": "Integrador de Modelos de ML.csproj",
               "DocumentMoniker": "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\Integrador de Modelos de ML\\Integrador de Modelos de ML.csproj",
               "RelativeDocumentMoniker": "Integrador de Modelos de ML\\Integrador de Modelos de ML.csproj",
               "ToolTip": "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\Integrador de Modelos de ML\\Integrador de Modelos de ML.csproj",
               "RelativeToolTip": "Integrador de Modelos de ML\\Integrador de Modelos de ML.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2026-03-02T21:25:23.329Z"
+              "WhenOpened": "2026-03-02T21:25:23.329Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\Integrador de Modelos de ML\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "Integrador de Modelos de ML\\MainWindow.xaml",
+              "ToolTip": "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\Integrador de Modelos de ML\\MainWindow.xaml",
+              "RelativeToolTip": "Integrador de Modelos de ML\\MainWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-03-01T17:54:05.594Z",
+              "EditorCaption": ""
             }
           ]
         }

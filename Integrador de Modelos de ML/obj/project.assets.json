@@ -180,6 +180,29 @@
         "frameworkReferences": [
           "Microsoft.WindowsDesktop.App.WPF"
         ]
+      },
+      "InetradorAplicacao/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "dependencies": {
+          "IntegradorDominio": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/InetradorAplicacao.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/InetradorAplicacao.dll": {}
+        }
+      },
+      "IntegradorDominio/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "compile": {
+          "bin/placeholder/IntegradorDominio.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/IntegradorDominio.dll": {}
+        }
       }
     }
   },
@@ -366,11 +389,23 @@
         "microsoft.xaml.behaviors.wpf.nuspec",
         "tools/Install.ps1"
       ]
+    },
+    "InetradorAplicacao/1.0.0": {
+      "type": "project",
+      "path": "../InetradorAplicacao/InetradorAplicacao.csproj",
+      "msbuildProject": "../InetradorAplicacao/InetradorAplicacao.csproj"
+    },
+    "IntegradorDominio/1.0.0": {
+      "type": "project",
+      "path": "../IntegradorDominio/IntegradorDominio.csproj",
+      "msbuildProject": "../IntegradorDominio/IntegradorDominio.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net10.0-windows7.0": [
       "CommunityToolkit.Mvvm >= 8.4.0",
+      "InetradorAplicacao >= 1.0.0",
+      "IntegradorDominio >= 1.0.0",
       "MaterialDesignThemes >= 5.3.0"
     ]
   },
@@ -405,7 +440,14 @@
       "frameworks": {
         "net10.0-windows7.0": {
           "targetAlias": "net10.0-windows",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\InetradorAplicacao\\InetradorAplicacao.csproj": {
+              "projectPath": "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\InetradorAplicacao\\InetradorAplicacao.csproj"
+            },
+            "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\IntegradorDominio\\IntegradorDominio.csproj": {
+              "projectPath": "C:\\Users\\luizh\\OneDrive\\Desktop\\Github\\Projetos\\Integrador de Modelos de ML\\IntegradorDominio\\IntegradorDominio.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

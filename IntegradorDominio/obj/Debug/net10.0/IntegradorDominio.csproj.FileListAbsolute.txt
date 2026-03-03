@@ -1,0 +1,12 @@
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\IntegradorDominio\bin\Debug\net10.0\IntegradorDominio.deps.json
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\IntegradorDominio\bin\Debug\net10.0\IntegradorDominio.dll
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\IntegradorDominio\bin\Debug\net10.0\IntegradorDominio.pdb
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\IntegradorDominio\obj\Debug\net10.0\IntegradorDominio.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\IntegradorDominio\obj\Debug\net10.0\IntegradorDominio.AssemblyInfoInputs.cache
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\IntegradorDominio\obj\Debug\net10.0\IntegradorDominio.AssemblyInfo.cs
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\IntegradorDominio\obj\Debug\net10.0\IntegradorDominio.csproj.CoreCompileInputs.cache
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\IntegradorDominio\obj\Debug\net10.0\IntegradorDominio.sourcelink.json
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\IntegradorDominio\obj\Debug\net10.0\IntegradorDominio.dll
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\IntegradorDominio\obj\Debug\net10.0\refint\IntegradorDominio.dll
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\IntegradorDominio\obj\Debug\net10.0\IntegradorDominio.pdb
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\IntegradorDominio\obj\Debug\net10.0\ref\IntegradorDominio.dll

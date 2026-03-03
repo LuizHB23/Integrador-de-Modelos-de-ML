@@ -1,3 +1,5 @@
 <Solution>
+  <Project Path="InetradorAplicacao/InetradorAplicacao.csproj" Id="36183aff-d74a-4bd2-8234-d9de388d26f7" />
   <Project Path="Integrador de Modelos de ML/Integrador de Modelos de ML.csproj" />
+  <Project Path="IntegradorDominio/IntegradorDominio.csproj" Id="678f55ca-ec03-49aa-a474-0bbaca577c9c" />
 </Solution>

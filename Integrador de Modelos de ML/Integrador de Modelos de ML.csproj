@@ -14,4 +14,9 @@
     <PackageReference Include="MaterialDesignThemes" Version="5.3.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\InetradorAplicacao\InetradorAplicacao.csproj" />
+    <ProjectReference Include="..\IntegradorDominio\IntegradorDominio.csproj" />
+  </ItemGroup>
+
 </Project>

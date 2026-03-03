@@ -1,0 +1,37 @@
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\bin\Debug\net10.0-windows\Integrador de Modelos de ML.exe
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\bin\Debug\net10.0-windows\Integrador de Modelos de ML.deps.json
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\bin\Debug\net10.0-windows\Integrador de Modelos de ML.runtimeconfig.json
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\bin\Debug\net10.0-windows\Integrador de Modelos de ML.dll
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\bin\Debug\net10.0-windows\Integrador de Modelos de ML.pdb
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\bin\Debug\net10.0-windows\CommunityToolkit.Mvvm.dll
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\bin\Debug\net10.0-windows\MaterialDesignColors.dll
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\bin\Debug\net10.0-windows\MaterialDesignThemes.Wpf.dll
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\bin\Debug\net10.0-windows\Microsoft.Xaml.Behaviors.dll
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\obj\Debug\net10.0-windows\Integrador de Modelos de ML.csproj.AssemblyReference.cache
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\obj\Debug\net10.0-windows\MainWindow.baml
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\obj\Debug\net10.0-windows\MainWindow.g.cs
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\obj\Debug\net10.0-windows\Pages\Home.g.cs
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\obj\Debug\net10.0-windows\Pages\InserirModelo.g.cs
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\obj\Debug\net10.0-windows\App.g.cs
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\obj\Debug\net10.0-windows\Integrador de Modelos de ML_Content.g.cs
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\obj\Debug\net10.0-windows\Integrador de Modelos de ML_MarkupCompile.cache
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\obj\Debug\net10.0-windows\Integrador de Modelos de ML_MarkupCompile.lref
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\obj\Debug\net10.0-windows\App.baml
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\obj\Debug\net10.0-windows\Pages\Home.baml
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\obj\Debug\net10.0-windows\Pages\InserirModelo.baml
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\obj\Debug\net10.0-windows\Integrador de Modelos de ML.g.resources
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\obj\Debug\net10.0-windows\Integrador de Modelos de ML.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\obj\Debug\net10.0-windows\Integrador de Modelos de ML.AssemblyInfoInputs.cache
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\obj\Debug\net10.0-windows\Integrador de Modelos de ML.AssemblyInfo.cs
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\obj\Debug\net10.0-windows\Integrador de Modelos de ML.csproj.CoreCompileInputs.cache
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\obj\Debug\net10.0-windows\Integrador de Modelos de ML.sourcelink.json
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\obj\Debug\net10.0-windows\Integrad.C13EAE49.Up2Date
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\obj\Debug\net10.0-windows\Integrador de Modelos de ML.dll
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\obj\Debug\net10.0-windows\refint\Integrador de Modelos de ML.dll
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\obj\Debug\net10.0-windows\Integrador de Modelos de ML.pdb
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\obj\Debug\net10.0-windows\Integrador de Modelos de ML.genruntimeconfig.cache
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\obj\Debug\net10.0-windows\ref\Integrador de Modelos de ML.dll
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\bin\Debug\net10.0-windows\InetradorAplicacao.dll
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\bin\Debug\net10.0-windows\IntegradorDominio.dll
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\bin\Debug\net10.0-windows\InetradorAplicacao.pdb
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\bin\Debug\net10.0-windows\IntegradorDominio.pdb
