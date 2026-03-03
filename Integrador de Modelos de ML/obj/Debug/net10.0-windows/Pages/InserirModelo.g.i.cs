@@ -88,7 +88,7 @@ namespace Integrador_de_Modelos_de_ML.Pages {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/Integrador de Modelos de ML;component/pages/inserirmodelo.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/Integrador de Modelos de ML;V1.0.0.0;component/pages/inserirmodelo.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\Pages\InserirModelo.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

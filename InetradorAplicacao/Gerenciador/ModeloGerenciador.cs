@@ -2,7 +2,7 @@
 {
     public class ModeloGerenciador: IGerenciador
     {
-        public void Salvar(string caminhoModelo)
+        public string Salvar(string caminhoModelo)
         {
             // Pega o caminho da pasta
             string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -28,6 +28,8 @@
             {
                 Console.WriteLine($"Erro ao mover modelo: {ex.Message}");
             }
+
+            return caminhoDestino;
         }
 
         public void Carregar(string caminhoModelo)

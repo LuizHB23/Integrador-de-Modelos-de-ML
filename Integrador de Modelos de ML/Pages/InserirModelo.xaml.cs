@@ -48,9 +48,8 @@ namespace Integrador_de_Modelos_de_ML.Pages
 
             if ((!string.IsNullOrEmpty(nome.Trim())) && (!string.IsNullOrEmpty(tipo)) && (!string.IsNullOrEmpty(caminhoModelo)))
             {
-                Modelo modeloNovo = new Modelo(nome, tipo, caminhoModelo);
-
-                _gereciador.Salvar(caminhoModelo);
+                var caminhoDestino = _gereciador.Salvar(caminhoModelo);
+                Modelo modeloNovo = new Modelo(nome, tipo, caminhoDestino);
             }
             else
             {
