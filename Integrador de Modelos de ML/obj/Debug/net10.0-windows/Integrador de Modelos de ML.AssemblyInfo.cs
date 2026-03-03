@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Integrador de Modelos de ML")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+18b431cc7e7f6284253292d807d6e204b802d657")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4c8705e85134ca08918b5cfe9a37ac257b57a379")]
 [assembly: System.Reflection.AssemblyProductAttribute("Integrador de Modelos de ML")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Integrador de Modelos de ML")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

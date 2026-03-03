@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Integrador_de_Modelos_de_ML.Pages;
 
 namespace Integrador_de_Modelos_de_ML
 {
