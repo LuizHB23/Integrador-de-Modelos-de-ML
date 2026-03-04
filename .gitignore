@@ -1,0 +1,40 @@
+## --- Visual Studio ---
+.vs/
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## --- Roslyn & Code Analysis ---
+.failedCodeChecks
+*.Generated.cs
+
+## --- Pacotes NuGet ---
+# Frequentemente ignoramos a pasta packages para que o VS baixe tudo sozinho (Restore)
+packages/
+# Mas não ignore o arquivo .config do NuGet
+!packages/repository.config
+
+## --- Resultados de Testes e Cobertura ---
+TestResults/
+*.trx
+*.coverage
+
+## --- Arquivos Temporários e Log ---
+*.log
+*.tmp
+*.cache
+
+## --- Publicação / Build ---
+*.appx
+*.msi
+*.msix
+*.nupkg
+*.publish/
+
+## --- Configurações de Usuário do Windows ---
+Thumbs.db
+ehthumbs.db
+Desktop.ini
