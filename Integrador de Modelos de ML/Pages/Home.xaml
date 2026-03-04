@@ -6,7 +6,8 @@
       xmlns:local="clr-namespace:Integrador_de_Modelos_de_ML.Pages"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="Home">
+      Title="Home"
+      Background="{DynamicResource MaterialDesignPaper}">
 
     <Page.Resources>
         <Style x:Key="NavButtonStyle" TargetType="Button">

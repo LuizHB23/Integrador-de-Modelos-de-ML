@@ -1,4 +1,5 @@
-﻿using InetradorAplicacao.Gerenciador;
+﻿using InetradorAplicacao.DTO;
+using InetradorAplicacao.Gerenciador;
 using IntegradorDominio;
 using Microsoft.Win32;
 using System.IO;
@@ -34,8 +35,6 @@ namespace Integrador_de_Modelos_de_ML.Pages
             {
                 caminhoModelo = openFileDialog.FileName;
 
-                MessageBox.Show($"Arquivo selecionado: {caminhoModelo}");
-
                 string modelo = Path.GetFileName(caminhoModelo);
                 TextBoxCaminhoModelo.Text = modelo;
             }
@@ -46,16 +45,24 @@ namespace Integrador_de_Modelos_de_ML.Pages
             string? nome = TextBoxNome.Text;
             string? tipo = ComboBoxTipo.Text;
 
+            // Configuração colunas não existe mais, está para ser feito nesta mesma pagina
+            // Mudando para PipelineModelo
+
             if ((!string.IsNullOrEmpty(nome.Trim())) && (!string.IsNullOrEmpty(tipo)) && (!string.IsNullOrEmpty(caminhoModelo)))
             {
                 var caminhoDestino = _gereciador.Salvar(caminhoModelo);
-                Modelo modeloNovo = new Modelo(nome, tipo, caminhoDestino);
+                ModeloDTO modeloNovo = new ModeloDTO(nome, tipo, caminhoDestino);
+                InserirFrame.Navigate(new PipelineModelo());
             }
             else
             {
                 MessageBox.Show($"Preencha cada parte adequadamente");
             }
+        }
 
+        private void BtnCancelar_Click(object sender, RoutedEventArgs e)
+        {
+            InserirFrame.Navigate(new Home());
         }
     }
 }

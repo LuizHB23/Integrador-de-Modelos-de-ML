@@ -8,54 +8,124 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="InserirModelo"
->
+      Background="{DynamicResource MaterialDesignPaper}">
 
     <Grid>
-        <materialDesign:Card Width="450" 
-                             VerticalAlignment="Center" 
-                             HorizontalAlignment="Center" 
-                             Padding="30" 
-                             UniformCornerRadius="15">
-            <StackPanel>
-                <TextBlock Text="CONFIGURAR NOVO MODELO" 
-                           Style="{StaticResource MaterialDesignHeadline5TextBlock}" 
-                           Margin="0,0,0,30" 
-                           HorizontalAlignment="Center"/>
+        <materialDesign:Card Width="Auto" 
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Center" 
+                    Padding="30" 
+                    Margin="5"
+                    UniformCornerRadius="15">
+            <WrapPanel Orientation="Horizontal">
+                <StackPanel>
+                    <materialDesign:Card Width="Auto" 
+                                        VerticalAlignment="Center" 
+                                        HorizontalAlignment="Center" 
+                                        Padding="30" 
+                                        Margin="10"
+                                        UniformCornerRadius="15">
+                        <StackPanel>
+                            <TextBlock Text="CONFIGURAR NOVO MODELO" 
+                                            Style="{StaticResource MaterialDesignHeadline5TextBlock}" 
+                                            Margin="0,0,0,30" 
+                                            HorizontalAlignment="Center"/>
 
-                <TextBox x:Name="TextBoxNome" materialDesign:HintAssist.Hint="Nome do Modelo (ex: Modelo Churn)" 
-                         Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
-                         Margin="0,0,0,20" 
-                         FontSize="16"/>
+                            <TextBox x:Name="TextBoxNome" materialDesign:HintAssist.Hint="Nome do Modelo (ex: Modelo Churn)" 
+                                            Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
+                                            Margin="0,0,0,20" 
+                                            FontSize="16"/>
 
-                <ComboBox x:Name="ComboBoxTipo" materialDesign:HintAssist.Hint="Tipo de Algoritmo" 
-                          Style="{StaticResource MaterialDesignFloatingHintComboBox}" 
-                          Margin="0,0,0,20">
-                    <ComboBoxItem Content="Classificação"/>
-                    <ComboBoxItem Content="Regressão"/>
-                    <ComboBoxItem Content="Clusterização"/>
-                </ComboBox>
+                            <ComboBox x:Name="ComboBoxTipo" materialDesign:HintAssist.Hint="Tipo de Algoritmo" 
+                                            Style="{StaticResource MaterialDesignFloatingHintComboBox}" 
+                                            Margin="0,0,0,20">
+                                <ComboBoxItem Content="Classificação"/>
+                                <ComboBoxItem Content="Regressão"/>
+                                <ComboBoxItem Content="Clusterização"/>
+                            </ComboBox>
 
-                <Grid Margin="0,0,0,30">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBox x:Name="TextBoxCaminhoModelo" materialDesign:HintAssist.Hint="Caminho Modelo" 
-                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
-                             IsReadOnly="True"/>
-                    <Button Grid.Column="1" 
-                            Style="{StaticResource MaterialDesignIconButton}" 
-                            Margin="8,0,0,0"
-                            Click="BtnCarregarModelo_Click">
-                        <materialDesign:PackIcon x:Name="CarregarModelo" Kind="FileSearch"/>
-                    </Button>
-                </Grid>
-
-                <Button Content="Proximo" 
+                            <Grid Margin="0,0,0,30">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox x:Name="TextBoxCaminhoModelo" materialDesign:HintAssist.Hint="Caminho Modelo" 
+                                                Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
+                                                IsReadOnly="True"/>
+                                <Button Grid.Column="1" 
+                                            Style="{StaticResource MaterialDesignIconButton}" 
+                                            Margin="8,0,0,0"
+                                            Click="BtnCarregarModelo_Click">
+                                    <materialDesign:PackIcon x:Name="CarregarModelo" Kind="FileSearch"/>
+                                </Button>
+                            </Grid>
+                        </StackPanel>
+                    </materialDesign:Card>
+                    
+                    <Button x:Name="Cancelar" Content="Cancelar" 
                         Style="{StaticResource MaterialDesignRaisedButton}" 
-                        Height="45" 
+                        Height="45"
+                        Width="300"
+                        Margin="10"
+                        HorizontalAlignment="Center"
+                        materialDesign:ButtonAssist.CornerRadius="10" Click="BtnCancelar_Click"/>
+                    
+                </StackPanel>
+                <StackPanel>
+                    <materialDesign:Card Width="Auto" 
+                            VerticalAlignment="Center" 
+                            HorizontalAlignment="Center" 
+                            Padding="30"
+                            Margin="10"
+                            UniformCornerRadius="15">
+                        <StackPanel>
+                            <TextBlock Text="CONFIGURAR NOVO MODELO" 
+                                    Style="{StaticResource MaterialDesignHeadline5TextBlock}" 
+                                    Margin="0,0,0,30" 
+                                    HorizontalAlignment="Center"/>
+
+                            <TextBox x:Name="adf" materialDesign:HintAssist.Hint="Nome do Modelo (ex: Modelo Churn)" 
+                                    Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
+                                    Margin="0,0,0,20" 
+                                    FontSize="16"/>
+
+                            <ComboBox x:Name="dfa" materialDesign:HintAssist.Hint="Tipo de Algoritmo" 
+                                    Style="{StaticResource MaterialDesignFloatingHintComboBox}" 
+                                    Margin="0,0,0,20">
+                                <ComboBoxItem Content="Classificação"/>
+                                <ComboBoxItem Content="Regressão"/>
+                                <ComboBoxItem Content="Clusterização"/>
+                            </ComboBox>
+
+                            <Grid Margin="0,0,0,30">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox x:Name="fh" materialDesign:HintAssist.Hint="Caminho Modelo" 
+                                    Style="{StaticResource MaterialDesignFloatingHintTextBox}" 
+                                    IsReadOnly="True"/>
+                                <Button Grid.Column="1" 
+                                        Style="{StaticResource MaterialDesignIconButton}" 
+                                        Margin="8,0,0,0"
+                                        Click="BtnCarregarModelo_Click">
+                                    <materialDesign:PackIcon x:Name="th" Kind="FileSearch"/>
+                                </Button>
+                            </Grid>
+                        </StackPanel>
+                    </materialDesign:Card>
+                    
+                    <Button x:Name="Proximo" Content="Proximo" 
+                        Style="{StaticResource MaterialDesignRaisedButton}" 
+                        Height="45"
+                        Width="300"
+                        Margin="10"
+                        VerticalAlignment="Center"
                         materialDesign:ButtonAssist.CornerRadius="10" Click="BtnProximo_Click"/>
-            </StackPanel>
+                    
+                </StackPanel>
+            </WrapPanel>
         </materialDesign:Card>
+            <Frame x:Name="InserirFrame" Grid.Row="0" NavigationUIVisibility="Hidden" Margin="20"/>
     </Grid>
 </Page>

@@ -17,29 +17,25 @@ namespace Integrador_de_Modelos_de_ML
     /// </summary>
     public partial class MainWindow : Window
     {
-        private Home? _home;
-        private InserirModelo? _inserirModelo;
         public MainWindow()
         {
             InitializeComponent();
-            IncializaPaginas();
-            MainFrame.Navigate(_home);
+            MainFrame.Navigate(new Home());
         }
 
         private void BtnInserirModelo_Click(object sender, RoutedEventArgs e)
         {
-            MainFrame.Navigate(_inserirModelo);
+            TrocarPaginas(new InserirModelo());
         }
 
         private void BtnHome_Click(object sender, RoutedEventArgs e)
         {
-            MainFrame.Navigate(_home);
+            TrocarPaginas(new Home());
         }
 
-        private void IncializaPaginas()
+        private void TrocarPaginas(Page pagina)
         {
-            _home = new Home();
-            _inserirModelo = new InserirModelo();
+            MainFrame.Navigate(pagina);
         }
     }
 }

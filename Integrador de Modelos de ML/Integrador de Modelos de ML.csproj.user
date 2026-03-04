@@ -8,5 +8,8 @@
     <Compile Update="Pages\InserirModelo.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Pages\PipelineModelo.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 </Project>

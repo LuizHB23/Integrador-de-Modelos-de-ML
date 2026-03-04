@@ -35,3 +35,5 @@ C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Inte
 C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\bin\Debug\net10.0-windows\IntegradorDominio.dll
 C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\bin\Debug\net10.0-windows\InetradorAplicacao.pdb
 C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\bin\Debug\net10.0-windows\IntegradorDominio.pdb
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\obj\Debug\net10.0-windows\Pages\PipelineModelo.g.cs
+C:\Users\luizh\OneDrive\Desktop\Github\Projetos\Integrador de Modelos de ML\Integrador de Modelos de ML\obj\Debug\net10.0-windows\Pages\PipelineModelo.baml
