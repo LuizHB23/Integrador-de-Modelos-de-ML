@@ -98,69 +98,42 @@
 
                     <Grid Grid.Column="0" Height="Auto" HorizontalAlignment="Stretch">
                         <materialDesign:Card Width="Auto" MinWidth="300" >
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
 
-                                <StackPanel Grid.Row="0" Margin="10">
-                                    <TextBlock Margin="15"
-                                               Text="Carregar Schema" 
-                                               Style="{StaticResource MaterialDesignHeadline6TextBlock}"
-                                               HorizontalAlignment="Center"/>
-                                    <WrapPanel Margin="30,15,20,0" MaxWidth="450">
-                                        <Button Content="Carregar Schema" Margin="0,20,30,0" Width="150" HorizontalAlignment="Left"/>
-                                        <TextBox Grid.Column="0" materialDesign:HintAssist.Hint="Arquivo de Saída" 
-                                             Style="{StaticResource MaterialDesignFloatingHintTextBox}" IsReadOnly="True"
-                                             Margin="0,10,0,0" Width="230"
-                                             HorizontalAlignment="Left"/>
-                                    </WrapPanel>
-                                </StackPanel>
-
-                                <Separator Style="{StaticResource MaterialDesignLightSeparator}" 
-                                        Background="Black"
-                                        HorizontalAlignment="Stretch"
-                                        Margin="30,20"
-                                        Grid.Row="1"/>
-
-                                <StackPanel Grid.Row="2">
-                                    <TextBlock Margin="15,10"
+                            <StackPanel>
+                                <TextBlock Margin="15,10"
                                                Text="Adicionar Coluna" 
                                                Style="{StaticResource MaterialDesignHeadline6TextBlock}"
                                                HorizontalAlignment="Center"/>
-                                    <TextBox Grid.Column="0" materialDesign:HintAssist.Hint="Arquivo de Saída" 
+                                <TextBox Grid.Column="0" materialDesign:HintAssist.Hint="Arquivo de Saída" 
                                              Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                                              HorizontalAlignment="Stretch"
                                              Margin="30,15"/>
 
-                                    <ComboBox Margin="30,15" materialDesign:HintAssist.Hint="Tipo de Algoritmo" 
+                                <ComboBox Margin="30,15" materialDesign:HintAssist.Hint="Tipo de Algoritmo" 
                                               Style="{StaticResource MaterialDesignFloatingHintComboBox}"
                                               HorizontalAlignment="Stretch">
-                                        <ComboBoxItem Content="Regressão"/>
-                                        <ComboBoxItem Content="Classificação"/>
-                                    </ComboBox>
+                                    <ComboBoxItem Content="Regressão"/>
+                                    <ComboBoxItem Content="Classificação"/>
+                                </ComboBox>
 
-                                    <ComboBox Margin="30,15" materialDesign:HintAssist.Hint="Tipo de Algoritmo" 
+                                <ComboBox Margin="30,15" materialDesign:HintAssist.Hint="Tipo de Algoritmo" 
                                               Style="{StaticResource MaterialDesignFloatingHintComboBox}"
                                               HorizontalAlignment="Stretch">
-                                        <ComboBoxItem Content="Regressão"/>
-                                        <ComboBoxItem Content="Classificação"/>
-                                    </ComboBox>
-                                    <StackPanel Orientation="Horizontal" Margin="10,10" MinWidth="50">
-                                        <TextBlock Text="Categórico?"
+                                    <ComboBoxItem Content="Regressão"/>
+                                    <ComboBoxItem Content="Classificação"/>
+                                </ComboBox>
+                                <StackPanel Orientation="Horizontal" Margin="10,10" MinWidth="50">
+                                    <TextBlock Text="Categórico?"
                                                    VerticalAlignment="Center" Margin="20,0"
                                                    Style="{StaticResource MaterialDesignBody2TextBlock}"/>
-                                        <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}" 
+                                    <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}" 
                                                       VerticalAlignment="Center"
                                                       HorizontalAlignment="Left"
                                                       Margin="20,15"
                                                       ToolTip="Marque se a coluna for uma categoria"/>
-                                    </StackPanel>
-                                    <Button Content="Adicionar Coluna" Margin="30,15" MaxWidth="300" HorizontalAlignment="Left"/>
                                 </StackPanel>
-                            </Grid>
+                                <Button Content="Adicionar Coluna" Margin="30,15" MaxWidth="300" HorizontalAlignment="Left"/>
+                            </StackPanel>
                         </materialDesign:Card>
                     </Grid>
 
@@ -206,7 +179,7 @@
 
                         <!--Começo Cartão Configuração de Schema-->
 
-                        <GroupBox Margin="30,0,5,0"  Header="MAPEAMENTO DE COLUNAS (SCHEMA)">
+                        <GroupBox Margin="30,0,5,0" MaxHeight="400"  Header="MAPEAMENTO DE COLUNAS (SCHEMA)">
                             
                             <GroupBox.HeaderTemplate>
                                 <DataTemplate>
@@ -217,53 +190,57 @@
                                                FontWeight="Bold"/>
                                 </DataTemplate>
                             </GroupBox.HeaderTemplate>
-                            
-                            <ScrollViewer materialDesign:ScrollBarAssist.ButtonsVisibility="Hidden" Margin="10">
-                                <StackPanel Margin="5">
-                                    <materialDesign:Card Margin="5" Padding="12" materialDesign:ElevationAssist.Elevation="Dp2">
-                                        <WrapPanel HorizontalAlignment="Center">
-                                            <StackPanel Margin="10,5" Width="180">
-                                                <TextBox materialDesign:HintAssist.Hint="Nome da Coluna" 
-                                                 Text="Ex: Idade" 
-                                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
-                                            </StackPanel>
 
-                                            <StackPanel Orientation="Horizontal" Margin="10,5" MinWidth="50">
-                                                <TextBlock Text="Categórico?"
-                                                           VerticalAlignment="Center" Margin="20,0"
-                                                           Style="{StaticResource MaterialDesignBody2TextBlock}"/>
-                                                <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}" 
-                                                              VerticalAlignment="Center"
-                                                              Margin="20,0"
-                                                              ToolTip="Marque se a coluna for uma categoria"/>
-                                            </StackPanel>
+                            <StackPanel>
+                                <Button Content="Carregar Schema" Margin="0,10,30,0" Width="150" HorizontalAlignment="Right"/>
 
-                                            <StackPanel Margin="10,5" MinWidth="192">
-                                                <ComboBox materialDesign:HintAssist.Hint="Finalidade"
-                                                      Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                                                      materialDesign:TextFieldAssist.TextFieldCornerRadius="10"
-                                                      BorderBrush="#D1D1D1"
-                                                      Height="50">
-                                                    <ComboBoxItem Content="Feature"/>
-                                                    <ComboBoxItem Content="Label (Target)"/>
-                                                </ComboBox>
-                                            </StackPanel>
+                                <ScrollViewer materialDesign:ScrollBarAssist.ButtonsVisibility="Hidden" Margin="10">
+                                    <StackPanel Margin="5">
+                                        <materialDesign:Card Margin="5" Padding="12" materialDesign:ElevationAssist.Elevation="Dp2">
+                                            <WrapPanel HorizontalAlignment="Center">
+                                                <StackPanel Margin="10,5" Width="180">
+                                                    <TextBox materialDesign:HintAssist.Hint="Nome da Coluna" 
+                                                     Text="Ex: Idade" 
+                                                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                                                </StackPanel>
 
-                                            <StackPanel Margin="10,5" MinWidth="192">
-                                                <ComboBox materialDesign:HintAssist.Hint="Tipo"
-                                                      Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                                                      materialDesign:TextFieldAssist.TextFieldCornerRadius="10"
-                                                      BorderBrush="#D1D1D1"
-                                                      Height="50">
-                                                    <ComboBoxItem Content="Integer"/>
-                                                    <ComboBoxItem Content="Float"/>
-                                                    <ComboBoxItem Content="String"/>
-                                                </ComboBox>
-                                            </StackPanel>
-                                        </WrapPanel>
-                                    </materialDesign:Card>
-                                </StackPanel>
-                            </ScrollViewer>
+                                                <StackPanel Orientation="Horizontal" Margin="10,5" MinWidth="50">
+                                                    <TextBlock Text="Categórico?"
+                                                               VerticalAlignment="Center" Margin="20,0"
+                                                               Style="{StaticResource MaterialDesignBody2TextBlock}"/>
+                                                    <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}" 
+                                                                  VerticalAlignment="Center"
+                                                                  Margin="20,0"
+                                                                  ToolTip="Marque se a coluna for uma categoria"/>
+                                                </StackPanel>
+
+                                                <StackPanel Margin="10,5" MinWidth="192">
+                                                    <ComboBox materialDesign:HintAssist.Hint="Finalidade"
+                                                          Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                                                          materialDesign:TextFieldAssist.TextFieldCornerRadius="10"
+                                                          BorderBrush="#D1D1D1"
+                                                          Height="50">
+                                                        <ComboBoxItem Content="Feature"/>
+                                                        <ComboBoxItem Content="Label (Target)"/>
+                                                    </ComboBox>
+                                                </StackPanel>
+
+                                                <StackPanel Margin="10,5" MinWidth="192">
+                                                    <ComboBox materialDesign:HintAssist.Hint="Tipo"
+                                                          Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                                                          materialDesign:TextFieldAssist.TextFieldCornerRadius="10"
+                                                          BorderBrush="#D1D1D1"
+                                                          Height="50">
+                                                        <ComboBoxItem Content="Integer"/>
+                                                        <ComboBoxItem Content="Float"/>
+                                                        <ComboBoxItem Content="String"/>
+                                                    </ComboBox>
+                                                </StackPanel>
+                                            </WrapPanel>
+                                        </materialDesign:Card>
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </StackPanel>
                         </GroupBox>
 
                         <!--Fim Cartão Configuração de Schema-->
