@@ -5,234 +5,51 @@
       Title="Inserir Modelo"
       Background="{DynamicResource MaterialDesignPaper}">
 
-    <DockPanel Margin="20">
-        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
-            <Button Content="CANCELAR" Style="{StaticResource MaterialDesignOutlinedButton}" 
-                    Margin="0,0,10,0" Click="BtnCancelar_Click"/>
-            <Button x:Name="BotaoProximo" Content="PRÓXIMO" Width="120" Click="BtnProximo_Click" />
-        </StackPanel>
+    <Grid Background="#F0F2F5">
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="450">
 
+            <TextBlock Text="Novo Modelo de ML" FontSize="28" FontWeight="ExtraBold" 
+                   Foreground="#1A202C" HorizontalAlignment="Center" Margin="0,0,0,20"/>
 
+            <Border Background="White" CornerRadius="15" Padding="30">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="20" Opacity="0.05" Direction="270"/>
+                </Border.Effect>
 
-        <ScrollViewer materialDesign:ScrollBarAssist.ButtonsVisibility="Hidden" Margin="5">
-            <StackPanel Margin="15,5">
-                <TextBlock Text="CONFIGURAR NOVO MODELO" Margin="0,5,0,30"
-                           Style="{StaticResource MaterialDesignHeadline6TextBlock}"
-                           HorizontalAlignment="Center"
-                           Foreground="{StaticResource MaterialDesignShadowBrush}" FontSize="36"/>
-                
-                <!--Começo Cartões do inicio-->
+                <StackPanel>
+                    <TextBlock Text="NOME DO MODELO" FontSize="11" FontWeight="Bold" Foreground="#718096" Margin="0,0,0,8"/>
+                    <TextBox x:Name="TxtNomeModelo" Height="40" Padding="10,5" VerticalContentAlignment="Center"
+                         BorderThickness="1" BorderBrush="#E2E8F0" Margin="0,0,0,20">
+                        <TextBox.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="6"/>
+                            </Style>
+                        </TextBox.Resources>
+                    </TextBox>
 
-                <Grid>
-                    <materialDesign:Card Margin="0,0,5,15" Padding="15" UniformCornerRadius="10" MaxWidth="1200">
-                        <StackPanel>
-                            <TextBlock Text="CONFIGURAÇÃO DO MODELO" Style="{StaticResource MaterialDesignHeadline6TextBlock}" 
-                                           Margin="0,0,0,15" Foreground="{StaticResource MaterialDesignShadowBrush}" FontSize="24"/>
-                            <UniformGrid Columns="3">
-                                <TextBox Margin="5" materialDesign:HintAssist.Hint="Nome do Modelo" FontSize="20" 
-                                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
-                                <ComboBox Margin="5" materialDesign:HintAssist.Hint="Tipo de Algoritmo" FontSize="20" 
-                                              Style="{StaticResource MaterialDesignFloatingHintComboBox}">
-                                    <ComboBoxItem Content="Regressão"/>
-                                    <ComboBoxItem Content="Classificação"/>
-                                </ComboBox>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBox Grid.Column="0" Margin="5" materialDesign:HintAssist.Hint="Arquivo de Saída" FontSize="20"
-                                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}" IsReadOnly="True"/>
-                                    <Button Grid.Column="1" Content="VINCULAR" Style="{StaticResource MaterialDesignFlatMidBgButton}" Margin="5,0,0,0"/>
-                                </Grid>
-                            </UniformGrid>
-                        </StackPanel>
-                    </materialDesign:Card>
-                </Grid>
+                    <TextBlock Text="VARIÁVEL ALVO (COLUNA DE PREVISÃO)" FontSize="11" FontWeight="Bold" Foreground="#718096" Margin="0,0,0,8"/>
+                    <ComboBox x:Name="CbTarget" Height="40" VerticalContentAlignment="Center" Margin="0,0,0,20"/>
 
-                <!--Fim Cartões do inicio-->
-
-                <!--Começo MAPEAMENTO DE COLUNAS (SCHEMA)-->
-
-                <Separator Style="{StaticResource MaterialDesignLightSeparator}" 
-                            Background="Black"
-                            HorizontalAlignment="Stretch"
-                            Margin="30,20"/>
-
-                <TextBlock Margin="15"
-                   Text="CONFIGURAÇÕES DE COLUNAS (SCHEMA)" 
-                   Style="{StaticResource MaterialDesignHeadline6TextBlock}"
-                   HorizontalAlignment="Center" FontSize="28"/>
-
-                <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MaxWidth="1200">
-
-                    <!--Começo Cartão Esquerdo-->
-
-                    <Grid HorizontalAlignment="Stretch" Margin="0,0,0,20">
-                        <materialDesign:Card MinWidth="300" UniformCornerRadius="10">
-                            <StackPanel>
-                                <UniformGrid Columns="4" Margin="0,5"
-                                             VerticalAlignment="Center"
-                                             HorizontalAlignment="Stretch">
-
-                                    <TextBox materialDesign:HintAssist.Hint="Nome da Coluna" 
-                                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                                             HorizontalAlignment="Stretch"
-                                             VerticalAlignment="Center"
-                                             FontSize="20" 
-                                             Margin="30,0"/>
-
-                                    <ComboBox Margin="30,0" materialDesign:HintAssist.Hint="Finalidade" 
-                                              Style="{StaticResource MaterialDesignFloatingHintComboBox}"
-                                              FontSize="20" 
-                                              HorizontalAlignment="Stretch">
-                                        <ComboBoxItem Content="Regressão"/>
-                                        <ComboBoxItem Content="Classificação"/>
-                                    </ComboBox>
-
-                                    <ComboBox Margin="30,0" materialDesign:HintAssist.Hint="Tipo" 
-                                              Style="{StaticResource MaterialDesignFloatingHintComboBox}"
-                                              FontSize="20" 
-                                              HorizontalAlignment="Stretch">
-                                        <ComboBoxItem Content="Single"/>
-                                        <ComboBoxItem Content="Boolean"/>
-                                        <ComboBoxItem Content="DateTime"/>
-                                    </ComboBox>
-                                    <StackPanel Orientation="Horizontal" Margin="10,0" MinWidth="50">
-                                        <TextBlock Text="Categórico?" FontSize="20" 
-                                                       VerticalAlignment="Center" Margin="5,10"
-                                                       Style="{StaticResource MaterialDesignBody2TextBlock}"/>
-                                        <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}" 
-                                                          VerticalAlignment="Center"
-                                                          HorizontalAlignment="Left"
-                                                          Margin="20,15,0,15"
-                                                          ToolTip="Marque se a coluna for uma categoria"/>
-                                    </StackPanel>
-
-                                </UniformGrid>
-                                <StackPanel Orientation="Horizontal" Margin="5"
-                                            VerticalAlignment="Center" 
-                                            HorizontalAlignment="Right">
-                                    <Button Content="Carregar Schema" Margin="30,0,30,10" MaxWidth="300" FontSize="20"/>
-                                    <Button Content="Adicionar Coluna" Margin="30,0,30,10" MaxWidth="300" FontSize="20"/>
-                                </StackPanel>
-                            </StackPanel>
-
-                        </materialDesign:Card>
+                    <TextBlock Text="CAMINHO DO DATASET (.CSV)" FontSize="11" FontWeight="Bold" Foreground="#718096" Margin="0,0,0,8"/>
+                    <Grid Margin="0,0,0,30">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="TxtPath" Height="40" Padding="10,5" VerticalContentAlignment="Center" IsReadOnly="True" />
+                        <Button Grid.Column="1" Content="BUSCAR" Width="80" Margin="10,0,0,0" Background="#EDF2F7" BorderThickness="0"/>
                     </Grid>
 
-                    <!--Fim Cartão Esquerdo-->
-
-
-                    <Grid>
-                        <!--Começo Configuração Futura-->
-                        
-                        <ItemsControl x:Name="ListaColunasSchema">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <UniformGrid x:Name="PainelMapeamento" Columns="1"/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <materialDesign:Card Margin="0,5" Padding="12" materialDesign:ElevationAssist.Elevation="Dp2">
-                                        <UniformGrid Columns="4">
-                                            <TextBox materialDesign:HintAssist.Hint="Nome" Text="{Binding NomeColuna}" Margin="5" Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
-                                            <ComboBox materialDesign:HintAssist.Hint="Finalidade" Margin="5" Style="{StaticResource MaterialDesignOutlinedComboBox}">
-                                                <ComboBoxItem Content="Feature"/>
-                                                <ComboBoxItem Content="Label (Target)"/>
-                                            </ComboBox>
-                                            <ComboBox materialDesign:HintAssist.Hint="Tipo" Margin="5" Style="{StaticResource MaterialDesignOutlinedComboBox}">
-                                                <ComboBoxItem Content="Integer"/>
-                                                <ComboBoxItem Content="Float"/>
-                                                <ComboBoxItem Content="String"/>
-                                            </ComboBox>
-                                            <StackPanel VerticalAlignment="Center">
-                                                <TextBlock Text="Categórico?" HorizontalAlignment="Center" Style="{StaticResource MaterialDesignBody2TextBlock}"/>
-                                                <ToggleButton HorizontalAlignment="Center" Style="{StaticResource MaterialDesignSwitchToggleButton}"/>
-                                            </StackPanel>
-                                        </UniformGrid>
-                                    </materialDesign:Card>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-
-                        <!--Fim Configuração Futura-->
-
-                        <!--Começo Cartão Configuração de Schema-->
-
-                        <GroupBox  Margin="0" Height="500" Header="MAPEAMENTO DE COLUNAS (SCHEMA)">                            
-                            <GroupBox.HeaderTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding}" 
-                                               HorizontalAlignment="Center" 
-                                               Width="{Binding RelativeSource={RelativeSource AncestorType=ContentPresenter}, Path=ActualWidth}"
-                                               TextAlignment="Center"
-                                               FontWeight="Bold"/>
-                                </DataTemplate>
-                            </GroupBox.HeaderTemplate>
-                            
-                            <StackPanel>
-                                <ScrollViewer materialDesign:ScrollBarAssist.ButtonsVisibility="Hidden" Margin="10">
-                                    <StackPanel Margin="5">
-                                        <materialDesign:Card Margin="7" Padding="12" materialDesign:ElevationAssist.Elevation="Dp2">
-                                            <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center">
-                                                <StackPanel Margin="5,10" Width="185">
-                                                    <TextBox materialDesign:HintAssist.Hint="Nome da Coluna" 
-                                                     Text="Ex: Idade" 
-                                                     Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
-                                                </StackPanel>
-
-                                                <StackPanel Margin="7" MinWidth="185">
-                                                    <ComboBox materialDesign:HintAssist.Hint="Finalidade"
-                                                          Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                                                          materialDesign:TextFieldAssist.TextFieldCornerRadius="10"
-                                                          BorderBrush="#D1D1D1"
-                                                          Width="200"
-                                                          Height="50">
-                                                        <ComboBoxItem Content="Feature"/>
-                                                        <ComboBoxItem Content="Label (Target)"/>
-                                                    </ComboBox>
-                                                </StackPanel>
-
-                                                <StackPanel Margin="7" MinWidth="185">
-                                                    <ComboBox materialDesign:HintAssist.Hint="Tipo"
-                                                          Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                                                          materialDesign:TextFieldAssist.TextFieldCornerRadius="10"
-                                                          BorderBrush="#D1D1D1"
-                                                          Width="200"
-                                                          Height="50">
-                                                        <ComboBoxItem Content="Integer"/>
-                                                        <ComboBoxItem Content="Float"/>
-                                                        <ComboBoxItem Content="String"/>
-                                                    </ComboBox>
-                                                </StackPanel>
-
-                                                <StackPanel Margin="7,0" MinWidth="50">
-                                                    <TextBlock Text="Categórico?"
-                                                               VerticalAlignment="Center" Margin="20,0,20,5"
-                                                               Style="{StaticResource MaterialDesignBody2TextBlock}"/>
-                                                    <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}" 
-                                                                  VerticalAlignment="Center"
-                                                                  Margin="20,0"
-                                                                  ToolTip="Marque se a coluna for uma categoria"/>
-                                                </StackPanel>
-                                            </StackPanel>
-                                        </materialDesign:Card>
-                                    </StackPanel>
-                                </ScrollViewer>
-                            </StackPanel>
-                        </GroupBox>
-
-                        <!--Fim Cartão Configuração de Schema-->
-                        
-                    </Grid>
+                    <Button x:Name="BotaoCriarModelo" Content="CRIAR MODELO AGORA" Background="#0066cc" Foreground="White" 
+                        FontWeight="Bold" Height="50" Cursor="Hand" Click="BtnCriarModelo_Click">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="8"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
                 </StackPanel>
-
-                <!--Fim MAPEAMENTO DE COLUNAS (SCHEMA)-->
-                
-            </StackPanel>
-        </ScrollViewer>
-    </DockPanel>
+            </Border>
+        </StackPanel>
+    </Grid>
 </Page>

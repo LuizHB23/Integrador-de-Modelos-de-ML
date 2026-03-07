@@ -24,20 +24,9 @@ namespace Integrador_de_Modelos_de_ML.Pages
             _gereciador = new ModeloGerenciador();
         }
 
-        public void BtnCarregarColunas_Click(string caminhoArquivo)
+        private void BtnCriarModelo_Click(object sender, RoutedEventArgs e)
         {
-            using(var sr =  new StreamReader(caminhoArquivo))
-            {
-                string texto = sr.ReadToEnd();
-                var listaColunaSchema = JsonSerializer.Deserialize<List<ColunaSchema>>(texto);
-
-                // O ItemsControl vai gerar um Card para cada item desta lista automaticamente!
-                ListaColunasSchema.ItemsSource = listaColunaSchema;
-            }
+            NavigationService.Navigate(new ConfigurarSchema());
         }
-
-        private void BtnProximo_Click(object sender, RoutedEventArgs e) => NavigationService.Navigate(new PipelineModelo());
-        private void BtnCancelar_Click(object sender, RoutedEventArgs e) => NavigationService.Navigate(new Home());
-
     }
 }
