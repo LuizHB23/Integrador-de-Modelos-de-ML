@@ -17,18 +17,21 @@
                 </Border.Effect>
 
                 <StackPanel>
-                    <TextBlock Text="NOME DO MODELO" FontSize="11" FontWeight="Bold" Foreground="#718096" Margin="0,0,0,8"/>
-                    <TextBox x:Name="TxtNomeModelo" Height="40" Padding="10,5" VerticalContentAlignment="Center"
-                         BorderThickness="1" BorderBrush="#E2E8F0" Margin="0,0,0,20">
-                        <TextBox.Resources>
-                            <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="6"/>
-                            </Style>
-                        </TextBox.Resources>
-                    </TextBox>
+                    <TextBlock Text="NOME DO MODELO"
+                               Margin="0,0,0,8"
+                               Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
+                    <TextBox Height="Auto"
+                             FontSize="20"
+                             VerticalContentAlignment="Center"
+                             Margin="0,0,0,20"
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
 
                     <TextBlock Text="VARIÁVEL ALVO (COLUNA DE PREVISÃO)" FontSize="11" FontWeight="Bold" Foreground="#718096" Margin="0,0,0,8"/>
-                    <ComboBox x:Name="CbTarget" Height="40" VerticalContentAlignment="Center" Margin="0,0,0,20"/>
+                    <ComboBox Height="Auto"
+                              FontSize="20"
+                              VerticalContentAlignment="Center" 
+                              Margin="0,0,0,20"
+                              Style="{StaticResource MaterialDesignFloatingHintComboBox}"/>
 
                     <TextBlock Text="CAMINHO DO DATASET (.CSV)" FontSize="11" FontWeight="Bold" Foreground="#718096" Margin="0,0,0,8"/>
                     <Grid Margin="0,0,0,30">
@@ -36,12 +39,17 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <TextBox x:Name="TxtPath" Height="40" Padding="10,5" VerticalContentAlignment="Center" IsReadOnly="True" />
-                        <Button Grid.Column="1" Content="BUSCAR" Width="80" Margin="10,0,0,0" Background="#EDF2F7" BorderThickness="0"/>
+                        <TextBox Height="Auto"
+                                 FontSize="20"
+                                 VerticalContentAlignment="Center" 
+                                 IsReadOnly="True"
+                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                        <Button Grid.Column="1" Content="BUSCAR" Width="Auto" Margin="10,0,0,0" />
                     </Grid>
 
-                    <Button x:Name="BotaoCriarModelo" Content="CRIAR MODELO AGORA" Background="#0066cc" Foreground="White" 
-                        FontWeight="Bold" Height="50" Cursor="Hand" Click="BtnCriarModelo_Click">
+                    <Button x:Name="BotaoCriarModelo"
+                            Content="CRIAR MODELO AGORA" 
+                            Click="BtnCriarModelo_Click">
                         <Button.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="8"/>
