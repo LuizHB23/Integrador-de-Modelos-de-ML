@@ -1,0 +1,145 @@
+﻿<Page x:Class="Integrador_de_Modelos_de_ML.Pages.CarregarDados"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Integrador_de_Modelos_de_ML.Pages"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Background="{DynamicResource MaterialDesignPaper}"
+      Title="CarregarDados">
+
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="0,0" VerticalAlignment="Center">
+
+                <TextBlock Text="Carregar Dados" 
+                           Style="{StaticResource MaterialDesignHeadline4TextBlock}" 
+                           HorizontalAlignment="Center" 
+                           FontWeight="Bold" 
+                           Foreground="#102542" 
+                           Margin="0,0,0,30"/>
+
+                <materialDesign:Card Width="650" 
+                                     Padding="40" 
+                                     UniformCornerRadius="15" 
+                                     materialDesign:ElevationAssist.Elevation="Dp4"
+                                     HorizontalAlignment="Center">
+
+                    <StackPanel>
+                        <TextBlock Text="CAMINHO DO DATASET (.CSV)" 
+                                   Style="{StaticResource MaterialDesignOverlineTextBlock}" 
+                                   Margin="0,0,0,8" Foreground="#555"/>
+
+                        <Grid Margin="0,0,0,30">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            
+                            <TextBox x:Name="TxtFilePath" 
+                                     IsReadOnly="True" 
+                                     FontSize="16"
+                                     materialDesign:TextFieldAssist.HasClearButton="True"
+                                     Style="{StaticResource MaterialDesignTextBox}" 
+                                     VerticalAlignment="Bottom"/>
+                            
+                            <Button Grid.Column="1" 
+                                    Content="Buscar" 
+                                    Margin="15,0,0,0"
+                                    Style="{StaticResource MaterialDesignRaisedButton}"
+                                    Cursor="Hand"/>
+                        </Grid>
+
+                        <Grid Margin="0,0,0,30">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Margin="0,0,15,0">
+                                <TextBlock Text="DELIMITADOR" 
+                                           Style="{StaticResource MaterialDesignOverlineTextBlock}" 
+                                           Margin="0,0,0,8"/>
+                                
+                                <ComboBox FontSize="15">
+                                    <ComboBoxItem Content="Vírgula (,)" IsSelected="True"/>
+                                    <ComboBoxItem Content="Ponto e Vírgula (;)"/>
+                                    <ComboBoxItem Content="Tabulação (Tab)"/>
+                                </ComboBox>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" Margin="15,0,0,0">
+                                <TextBlock Text="CODIFICAÇÃO" 
+                                           Style="{StaticResource MaterialDesignOverlineTextBlock}" 
+                                           Margin="0,0,0,8"/>
+                                
+                                <ComboBox FontSize="15">
+                                    <ComboBoxItem Content="UTF-8" IsSelected="True"/>
+                                    <ComboBoxItem Content="Windows-1252"/>
+                                </ComboBox>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Margin="0,0,0,30">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Decimal" 
+                                           Style="{StaticResource MaterialDesignOverlineTextBlock}" 
+                                           Margin="0,0,0,8"/>
+
+                                <ComboBox FontSize="15">
+                                    <ComboBoxItem Content="Ponto (.)" IsSelected="True"/>
+                                    <ComboBoxItem Content="Vírgula (,)"/>
+                                </ComboBox>
+                            </StackPanel>
+                            
+                            <StackPanel Orientation="Horizontal" 
+                                        Margin="30,0"
+                                        Grid.Column="1">
+                                <CheckBox Content="Contém cabeçalho na primeira linha" 
+                                          IsChecked="True" 
+                                          Style="{StaticResource MaterialDesignCheckBox}"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center" Cursor="">
+                            <Button x:Name="BotaoCancelar" 
+                                    Content="Cancelar" 
+                                    Height="50"
+                                    Width="210"
+                                    Margin="20,0"
+                                    FontSize="18"
+                                    FontWeight="Bold"
+                                    materialDesign:ButtonAssist.CornerRadius="8"
+                                    Style="{StaticResource MaterialDesignOutlinedButton}"
+                                    Click="BtnCancelar_Click"
+                                    Cursor="Hand"/>
+                            
+                            <Button x:Name="BotaoContinuar" 
+                                    Content="Carregar e Continuar" 
+                                    Height="50"
+                                    Width="210"
+                                    Margin="20,0"
+                                    FontSize="18"
+                                    FontWeight="Bold"
+                                    materialDesign:ButtonAssist.CornerRadius="8"
+                                    Style="{StaticResource MaterialDesignRaisedButton}" 
+                                    Click="BtnContinuar_Click"
+                                    Cursor="Hand"/>
+                            
+                        </StackPanel>
+
+                    </StackPanel>
+                </materialDesign:Card>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

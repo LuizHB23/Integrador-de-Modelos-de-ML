@@ -5,57 +5,83 @@
       Title="Inserir Modelo"
       Background="{DynamicResource MaterialDesignPaper}">
 
-    <Grid Background="#F0F2F5">
+    <Grid>
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="450">
 
             <TextBlock Text="Novo Modelo de ML" FontSize="28" FontWeight="ExtraBold" 
                    Foreground="#1A202C" HorizontalAlignment="Center" Margin="0,0,0,20"/>
 
             <Border Background="White" CornerRadius="15" Padding="30">
-                <Border.Effect>
-                    <DropShadowEffect BlurRadius="20" Opacity="0.05" Direction="270"/>
-                </Border.Effect>
-
                 <StackPanel>
                     <TextBlock Text="NOME DO MODELO"
                                Margin="0,0,0,8"
                                Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
+                    
                     <TextBox Height="Auto"
                              FontSize="20"
                              VerticalContentAlignment="Center"
                              Margin="0,0,0,20"
                              Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
 
-                    <TextBlock Text="VARIÁVEL ALVO (COLUNA DE PREVISÃO)" FontSize="11" FontWeight="Bold" Foreground="#718096" Margin="0,0,0,8"/>
+                    <TextBlock Text="VARIÁVEL ALVO (COLUNA DE PREVISÃO)" 
+                               FontSize="11" 
+                               FontWeight="Bold" 
+                               Foreground="#718096" 
+                               Margin="0,0,0,8"/>
+                    
                     <ComboBox Height="Auto"
                               FontSize="20"
                               VerticalContentAlignment="Center" 
                               Margin="0,0,0,20"
                               Style="{StaticResource MaterialDesignFloatingHintComboBox}"/>
 
-                    <TextBlock Text="CAMINHO DO DATASET (.CSV)" FontSize="11" FontWeight="Bold" Foreground="#718096" Margin="0,0,0,8"/>
+                    <TextBlock Text="CAMINHO DO DATASET (.CSV)" 
+                               FontSize="11" 
+                               FontWeight="Bold" 
+                               Foreground="#718096" 
+                               Margin="0,0,0,8"/>
+                    
                     <Grid Margin="0,0,0,30">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
+                        
                         <TextBox Height="Auto"
                                  FontSize="20"
                                  VerticalContentAlignment="Center" 
                                  IsReadOnly="True"
                                  Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
-                        <Button Grid.Column="1" Content="BUSCAR" Width="Auto" Margin="10,0,0,0" />
+                        
+                        <Button Grid.Column="1" 
+                                Content="BUSCAR"
+                                Style="{StaticResource MaterialDesignRaisedButton}" 
+                                Width="Auto" 
+                                Margin="10,0,0,0"
+                                Cursor="Hand"/>
                     </Grid>
 
-                    <Button x:Name="BotaoCriarModelo"
-                            Content="CRIAR MODELO AGORA" 
-                            Click="BtnCriarModelo_Click">
-                        <Button.Resources>
-                            <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="8"/>
-                            </Style>
-                        </Button.Resources>
-                    </Button>
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center">
+
+                        <Button x:Name="BotaoCancelar"
+                                Content="Cancelar"
+                                Style="{StaticResource MaterialDesignOutlinedButton}"
+                                Height="50"
+                                Width="150"
+                                Margin="20,0"
+                                Click="BtnCancelar_Click"
+                                Cursor="Hand"/>
+
+                        <Button x:Name="BotaoCriarModelo"
+                                Content="Criar Modelo"
+                                Style="{StaticResource MaterialDesignRaisedButton}" 
+                                Height="50"
+                                Width="150"
+                                Margin="20,0"
+                                Click="BtnCriarModelo_Click"
+                                Cursor="Hand"/>
+                    </StackPanel>
                 </StackPanel>
             </Border>
         </StackPanel>

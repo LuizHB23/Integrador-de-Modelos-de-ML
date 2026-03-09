@@ -15,16 +15,22 @@
                     Orientation="Horizontal"
                     HorizontalAlignment="Right" 
                     Margin="0,15,0,0">
-            
-            <Button Content="CANCELAR" 
-                    Style="{StaticResource MaterialDesignOutlinedButton}" 
-                    Margin="0,0,10,0" 
-                    Click="BtnCancelar_Click"/>
+
+            <Button x:Name="BotaoCancelar" 
+                    Content="Cancelar" 
+                    Style="{StaticResource MaterialDesignOutlinedButton}"
+                    Width="120"
+                    Click="BtnCancelar_Click"
+                    Margin="10,0"
+                    Cursor="Hand"/>
             
             <Button x:Name="BotaoProximo" 
-                    Content="PRÓXIMO" 
+                    Content="Próximo" 
+                    Style="{StaticResource MaterialDesignRaisedButton}"
                     Width="120" 
-                    Click="BtnProximo_Click" />
+                    Click="BtnProximo_Click"
+                    Margin="10,0"
+                    Cursor="Hand"/>
         </StackPanel>
         
         <!--Começo MAPEAMENTO DE COLUNAS (SCHEMA)-->
@@ -94,7 +100,8 @@
                                             Width="Auto"
                                             Height="40"
                                             FontSize="20"
-                                            HorizontalAlignment="Right" />
+                                            HorizontalAlignment="Right"
+                                            Cursor="Hand"/>
                                 </UniformGrid>
 
                             </StackPanel>
@@ -156,12 +163,14 @@
 
                                 <DockPanel>
                                     <Button DockPanel.Dock="Top"
-                                                Content="Carregar Schema" 
-                                                Margin="30,0,30,10" 
-                                                MaxWidth="300"
-                                                Height="40" 
-                                                FontSize="20"
-                                                HorizontalAlignment="Right"/>
+                                            Style="{StaticResource MaterialDesignRaisedButton}"
+                                            Content="Carregar Schema" 
+                                            Margin="30,0,30,10" 
+                                            MaxWidth="300"
+                                            Height="40" 
+                                            FontSize="20"
+                                            HorizontalAlignment="Right"
+                                            Cursor="Hand"/>
                                     
                                     <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="10" Cursor="">
                                         <StackPanel Margin="5">
@@ -251,7 +260,8 @@
                                                                  HorizontalAlignment="Right"
                                                                  Height="40"
                                                                  Width="55"
-                                                                 Margin="0,10">
+                                                                 Margin="0,10"
+                                                                 Cursor="Hand">
 
                                                             <materialDesign:PackIcon Kind="Trash" 
                                                                                      VerticalAlignment="Center"

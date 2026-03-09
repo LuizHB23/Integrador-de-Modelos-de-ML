@@ -21,9 +21,7 @@ namespace Integrador_de_Modelos_de_ML.Pages
             _gereciador = new ModeloGerenciador();
         }
 
-        private void BtnCriarModelo_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService.Navigate(new ConfigurarSchema());
-        }
+        private void BtnCriarModelo_Click(object sender, RoutedEventArgs e) => NavigationService.Navigate(new ConfigurarSchema());
+        private void BtnCancelar_Click(object sender, RoutedEventArgs e) => NavigationService.Navigate(new Home());
     }
 }

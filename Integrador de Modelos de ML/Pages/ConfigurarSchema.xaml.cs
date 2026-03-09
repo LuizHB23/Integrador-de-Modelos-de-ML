@@ -37,7 +37,7 @@ namespace Integrador_de_Modelos_de_ML.Pages
             }
         }
 
-        private void BtnProximo_Click(object sender, RoutedEventArgs e) => NavigationService.Navigate(new PipelineModelo());
+        private void BtnProximo_Click(object sender, RoutedEventArgs e) => NavigationService.Navigate(new CarregarDados());
         private void BtnCancelar_Click(object sender, RoutedEventArgs e) => NavigationService.Navigate(new Home());
     }
 }

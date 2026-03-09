@@ -50,6 +50,14 @@ namespace Integrador_de_Modelos_de_ML.Pages
                 }
             },
         };
+
+        private void BtnFinalizar_Click(object sender, RoutedEventArgs e)
+        {
+            // Logica a implementar
+            NavigationService.Navigate(new Home());
+        }
+
+        private void BtnCancelar_Click(object sender, RoutedEventArgs e) => NavigationService.Navigate(new Home());
     }
 
     public class PipelineStep
