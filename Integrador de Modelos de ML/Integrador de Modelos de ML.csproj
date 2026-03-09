@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\InetradorAplicacao\IntegradorAplicacao.csproj" />
+    <ProjectReference Include="..\IntegradorAplicacao\IntegradorAplicacao.csproj" />
     <ProjectReference Include="..\IntegradorDominio\IntegradorDominio.csproj" />
   </ItemGroup>
 
