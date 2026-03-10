@@ -11,7 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Integrador_de_Modelos_de_ML.Pages
+namespace Integrador_de_Modelos_de_ML.Pages.InserirModelo
 {
     /// <summary>
     /// Lógica interna para PipelineModelo.xaml

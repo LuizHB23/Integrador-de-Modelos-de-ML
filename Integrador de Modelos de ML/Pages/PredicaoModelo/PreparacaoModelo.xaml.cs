@@ -11,19 +11,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Integrador_de_Modelos_de_ML.Pages
+namespace Integrador_de_Modelos_de_ML.Pages.PredicaoModelo
 {
     /// <summary>
-    /// Interação lógica para CarregarDados.xam
+    /// Interação lógica para PredicaoModelo.xam
     /// </summary>
-    public partial class CarregarDados : Page
+    public partial class PreparacaoModelo : Page
     {
-        public CarregarDados()
+        public PreparacaoModelo()
         {
             InitializeComponent();
         }
-
-        private void BtnContinuar_Click(object sender, RoutedEventArgs e) => NavigationService.Navigate(new PipelineModelo());
-        private void BtnCancelar_Click(object sender, RoutedEventArgs e) => NavigationService.Navigate(new Home());
     }
 }

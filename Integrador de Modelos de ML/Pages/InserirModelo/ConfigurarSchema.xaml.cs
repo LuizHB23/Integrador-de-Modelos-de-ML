@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Integrador_de_Modelos_de_ML.Pages
+namespace Integrador_de_Modelos_de_ML.Pages.InserirModelo
 {
     /// <summary>
     /// Interação lógica para ConfigurarSchema.xam

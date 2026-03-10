@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Text.Json;
 
-namespace Integrador_de_Modelos_de_ML.Pages
+namespace Integrador_de_Modelos_de_ML.Pages.InserirModelo
 {
     public partial class InserirModelo : Page
     {
