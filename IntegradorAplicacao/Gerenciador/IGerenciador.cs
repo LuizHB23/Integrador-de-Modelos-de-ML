@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace InetradorAplicacao.Gerenciador
+﻿namespace InetradorAplicacao.Gerenciador
 {
     public interface IGerenciador
     {

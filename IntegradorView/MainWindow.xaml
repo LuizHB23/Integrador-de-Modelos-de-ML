@@ -1,0 +1,76 @@
+﻿<Window x:Class="IntegradorView.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="Integrador ML" Height="600" Width="1000"
+        MinHeight="600" MinWidth="1000">
+
+    <Window.Resources>
+        <Style x:Key="NavButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="15,5"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ModelCardStyle" TargetType="Button">
+            <Setter Property="Width" Value="220"/>
+            <Setter Property="Margin" Value="0,0,20,20"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="10" BorderBrush="#DDD" BorderThickness="1">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.1"/>
+                            </Border.Effect>
+                            <ContentPresenter/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="#005792" Padding="15,0">
+            <Grid>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                    <Button Width="35" Height="35" Style="{StaticResource MaterialDesignFloatingActionLightButton}">
+                        <materialDesign:PackIcon Kind="Account" Foreground="White"/>
+                    </Button>
+                    <Button Content="☰" FontSize="20" Background="Transparent" BorderThickness="0" Foreground="White" Cursor="Hand" Margin="0,0,10,0"/>
+
+                    <StackPanel Orientation="Horizontal" Margin="30,0,0,0">
+                        <Button x:Name="BotaoHome" Content="Home" Style="{StaticResource NavButtonStyle}" Click="BtnHome_Click"/>
+                        <Button x:Name="BotaoInserirModelo" Content="Inserir Modelo" Style="{StaticResource NavButtonStyle}" Click="BtnInserirModelo_Click"/>
+                        <Button x:Name="BotaoGraficos" Content="Gráficos de Modelos" Style="{StaticResource NavButtonStyle}" Click="BtnGraficoModelo_Click"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <TextBlock Text="INTEGRADOR ML" Foreground="White" FontWeight="Bold"
+                           VerticalAlignment="Center" HorizontalAlignment="Right" Opacity="0.5"/>
+            </Grid>
+        </Border>
+
+        <Frame x:Name="MainFrame" Grid.Row="1" Source="Pages/Home.xaml" NavigationUIVisibility="Hidden" Margin="20"/>
+    </Grid>
+</Window>

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace IntegradorDominio.WPF
+﻿namespace IntegradorDominio.WPF
 {
     public class ColunaSchema
     {

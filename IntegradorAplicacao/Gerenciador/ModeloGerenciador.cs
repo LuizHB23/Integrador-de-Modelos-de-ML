@@ -1,6 +1,6 @@
 ﻿namespace InetradorAplicacao.Gerenciador
 {
-    public class ModeloGerenciador: IGerenciador
+    public class ModeloGerenciador : IGerenciador
     {
         public string Salvar(string caminhoModelo)
         {
