@@ -56,9 +56,11 @@
 
                 <WrapPanel Orientation="Horizontal">
 
-                    <Button Style="{StaticResource ModelCardStyle}">
+                    <Button Style="{StaticResource ModelCardStyle}"
+                            Cursor="Hand"
+                            Click="BtnModelo_Click">
                         <StackPanel>
-                            <Border Height="120" Background="#E0E0E0" CornerRadius="8,8,0,0">
+                            <Border x:Name="BotaoModelo" Height="120" Background="#E0E0E0" CornerRadius="8,8,0,0">
                                 <TextBlock Text="📊" FontSize="40" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
                             <TextBlock Text="Modelo Alpha" Padding="15,10,15,5" FontWeight="Bold" FontSize="16"/>
@@ -66,7 +68,9 @@
                         </StackPanel>
                     </Button>
 
-                    <Button Style="{StaticResource ModelCardStyle}">
+                    <Button Style="{StaticResource ModelCardStyle}"
+                            Cursor="Hand"
+                            Click="BtnModelo_Click">
                         <StackPanel>
                             <Border Height="120" Background="#E0E0E0" CornerRadius="8,8,0,0">
                                 <TextBlock Text="🧠" FontSize="40" HorizontalAlignment="Center" VerticalAlignment="Center"/>

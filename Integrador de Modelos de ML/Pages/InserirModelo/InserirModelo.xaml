@@ -9,11 +9,11 @@
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="450">
 
             <TextBlock Text="Novo Modelo de ML" FontSize="28" FontWeight="ExtraBold" 
-                   Foreground="#1A202C" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+                       HorizontalAlignment="Center" Margin="0,0,0,20"/>
 
             <Border Background="White" CornerRadius="15" Padding="30">
                 <StackPanel>
-                    <TextBlock Text="NOME DO MODELO"
+                    <TextBlock Text="Nome do Modelo"
                                Margin="0,0,0,8"
                                Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
                     
@@ -23,11 +23,10 @@
                              Margin="0,0,0,20"
                              Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
 
-                    <TextBlock Text="VARIÁVEL ALVO (COLUNA DE PREVISÃO)" 
-                               FontSize="11" 
-                               FontWeight="Bold" 
-                               Foreground="#718096" 
-                               Margin="0,0,0,8"/>
+                    <TextBlock Text="Tipo de Modelo"
+                               FontSize="20" 
+                               Margin="0,0,0,8"
+                               Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
                     
                     <ComboBox Height="Auto"
                               FontSize="20"
@@ -35,11 +34,10 @@
                               Margin="0,0,0,20"
                               Style="{StaticResource MaterialDesignFloatingHintComboBox}"/>
 
-                    <TextBlock Text="CAMINHO DO DATASET (.CSV)" 
-                               FontSize="11" 
-                               FontWeight="Bold" 
-                               Foreground="#718096" 
-                               Margin="0,0,0,8"/>
+                    <TextBlock Text="Caminho do Modelo" 
+                               FontSize="20" 
+                               Margin="0,0,0,8"
+                               Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
                     
                     <Grid Margin="0,0,0,30">
                         <Grid.ColumnDefinitions>

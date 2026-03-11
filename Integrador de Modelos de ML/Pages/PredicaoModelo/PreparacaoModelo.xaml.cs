@@ -22,5 +22,7 @@ namespace Integrador_de_Modelos_de_ML.Pages.PredicaoModelo
         {
             InitializeComponent();
         }
+
+        private void BtnProcessamento_Click(object sender, RoutedEventArgs e) => NavigationService.Navigate(new ResultadoArquivoModelo());
     }
 }

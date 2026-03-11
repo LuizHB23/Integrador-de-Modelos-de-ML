@@ -10,20 +10,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Integrador_de_Modelos_de_ML.Pages.PredicaoModelo;
 
-namespace Integrador_de_Modelos_de_ML.Pages
+namespace Integrador_de_Modelos_de_ML.Pages.PredicaoModelo
 {
     /// <summary>
-    /// Interação lógica para Home.xam
+    /// Interação lógica para ResultadoArquivoModelo.xam
     /// </summary>
-    public partial class Home : Page
+    public partial class ResultadoArquivoModelo : Page
     {
-        public Home()
+        public ResultadoArquivoModelo()
         {
             InitializeComponent();
         }
-
-        private void BtnModelo_Click(object sender, RoutedEventArgs e) => NavigationService.Navigate(new PreparacaoModelo());
     }
 }

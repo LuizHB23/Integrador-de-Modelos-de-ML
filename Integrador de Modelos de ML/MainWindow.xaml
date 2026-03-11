@@ -66,7 +66,7 @@
                     </StackPanel>
                 </StackPanel>
 
-                <TextBlock Text="INTEGRADOR ML" Foreground="White" FontWeight="Bold" 
+                <TextBlock Text="INTEGRADOR ML" Foreground="White" FontWeight="Bold"
                            VerticalAlignment="Center" HorizontalAlignment="Right" Opacity="0.5"/>
             </Grid>
         </Border>

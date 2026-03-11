@@ -38,7 +38,7 @@
         <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="10">
             <StackPanel Margin="20">
                 <TextBlock Margin="25"
-                    Text="CONFIGURAÇÕES DE COLUNAS (SCHEMA)" 
+                    Text="Configurações De Colunas (SCHEMA)"
                     Style="{StaticResource MaterialDesignHeadline6TextBlock}"
                     HorizontalAlignment="Center" FontSize="28"/>
 
@@ -150,16 +150,19 @@
 
                         <!--Começo Cartão Configuração de Schema-->
 
-                        <GroupBox  Margin="0" Height="500" Header="MAPEAMENTO DE COLUNAS (SCHEMA)">
-                            <GroupBox.HeaderTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding}" 
-                                                HorizontalAlignment="Center" 
-                                                Width="{Binding RelativeSource={RelativeSource AncestorType=ContentPresenter}, Path=ActualWidth}"
-                                                TextAlignment="Center"
-                                                FontWeight="Bold"/>
-                                </DataTemplate>
-                            </GroupBox.HeaderTemplate>
+                        <materialDesign:Card UniformCornerRadius="10"
+                                             Margin="0,0,0,20">
+
+                            <GroupBox  Margin="0" Height="500" Header="MAPEAMENTO DE COLUNAS (SCHEMA)">
+                                <GroupBox.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}" 
+                                                   HorizontalAlignment="Center" 
+                                                   Width="{Binding RelativeSource={RelativeSource AncestorType=ContentPresenter}, Path=ActualWidth}"
+                                                   TextAlignment="Center"
+                                                   FontWeight="Bold"/>
+                                    </DataTemplate>
+                                </GroupBox.HeaderTemplate>
 
                                 <DockPanel>
                                     <Button DockPanel.Dock="Top"
@@ -171,14 +174,14 @@
                                             FontSize="20"
                                             HorizontalAlignment="Right"
                                             Cursor="Hand"/>
-                                    
+
                                     <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="10" Cursor="">
                                         <StackPanel Margin="5">
                                             <Grid>
                                                 <materialDesign:Card x:Name="PosicaoSchema"
-                                                                                Margin="7" Padding="12"                                                    
-                                                                                materialDesign:ElevationAssist.Elevation="Dp2"
-                                                                                UniformCornerRadius="10">
+                                                                     Margin="7" Padding="12"                                                    
+                                                                     materialDesign:ElevationAssist.Elevation="Dp2"
+                                                                     UniformCornerRadius="10">
                                                     <Grid>
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition Width="Auto"/>
@@ -188,52 +191,51 @@
                                                         </Grid.ColumnDefinitions>
 
                                                         <ComboBox materialDesign:HintAssist.Hint="Tipo"
-                                                                                              Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                                                                                              materialDesign:TextFieldAssist.TextFieldCornerRadius="10"
-                                                                                              BorderBrush="#D1D1D1"
-                                                                                              Margin="10, 10, 20, 10"
-                                                                                              Width="70"
-                                                                                              Height="50"
-                                                                                              Grid.Column="0">
+                                                                  Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                                                                  materialDesign:TextFieldAssist.TextFieldCornerRadius="10"
+                                                                  Margin="10, 10, 20, 10"
+                                                                  Width="70"
+                                                                  Height="50"
+                                                                  Grid.Column="0">
                                                             <ComboBoxItem Content="1"
-                                                                                                      Width="Auto"/>
+                                                                          Width="Auto"/>
                                                         </ComboBox>
 
                                                         <Rectangle Width="1"
-                                                                                               Grid.Column="1"
-                                                                                               Fill="#D1D1D1" 
-                                                                                               Height="Auto"
-                                                                                               Margin="10"/>
+                                                                   Grid.Column="1"
+                                                                   Fill="#D1D1D1"
+                                                                   Height="Auto"
+                                                                   Margin="10"/>
 
 
                                                         <WrapPanel Grid.Column="2"
-                                                                                               HorizontalAlignment="Center"
-                                                                                               VerticalAlignment="Center">
+                                                                   HorizontalAlignment="Center"
+                                                                   VerticalAlignment="Center">
                                                             <StackPanel Margin="5, 10" Width="250">
                                                                 <TextBox materialDesign:HintAssist.Hint="Coluna" 
-                                                                                                Text="Ex: Idade" 
-                                                                                                Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                                                                                                Width="250"
-                                                                                                FontSize="18"/>
+                                                                         Text="Ex: Idade" 
+                                                                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                                                                         Width="250"
+                                                                         FontSize="18"/>
                                                             </StackPanel>
 
                                                             <StackPanel Margin="10,5" MinWidth="50">
                                                                 <TextBlock Text="Categórico?"
-                                                                                                       VerticalAlignment="Center" Margin="20,0,20,5"
-                                                                                                       Style="{StaticResource MaterialDesignBody2TextBlock}"/>
+                                                                           VerticalAlignment="Center" Margin="20,0,20,5"
+                                                                           Style="{StaticResource MaterialDesignBody2TextBlock}"/>
+                                                                
                                                                 <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}" 
-                                                                                                          VerticalAlignment="Center"
-                                                                                                          Margin="20,0"
-                                                                                                          ToolTip="Marque se a coluna for uma categoria"/>
+                                                                              VerticalAlignment="Center"
+                                                                              Margin="20,0"
+                                                                              ToolTip="Marque se a coluna for uma categoria"/>
                                                             </StackPanel>
 
                                                             <StackPanel Margin="5,10" MinWidth="185">
                                                                 <ComboBox materialDesign:HintAssist.Hint="Finalidade"
-                                                                                                    Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                                                                                                    materialDesign:TextFieldAssist.TextFieldCornerRadius="10"
-                                                                                                    BorderBrush="#D1D1D1"
-                                                                                                    Width="200"
-                                                                                                    Height="50">
+                                                                          Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                                                                          materialDesign:TextFieldAssist.TextFieldCornerRadius="10"
+                                                                          Width="200"
+                                                                          Height="50">
                                                                     <ComboBoxItem Content="Feature"/>
                                                                     <ComboBoxItem Content="Label (Target)"/>
                                                                     <ComboBoxItem Content="Ignore"/>
@@ -242,11 +244,10 @@
 
                                                             <StackPanel Margin="10" MinWidth="185">
                                                                 <ComboBox materialDesign:HintAssist.Hint="Tipo"
-                                                                                                    Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                                                                                                    materialDesign:TextFieldAssist.TextFieldCornerRadius="10"
-                                                                                                    BorderBrush="#D1D1D1"
-                                                                                                    Width="200"
-                                                                                                    Height="50">
+                                                                          Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                                                                          materialDesign:TextFieldAssist.TextFieldCornerRadius="10"
+                                                                          Width="200"
+                                                                          Height="50">
                                                                     <ComboBoxItem Content="Single"/>
                                                                     <ComboBoxItem Content="Boolean"/>
                                                                     <ComboBoxItem Content="DateTime"/>
@@ -255,13 +256,12 @@
                                                         </WrapPanel>
 
                                                         <Button  Style="{StaticResource MaterialDesignOutlinedButton}"
-                                                                 Grid.Column="3"
-                                                                 BorderBrush="White"
-                                                                 HorizontalAlignment="Right"
-                                                                 Height="40"
-                                                                 Width="55"
-                                                                 Margin="0,10"
-                                                                 Cursor="Hand">
+                                                                  Grid.Column="3"
+                                                                  HorizontalAlignment="Right"
+                                                                  Height="40"
+                                                                  Width="55"
+                                                                  Margin="0,10"
+                                                                  Cursor="Hand">
 
                                                             <materialDesign:PackIcon Kind="Trash" 
                                                                                      VerticalAlignment="Center"
@@ -274,7 +274,9 @@
                                         </StackPanel>
                                     </ScrollViewer>
                                 </DockPanel>
-                        </GroupBox>
+                            </GroupBox>
+                        </materialDesign:Card>
+
 
                         <!--Fim Cartão Configuração de Schema-->
 
