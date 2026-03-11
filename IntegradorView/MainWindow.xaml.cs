@@ -20,8 +20,6 @@ namespace IntegradorView
         }
 
         private void BtnInserirModelo_Click(object sender, RoutedEventArgs e) => TrocarPaginas(new InserirModelo());
-
-        private void BtnHome_Click(object sender, RoutedEventArgs e) => TrocarPaginas(new Home());
         private void BtnGraficoModelo_Click(object sender, RoutedEventArgs e) => TrocarPaginas(new GraficoModelo());
 
         private void TrocarPaginas(Page pagina)
