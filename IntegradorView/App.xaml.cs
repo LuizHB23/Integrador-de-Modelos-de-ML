@@ -1,4 +1,10 @@
-﻿using System.Windows;
+﻿using IntegradorViewModel.GraficoModelo;
+using IntegradorViewModel.InserirModelo;
+using IntegradorViewModel.JanelaModelo;
+using IntegradorViewModel.PredicaoModelo;
+using IntegradorViewModel.PrincipalModelo;
+using Microsoft.Extensions.DependencyInjection;
+using System.Windows;
 
 namespace IntegradorView
 {
@@ -7,6 +13,33 @@ namespace IntegradorView
     /// </summary>
     public partial class App : Application
     {
-    }
+        public IServiceProvider ServiceProvider { get; private set; }
 
+        public App()
+        {
+            var services = new ServiceCollection();
+
+            services.AddSingleton<MainWindowViewModel>();
+
+            services.AddTransient<HomeViewModel>();
+
+            services.AddTransient<ResultadoArquivoModeloViewModel>();
+            services.AddTransient<PreparacaoModeloViewModel>();
+            services.AddTransient<AjusteModeloViewModel>();
+
+            services.AddTransient<PipelineModeloViewModel>();
+            services.AddTransient<InserirModeloViewModel>();
+            services.AddTransient<ConfigurarSchemaViewModel>();
+            services.AddTransient<CarregarDadosViewModel>();
+
+            services.AddTransient<GraficoModeloViewModel>();
+
+            services.AddSingleton<NavigationService>();
+
+            ServiceProvider = services.BuildServiceProvider();
+        }
+        public static T GetService<T>() where T : notnull => ((App)Current).ServiceProvider.GetRequiredService<T>();
+
+    }
 }
+

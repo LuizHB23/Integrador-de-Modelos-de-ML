@@ -1,6 +1,8 @@
-﻿namespace IntegradorViewModel.PredicaoModelo
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+
+namespace IntegradorViewModel.PredicaoModelo
 {
-    public class PreparacaoModeloViewModel
+    public class PreparacaoModeloViewModel : ObservableObject
     {
     }
 }

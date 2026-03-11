@@ -1,6 +1,7 @@
 ﻿using IntegradorView.Pages.GraficoModelo;
 using IntegradorView.Pages.InserirModelo;
 using IntegradorView.Pages.PrincipalModelo;
+using IntegradorViewModel.JanelaModelo;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -14,7 +15,8 @@ namespace IntegradorView
         public MainWindow()
         {
             InitializeComponent();
-            MainFrame.Navigate(new Home());
+            DataContext = App.GetService<MainWindowViewModel>();
+            //MainFrame.Navigate(new Home());
         }
 
         private void BtnInserirModelo_Click(object sender, RoutedEventArgs e) => TrocarPaginas(new InserirModelo());
@@ -24,7 +26,7 @@ namespace IntegradorView
 
         private void TrocarPaginas(Page pagina)
         {
-            MainFrame.Navigate(pagina);
+            //MainFrame.Navigate(pagina);
         }
 
     }

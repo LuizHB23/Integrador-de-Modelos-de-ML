@@ -1,6 +1,8 @@
-﻿namespace IntegradorViewModel.InserirModelo
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+
+namespace IntegradorViewModel.InserirModelo
 {
-    public class ConfigurarSchemaViewModel
+    public class ConfigurarSchemaViewModel : ObservableObject
     {
     }
 }

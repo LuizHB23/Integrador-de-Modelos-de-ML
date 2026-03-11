@@ -1,6 +1,8 @@
-﻿namespace IntegradorViewModel.GraficoModelo
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+
+namespace IntegradorViewModel.GraficoModelo
 {
-    public class GraficoModeloViewModel
+    public class GraficoModeloViewModel : ObservableObject
     {
     }
 }

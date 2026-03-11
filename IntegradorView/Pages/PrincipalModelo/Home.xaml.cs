@@ -13,7 +13,7 @@ namespace IntegradorView.Pages.PrincipalModelo
         public Home()
         {
             InitializeComponent();
-            DataContext = new HomeViewModel();
+            DataContext = App.GetService<HomeViewModel>();
         }
 
         private void BtnModelo_Click(object sender, RoutedEventArgs e) => NavigationService.Navigate(new PreparacaoModelo());
