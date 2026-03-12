@@ -11,12 +11,12 @@ namespace IntegradorView.Pages.InserirModelo
     /// <summary>
     /// Interação lógica para ConfigurarSchema.xam
     /// </summary>
-    public partial class ConfigurarSchema : Page
+    public partial class ConfigurarSchema : UserControl
     {
         public ConfigurarSchema()
         {
             InitializeComponent();
-            DataContext = new ConfigurarSchemaViewModel();
+            DataContext = App.GetService<ConfigurarSchemaViewModel>();
         }
         public void BtnCarregarColunas_Click(string caminhoArquivo)
         {
@@ -29,8 +29,5 @@ namespace IntegradorView.Pages.InserirModelo
                 ListaColunasSchema.ItemsSource = listaColunaSchema;
             }
         }
-
-        private void BtnProximo_Click(object sender, RoutedEventArgs e) => NavigationService.Navigate(new CarregarDados());
-        private void BtnCancelar_Click(object sender, RoutedEventArgs e) => NavigationService.Navigate(new Home());
     }
 }

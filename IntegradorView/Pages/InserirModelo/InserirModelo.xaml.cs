@@ -6,7 +6,7 @@ using System.Windows.Controls;
 
 namespace IntegradorView.Pages.InserirModelo
 {
-    public partial class InserirModelo : Page
+    public partial class InserirModelo : UserControl
     {
         private IGerenciador _gereciador;
         // private string? caminhoModelo;
@@ -14,11 +14,8 @@ namespace IntegradorView.Pages.InserirModelo
         public InserirModelo()
         {
             InitializeComponent();
-            DataContext = new InserirModeloViewModel();
+            DataContext = App.GetService<InserirModeloViewModel>();
             _gereciador = new ModeloGerenciador();
         }
-
-        private void BtnCriarModelo_Click(object sender, RoutedEventArgs e) => NavigationService.Navigate(new ConfigurarSchema());
-        private void BtnCancelar_Click(object sender, RoutedEventArgs e) => NavigationService.Navigate(new Home());
     }
 }

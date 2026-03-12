@@ -6,12 +6,12 @@ namespace IntegradorView.Pages.PredicaoModelo
     /// <summary>
     /// Interação lógica para Graficos.xam
     /// </summary>
-    public partial class AjusteModelo : Page
+    public partial class AjusteModelo : UserControl
     {
         public AjusteModelo()
         {
             InitializeComponent();
-            DataContext = new AjusteModeloViewModel();
+            DataContext = App.GetService<AjusteModeloViewModel>();
         }
     }
 }

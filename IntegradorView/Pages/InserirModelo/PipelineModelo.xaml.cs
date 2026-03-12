@@ -8,12 +8,12 @@ namespace IntegradorView.Pages.InserirModelo
     /// <summary>
     /// Lógica interna para PipelineModelo.xaml
     /// </summary>
-    public partial class PipelineModelo : Page
+    public partial class PipelineModelo : UserControl
     {
         public PipelineModelo()
         {
             InitializeComponent();
-            DataContext = new PipelineModeloViewModel();
+            DataContext = App.GetService<PipelineModeloViewModel>();
         }
         public List<PipelineStep> Steps { get; set; } = new List<PipelineStep>
         {
@@ -42,10 +42,6 @@ namespace IntegradorView.Pages.InserirModelo
                 }
             },
         };
-
-        private void BtnFinalizar_Click(object sender, RoutedEventArgs e) => NavigationService.Navigate(new Home());
-
-        private void BtnCancelar_Click(object sender, RoutedEventArgs e) => NavigationService.Navigate(new Home());
     }
 
     public class PipelineStep

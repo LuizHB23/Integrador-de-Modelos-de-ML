@@ -28,6 +28,6 @@ namespace IntegradorViewModel.JanelaModelo
         public void NavigateToInserirModelo() => _navigation.NavigateTo<InserirModeloViewModel>();
 
         [RelayCommand]
-        public void NavigateToGraficosrModelo() => _navigation.NavigateTo<GraficoModeloViewModel>();
+        public void NavigateToGraficoModelo() => _navigation.NavigateTo<GraficoModeloViewModel>();
     }
 }

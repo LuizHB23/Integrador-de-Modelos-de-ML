@@ -8,14 +8,12 @@ namespace IntegradorView.Pages.PredicaoModelo
     /// <summary>
     /// Interação lógica para PredicaoModelo.xam
     /// </summary>
-    public partial class PreparacaoModelo : Page
+    public partial class PreparacaoModelo : UserControl
     {
         public PreparacaoModelo()
         {
             InitializeComponent();
-            DataContext = new PreparacaoModeloViewModel();
+            DataContext = App.GetService<PreparacaoModeloViewModel>();
         }
-
-        private void BtnProcessamento_Click(object sender, RoutedEventArgs e) => NavigationService.Navigate(new ResultadoArquivoModelo());
     }
 }

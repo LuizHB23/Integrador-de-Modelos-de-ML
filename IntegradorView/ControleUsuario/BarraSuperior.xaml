@@ -63,17 +63,17 @@
                         <Button x:Name="BotaoHome" 
                         Content="Home" 
                         Style="{StaticResource NavButtonStyle}" 
-                        Command="{Binding Navigation.NavigateToInserirModeloCommand}"/>
+                        Command="{Binding NavigateToHomeCommand}"/>
 
                         <Button x:Name="BotaoInserirModelo"
                         Content="Inserir Modelo" 
                         Style="{StaticResource NavButtonStyle}" 
-                        Command="{Binding Navigation.NavigateToInserirModeloCommand}"/>
+                        Command="{Binding NavigateToInserirModeloCommand}"/>
 
                         <Button x:Name="BotaoGraficos" 
                         Content="Gráficos de Modelos" 
                         Style="{StaticResource NavButtonStyle}" 
-                        Command="{Binding Navigation.NavigateToInserirModeloCommand}"/>
+                        Command="{Binding NavigateToGraficoModeloCommand}" Cursor="Hand"/>
                     </StackPanel>
                 </StackPanel>
 
