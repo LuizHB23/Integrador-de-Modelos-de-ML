@@ -22,12 +22,12 @@ namespace IntegradorViewModel.JanelaModelo
         }
 
         [RelayCommand]
-        public void NavigateToHome() => _navigation.NavigateTo<HomeViewModel>();
+        public void NavigateToHome() => Navigation.NavigateTo<HomeViewModel>();
 
         [RelayCommand]
-        public void NavigateToInserirModelo() => _navigation.NavigateTo<InserirModeloViewModel>();
+        public void NavigateToInserirModelo() => Navigation.NavigateTo<InserirModeloViewModel>();
 
         [RelayCommand]
-        public void NavigateToGraficoModelo() => _navigation.NavigateTo<GraficoModeloViewModel>();
+        public void NavigateToGraficoModelo() => Navigation.NavigateTo<GraficoModeloViewModel>();
     }
 }

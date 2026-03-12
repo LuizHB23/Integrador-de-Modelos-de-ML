@@ -15,6 +15,7 @@ namespace IntegradorView.Pages.InserirModelo
             InitializeComponent();
             DataContext = App.GetService<PipelineModeloViewModel>();
         }
+
         public List<PipelineStep> Steps { get; set; } = new List<PipelineStep>
         {
             new PipelineStep

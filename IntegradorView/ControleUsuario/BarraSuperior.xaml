@@ -57,7 +57,13 @@
                     <Button Width="35" Height="35" Style="{StaticResource MaterialDesignFloatingActionLightButton}">
                         <materialDesign:PackIcon Kind="Account" Foreground="White"/>
                     </Button>
-                    <Button Content="☰" FontSize="20" Background="Transparent" BorderThickness="0" Foreground="White" Cursor="Hand" Margin="0,0,10,0"/>
+                    <Button Content="☰" 
+                            FontSize="20"
+                            Background="Transparent" 
+                            BorderThickness="0"
+                            Foreground="White" 
+                            Cursor="Hand" 
+                            Margin="0,0,10,0"/>
 
                     <StackPanel Orientation="Horizontal" Margin="30,0,0,0">
                         <Button x:Name="BotaoHome" 

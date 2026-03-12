@@ -64,6 +64,7 @@
                         <Button x:Name="BotaoCancelar"
                                 Content="Cancelar"
                                 Style="{StaticResource MaterialDesignOutlinedButton}"
+                                Command="{Binding NavigateToHomeCommand}"
                                 Height="50"
                                 Width="150"
                                 Margin="20,0"
@@ -71,7 +72,8 @@
 
                         <Button x:Name="BotaoCriarModelo"
                                 Content="Criar Modelo"
-                                Style="{StaticResource MaterialDesignRaisedButton}" 
+                                Style="{StaticResource MaterialDesignRaisedButton}"
+                                Command="{Binding NavigateToConfigurarSchemaCommand}"
                                 Height="50"
                                 Width="150"
                                 Margin="20,0"

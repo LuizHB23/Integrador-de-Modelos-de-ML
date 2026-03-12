@@ -45,7 +45,7 @@
         </StackPanel>
 
         <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
-            <Grid>
+            <Grid Cursor="">
                 <StackPanel>
                     <materialDesign:Card Width="500" HorizontalAlignment="Left" Padding="30" UniformCornerRadius="15">
                         <StackPanel>
@@ -74,7 +74,8 @@
                                     Content="Iniciar Processamento" 
                                     Margin="0,30,0,0" 
                                     Height="45" 
-                                    Style="{StaticResource MaterialDesignRaisedButton}" 
+                                    Style="{StaticResource MaterialDesignRaisedButton}"
+                                    Command="{Binding NavigateToResultadoPredicaoCommand}"
                                     Cursor="Hand"/>
                         </StackPanel>
                     </materialDesign:Card>

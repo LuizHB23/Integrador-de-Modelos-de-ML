@@ -1,4 +1,5 @@
-﻿using IntegradorViewModel.JanelaModelo;
+﻿using IntegradorView.Pages.PredicaoModelo;
+using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.GraficoModelo;
 using IntegradorViewModel.Pages.InserirModelo;
 using IntegradorViewModel.Pages.PredicaoModelo;
@@ -23,7 +24,7 @@ namespace IntegradorView
 
             services.AddTransient<HomeViewModel>();
 
-            services.AddTransient<ResultadoArquivoModeloViewModel>();
+            services.AddTransient<ResultadoPredicaoViewModel>();
             services.AddTransient<PreparacaoModeloViewModel>();
             services.AddTransient<AjusteModeloViewModel>();
 

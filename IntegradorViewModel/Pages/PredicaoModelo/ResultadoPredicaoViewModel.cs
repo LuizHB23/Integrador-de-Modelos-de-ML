@@ -2,7 +2,7 @@
 
 namespace IntegradorViewModel.Pages.PredicaoModelo
 {
-    public class ResultadoArquivoModeloViewModel : ObservableObject
+    public class ResultadoPredicaoViewModel : ObservableObject
     {
     }
 }

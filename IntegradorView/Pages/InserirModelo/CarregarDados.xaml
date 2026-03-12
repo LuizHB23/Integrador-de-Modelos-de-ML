@@ -118,6 +118,7 @@
                                     FontWeight="Bold"
                                     materialDesign:ButtonAssist.CornerRadius="8"
                                     Style="{StaticResource MaterialDesignOutlinedButton}"
+                                    Command="{Binding NavigateToHomeCommand}"
                                     Cursor="Hand"/>
                             
                             <Button x:Name="BotaoContinuar" 
@@ -128,7 +129,8 @@
                                     FontSize="18"
                                     FontWeight="Bold"
                                     materialDesign:ButtonAssist.CornerRadius="8"
-                                    Style="{StaticResource MaterialDesignRaisedButton}" 
+                                    Style="{StaticResource MaterialDesignRaisedButton}"
+                                    Command="{Binding NavigateToPipelineModeloCommand}"
                                     Cursor="Hand"/>
                             
                         </StackPanel>

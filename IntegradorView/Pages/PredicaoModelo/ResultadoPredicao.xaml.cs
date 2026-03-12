@@ -6,12 +6,12 @@ namespace IntegradorView.Pages.PredicaoModelo
     /// <summary>
     /// Interação lógica para ResultadoArquivoModelo.xam
     /// </summary>
-    public partial class ResultadoArquivoModelo : UserControl
+    public partial class ResultadoPredicao : UserControl
     {
-        public ResultadoArquivoModelo()
+        public ResultadoPredicao()
         {
             InitializeComponent();
-            DataContext = App.GetService<ResultadoArquivoModeloViewModel>();
+            DataContext = App.GetService<ResultadoPredicaoViewModel>();
         }
     }
 }

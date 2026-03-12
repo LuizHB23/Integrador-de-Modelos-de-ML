@@ -1,29 +1,69 @@
 ﻿<Window x:Class="IntegradorView.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        
         xmlns:vmshome="clr-namespace:IntegradorViewModel.Pages.PrincipalModelo;assembly=IntegradorViewModel"
         xmlns:vmsinserir="clr-namespace:IntegradorViewModel.Pages.InserirModelo;assembly=IntegradorViewModel"
+        xmlns:vmspredicao="clr-namespace:IntegradorViewModel.Pages.PredicaoModelo;assembly=IntegradorViewModel"
         xmlns:vmsgraficos="clr-namespace:IntegradorViewModel.Pages.GraficoModelo;assembly=IntegradorViewModel"
+        
         xmlns:home="clr-namespace:IntegradorView.Pages.PrincipalModelo"
         xmlns:inserir="clr-namespace:IntegradorView.Pages.InserirModelo"
+        xmlns:predicao="clr-namespace:IntegradorView.Pages.PredicaoModelo"
         xmlns:graficos="clr-namespace:IntegradorView.Pages.GraficoModelo"
+        
         xmlns:usercontrol="clr-namespace:IntegradorView.ControleUsuario"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         Title="Integrador ML" Height="600" Width="1000"
         MinHeight="600" MinWidth="1000">
 
     <Window.Resources>
+        
+        <!--Inicio Home-->
         <DataTemplate DataType="{x:Type vmshome:HomeViewModel}">
             <home:Home/>
         </DataTemplate>
+
+        <!--Fim Home-->
+        
+        <!--Inicio Fluxo de Páginas do InserirModelo-->
 
         <DataTemplate DataType="{x:Type vmsinserir:InserirModeloViewModel}">
             <inserir:InserirModelo/>
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type vmsinserir:CarregarDadosViewModel}">
+            <inserir:CarregarDados/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vmsinserir:ConfigurarSchemaViewModel}">
+            <inserir:ConfigurarSchema/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vmsinserir:PipelineModeloViewModel}">
+            <inserir:PipelineModelo/>
+        </DataTemplate>
+
+        <!--Fim Fluxo de Páginas do InserirModelo-->
+
+        <!--Inicio Fluxo de Páginas do PredicaoModelo-->
+        <DataTemplate DataType="{x:Type vmspredicao:ResultadoPredicaoViewModel}">
+            <predicao:ResultadoPredicao/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vmspredicao:PreparacaoModeloViewModel}">
+            <predicao:PreparacaoModelo/>
+        </DataTemplate>
+
+        <!--Fim Fluxo de Páginas do PredicaoModelo-->
+
+        <!--Inicio Fluxo de Páginas do GraficoModelo-->
+
         <DataTemplate DataType="{x:Type vmsgraficos:GraficoModeloViewModel}">
             <graficos:GraficoModelo/>
         </DataTemplate>
+
+        <!--Fim Fluxo de Páginas do GraficoModelo-->
 
     </Window.Resources>
 
