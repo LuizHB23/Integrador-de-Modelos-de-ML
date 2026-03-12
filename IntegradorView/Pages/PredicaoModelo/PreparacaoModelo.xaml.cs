@@ -1,4 +1,4 @@
-﻿using IntegradorViewModel.PredicaoModelo;
+﻿using IntegradorViewModel.Pages.PredicaoModelo;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;

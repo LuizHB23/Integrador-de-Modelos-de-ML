@@ -4,10 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:IntegradorView.ControleUsuario"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800"
-             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
-
+             d:DesignHeight="450" d:DesignWidth="800">
+    
     <UserControl.Resources>
         <Style x:Key="NavButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
@@ -47,14 +47,11 @@
             </Setter>
         </Style>
     </UserControl.Resources>
-    
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="60"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-
-        <Border Grid.Row="0" Background="#005792" Padding="15,0">
+        <Border Grid.Row="0" 
+        Background="#005792" 
+        Padding="15,0"
+        Height="60">
             <Grid>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                     <Button Width="35" Height="35" Style="{StaticResource MaterialDesignFloatingActionLightButton}">
@@ -63,9 +60,20 @@
                     <Button Content="☰" FontSize="20" Background="Transparent" BorderThickness="0" Foreground="White" Cursor="Hand" Margin="0,0,10,0"/>
 
                     <StackPanel Orientation="Horizontal" Margin="30,0,0,0">
-                        <Button x:Name="BotaoHome" Content="Home" Style="{StaticResource NavButtonStyle}"/>
-                        <Button x:Name="BotaoInserirModelo" Content="Inserir Modelo" Style="{StaticResource NavButtonStyle}"/>
-                        <Button x:Name="BotaoGraficos" Content="Gráficos de Modelos" Style="{StaticResource NavButtonStyle}"/>
+                        <Button x:Name="BotaoHome" 
+                        Content="Home" 
+                        Style="{StaticResource NavButtonStyle}" 
+                        Command="{Binding Navigation.NavigateToInserirModeloCommand}"/>
+
+                        <Button x:Name="BotaoInserirModelo"
+                        Content="Inserir Modelo" 
+                        Style="{StaticResource NavButtonStyle}" 
+                        Command="{Binding Navigation.NavigateToInserirModeloCommand}"/>
+
+                        <Button x:Name="BotaoGraficos" 
+                        Content="Gráficos de Modelos" 
+                        Style="{StaticResource NavButtonStyle}" 
+                        Command="{Binding Navigation.NavigateToInserirModeloCommand}"/>
                     </StackPanel>
                 </StackPanel>
 
@@ -73,8 +81,5 @@
                        VerticalAlignment="Center" HorizontalAlignment="Right" Opacity="0.5"/>
             </Grid>
         </Border>
-
-        <!--<Frame x:Name="MainFrame" Grid.Row="1" Source="Pages/Home.xaml" NavigationUIVisibility="Hidden" Margin="20"/>-->
-        <ContentControl Content="{Binding Navigation.CurrentView}"/>
     </Grid>
 </UserControl>

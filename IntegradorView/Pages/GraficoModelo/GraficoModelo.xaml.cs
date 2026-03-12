@@ -1,4 +1,4 @@
-﻿using IntegradorViewModel.GraficoModelo;
+﻿using IntegradorViewModel.Pages.GraficoModelo;
 using System.Windows.Controls;
 
 namespace IntegradorView.Pages.GraficoModelo

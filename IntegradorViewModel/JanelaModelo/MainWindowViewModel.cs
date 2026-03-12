@@ -1,5 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using IntegradorViewModel.PrincipalModelo;
+using CommunityToolkit.Mvvm.Input;
+using IntegradorViewModel.Pages.GraficoModelo;
+using IntegradorViewModel.Pages.InserirModelo;
+using IntegradorViewModel.Pages.PrincipalModelo;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -17,5 +20,14 @@ namespace IntegradorViewModel.JanelaModelo
 
             _navigation.NavigateTo<HomeViewModel>();
         }
+
+        [RelayCommand]
+        public void NavigateToHome() => _navigation.NavigateTo<HomeViewModel>();
+
+        [RelayCommand]
+        public void NavigateToInserirModelo() => _navigation.NavigateTo<InserirModeloViewModel>();
+
+        [RelayCommand]
+        public void NavigateToGraficosrModelo() => _navigation.NavigateTo<GraficoModeloViewModel>();
     }
 }

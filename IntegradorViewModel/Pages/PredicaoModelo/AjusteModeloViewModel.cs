@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace IntegradorViewModel.PredicaoModelo
+namespace IntegradorViewModel.Pages.PredicaoModelo
 {
     public class AjusteModeloViewModel : ObservableObject
     {

@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using IntegradorViewModel.JanelaModelo;
 
-namespace IntegradorViewModel.PrincipalModelo
+namespace IntegradorViewModel.Pages.PrincipalModelo
 {
     public partial class HomeViewModel : ObservableObject
     {

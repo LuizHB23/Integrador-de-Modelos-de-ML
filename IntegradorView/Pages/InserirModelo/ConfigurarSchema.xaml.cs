@@ -1,6 +1,6 @@
 ﻿using IntegradorDominio.WPF;
 using IntegradorView.Pages.PrincipalModelo;
-using IntegradorViewModel.InserirModelo;
+using IntegradorViewModel.Pages.InserirModelo;
 using System.IO;
 using System.Text.Json;
 using System.Windows;

@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace IntegradorViewModel.InserirModelo
+namespace IntegradorViewModel.Pages.InserirModelo
 {
     public class InserirModeloViewModel : ObservableObject
     {

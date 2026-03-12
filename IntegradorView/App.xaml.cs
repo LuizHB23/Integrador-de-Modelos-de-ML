@@ -1,8 +1,8 @@
-﻿using IntegradorViewModel.GraficoModelo;
-using IntegradorViewModel.InserirModelo;
-using IntegradorViewModel.JanelaModelo;
-using IntegradorViewModel.PredicaoModelo;
-using IntegradorViewModel.PrincipalModelo;
+﻿using IntegradorViewModel.JanelaModelo;
+using IntegradorViewModel.Pages.GraficoModelo;
+using IntegradorViewModel.Pages.InserirModelo;
+using IntegradorViewModel.Pages.PredicaoModelo;
+using IntegradorViewModel.Pages.PrincipalModelo;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 

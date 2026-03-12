@@ -1,5 +1,4 @@
-﻿using IntegradorView.Pages.PredicaoModelo;
-using IntegradorViewModel.PrincipalModelo;
+﻿using IntegradorViewModel.Pages.PrincipalModelo;
 using System.Windows;
 using System.Windows.Controls;
 

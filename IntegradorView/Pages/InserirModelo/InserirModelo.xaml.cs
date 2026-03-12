@@ -1,6 +1,6 @@
 ﻿using InetradorAplicacao.Gerenciador;
 using IntegradorView.Pages.PrincipalModelo;
-using IntegradorViewModel.InserirModelo;
+using IntegradorViewModel.Pages.InserirModelo;
 using System.Windows;
 using System.Windows.Controls;
 
