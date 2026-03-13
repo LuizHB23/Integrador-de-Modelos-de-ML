@@ -20,20 +20,25 @@
                              FontSize="20"
                              VerticalContentAlignment="Center"
                              Margin="0,0,0,20"
+                             Text="{Binding NomeModelo}"
                              Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
 
                     <TextBlock Text="Tipo de Modelo"
                                FontSize="20" 
                                Margin="0,0,0,8"
                                Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
-                    
+
                     <ComboBox Height="Auto"
                               FontSize="20"
                               VerticalContentAlignment="Center" 
                               Margin="0,0,0,20"
-                              Style="{StaticResource MaterialDesignFloatingHintComboBox}"/>
+                              Text="{Binding TipoModelo}"
+                              Style="{StaticResource MaterialDesignFloatingHintComboBox}">
+                        <ComboBoxItem Content="Regressão"/>
+                        <ComboBoxItem Content="Classificação"/>
+                    </ComboBox>
 
-                    <TextBlock Text="Caminho do Modelo" 
+                    <TextBlock Text="Nome do Modelo" 
                                FontSize="20" 
                                Margin="0,0,0,8"
                                Style="{StaticResource MaterialDesignHeadline6TextBlock}"/>
@@ -48,11 +53,13 @@
                                  FontSize="20"
                                  VerticalContentAlignment="Center" 
                                  IsReadOnly="True"
-                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
+                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                                 Text="{Binding NomeCaminho}"/>
                         
                         <Button Grid.Column="1" 
                                 Content="Buscar"
-                                Style="{StaticResource MaterialDesignOutlinedButton}" 
+                                Style="{StaticResource MaterialDesignOutlinedButton}"
+                                Command="{Binding BuscaModeloCommand}"
                                 Width="Auto" 
                                 Margin="10,0,0,0"
                                 Cursor="Hand"/>

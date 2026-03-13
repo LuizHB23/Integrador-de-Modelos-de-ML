@@ -8,14 +8,11 @@ namespace IntegradorView.Pages.InserirModelo
 {
     public partial class InserirModelo : UserControl
     {
-        private IGerenciador _gereciador;
-        // private string? caminhoModelo;
 
         public InserirModelo()
         {
             InitializeComponent();
             DataContext = App.GetService<InserirModeloViewModel>();
-            _gereciador = new ModeloGerenciador();
         }
     }
 }

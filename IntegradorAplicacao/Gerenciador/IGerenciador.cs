@@ -1,8 +1,8 @@
 ﻿namespace InetradorAplicacao.Gerenciador
 {
-    public interface IGerenciador
+    public interface IGerenciador<T> where T : class
     {
-        public string Salvar(string caminho);
-        public void Carregar(string caminho);
+        public string Salvar(T objeto);
+        public void Carregar(T objeto);
     }
 }

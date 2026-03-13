@@ -1,9 +1,16 @@
-﻿using IntegradorView.Pages.PredicaoModelo;
+﻿using IntegradorAplicacao;
+using IntegradorAplicacao.Interfaces;
+
+using IntegradorView.CaminhoProvider;
+using IntegradorView.OpenFileDialog;
+
+using IntegradorViewModel.Interfaces;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.GraficoModelo;
 using IntegradorViewModel.Pages.InserirModelo;
 using IntegradorViewModel.Pages.PredicaoModelo;
 using IntegradorViewModel.Pages.PrincipalModelo;
+
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 
@@ -20,6 +27,9 @@ namespace IntegradorView
         {
             var services = new ServiceCollection();
 
+            services.AddIntegradorAplicacaoServices();
+
+            //Inicio Services ViewModels
             services.AddSingleton<MainWindowViewModel>();
 
             services.AddTransient<HomeViewModel>();
@@ -34,6 +44,10 @@ namespace IntegradorView
             services.AddTransient<CarregarDadosViewModel>();
 
             services.AddTransient<GraficoModeloViewModel>();
+            //Fim Services ViewModels
+
+            services.AddSingleton<IDialogService, DialogService>();
+            services.AddSingleton<IPathProvider, PathProvider>();
 
             services.AddSingleton<NavigationService>();
 

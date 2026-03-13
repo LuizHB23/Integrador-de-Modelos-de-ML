@@ -1,5 +1,5 @@
 ﻿namespace InetradorAplicacao.DTO
 {
-    public record ModeloDTO(string nome, string tipo, string caminhoPasta);
+    public record ModeloDTO(string Nome, string Tipo, string CaminhoPasta);
 }
 
