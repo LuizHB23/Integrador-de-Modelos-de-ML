@@ -2,18 +2,18 @@
 using IntegradorAplicacao.Interfaces;
 using System.Text.Json;
 
-namespace IntegradorAplicacao.ConversorJSON
+namespace IntegradorAplicacao.ConversorJson
 {
-    public class ModeloJSON : IConverteJSON<ModeloDTO>
+    public class ModeloJson : IConverteJson<ModeloDTO>
     {
         private readonly IPathProvider _provider;
 
-        public ModeloJSON(IPathProvider provider)
+        public ModeloJson(IPathProvider provider)
         {
             _provider = provider;
         }
 
-        public void ConverteJSON(ModeloDTO modelo)
+        public void ConverteJson(ModeloDTO modelo)
         {
             string caminhoJson = Path.Combine(_provider.GetCaminhoModelo(), modelo.Nome, "modelo.json");
 

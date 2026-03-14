@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Text;
 using InetradorAplicacao.Gerenciador;
-using IntegradorAplicacao.ConversorJSON;
+using IntegradorAplicacao.ConversorJson;
 using InetradorAplicacao.DTO;
 
 namespace IntegradorAplicacao
@@ -14,7 +14,7 @@ namespace IntegradorAplicacao
         {
             // Registre aqui tudo o que é "bruto" do sistema
             services.AddTransient<IGerenciador<ModeloDTO>, ModeloGerenciador>();
-            services.AddTransient<IConverteJSON<ModeloDTO>, ModeloJSON>();
+            services.AddTransient<IConverteJson<ModeloDTO>, ModeloJson>();
 
             return services;
         }

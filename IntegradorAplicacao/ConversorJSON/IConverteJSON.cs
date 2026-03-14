@@ -1,7 +1,7 @@
-﻿namespace IntegradorAplicacao.ConversorJSON
+﻿namespace IntegradorAplicacao.ConversorJson
 {
-    public interface IConverteJSON<T> where T : class
+    public interface IConverteJson<T> where T : class
     {
-        void ConverteJSON(T objeto);
+        void ConverteJson(T objeto);
     }
 }

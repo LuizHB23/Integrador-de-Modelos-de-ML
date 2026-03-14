@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using InetradorAplicacao.DTO;
 using InetradorAplicacao.Gerenciador;
-using IntegradorAplicacao.ConversorJSON;
+using IntegradorAplicacao.ConversorJson;
 using IntegradorViewModel.Interfaces;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.PrincipalModelo;
@@ -28,9 +28,9 @@ namespace IntegradorViewModel.Pages.InserirModelo
 
         private readonly IGerenciador<ModeloDTO> _gerenciador;
         private readonly IDialogService _dialogService;
-        private readonly IConverteJSON<ModeloDTO> _conversor;
+        private readonly IConverteJson<ModeloDTO> _conversor;
 
-        public InserirModeloViewModel(NavigationService navigation, IGerenciador<ModeloDTO> gerenciador, IDialogService dialogService, IConverteJSON<ModeloDTO> conversor)
+        public InserirModeloViewModel(NavigationService navigation, IGerenciador<ModeloDTO> gerenciador, IDialogService dialogService, IConverteJson<ModeloDTO> conversor)
         {
             _navigation = navigation;
             _gerenciador = gerenciador;
@@ -70,13 +70,13 @@ namespace IntegradorViewModel.Pages.InserirModelo
             Navigation.NavigateTo<ConfigurarSchemaViewModel>();
         }
 
-        private void ConfiguraModelo()
+        public void ConfiguraModelo()
         {
             CaminhoModelo = _gerenciador.Salvar(new ModeloDTO(NomeModelo, TipoModelo, CaminhoModelo));
 
             ModeloDTO modelo = new ModeloDTO(NomeModelo, TipoModelo, CaminhoModelo);
 
-            _conversor.ConverteJSON(modelo);
+            _conversor.ConverteJson(modelo);
         }
     }
 }
