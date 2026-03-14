@@ -1,4 +1,4 @@
-﻿using InetradorAplicacao.DTO;
+﻿using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.Interfaces;
 using System.Text.Json;
 

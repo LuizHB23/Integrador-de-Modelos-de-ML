@@ -1,5 +1,5 @@
-﻿using InetradorAplicacao.DTO;
-using InetradorAplicacao.Gerenciador;
+﻿using IntegradorAplicacao.DTO;
+using IntegradorAplicacao.Gerenciador;
 using IntegradorAplicacao.ConversorJson;
 using IntegradorViewModel.Interfaces;
 using IntegradorViewModel.JanelaModelo;
@@ -11,20 +11,22 @@ using System.Text;
 
 namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes.InserirModeloTestes
 {
-    public class InserirModeloViewModeloTests
+    public class InserirModeloViewModelTests
     {
         private readonly Mock<IGerenciador<ModeloDTO>> _mockGerenciador;
         private readonly Mock<IConverteJson<ModeloDTO>> _mockConversor;
         private readonly Mock<IDialogService> _mockDialog;
-        private readonly NavigationService _navigation;
+        private readonly Mock<INavigationService> _mockNavigation;
+        private readonly InserirModeloViewModel _viewModel;
 
-        public InserirModeloViewModeloTests()
+        public InserirModeloViewModelTests()
         {
-            var mockProvider = new Mock<IServiceProvider>();
-            _navigation = new NavigationService(mockProvider.Object);
+            _mockNavigation = new Mock<INavigationService>();
             _mockConversor = new Mock<IConverteJson<ModeloDTO>>();
             _mockGerenciador = new Mock<IGerenciador<ModeloDTO>>();
             _mockDialog = new Mock<IDialogService>();
+
+            _viewModel = new InserirModeloViewModel(_mockNavigation.Object, _mockGerenciador.Object, _mockDialog.Object, _mockConversor.Object);
         }
 
         [Fact]
@@ -34,14 +36,12 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes.
             string caminho = "C:/FakePath/modelo.onnx";
             _mockDialog.Setup(f => f.GetCaminhoArquivo()).Returns(caminho);
 
-            var viewModel = new InserirModeloViewModel(_navigation, _mockGerenciador.Object, _mockDialog.Object, _mockConversor.Object);
-
             //Act
-            viewModel.BuscaModeloCommand.Execute(null);
+            _viewModel.BuscaModeloCommand.Execute(null);
 
             //Assert
-            Assert.Equal(".onnx", Path.GetExtension(viewModel.NomeCaminho));
-            Assert.Equal(caminho, viewModel.CaminhoModelo);
+            Assert.Equal(".onnx", Path.GetExtension(_viewModel.NomeCaminho));
+            Assert.Equal(caminho, _viewModel.CaminhoModelo);
         }
 
         [Theory]
@@ -54,12 +54,10 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes.
             //Arrange
             _mockDialog.Setup(f => f.GetCaminhoArquivo()).Returns(caminho);
 
-            var viewModel = new InserirModeloViewModel(_navigation, _mockGerenciador.Object, _mockDialog.Object, _mockConversor.Object);
-
             //Act
-            viewModel.BuscaModeloCommand.Execute(null);
-            string fakeCaminho = viewModel.CaminhoModelo;
-            string fakeOnnx = viewModel.NomeModelo;
+            _viewModel.BuscaModeloCommand.Execute(null);
+            string fakeCaminho = _viewModel.CaminhoModelo;
+            string fakeOnnx = _viewModel.NomeModelo;
 
 
             //Assert
@@ -74,14 +72,15 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes.
             _mockDialog.Setup(f => f.GetCaminhoArquivo()).Returns("C://FakePath//modelo.onnx");
             _mockGerenciador.Setup(f => f.Salvar(It.IsAny<ModeloDTO>())).Returns("C://FakePathMudado//modelo.onnx");
 
-            var viewModel = new InserirModeloViewModel(_navigation, _mockGerenciador.Object, _mockDialog.Object, _mockConversor.Object);
-            viewModel.BuscaModeloCommand.Execute(null);
+            _viewModel.BuscaModeloCommand.Execute(null);
+            _viewModel.NomeModelo = "Nome Qualquer";
+            _viewModel.TipoModelo = "Tipo Qualquer";
 
             //Act
-            viewModel.NavigateToConfigurarSchemaCommand.Execute(null);
+            _viewModel.NavigateToConfigurarSchemaCommand.Execute(null);
 
             //Assert
-            Assert.Equal("C://FakePathMudado//modelo.onnx", viewModel.CaminhoModelo);
+            Assert.Equal("C://FakePathMudado//modelo.onnx", _viewModel.CaminhoModelo);
         }
 
 
@@ -91,10 +90,12 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes.
             //Arrange
             _mockGerenciador.Setup(f => f.Salvar(It.IsAny<ModeloDTO>())).Returns("C://FakePath//modelo.onnx");
 
-            var viewModel = new InserirModeloViewModel(_navigation, _mockGerenciador.Object, _mockDialog.Object, _mockConversor.Object);
+            _viewModel.NomeModelo = "Nome Qualquer";
+            _viewModel.TipoModelo = "Tipo Qualquer";
+            _viewModel.CaminhoModelo = "Caminho Qualquer";
 
             //Act
-            viewModel.NavigateToConfigurarSchemaCommand.Execute(null);
+            _viewModel.NavigateToConfigurarSchemaCommand.Execute(null);
 
             //Assert
             _mockGerenciador.Verify(f => f.Salvar(It.IsAny<ModeloDTO>()), Times.Once);
@@ -106,13 +107,30 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes.
             //Arrange
             _mockGerenciador.Setup(f => f.Salvar(It.IsAny<ModeloDTO>())).Returns("C://FakePath//modelo.onnx");
 
-            var viewModel = new InserirModeloViewModel(_navigation, _mockGerenciador.Object, _mockDialog.Object, _mockConversor.Object);
+            _viewModel.NomeModelo = "Nome Qualquer";
+            _viewModel.TipoModelo = "Tipo Qualquer";
+            _viewModel.CaminhoModelo = "Caminho Qualquer";
 
             //Act
-            viewModel.NavigateToConfigurarSchemaCommand.Execute(null);
+            _viewModel.NavigateToConfigurarSchemaCommand.Execute(null);
 
             //Assert
             _mockConversor.Verify(f => f.ConverteJson(It.IsAny<ModeloDTO>()), Times.Once);
+        }
+
+        [Fact]
+        public void RetornaOkParaNavigateToVisitadoEProgramadoParaConfigurarSchemaViewModelEmNavigateToConfigurarSchemaCommand()
+        {
+            //Arrange
+            _viewModel.NomeModelo = "Nome Qualquer";
+            _viewModel.TipoModelo = "Tipo Qualquer";
+            _viewModel.CaminhoModelo = "Caminho Qualquer";
+
+            //Act
+            _viewModel.NavigateToConfigurarSchemaCommand.Execute(null);
+
+            //Assert
+            _mockNavigation.Verify(f => f.NavigateTo<ConfigurarSchemaViewModel>(), Times.Once);
         }
 
         [Theory]
@@ -125,17 +143,15 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes.
         [InlineData("", "", "Caminho Qualquer")]
         [InlineData("", "", "")]
         [InlineData("   ", "", "")]
-        public void RertonaNaoOkParaPartesNaoPreenchidasEmNavigateToConfigurarSchemaCommand(string nomeModelo, string tipoModelo, string caminhoModelo)
+        public void RetornaNaoOkParaPartesNaoPreenchidasEmNavigateToConfigurarSchemaCommand(string nomeModelo, string tipoModelo, string caminhoModelo)
         {
             //Arrange
-            var viewModel = new InserirModeloViewModel(_navigation, _mockGerenciador.Object, _mockDialog.Object, _mockConversor.Object);
-
-            viewModel.NomeModelo = nomeModelo;
-            viewModel.TipoModelo = tipoModelo;
-            viewModel.CaminhoModelo = caminhoModelo;
+            _viewModel.NomeModelo = nomeModelo;
+            _viewModel.TipoModelo = tipoModelo;
+            _viewModel.CaminhoModelo = caminhoModelo;
 
             //Act
-            viewModel.NavigateToConfigurarSchemaCommand.Execute(null);
+            _viewModel.NavigateToConfigurarSchemaCommand.Execute(null);
 
             //Assert
             _mockConversor.Verify(f => f.ConverteJson(It.IsAny<ModeloDTO>()), Times.Never);

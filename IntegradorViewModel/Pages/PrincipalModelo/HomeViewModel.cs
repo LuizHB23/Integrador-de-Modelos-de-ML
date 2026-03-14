@@ -8,9 +8,9 @@ namespace IntegradorViewModel.Pages.PrincipalModelo
     public partial class HomeViewModel : ObservableObject
     {
         [ObservableProperty]
-        private NavigationService _navigation;
+        private INavigationService _navigation;
 
-        public HomeViewModel(NavigationService navigation)
+        public HomeViewModel(INavigationService navigation)
         {
             _navigation = navigation;
         }

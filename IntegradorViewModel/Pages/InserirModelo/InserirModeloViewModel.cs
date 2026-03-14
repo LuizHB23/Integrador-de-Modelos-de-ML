@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using InetradorAplicacao.DTO;
-using InetradorAplicacao.Gerenciador;
+using IntegradorAplicacao.DTO;
+using IntegradorAplicacao.Gerenciador;
 using IntegradorAplicacao.ConversorJson;
 using IntegradorViewModel.Interfaces;
 using IntegradorViewModel.JanelaModelo;
@@ -12,7 +12,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
     public partial class InserirModeloViewModel : ObservableObject
     {
         [ObservableProperty]
-        private NavigationService _navigation;
+        private INavigationService _navigation;
 
         [ObservableProperty]
         private string _nomeModelo;
@@ -30,7 +30,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
         private readonly IDialogService _dialogService;
         private readonly IConverteJson<ModeloDTO> _conversor;
 
-        public InserirModeloViewModel(NavigationService navigation, IGerenciador<ModeloDTO> gerenciador, IDialogService dialogService, IConverteJson<ModeloDTO> conversor)
+        public InserirModeloViewModel(INavigationService navigation, IGerenciador<ModeloDTO> gerenciador, IDialogService dialogService, IConverteJson<ModeloDTO> conversor)
         {
             _navigation = navigation;
             _gerenciador = gerenciador;
@@ -66,8 +66,11 @@ namespace IntegradorViewModel.Pages.InserirModelo
         [RelayCommand]
         public void NavigateToConfigurarSchema()
         {
-            ConfiguraModelo();
-            Navigation.NavigateTo<ConfigurarSchemaViewModel>();
+            if (!string.IsNullOrWhiteSpace(NomeModelo) && !string.IsNullOrWhiteSpace(TipoModelo) && !string.IsNullOrWhiteSpace(CaminhoModelo))
+            {
+                ConfiguraModelo();
+                Navigation.NavigateTo<ConfigurarSchemaViewModel>();
+            }
         }
 
         public void ConfiguraModelo()

@@ -2,9 +2,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Text;
-using InetradorAplicacao.Gerenciador;
+using IntegradorAplicacao.Gerenciador;
 using IntegradorAplicacao.ConversorJson;
-using InetradorAplicacao.DTO;
+using IntegradorAplicacao.DTO;
 
 namespace IntegradorAplicacao
 {

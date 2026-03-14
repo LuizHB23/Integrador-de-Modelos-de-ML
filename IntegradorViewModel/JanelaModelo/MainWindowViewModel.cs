@@ -12,9 +12,9 @@ namespace IntegradorViewModel.JanelaModelo
     public partial class MainWindowViewModel : ObservableObject
     {
         [ObservableProperty]
-        private NavigationService _navigation;
+        private INavigationService _navigation;
 
-        public MainWindowViewModel(NavigationService navigationService)
+        public MainWindowViewModel(INavigationService navigationService)
         {
             _navigation = navigationService;
 

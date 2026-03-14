@@ -1,4 +1,4 @@
-﻿using InetradorAplicacao.Gerenciador;
+﻿using IntegradorAplicacao.Gerenciador;
 using IntegradorView.Pages.PrincipalModelo;
 using IntegradorViewModel.Pages.InserirModelo;
 using System.Windows;

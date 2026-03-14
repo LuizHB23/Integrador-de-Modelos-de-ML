@@ -1,7 +1,7 @@
-﻿using InetradorAplicacao.DTO;
+﻿using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.Interfaces;
 
-namespace InetradorAplicacao.Gerenciador
+namespace IntegradorAplicacao.Gerenciador
 {
     public class ModeloGerenciador : IGerenciador<ModeloDTO>
     {

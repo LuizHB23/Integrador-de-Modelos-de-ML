@@ -11,7 +11,7 @@ using System.Text;
 
 namespace IntegradorViewModel.JanelaModelo
 {
-    public partial class NavigationService : ObservableObject
+    public partial class NavigationService : ObservableObject, INavigationService
     {
         private object? _currentView;
         private readonly IServiceProvider _serviceProvider;

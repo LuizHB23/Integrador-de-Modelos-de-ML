@@ -47,7 +47,7 @@ namespace IntegradorView
             services.AddSingleton<IDialogService, DialogService>();
             services.AddSingleton<IPathProvider, PathProvider>();
 
-            services.AddSingleton<NavigationService>();
+            services.AddSingleton<INavigationService, NavigationService>();
 
             ServiceProvider = services.BuildServiceProvider();
         }

@@ -1,4 +1,4 @@
-﻿namespace InetradorAplicacao.Gerenciador
+﻿namespace IntegradorAplicacao.Gerenciador
 {
     public interface IGerenciador<T> where T : class
     {
