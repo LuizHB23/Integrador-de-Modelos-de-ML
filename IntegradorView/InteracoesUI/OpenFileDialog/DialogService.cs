@@ -1,6 +1,6 @@
 ﻿using IntegradorViewModel.Interfaces;
 
-namespace IntegradorView.OpenFileDialog
+namespace IntegradorView.InteracoesUI.OpenFileDialog
 {
     public class DialogService : IDialogService
     {

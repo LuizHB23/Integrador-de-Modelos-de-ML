@@ -1,9 +1,7 @@
 ﻿using IntegradorAplicacao;
 using IntegradorAplicacao.Interfaces;
-
-using IntegradorView.CaminhoProvider;
-using IntegradorView.OpenFileDialog;
-
+using IntegradorView.InteracoesUI.CaminhoProvider;
+using IntegradorView.InteracoesUI.OpenFileDialog;
 using IntegradorViewModel.Interfaces;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.GraficoModelo;

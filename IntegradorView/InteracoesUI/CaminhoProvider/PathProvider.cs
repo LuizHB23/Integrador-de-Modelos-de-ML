@@ -1,7 +1,7 @@
 ﻿using IntegradorAplicacao.Interfaces;
 using System.IO;
 
-namespace IntegradorView.CaminhoProvider
+namespace IntegradorView.InteracoesUI.CaminhoProvider
 {
     public class PathProvider : IPathProvider
     {

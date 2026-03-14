@@ -6,7 +6,6 @@ using IntegradorAplicacao.ConversorJSON;
 using IntegradorViewModel.Interfaces;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.PrincipalModelo;
-using Microsoft.VisualBasic;
 
 namespace IntegradorViewModel.Pages.InserirModelo
 {
@@ -24,7 +23,8 @@ namespace IntegradorViewModel.Pages.InserirModelo
         [ObservableProperty]
         private string _nomeCaminho;
 
-        private string caminhoModelo;
+        [ObservableProperty]
+        private string _caminhoModelo;
 
         private readonly IGerenciador<ModeloDTO> _gerenciador;
         private readonly IDialogService _dialogService;
@@ -37,7 +37,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
             _dialogService = dialogService;
             _conversor = conversor;
 
-            caminhoModelo = string.Empty;
+            CaminhoModelo = string.Empty;
             NomeModelo = string.Empty;
             TipoModelo = string.Empty;
             NomeCaminho = string.Empty;
@@ -47,11 +47,16 @@ namespace IntegradorViewModel.Pages.InserirModelo
         public void BuscaModelo()
         {
             var caminhoArquivo = _dialogService.GetCaminhoArquivo();
-
-            if (caminhoArquivo is not null)
+            
+            if (!string.IsNullOrWhiteSpace(caminhoArquivo))
             {
-                NomeCaminho = Path.GetFileName(caminhoArquivo);
-                caminhoModelo = _gerenciador.Salvar(new ModeloDTO(NomeModelo, TipoModelo, caminhoArquivo));
+                string tipoArquivo = Path.GetExtension(caminhoArquivo);
+
+                if (tipoArquivo.Equals(".onnx", StringComparison.OrdinalIgnoreCase))
+                {
+                    CaminhoModelo = caminhoArquivo;
+                    NomeCaminho = Path.GetFileName(caminhoArquivo);
+                }
             }
         }
 
@@ -61,13 +66,16 @@ namespace IntegradorViewModel.Pages.InserirModelo
         [RelayCommand]
         public void NavigateToConfigurarSchema()
         {
-            CriaModeloJSON();
+            ConfiguraModelo();
             Navigation.NavigateTo<ConfigurarSchemaViewModel>();
         }
 
-        private void CriaModeloJSON()
+        private void ConfiguraModelo()
         {
-            ModeloDTO modelo = new ModeloDTO(NomeModelo, TipoModelo, caminhoModelo);
+            CaminhoModelo = _gerenciador.Salvar(new ModeloDTO(NomeModelo, TipoModelo, CaminhoModelo));
+
+            ModeloDTO modelo = new ModeloDTO(NomeModelo, TipoModelo, CaminhoModelo);
+
             _conversor.ConverteJSON(modelo);
         }
     }

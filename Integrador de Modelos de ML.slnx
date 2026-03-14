@@ -1,6 +1,7 @@
 <Solution>
-  <Project Path="IntegradorView/IntegradorView.csproj" />
   <Project Path="IntegradorAplicacao/IntegradorAplicacao.csproj" Id="36183aff-d74a-4bd2-8234-d9de388d26f7" />
   <Project Path="IntegradorDominio/IntegradorDominio.csproj" Id="678f55ca-ec03-49aa-a474-0bbaca577c9c" />
+  <Project Path="IntegradorTesteUnidade/IntegradorTesteUnidade.csproj" Id="1f0109fd-6f32-4cae-877c-18d29fb79394" />
+  <Project Path="IntegradorView/IntegradorView.csproj" />
   <Project Path="IntegradorViewModel/IntegradorViewModel.csproj" Id="95df715a-4738-4915-8059-ecdcac0fb349" />
 </Solution>
