@@ -8,9 +8,9 @@ namespace IntegradorViewModel.Pages.InserirModelo
     public partial class CarregarDadosViewModel : ObservableObject
     {
         [ObservableProperty]
-        private NavigationService _navigation;
+        private INavigationService _navigation;
 
-        public CarregarDadosViewModel(NavigationService navigation)
+        public CarregarDadosViewModel(INavigationService navigation)
         {
             _navigation = navigation;
         }

@@ -8,9 +8,9 @@ namespace IntegradorViewModel.Pages.InserirModelo
     public partial class PipelineModeloViewModel : ObservableObject
     {
         [ObservableProperty]
-        private NavigationService _navigation;
+        private INavigationService _navigation;
 
-        public PipelineModeloViewModel(NavigationService navigation) 
+        public PipelineModeloViewModel(INavigationService navigation) 
         {
             _navigation = navigation;
         }

@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes.InserirModeloTestes
+namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
 {
     public class InserirModeloViewModelTests
     {
@@ -143,7 +143,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes.
         [InlineData("", "", "Caminho Qualquer")]
         [InlineData("", "", "")]
         [InlineData("   ", "", "")]
-        public void RetornaNaoOkParaPartesNaoPreenchidasEmNavigateToConfigurarSchemaCommand(string nomeModelo, string tipoModelo, string caminhoModelo)
+        public void RetornaMensageBoxParaPartesNaoPreenchidasEmNavigateToConfigurarSchemaCommand(string nomeModelo, string tipoModelo, string caminhoModelo)
         {
             //Arrange
             _viewModel.NomeModelo = nomeModelo;
@@ -155,6 +155,22 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes.
 
             //Assert
             _mockConversor.Verify(f => f.ConverteJson(It.IsAny<ModeloDTO>()), Times.Never);
+            _mockDialog.Verify(f => f.ShowMessage(It.IsAny<string>()), Times.Once);
+        }
+
+        [Fact]
+        public void RetornaMensageBoxParaNomeModeloInvalidoEmNavigateToConfigurarSchemaCommand()
+        {
+            //Arrange
+            _viewModel.NomeModelo = "@#$%¨&*(¨%&*&";
+            _viewModel.TipoModelo = "Tipo Qualquer";
+            _viewModel.CaminhoModelo = "Caminho Qualquer";
+
+            //Act
+            _viewModel.NavigateToConfigurarSchemaCommand.Execute(null);
+
+            //Assert
+            _mockDialog.Verify(f => f.ShowMessage(It.IsAny<string>()), Times.Once);
         }
     }
 }

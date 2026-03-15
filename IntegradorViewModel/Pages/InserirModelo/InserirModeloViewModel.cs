@@ -68,8 +68,19 @@ namespace IntegradorViewModel.Pages.InserirModelo
         {
             if (!string.IsNullOrWhiteSpace(NomeModelo) && !string.IsNullOrWhiteSpace(TipoModelo) && !string.IsNullOrWhiteSpace(CaminhoModelo))
             {
-                ConfiguraModelo();
-                Navigation.NavigateTo<ConfigurarSchemaViewModel>();
+                try
+                {
+                    ConfiguraModelo();
+                    Navigation.NavigateTo<ConfigurarSchemaViewModel>();
+                }
+                catch (IOException ex)
+                {
+                    _dialogService.ShowMessage($"Título Inválido: {ex.Message}", "Erro");
+                }
+            }
+            else
+            {
+                _dialogService.ShowMessage("Preencha corretamente os campos", "Campos Faltantes");
             }
         }
 

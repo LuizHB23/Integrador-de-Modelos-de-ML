@@ -14,4 +14,8 @@
     <ProjectReference Include="..\IntegradorDominio\IntegradorDominio.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Interfaces\" />
+  </ItemGroup>
+
 </Project>

@@ -1,6 +1,4 @@
 ﻿using IntegradorAplicacao;
-using IntegradorAplicacao.Interfaces;
-using IntegradorView.InteracoesUI.CaminhoProvider;
 using IntegradorView.InteracoesUI.OpenFileDialog;
 using IntegradorViewModel.Interfaces;
 using IntegradorViewModel.JanelaModelo;
@@ -45,8 +43,6 @@ namespace IntegradorView
             //Fim Services ViewModels
 
             services.AddSingleton<IDialogService, DialogService>();
-            services.AddSingleton<IPathProvider, PathProvider>();
-
             services.AddSingleton<INavigationService, NavigationService>();
 
             ServiceProvider = services.BuildServiceProvider();

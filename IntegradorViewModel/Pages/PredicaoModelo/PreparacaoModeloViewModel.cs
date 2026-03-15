@@ -7,9 +7,9 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
     public partial class PreparacaoModeloViewModel : ObservableObject
     {
         [ObservableProperty]
-        private NavigationService _navigation;
+        private INavigationService _navigation;
 
-        public PreparacaoModeloViewModel(NavigationService navigation)
+        public PreparacaoModeloViewModel(INavigationService navigation)
         {
             _navigation = navigation;
         }

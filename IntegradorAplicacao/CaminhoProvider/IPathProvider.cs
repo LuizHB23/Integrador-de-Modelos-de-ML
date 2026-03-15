@@ -1,4 +1,4 @@
-﻿namespace IntegradorAplicacao.Interfaces
+﻿namespace IntegradorAplicacao.CaminhoProvider
 {
     public interface IPathProvider
     {

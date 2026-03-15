@@ -1,5 +1,5 @@
-﻿using IntegradorAplicacao.DTO;
-using IntegradorAplicacao.Interfaces;
+﻿using IntegradorAplicacao.CaminhoProvider;
+using IntegradorAplicacao.DTO;
 using System.Text.Json;
 
 namespace IntegradorAplicacao.ConversorJson

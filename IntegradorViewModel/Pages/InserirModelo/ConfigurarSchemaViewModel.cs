@@ -8,9 +8,9 @@ namespace IntegradorViewModel.Pages.InserirModelo
     public partial class ConfigurarSchemaViewModel : ObservableObject
     {
         [ObservableProperty]
-        private NavigationService _navigation;
+        private INavigationService _navigation;
 
-        public ConfigurarSchemaViewModel(NavigationService navigation)
+        public ConfigurarSchemaViewModel(INavigationService navigation)
         {
             _navigation = navigation;
         }
