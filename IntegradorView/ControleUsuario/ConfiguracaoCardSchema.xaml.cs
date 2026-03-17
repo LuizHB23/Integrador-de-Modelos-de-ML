@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IntegradorViewModel.ControleUsuario;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -14,13 +15,14 @@ using System.Windows.Shapes;
 namespace IntegradorView.ControleUsuario
 {
     /// <summary>
-    /// Interação lógica para ConfigracaoCardSchema.xam
+    /// Interação lógica para ConfiguracaoCardSchema.xam
     /// </summary>
-    public partial class ConfigracaoCardSchema : UserControl
+    public partial class ConfiguracaoCardSchema : UserControl
     {
-        public ConfigracaoCardSchema()
+        public ConfiguracaoCardSchema()
         {
             InitializeComponent();
+            DataContext = App.GetService<ConfiguracaoCardSchemaViewModel>();
         }
     }
 }

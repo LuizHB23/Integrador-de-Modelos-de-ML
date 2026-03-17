@@ -187,7 +187,7 @@
                                         <ItemsControl ItemsSource="{Binding Colunas}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
-                                                    <usercontrol:ConfigracaoCardSchema/>
+                                                    <usercontrol:ConfiguracaoCardSchema/>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>

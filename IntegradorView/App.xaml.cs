@@ -1,6 +1,7 @@
 ﻿using IntegradorAplicacao;
 using IntegradorView.InteracoesUI.OpenFileDialog;
 using IntegradorViewModel.Context;
+using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.Interfaces;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.GraficoModelo;
@@ -41,6 +42,8 @@ namespace IntegradorView
             services.AddTransient<CarregarDadosViewModel>();
 
             services.AddTransient<GraficoModeloViewModel>();
+
+            services.AddTransient<ConfiguracaoCardSchemaViewModel>();
             //Fim Services ViewModels
 
             services.AddSingleton<IDialogService, DialogService>();

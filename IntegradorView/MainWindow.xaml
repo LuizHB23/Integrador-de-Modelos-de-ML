@@ -6,6 +6,7 @@
         xmlns:vmsinserir="clr-namespace:IntegradorViewModel.Pages.InserirModelo;assembly=IntegradorViewModel"
         xmlns:vmspredicao="clr-namespace:IntegradorViewModel.Pages.PredicaoModelo;assembly=IntegradorViewModel"
         xmlns:vmsgraficos="clr-namespace:IntegradorViewModel.Pages.GraficoModelo;assembly=IntegradorViewModel"
+        xmlns:vmsusercontrol="clr-namespace:IntegradorViewModel.ControleUsuario;assembly=IntegradorViewModel"
         
         xmlns:home="clr-namespace:IntegradorView.Pages.PrincipalModelo"
         xmlns:inserir="clr-namespace:IntegradorView.Pages.InserirModelo"

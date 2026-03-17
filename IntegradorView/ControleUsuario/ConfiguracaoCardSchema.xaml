@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="IntegradorView.ControleUsuario.ConfigracaoCardSchema"
+﻿<UserControl x:Class="IntegradorView.ControleUsuario.ConfiguracaoCardSchema"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -29,7 +29,7 @@
                           Width="70"
                           Height="50"
                           Grid.Column="0">
-                            <ComboBoxItem Content="1"
+                            <ComboBoxItem Content="{Binding Posicao}"
                                   Width="Auto"/>
                         </ComboBox>
 
@@ -45,10 +45,10 @@
                            VerticalAlignment="Center">
                             <StackPanel Margin="5, 10" Width="250">
                                 <TextBox materialDesign:HintAssist.Hint="Coluna" 
-                                 Text="Ex: Idade" 
-                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                                 Width="250"
-                                 FontSize="18"/>
+                                         Text="{Binding NomeColuna}" 
+                                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                                         Width="250"
+                                         FontSize="18"/>
                             </StackPanel>
 
                             <StackPanel Margin="10,5" MinWidth="50">
@@ -56,18 +56,20 @@
                                    VerticalAlignment="Center" Margin="20,0,20,5"
                                    Style="{StaticResource MaterialDesignBody2TextBlock}"/>
 
-                                <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}" 
-                                      VerticalAlignment="Center"
-                                      Margin="20,0"
-                                      ToolTip="Marque se a coluna for uma categoria"/>
+                                <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}"
+                                              IsChecked="{Binding Categorico}"
+                                              VerticalAlignment="Center"
+                                              Margin="20,0"
+                                              ToolTip="Marque se a coluna for uma categoria"/>
                             </StackPanel>
 
                             <StackPanel Margin="5,10" MinWidth="185">
                                 <ComboBox materialDesign:HintAssist.Hint="Finalidade"
-                                  Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                                  materialDesign:TextFieldAssist.TextFieldCornerRadius="10"
-                                  Width="200"
-                                  Height="50">
+                                          Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                                          Text="{Binding Finalidade}"
+                                          materialDesign:TextFieldAssist.TextFieldCornerRadius="10"
+                                          Width="200"
+                                          Height="50">
                                     <ComboBoxItem Content="Feature"/>
                                     <ComboBoxItem Content="Label (Target)"/>
                                     <ComboBoxItem Content="Ignore"/>
@@ -76,11 +78,13 @@
 
                             <StackPanel Margin="10" MinWidth="185">
                                 <ComboBox materialDesign:HintAssist.Hint="Tipo"
-                                  Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                                  materialDesign:TextFieldAssist.TextFieldCornerRadius="10"
-                                  Width="200"
-                                  Height="50">
+                                          Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                                          Text="{Binding Tipo}"
+                                          materialDesign:TextFieldAssist.TextFieldCornerRadius="10"
+                                          Width="200"
+                                          Height="50">
                                     <ComboBoxItem Content="Single"/>
+                                    <ComboBoxItem Content="String"/>
                                     <ComboBoxItem Content="Boolean"/>
                                     <ComboBoxItem Content="DateTime"/>
                                 </ComboBox>
@@ -88,12 +92,13 @@
                         </WrapPanel>
 
                         <Button  Style="{StaticResource MaterialDesignOutlinedButton}"
-                          Grid.Column="3"
-                          HorizontalAlignment="Right"
-                          Height="40"
-                          Width="55"
-                          Margin="0,10"
-                          Cursor="Hand">
+                                 Command="{Binding FoiRemovidoCommand}"
+                                 Grid.Column="3"
+                                 HorizontalAlignment="Right"
+                                 Height="40"
+                                 Width="55"
+                                 Margin="0,10"
+                                 Cursor="Hand">
 
                             <materialDesign:PackIcon Kind="Trash" 
                                              VerticalAlignment="Center"
