@@ -23,5 +23,14 @@ namespace IntegradorAplicacao.ConversorJson
                 sw.Write(texto);
             }
         }
+        public List<ModeloDTO> CarregarJson(string caminho)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void EscreverJson(ModeloDTO objeto)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

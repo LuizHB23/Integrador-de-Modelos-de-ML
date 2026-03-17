@@ -13,9 +13,5 @@ namespace IntegradorAplicacao.CaminhoProvider
         }
 
         public string GetCaminhoModelo() => Path.Combine(_appDataPath);
-
-        public string GetCaminhoSchema() => Path.Combine(_appDataPath, "Schema");
-
-        public string GetCaminhoPipeline() => Path.Combine(_appDataPath, "Pipeline");
     }
 }

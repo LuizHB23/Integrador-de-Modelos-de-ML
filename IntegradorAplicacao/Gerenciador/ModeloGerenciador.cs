@@ -1,5 +1,6 @@
 ﻿using IntegradorAplicacao.CaminhoProvider;
 using IntegradorAplicacao.DTO;
+using IntegradorDominio;
 
 namespace IntegradorAplicacao.Gerenciador
 {
@@ -16,11 +17,7 @@ namespace IntegradorAplicacao.Gerenciador
         {
             string appFolder = _provider.GetCaminhoModelo();
             appFolder = Path.Combine(appFolder, modelo.Nome);
-
-            if (!Directory.Exists(appFolder))
-            {
-                Directory.CreateDirectory(appFolder);
-            }
+            Directory.CreateDirectory(appFolder);
 
             string nomeArquivo = Path.GetFileName(modelo.CaminhoPasta);
             string caminhoDestino = Path.Combine(appFolder, nomeArquivo);

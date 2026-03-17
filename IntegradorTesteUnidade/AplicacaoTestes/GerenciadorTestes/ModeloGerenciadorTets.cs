@@ -11,32 +11,14 @@ namespace IntegradorTesteUnidade.AplicacaoTestes.GerenciadorTestes
     public class ModeloGerenciadorTets
     {
         private readonly Mock<IPathProvider> _mockProvider;
+
         public ModeloGerenciadorTets()
         {
             _mockProvider = new Mock<IPathProvider>();
         }
 
         [Fact]
-        public void RetornaOkParaPathProviderVistadoEmSalvar()
-        {
-            //Arrange
-            var pastaApp = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-
-            _mockProvider.Setup(f => f.GetCaminhoModelo()).Returns(pastaApp);
-
-            var modeloGerenciador = new ModeloGerenciador(_mockProvider.Object);
-
-            var modelo = new ModeloDTO("", "", "");
-
-            //Act
-            modeloGerenciador.Salvar(modelo);
-
-            //Assert
-            _mockProvider.Verify(f => f.GetCaminhoModelo(), Times.Once());
-        }
-
-        [Fact]
-        public void RetornaCaminhoDestinoQuandoChamadoSalvar()
+        public void RetornaCaminhoDestinoEOkParaPathProviderVistadoQuandoChamadoSalvar()
         {
             //Arrange
             string nomeModelo = "Teste";
@@ -46,8 +28,7 @@ namespace IntegradorTesteUnidade.AplicacaoTestes.GerenciadorTestes
             _mockProvider.Setup(f => f.GetCaminhoModelo()).Returns(appFolder);
 
             appFolder = Path.Combine(appFolder, nomeModelo);
-            string caminhoDestino = Path.Combine(appFolder);
-            caminhoDestino = Path.Combine(caminhoDestino, "win.ini");
+            string caminhoDestino = Path.Combine(appFolder, "win.ini");
 
             var modeloGerenciador = new ModeloGerenciador(_mockProvider.Object);
 
@@ -59,6 +40,7 @@ namespace IntegradorTesteUnidade.AplicacaoTestes.GerenciadorTestes
             //Assert
             try
             {
+                _mockProvider.Verify(f => f.GetCaminhoModelo(), Times.Once());
                 Assert.Equal(caminhoDestino, caminhoModelo);
                 Assert.True(File.Exists(caminhoModelo));
             }

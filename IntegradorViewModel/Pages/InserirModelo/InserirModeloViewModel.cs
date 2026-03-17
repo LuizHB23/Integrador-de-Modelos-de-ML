@@ -1,8 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using IntegradorAplicacao.ConversorJson;
 using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.Gerenciador;
-using IntegradorAplicacao.ConversorJson;
+using IntegradorDominio;
 using IntegradorViewModel.Interfaces;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.PrincipalModelo;
@@ -70,12 +72,13 @@ namespace IntegradorViewModel.Pages.InserirModelo
             {
                 try
                 {
-                    ConfiguraModelo();
+                    var modelo = ConfiguraModelo();
+                    WeakReferenceMessenger.Default.Send(modelo);
                     Navigation.NavigateTo<ConfigurarSchemaViewModel>();
                 }
                 catch (IOException ex)
                 {
-                    _dialogService.ShowMessage($"Título Inválido: {ex.Message}", "Erro");
+                    _dialogService.ShowMessage($"Nome Inválido: {ex.Message}", "Erro");
                 }
             }
             else
@@ -84,13 +87,15 @@ namespace IntegradorViewModel.Pages.InserirModelo
             }
         }
 
-        public void ConfiguraModelo()
+        private ModeloDTO ConfiguraModelo()
         {
             CaminhoModelo = _gerenciador.Salvar(new ModeloDTO(NomeModelo, TipoModelo, CaminhoModelo));
 
             ModeloDTO modelo = new ModeloDTO(NomeModelo, TipoModelo, CaminhoModelo);
 
             _conversor.ConverteJson(modelo);
+
+            return modelo;
         }
     }
 }

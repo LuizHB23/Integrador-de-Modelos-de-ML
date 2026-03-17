@@ -16,6 +16,9 @@ namespace IntegradorAplicacao
             // Registre aqui tudo o que é "bruto" do sistema
             services.AddTransient<IGerenciador<ModeloDTO>, ModeloGerenciador>();
             services.AddTransient<IConverteJson<ModeloDTO>, ModeloJson>();
+
+            services.AddTransient<IConverteJson<SchemaDTO>, SchemaJson>();
+
             services.AddSingleton<IPathProvider, PathProvider>();
 
             return services;
