@@ -17,7 +17,7 @@ namespace IntegradorAplicacao
             services.AddTransient<IGerenciador<ModeloDTO>, ModeloGerenciador>();
             services.AddTransient<IConverteJson<ModeloDTO>, ModeloJson>();
 
-            services.AddTransient<IConverteJson<SchemaDTO>, SchemaJson>();
+            services.AddTransient<IConverteJson<Dictionary<int, SchemaDTO>>, SchemaJson>();
 
             services.AddSingleton<IPathProvider, PathProvider>();
 

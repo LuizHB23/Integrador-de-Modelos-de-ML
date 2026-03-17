@@ -1,10 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using IntegradorAplicacao.ConversorJson;
 using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.Gerenciador;
-using IntegradorDominio;
+using IntegradorViewModel.Context;
 using IntegradorViewModel.Interfaces;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.PrincipalModelo;
@@ -31,13 +30,15 @@ namespace IntegradorViewModel.Pages.InserirModelo
         private readonly IGerenciador<ModeloDTO> _gerenciador;
         private readonly IDialogService _dialogService;
         private readonly IConverteJson<ModeloDTO> _conversor;
+        private readonly IContext<string> _context;
 
-        public InserirModeloViewModel(INavigationService navigation, IGerenciador<ModeloDTO> gerenciador, IDialogService dialogService, IConverteJson<ModeloDTO> conversor)
+        public InserirModeloViewModel(INavigationService navigation, IGerenciador<ModeloDTO> gerenciador, IDialogService dialogService, IConverteJson<ModeloDTO> conversor, IContext<string> context)
         {
             _navigation = navigation;
             _gerenciador = gerenciador;
             _dialogService = dialogService;
             _conversor = conversor;
+            _context = context;
 
             CaminhoModelo = string.Empty;
             NomeModelo = string.Empty;
@@ -68,12 +69,13 @@ namespace IntegradorViewModel.Pages.InserirModelo
         [RelayCommand]
         public void NavigateToConfigurarSchema()
         {
+            Navigation.NavigateTo<ConfigurarSchemaViewModel>();
             if (!string.IsNullOrWhiteSpace(NomeModelo) && !string.IsNullOrWhiteSpace(TipoModelo) && !string.IsNullOrWhiteSpace(CaminhoModelo))
             {
                 try
                 {
-                    var modelo = ConfiguraModelo();
-                    WeakReferenceMessenger.Default.Send(modelo);
+                    var nomeModelo = ConfiguraModelo();
+                    _context.Mensagem = nomeModelo;
                     Navigation.NavigateTo<ConfigurarSchemaViewModel>();
                 }
                 catch (IOException ex)
@@ -87,15 +89,14 @@ namespace IntegradorViewModel.Pages.InserirModelo
             }
         }
 
-        private ModeloDTO ConfiguraModelo()
+        private string ConfiguraModelo()
         {
             CaminhoModelo = _gerenciador.Salvar(new ModeloDTO(NomeModelo, TipoModelo, CaminhoModelo));
 
             ModeloDTO modelo = new ModeloDTO(NomeModelo, TipoModelo, CaminhoModelo);
-
             _conversor.ConverteJson(modelo);
 
-            return modelo;
+            return modelo.Nome;
         }
     }
 }

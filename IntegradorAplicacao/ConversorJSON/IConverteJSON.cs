@@ -4,6 +4,6 @@
     {
         void EscreverJson(T objeto);
         void ConverteJson(T objeto);
-        List<T> CarregarJson(string caminho);
+        T CarregarJson(string caminho);
     }
 }

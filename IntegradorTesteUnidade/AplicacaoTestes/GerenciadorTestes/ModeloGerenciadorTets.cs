@@ -21,7 +21,7 @@ namespace IntegradorTesteUnidade.AplicacaoTestes.GerenciadorTestes
         public void RetornaCaminhoDestinoEOkParaPathProviderVistadoQuandoChamadoSalvar()
         {
             //Arrange
-            string nomeModelo = "Teste";
+            string nomeModelo = "Teste Qualquer Aqui";
 
             var appFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             appFolder = Path.Combine(appFolder, "Integrador", "Modelos");

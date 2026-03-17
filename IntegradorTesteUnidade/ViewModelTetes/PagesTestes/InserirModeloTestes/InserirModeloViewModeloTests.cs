@@ -2,6 +2,7 @@
 using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.Gerenciador;
 using IntegradorDominio;
+using IntegradorViewModel.Context;
 using IntegradorViewModel.Interfaces;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.InserirModelo;
@@ -19,6 +20,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
         private readonly Mock<IConverteJson<ModeloDTO>> _mockConversor;
         private readonly Mock<IDialogService> _mockDialog;
         private readonly Mock<INavigationService> _mockNavigation;
+        private readonly Mock<IContext<string>> _mockContext;
         private readonly InserirModeloViewModel _viewModel;
 
         public InserirModeloViewModelTests()
@@ -27,8 +29,9 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
             _mockConversor = new Mock<IConverteJson<ModeloDTO>>();
             _mockGerenciador = new Mock<IGerenciador<ModeloDTO>>();
             _mockDialog = new Mock<IDialogService>();
+            _mockContext = new Mock<IContext<string>>();
 
-            _viewModel = new InserirModeloViewModel(_mockNavigation.Object, _mockGerenciador.Object, _mockDialog.Object, _mockConversor.Object);
+            _viewModel = new InserirModeloViewModel(_mockNavigation.Object, _mockGerenciador.Object, _mockDialog.Object, _mockConversor.Object, _mockContext.Object);
         }
 
         [Fact]
@@ -99,6 +102,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
             _viewModel.NavigateToConfigurarSchemaCommand.Execute(null);
 
             //Assert
+            _mockContext.VerifySet(f => f.Mensagem = _viewModel.NomeModelo, Times.Once);
             _mockGerenciador.Verify(f => f.Salvar(It.IsAny<ModeloDTO>()), Times.Once);
             _mockConversor.Verify(f => f.ConverteJson(It.IsAny<ModeloDTO>()), Times.Once);
             _mockNavigation.Verify(f => f.NavigateTo<ConfigurarSchemaViewModel>(), Times.Once);

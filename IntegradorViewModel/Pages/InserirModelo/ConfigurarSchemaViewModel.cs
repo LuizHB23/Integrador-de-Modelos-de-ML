@@ -1,10 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using IntegradorAplicacao.ConversorJson;
 using IntegradorAplicacao.DTO;
+using IntegradorViewModel.Context;
+using IntegradorViewModel.ItensViewModel;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.PrincipalModelo;
+using System.Collections.ObjectModel;
 
 namespace IntegradorViewModel.Pages.InserirModelo
 {
@@ -25,36 +27,68 @@ namespace IntegradorViewModel.Pages.InserirModelo
         [ObservableProperty]
         private bool _categorico;
 
-        private IConverteJson<SchemaDTO> _converter;
-        private string _nomeModelo = string.Empty;
+        [ObservableProperty]
+        private string _nomeModelo;
 
-        public ConfigurarSchemaViewModel(INavigationService navigation, IConverteJson<SchemaDTO> converter)
+        public ObservableCollection<SchemaItemViewModel> Colunas { get; }
+
+        private IConverteJson<Dictionary<int, SchemaDTO>> _converter;
+        private IContext<string> _context;
+        private Dictionary<int, SchemaDTO> _configuracaoSchema;
+
+        public ConfigurarSchemaViewModel(INavigationService navigation, IConverteJson<Dictionary<int, SchemaDTO>> converter, IContext<string> context)
         {
-            WeakReferenceMessenger.Default.Register<string>(this, (r, m) =>
-            {
-                 _nomeModelo = m;
-            });
             _navigation = navigation;
             _converter = converter;
+            _configuracaoSchema = new Dictionary<int, SchemaDTO>();
+            _context = context;
 
+            NomeModelo = string.Empty;
             NomeColuna = string.Empty;
             Finalidade = string.Empty;
             Tipo = string.Empty;
             Categorico = false;
-
+            Colunas = new();
         }
 
         [RelayCommand]
         public void AdicinarColuna()
         {
-            var schema = new SchemaDTO(_nomeColuna, _finalidade, _tipo, _categorico, _nomeModelo);
-            _converter.ConverteJson(schema);
+            var schema = new SchemaDTO(NomeColuna, Finalidade, Tipo, Categorico, _context.Mensagem);
+
+            if (!_configuracaoSchema.ContainsKey(0))
+            {
+                var schemaItem = new SchemaItemViewModel(1, schema);
+                Colunas.Add(schemaItem);
+
+                _configuracaoSchema.Add(0, schema);
+            }
+            else 
+            {
+                var (posicao, _) = _configuracaoSchema.Last();
+                _configuracaoSchema.Add(posicao + 1, schema);
+
+                var schemaItem = new SchemaItemViewModel(posicao + 1, schema);
+                Colunas.Add(schemaItem);
+            }
+
+            //_converter.ConverteJson(_configuracaoSchema);
+        }
+
+        [RelayCommand]
+        public void CarregarSchema()
+        {
+
         }
 
         [RelayCommand]
         public void NavigateToHome() => Navigation.NavigateTo<HomeViewModel>();
 
         [RelayCommand]
-        public void NavigateToCarregarDados() => Navigation.NavigateTo<CarregarDadosViewModel>();
+        public void NavigateToCarregarDados()
+        {
+            _converter.ConverteJson(_configuracaoSchema);
+            Navigation.NavigateTo<CarregarDadosViewModel>();
+        }
     }
 }

@@ -2,57 +2,47 @@
 using IntegradorAplicacao.DTO;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
 
 namespace IntegradorAplicacao.ConversorJson
 {
-    public class SchemaJson : IConverteJson<SchemaDTO>
+    public class SchemaJson : IConverteJson<Dictionary<int, SchemaDTO>>
     {
         private readonly IPathProvider _provider;
-        private List<SchemaDTO> _listaSchema;
         private  string _caminhoJson;
 
         public SchemaJson(IPathProvider provider)
         {
             _provider = provider;
-            _listaSchema = new List<SchemaDTO>();
             _caminhoJson = string.Empty;
         }
 
-        public void ConverteJson(SchemaDTO schema)
+        public void ConverteJson(Dictionary<int, SchemaDTO> schemas)
         {
+            var (posicao, schema) = schemas.First();
             _caminhoJson = Path.Combine(_provider.GetCaminhoModelo(), schema.NomeModelo, "schema.json");
-
-            EscreverJson(schema);
-
-            using (var sw = new StreamWriter(_caminhoJson))
-            {
-                var texto = JsonSerializer.Serialize(_listaSchema);
-                sw.Write(texto);
-            }
+            string texto = JsonSerializer.Serialize(schemas);
+            File.WriteAllText(_caminhoJson, texto);
         }
 
-        public List<SchemaDTO> CarregarJson(string caminho)
+        public Dictionary<int, SchemaDTO> CarregarJson(string caminho)
         {
-            using (var sr = new StreamReader(caminho))
-            {
-                var texto = sr.ReadToEnd();
-                var listaSchema = JsonSerializer.Deserialize<List<SchemaDTO>>(texto);
+            if(File.Exists(caminho))
+                using (var sr = new StreamReader(caminho))
+                {
+                    var texto = sr.ReadToEnd();
+                    var listaSchema = JsonSerializer.Deserialize<Dictionary<int, SchemaDTO>>(texto);
 
-                return listaSchema!;
-            }
+                    return listaSchema!;
+                }
+            else
+                return new Dictionary<int, SchemaDTO>();
         }
 
-        public void EscreverJson(SchemaDTO schema)
+        public void EscreverJson(Dictionary<int, SchemaDTO> schema)
         {
-
-            if (File.Exists(_caminhoJson))
-            {
-                _listaSchema = CarregarJson(_caminhoJson);
-            }
-
-            _listaSchema.Add(schema);
         }
     }
 }

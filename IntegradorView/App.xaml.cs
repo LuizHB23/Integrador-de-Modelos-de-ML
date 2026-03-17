@@ -1,5 +1,6 @@
 ﻿using IntegradorAplicacao;
 using IntegradorView.InteracoesUI.OpenFileDialog;
+using IntegradorViewModel.Context;
 using IntegradorViewModel.Interfaces;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.GraficoModelo;
@@ -44,6 +45,8 @@ namespace IntegradorView
 
             services.AddSingleton<IDialogService, DialogService>();
             services.AddSingleton<INavigationService, NavigationService>();
+
+            services.AddSingleton<IContext<string>, InserirModeloContext>();
 
             ServiceProvider = services.BuildServiceProvider();
         }
