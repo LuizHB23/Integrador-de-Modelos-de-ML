@@ -6,6 +6,6 @@ namespace IntegradorViewModel.Context
 {
     public interface IContext<T> where T : class
     {
-        T Mensagem { get; set; }
+        T? Mensagem { get; set; }
     }
 }

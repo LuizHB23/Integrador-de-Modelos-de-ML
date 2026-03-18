@@ -1,5 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using IntegradorAplicacao.DTO;
+using IntegradorViewModel.Context;
+using IntegradorViewModel.ItensViewModel;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,6 +12,9 @@ namespace IntegradorViewModel.ControleUsuario
 {
     public partial class ConfiguracaoCardSchemaViewModel : ObservableObject
     {
+        [ObservableProperty]
+        private IContext<SchemaItemViewModel> _context;
+
         [ObservableProperty]
         private int _posicao;
 
@@ -24,8 +30,9 @@ namespace IntegradorViewModel.ControleUsuario
         [ObservableProperty]
         private bool _categorico;
 
-        public ConfiguracaoCardSchemaViewModel()
+        public ConfiguracaoCardSchemaViewModel(IContext<SchemaItemViewModel> context)
         {
+            Context = context;
             NomeColuna = string.Empty;
             Finalidade = string.Empty;
             Tipo = string.Empty;
@@ -34,7 +41,7 @@ namespace IntegradorViewModel.ControleUsuario
         [RelayCommand]
         public void FoiRemovido()
         {
-            Debug.WriteLine("Fui Removido");
+            SchemaItem.Mensagem = new SchemaItemViewModel(Posicao, new SchemaDTO(NomeColuna, Finalidade, Tipo, Categorico));
         }
 
     }

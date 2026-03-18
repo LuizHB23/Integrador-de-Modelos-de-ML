@@ -7,6 +7,6 @@ namespace IntegradorViewModel.Context
 {
     public class InserirModeloContext : IContext<string>
     {
-        public string Mensagem { get; set; } = string.Empty;
+        public string? Mensagem { get; set; } = null;
     }
 }

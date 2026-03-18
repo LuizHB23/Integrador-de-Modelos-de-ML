@@ -3,6 +3,7 @@ using IntegradorView.InteracoesUI.OpenFileDialog;
 using IntegradorViewModel.Context;
 using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.Interfaces;
+using IntegradorViewModel.ItensViewModel;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.GraficoModelo;
 using IntegradorViewModel.Pages.InserirModelo;
@@ -50,6 +51,7 @@ namespace IntegradorView
             services.AddSingleton<INavigationService, NavigationService>();
 
             services.AddSingleton<IContext<string>, InserirModeloContext>();
+            services.AddTransient<IContext<SchemaItemViewModel>, ConfiguracaoCardSchemaContext>();
 
             ServiceProvider = services.BuildServiceProvider();
         }

@@ -7,6 +7,7 @@ using IntegradorViewModel.ItensViewModel;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.PrincipalModelo;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace IntegradorViewModel.Pages.InserirModelo
 {
@@ -33,15 +34,13 @@ namespace IntegradorViewModel.Pages.InserirModelo
         public ObservableCollection<SchemaItemViewModel> Colunas { get; }
 
         private IConverteJson<Dictionary<int, SchemaDTO>> _converter;
-        private IContext<string> _context;
-        private Dictionary<int, SchemaDTO> _configuracaoSchema;
+        private IContext<SchemaItemViewModel> _context;
 
-        public ConfigurarSchemaViewModel(INavigationService navigation, IConverteJson<Dictionary<int, SchemaDTO>> converter, IContext<string> context)
+        public ConfigurarSchemaViewModel(INavigationService navigation, IConverteJson<Dictionary<int, SchemaDTO>> converter, IContext<SchemaItemViewModel> context)
         {
-            _navigation = navigation;
-            _converter = converter;
-            _configuracaoSchema = new Dictionary<int, SchemaDTO>();
-            _context = context;
+            Navigation = navigation;
+            Converter = converter;
+            Context = context;
 
             NomeModelo = string.Empty;
             NomeColuna = string.Empty;
@@ -54,21 +53,16 @@ namespace IntegradorViewModel.Pages.InserirModelo
         [RelayCommand]
         public void AdicinarColuna()
         {
-            var schema = new SchemaDTO(NomeColuna, Finalidade, Tipo, Categorico, _context.Mensagem);
+            var schema = new SchemaDTO(NomeColuna, Finalidade, Tipo, Categorico);
 
-            if (!_configuracaoSchema.ContainsKey(0))
+            if (Colunas.Count == 0)
             {
                 var schemaItem = new SchemaItemViewModel(1, schema);
                 Colunas.Add(schemaItem);
-
-                _configuracaoSchema.Add(0, schema);
             }
             else 
             {
-                var (posicao, _) = _configuracaoSchema.Last();
-                _configuracaoSchema.Add(posicao + 1, schema);
-
-                var schemaItem = new SchemaItemViewModel(posicao + 1, schema);
+                var schemaItem = new SchemaItemViewModel(Colunas.Count + 1, schema);
                 Colunas.Add(schemaItem);
             }
 
@@ -87,7 +81,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
         [RelayCommand]
         public void NavigateToCarregarDados()
         {
-            _converter.ConverteJson(_configuracaoSchema);
+            //_converter.ConverteJson(_configuracaoSchema);
             Navigation.NavigateTo<CarregarDadosViewModel>();
         }
     }
