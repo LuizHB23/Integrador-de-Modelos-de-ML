@@ -22,7 +22,6 @@ namespace IntegradorView.ControleUsuario
         public ConfiguracaoCardSchema()
         {
             InitializeComponent();
-            DataContext = App.GetService<ConfiguracaoCardSchemaViewModel>();
         }
     }
 }

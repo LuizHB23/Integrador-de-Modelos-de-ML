@@ -44,14 +44,13 @@ namespace IntegradorView
 
             services.AddTransient<GraficoModeloViewModel>();
 
-            services.AddTransient<ConfiguracaoCardSchemaViewModel>();
+            //services.AddTransient<ConfiguracaoCardSchemaViewModel>();
             //Fim Services ViewModels
 
             services.AddSingleton<IDialogService, DialogService>();
             services.AddSingleton<INavigationService, NavigationService>();
 
             services.AddSingleton<IContext<string>, InserirModeloContext>();
-            services.AddTransient<IContext<SchemaItemViewModel>, ConfiguracaoCardSchemaContext>();
 
             ServiceProvider = services.BuildServiceProvider();
         }

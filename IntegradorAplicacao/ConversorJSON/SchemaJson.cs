@@ -22,7 +22,7 @@ namespace IntegradorAplicacao.ConversorJson
         public void ConverteJson(Dictionary<int, SchemaDTO> schemas)
         {
             var (posicao, schema) = schemas.First();
-            _caminhoJson = Path.Combine(_provider.GetCaminhoModelo(), schema.NomeModelo, "schema.json");
+            _caminhoJson = Path.Combine(_provider.GetCaminhoModelo(), /*schema.NomeColuna,*/ "schema.json");
             string texto = JsonSerializer.Serialize(schemas);
             File.WriteAllText(_caminhoJson, texto);
         }

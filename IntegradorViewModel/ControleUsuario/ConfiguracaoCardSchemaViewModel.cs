@@ -12,8 +12,8 @@ namespace IntegradorViewModel.ControleUsuario
 {
     public partial class ConfiguracaoCardSchemaViewModel : ObservableObject
     {
-        [ObservableProperty]
-        private IContext<SchemaItemViewModel> _context;
+        private readonly Action<ConfiguracaoCardSchemaViewModel> _onExcluir;
+        private SchemaItemViewModel _schemaItem;
 
         [ObservableProperty]
         private int _posicao;
@@ -30,19 +30,30 @@ namespace IntegradorViewModel.ControleUsuario
         [ObservableProperty]
         private bool _categorico;
 
-        public ConfiguracaoCardSchemaViewModel(IContext<SchemaItemViewModel> context)
+        public ConfiguracaoCardSchemaViewModel(SchemaItemViewModel schemaItem, Action<ConfiguracaoCardSchemaViewModel> action)
         {
-            Context = context;
-            NomeColuna = string.Empty;
-            Finalidade = string.Empty;
-            Tipo = string.Empty;
+            _onExcluir = action;
+            _schemaItem = schemaItem;
+
+            Posicao = _schemaItem.Posicao;
+            NomeColuna = _schemaItem.NomeColuna;
+            Finalidade = _schemaItem.Finalidade;
+            Tipo = _schemaItem.Tipo;
+            Categorico = _schemaItem.Categorico;
         }
+
+        partial void OnPosicaoChanged(int value) => _schemaItem.Posicao = value;
+
+        partial void OnFinalidadeChanged(string value) => _schemaItem.Finalidade = value;
+
+        partial void OnTipoChanged(string value) => _schemaItem.Tipo = value;
+
+        partial void OnCategoricoChanged(bool value) => _schemaItem.Categorico = value;
 
         [RelayCommand]
         public void FoiRemovido()
         {
-            SchemaItem.Mensagem = new SchemaItemViewModel(Posicao, new SchemaDTO(NomeColuna, Finalidade, Tipo, Categorico));
+            _onExcluir.Invoke(this);
         }
-
     }
 }

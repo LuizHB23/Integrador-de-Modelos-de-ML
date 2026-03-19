@@ -66,6 +66,10 @@
 
         <!--Fim Fluxo de Páginas do GraficoModelo-->
 
+        <DataTemplate DataType="{x:Type vmsusercontrol:ConfiguracaoCardSchemaViewModel}">
+            <usercontrol:ConfiguracaoCardSchema/>
+        </DataTemplate>
+
     </Window.Resources>
 
     <Grid>

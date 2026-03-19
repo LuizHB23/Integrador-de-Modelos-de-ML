@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using IntegradorAplicacao.ConversorJson;
 using IntegradorAplicacao.DTO;
 using IntegradorViewModel.Context;
+using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.ItensViewModel;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.PrincipalModelo;
@@ -28,21 +29,20 @@ namespace IntegradorViewModel.Pages.InserirModelo
         [ObservableProperty]
         private bool _categorico;
 
-        [ObservableProperty]
-        private string _nomeModelo;
 
-        public ObservableCollection<SchemaItemViewModel> Colunas { get; }
+        private readonly string _nomeModelo;
+        public ObservableCollection<ConfiguracaoCardSchemaViewModel> Colunas { get; }
 
         private IConverteJson<Dictionary<int, SchemaDTO>> _converter;
-        private IContext<SchemaItemViewModel> _context;
+        private IContext<string> _context;
 
-        public ConfigurarSchemaViewModel(INavigationService navigation, IConverteJson<Dictionary<int, SchemaDTO>> converter, IContext<SchemaItemViewModel> context)
+        public ConfigurarSchemaViewModel(INavigationService navigation, IConverteJson<Dictionary<int, SchemaDTO>> converter, IContext<string> context)
         {
+            _converter = converter;
+            _context = context;
             Navigation = navigation;
-            Converter = converter;
-            Context = context;
 
-            NomeModelo = string.Empty;
+            _nomeModelo = _context.Mensagem;
             NomeColuna = string.Empty;
             Finalidade = string.Empty;
             Tipo = string.Empty;
@@ -53,18 +53,11 @@ namespace IntegradorViewModel.Pages.InserirModelo
         [RelayCommand]
         public void AdicinarColuna()
         {
-            var schema = new SchemaDTO(NomeColuna, Finalidade, Tipo, Categorico);
+            //var schema = new SchemaDTO(NomeColuna, Finalidade, Tipo, Categorico);
 
-            if (Colunas.Count == 0)
-            {
-                var schemaItem = new SchemaItemViewModel(1, schema);
-                Colunas.Add(schemaItem);
-            }
-            else 
-            {
-                var schemaItem = new SchemaItemViewModel(Colunas.Count + 1, schema);
-                Colunas.Add(schemaItem);
-            }
+            var schemaItem = new SchemaItemViewModel(Colunas.Count + 1, NomeColuna, Finalidade, Tipo, Categorico);
+            var cardSchema = new ConfiguracaoCardSchemaViewModel(schemaItem, RemoverColuna);
+            Colunas.Add(cardSchema);
 
             //_converter.ConverteJson(_configuracaoSchema);
         }
@@ -73,6 +66,20 @@ namespace IntegradorViewModel.Pages.InserirModelo
         public void CarregarSchema()
         {
 
+        }
+
+        private void RemoverColuna(ConfiguracaoCardSchemaViewModel cardSchema)
+        {
+            if (cardSchema == null) return;
+
+            Colunas.Remove(cardSchema);
+
+            for (int i = 0; i < Colunas.Count; i++)
+            {
+                Colunas[i].Posicao = i;
+            }
+
+            //AtualizarDadosNoContexto();
         }
 
         [RelayCommand]
