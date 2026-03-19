@@ -5,7 +5,7 @@ using System.Text;
 
 namespace IntegradorViewModel.Context
 {
-    public class InserirModeloContext : IContext<string>
+    public class NomeModeloContext : IContext<string>
     {
         public string Mensagem { get; set; } = string.Empty;
     }

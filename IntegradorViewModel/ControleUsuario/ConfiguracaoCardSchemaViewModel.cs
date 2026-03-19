@@ -5,6 +5,7 @@ using IntegradorViewModel.Context;
 using IntegradorViewModel.ItensViewModel;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Text;
 
@@ -14,6 +15,9 @@ namespace IntegradorViewModel.ControleUsuario
     {
         private readonly Action<ConfiguracaoCardSchemaViewModel> _onExcluir;
         private SchemaItemViewModel _schemaItem;
+
+        [ObservableProperty]
+        private ObservableCollection<int> _opcoesPosicao;
 
         [ObservableProperty]
         private int _posicao;
@@ -35,6 +39,7 @@ namespace IntegradorViewModel.ControleUsuario
             _onExcluir = action;
             _schemaItem = schemaItem;
 
+            OpcoesPosicao = new();
             Posicao = _schemaItem.Posicao;
             NomeColuna = _schemaItem.NomeColuna;
             Finalidade = _schemaItem.Finalidade;

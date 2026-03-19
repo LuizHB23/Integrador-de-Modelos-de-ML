@@ -29,25 +29,27 @@ namespace IntegradorViewModel.Pages.InserirModelo
         [ObservableProperty]
         private bool _categorico;
 
-
         private readonly string _nomeModelo;
-        public ObservableCollection<ConfiguracaoCardSchemaViewModel> Colunas { get; }
+
+        public ObservableCollection<int> OpcoesPosicao;
+        public ObservableCollection<ConfiguracaoCardSchemaViewModel> CardsSchema { get; }
 
         private IConverteJson<Dictionary<int, SchemaDTO>> _converter;
-        private IContext<string> _context;
+        private IContext<string> _contextNomeModelo;
 
-        public ConfigurarSchemaViewModel(INavigationService navigation, IConverteJson<Dictionary<int, SchemaDTO>> converter, IContext<string> context)
+        public ConfigurarSchemaViewModel(INavigationService navigation, IConverteJson<Dictionary<int, SchemaDTO>> converter, IContext<string> contextNomeModelo)
         {
             _converter = converter;
-            _context = context;
+            _contextNomeModelo = contextNomeModelo;
             Navigation = navigation;
 
-            _nomeModelo = _context.Mensagem;
+            _nomeModelo = _contextNomeModelo.Mensagem;
             NomeColuna = string.Empty;
             Finalidade = string.Empty;
             Tipo = string.Empty;
             Categorico = false;
-            Colunas = new();
+            CardsSchema = new();
+            OpcoesPosicao = new();
         }
 
         [RelayCommand]
@@ -55,9 +57,11 @@ namespace IntegradorViewModel.Pages.InserirModelo
         {
             //var schema = new SchemaDTO(NomeColuna, Finalidade, Tipo, Categorico);
 
-            var schemaItem = new SchemaItemViewModel(Colunas.Count + 1, NomeColuna, Finalidade, Tipo, Categorico);
+            var schemaItem = new SchemaItemViewModel(CardsSchema.Count + 1, NomeColuna, Finalidade, Tipo, Categorico);
             var cardSchema = new ConfiguracaoCardSchemaViewModel(schemaItem, RemoverColuna);
-            Colunas.Add(cardSchema);
+            CardsSchema.Add(cardSchema);
+
+            AtualizaPosicoes(true);
 
             //_converter.ConverteJson(_configuracaoSchema);
         }
@@ -70,16 +74,33 @@ namespace IntegradorViewModel.Pages.InserirModelo
 
         private void RemoverColuna(ConfiguracaoCardSchemaViewModel cardSchema)
         {
-            if (cardSchema == null) return;
+            OpcoesPosicao.Remove(cardSchema.Posicao);
+            CardsSchema.Remove(cardSchema);
+            AtualizaPosicoes(false);
+        }
 
-            Colunas.Remove(cardSchema);
-
-            for (int i = 0; i < Colunas.Count; i++)
+        private void AtualizaPosicoes(bool incrementar)
+        {
+            int quantidade = CardsSchema.Count;
+            if (incrementar)
             {
-                Colunas[i].Posicao = i;
+                OpcoesPosicao.Add(quantidade);
+            }
+            else
+            {
+                OpcoesPosicao.Remove(quantidade);
             }
 
-            //AtualizarDadosNoContexto();
+            for (int i = 0; i < CardsSchema.Count; i++)
+            {
+                CardsSchema[i].OpcoesPosicao = OpcoesPosicao;
+                CardsSchema[i].Posicao = i + 1;
+            }
+        }
+
+        private void OrganizaPosicao()
+        {
+
         }
 
         [RelayCommand]

@@ -50,7 +50,7 @@ namespace IntegradorView
             services.AddSingleton<IDialogService, DialogService>();
             services.AddSingleton<INavigationService, NavigationService>();
 
-            services.AddSingleton<IContext<string>, InserirModeloContext>();
+            services.AddSingleton<IContext<string>, NomeModeloContext>();
 
             ServiceProvider = services.BuildServiceProvider();
         }

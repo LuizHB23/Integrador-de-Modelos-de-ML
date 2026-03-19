@@ -184,7 +184,7 @@
 
 
                                     <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="10" Cursor="">
-                                        <ItemsControl ItemsSource="{Binding Colunas}">
+                                        <ItemsControl ItemsSource="{Binding CardsSchema}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
                                                     <usercontrol:ConfiguracaoCardSchema/>

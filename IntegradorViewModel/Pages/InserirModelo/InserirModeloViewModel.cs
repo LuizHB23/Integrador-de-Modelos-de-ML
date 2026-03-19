@@ -30,15 +30,15 @@ namespace IntegradorViewModel.Pages.InserirModelo
         private readonly IGerenciador<ModeloDTO> _gerenciador;
         private readonly IDialogService _dialogService;
         private readonly IConverteJson<ModeloDTO> _conversor;
-        private readonly IContext<string> _context;
+        private readonly IContext<string> _contextNomeModelo;
 
-        public InserirModeloViewModel(INavigationService navigation, IGerenciador<ModeloDTO> gerenciador, IDialogService dialogService, IConverteJson<ModeloDTO> conversor, IContext<string> context)
+        public InserirModeloViewModel(INavigationService navigation, IGerenciador<ModeloDTO> gerenciador, IDialogService dialogService, IConverteJson<ModeloDTO> conversor, IContext<string> contextNomeModelo)
         {
             _navigation = navigation;
             _gerenciador = gerenciador;
             _dialogService = dialogService;
             _conversor = conversor;
-            _context = context;
+            _contextNomeModelo = contextNomeModelo;
 
             CaminhoModelo = string.Empty;
             NomeModelo = string.Empty;
@@ -75,7 +75,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
                 try
                 {
                     var nomeModelo = ConfiguraModelo();
-                    _context.Mensagem = nomeModelo;
+                    _contextNomeModelo.Mensagem = nomeModelo;
                     Navigation.NavigateTo<ConfigurarSchemaViewModel>();
                 }
                 catch (IOException ex)
