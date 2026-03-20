@@ -8,6 +8,7 @@ using IntegradorViewModel.ItensViewModel;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.PrincipalModelo;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 
 namespace IntegradorViewModel.Pages.InserirModelo
@@ -58,11 +59,17 @@ namespace IntegradorViewModel.Pages.InserirModelo
             //var schema = new SchemaDTO(NomeColuna, Finalidade, Tipo, Categorico);
 
             var schemaItem = new SchemaItemViewModel(CardsSchema.Count + 1, NomeColuna, Finalidade, Tipo, Categorico);
-            var cardSchema = new ConfiguracaoCardSchemaViewModel(schemaItem, RemoverColuna);
+            var cardSchema = new ConfiguracaoCardSchemaViewModel(schemaItem, RemoverColuna, OrganizaPosicao);
             CardsSchema.Add(cardSchema);
 
-            AtualizaPosicoes(true);
+            foreach (var card in CardsSchema)
+            {
+                card.EstouReposicionando = true;
+            }
 
+            OpcoesPosicao.Add(CardsSchema.Count);
+
+            AtualizaPosicoes();
             //_converter.ConverteJson(_configuracaoSchema);
         }
 
@@ -74,33 +81,32 @@ namespace IntegradorViewModel.Pages.InserirModelo
 
         private void RemoverColuna(ConfiguracaoCardSchemaViewModel cardSchema)
         {
-            OpcoesPosicao.Remove(cardSchema.Posicao);
             CardsSchema.Remove(cardSchema);
-            AtualizaPosicoes(false);
+            OpcoesPosicao.Remove(CardsSchema.Count + 1);
+            AtualizaPosicoes();
         }
 
-        private void AtualizaPosicoes(bool incrementar)
+        private void AtualizaPosicoes()
         {
-            int quantidade = CardsSchema.Count;
-            if (incrementar)
-            {
-                OpcoesPosicao.Add(quantidade);
-            }
-            else
-            {
-                OpcoesPosicao.Remove(quantidade);
-            }
-
             for (int i = 0; i < CardsSchema.Count; i++)
             {
+                CardsSchema[i].EstouReposicionando = true;
+
                 CardsSchema[i].OpcoesPosicao = OpcoesPosicao;
+
                 CardsSchema[i].Posicao = i + 1;
+
+                CardsSchema[i].EstouReposicionando = false;
             }
         }
 
-        private void OrganizaPosicao()
+        private void OrganizaPosicao(ConfiguracaoCardSchemaViewModel cardSchema, int posicaoNova)
         {
+            int posicaoOriginal = CardsSchema.IndexOf(cardSchema);
 
+            CardsSchema.Move(posicaoOriginal, posicaoNova);
+
+            AtualizaPosicoes();
         }
 
         [RelayCommand]

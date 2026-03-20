@@ -13,6 +13,7 @@ namespace IntegradorViewModel.ControleUsuario
 {
     public partial class ConfiguracaoCardSchemaViewModel : ObservableObject
     {
+        private readonly Action<ConfiguracaoCardSchemaViewModel, int> _onTrocarPosicao;
         private readonly Action<ConfiguracaoCardSchemaViewModel> _onExcluir;
         private SchemaItemViewModel _schemaItem;
 
@@ -34,9 +35,12 @@ namespace IntegradorViewModel.ControleUsuario
         [ObservableProperty]
         private bool _categorico;
 
-        public ConfiguracaoCardSchemaViewModel(SchemaItemViewModel schemaItem, Action<ConfiguracaoCardSchemaViewModel> action)
+        public bool EstouReposicionando { get; set; }
+
+        public ConfiguracaoCardSchemaViewModel(SchemaItemViewModel schemaItem, Action<ConfiguracaoCardSchemaViewModel> actionExcluir, Action<ConfiguracaoCardSchemaViewModel, int> actionTrocarPosicao)
         {
-            _onExcluir = action;
+            _onTrocarPosicao = actionTrocarPosicao;
+            _onExcluir = actionExcluir;
             _schemaItem = schemaItem;
 
             OpcoesPosicao = new();
@@ -47,7 +51,15 @@ namespace IntegradorViewModel.ControleUsuario
             Categorico = _schemaItem.Categorico;
         }
 
-        partial void OnPosicaoChanged(int value) => _schemaItem.Posicao = value;
+        partial void OnPosicaoChanged(int value) 
+        {
+            if (!EstouReposicionando && _schemaItem.Posicao != value)
+            {
+                _onTrocarPosicao.Invoke(this, value - 1);
+            }
+
+            _schemaItem.Posicao = value;
+        }
 
         partial void OnFinalidadeChanged(string value) => _schemaItem.Finalidade = value;
 
