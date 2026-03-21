@@ -30,9 +30,9 @@ namespace IntegradorViewModel.Pages.InserirModelo
         private readonly IGerenciador<ModeloDTO> _gerenciador;
         private readonly IDialogService _dialogService;
         private readonly IConverteJson<ModeloDTO> _conversor;
-        private readonly IContext<string> _contextNomeModelo;
+        private readonly IContext<ModeloDTO> _contextNomeModelo;
 
-        public InserirModeloViewModel(INavigationService navigation, IGerenciador<ModeloDTO> gerenciador, IDialogService dialogService, IConverteJson<ModeloDTO> conversor, IContext<string> contextNomeModelo)
+        public InserirModeloViewModel(INavigationService navigation, IGerenciador<ModeloDTO> gerenciador, IDialogService dialogService, IConverteJson<ModeloDTO> conversor, IContext<ModeloDTO> contextNomeModelo)
         {
             _navigation = navigation;
             _gerenciador = gerenciador;
@@ -63,8 +63,15 @@ namespace IntegradorViewModel.Pages.InserirModelo
             }
         }
 
-        [RelayCommand]
-        public void NavigateToHome() => Navigation.NavigateTo<HomeViewModel>();
+        private ModeloDTO ConfiguraModelo()
+        {
+            CaminhoModelo = _gerenciador.Salvar(new ModeloDTO(NomeModelo, TipoModelo, CaminhoModelo));
+
+            ModeloDTO modelo = new ModeloDTO(NomeModelo, TipoModelo, CaminhoModelo);
+            _conversor.ConverteJson(modelo);
+
+            return modelo;
+        }
 
         [RelayCommand]
         public void NavigateToConfigurarSchema()
@@ -79,7 +86,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
             try
             {
                 var nomeModelo = ConfiguraModelo();
-                _contextNomeModelo.Mensagem = nomeModelo;
+                _contextNomeModelo.EnviaMensagem(nomeModelo);
                 Navigation.NavigateTo<ConfigurarSchemaViewModel>();
             }
             catch (IOException ex)
@@ -88,14 +95,11 @@ namespace IntegradorViewModel.Pages.InserirModelo
             }
         }
 
-        private string ConfiguraModelo()
+        [RelayCommand]
+        public void NavigateToHome()
         {
-            CaminhoModelo = _gerenciador.Salvar(new ModeloDTO(NomeModelo, TipoModelo, CaminhoModelo));
-
-            ModeloDTO modelo = new ModeloDTO(NomeModelo, TipoModelo, CaminhoModelo);
-            _conversor.ConverteJson(modelo);
-
-            return modelo.Nome;
+            Navigation.EndFlow();
+            Navigation.NavigateTo<HomeViewModel>();
         }
     }
 }

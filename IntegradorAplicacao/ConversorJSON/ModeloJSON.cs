@@ -15,7 +15,7 @@ namespace IntegradorAplicacao.ConversorJson
 
         public void ConverteJson(ModeloDTO modelo)
         {
-            string caminhoJson = Path.Combine(_provider.GetCaminhoModelo(), modelo.Nome, "modelo.json");
+            string caminhoJson = Path.Combine(_provider.GetCaminhoModelo(), modelo.NomeModelo, "modelo.json");
             var texto = JsonSerializer.Serialize(modelo);
             File.WriteAllText(caminhoJson, texto);
         }

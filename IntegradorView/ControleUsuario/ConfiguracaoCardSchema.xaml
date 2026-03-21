@@ -23,14 +23,15 @@
                         </Grid.ColumnDefinitions>
 
                         <ComboBox materialDesign:HintAssist.Hint="Tipo"
-                                   Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                                   SelectedValue="{Binding Posicao}"
-                                   ItemsSource="{Binding OpcoesPosicao}"
-                                   materialDesign:TextFieldAssist.TextFieldCornerRadius="10"
-                                   Margin="10, 10, 20, 10"
-                                   Width="70"
-                                   Height="50"
-                                   Grid.Column="0"/>
+                                  Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                                  SelectedValuePath="Content"
+                                  SelectedValue="{Binding Posicao}"
+                                  ItemsSource="{Binding OpcoesPosicao}"
+                                  materialDesign:TextFieldAssist.TextFieldCornerRadius="10"
+                                  Margin="10, 10, 20, 10"
+                                  Width="70"
+                                  Height="50"
+                                  Grid.Column="0"/>
 
                         <Rectangle Width="1"
                                    Grid.Column="1"
@@ -66,7 +67,8 @@
                             <StackPanel Margin="5,10" MinWidth="185">
                                 <ComboBox materialDesign:HintAssist.Hint="Finalidade"
                                           Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                                          Text="{Binding Finalidade}"
+                                          SelectedValuePath="Content"
+                                          SelectedValue="{Binding Finalidade}"
                                           materialDesign:TextFieldAssist.TextFieldCornerRadius="10"
                                           Width="200"
                                           Height="50">
@@ -79,7 +81,8 @@
                             <StackPanel Margin="10" MinWidth="185">
                                 <ComboBox materialDesign:HintAssist.Hint="Tipo"
                                           Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                                          Text="{Binding Tipo}"
+                                          SelectedValuePath="Content"
+                                          SelectedValue="{Binding Tipo}"
                                           materialDesign:TextFieldAssist.TextFieldCornerRadius="10"
                                           Width="200"
                                           Height="50">

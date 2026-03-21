@@ -8,6 +8,9 @@ namespace IntegradorViewModel.JanelaModelo
     public interface INavigationService
     {
         object? CurrentView { get; set; }
+
         void NavigateTo<TViewModel>() where TViewModel : ObservableObject;
+        void StartFlow();
+        void EndFlow();
     }
 }

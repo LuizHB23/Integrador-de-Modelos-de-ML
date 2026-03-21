@@ -6,6 +6,7 @@ using IntegradorViewModel.Context;
 using IntegradorViewModel.Interfaces;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.InserirModelo;
+using IntegradorViewModel.Pages.PrincipalModelo;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
         private readonly Mock<IConverteJson<ModeloDTO>> _mockConversor;
         private readonly Mock<IDialogService> _mockDialog;
         private readonly Mock<INavigationService> _mockNavigation;
-        private readonly Mock<IContext<string>> _mockContext;
+        private readonly Mock<IContext<ModeloDTO>> _mockContext;
         private readonly InserirModeloViewModel _viewModel;
 
         public InserirModeloViewModelTests()
@@ -29,7 +30,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
             _mockConversor = new Mock<IConverteJson<ModeloDTO>>();
             _mockGerenciador = new Mock<IGerenciador<ModeloDTO>>();
             _mockDialog = new Mock<IDialogService>();
-            _mockContext = new Mock<IContext<string>>();
+            _mockContext = new Mock<IContext<ModeloDTO>>();
 
             _viewModel = new InserirModeloViewModel(_mockNavigation.Object, _mockGerenciador.Object, _mockDialog.Object, _mockConversor.Object, _mockContext.Object);
         }
@@ -102,7 +103,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
             _viewModel.NavigateToConfigurarSchemaCommand.Execute(null);
 
             //Assert
-            _mockContext.VerifySet(f => f.Mensagem = _viewModel.NomeModelo, Times.Once);
+            _mockContext.Verify(f => f.EnviaMensagem(It.IsAny<ModeloDTO>()), Times.Once);
             _mockGerenciador.Verify(f => f.Salvar(It.IsAny<ModeloDTO>()), Times.Once);
             _mockConversor.Verify(f => f.ConverteJson(It.IsAny<ModeloDTO>()), Times.Once);
             _mockNavigation.Verify(f => f.NavigateTo<ConfigurarSchemaViewModel>(), Times.Once);
@@ -150,6 +151,17 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
 
             //Assert
             _mockDialog.Verify(f => f.ShowMessage($"Nome Inválido: {erro}", "Erro"), Times.Once);
+        }
+
+        [Fact]
+        public void RetornaOkParaFluxoScopedEncerradoERetonoHomeEmNavigateToHomeCommand()
+        {
+            //Arrange + Act
+            _viewModel.NavigateToHomeCommand.Execute(null);
+
+            //Assert
+            _mockNavigation.Verify(f => f.EndFlow(), Times.Once);
+            _mockNavigation.Verify(f => f.NavigateTo<HomeViewModel>(), Times.Once);
         }
     }
 }

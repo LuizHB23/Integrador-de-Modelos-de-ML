@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace IntegradorViewModel.Context
+﻿namespace IntegradorViewModel.Context
 {
     public interface IContext<T> where T : class
     {
-        T Mensagem { get; set; }
+        void EnviaMensagem(T mensagem);
+        T RecebeMensagem();
     }
 }

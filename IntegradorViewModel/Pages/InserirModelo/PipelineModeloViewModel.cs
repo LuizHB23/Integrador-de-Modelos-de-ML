@@ -16,6 +16,10 @@ namespace IntegradorViewModel.Pages.InserirModelo
         }
 
         [RelayCommand]
-        public void NavigateToHome() => Navigation.NavigateTo<HomeViewModel>();
+        public void NavigateToHome()
+        {
+            Navigation.EndFlow();
+            Navigation.NavigateTo<HomeViewModel>();
+        }
     }
 }

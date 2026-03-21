@@ -1,4 +1,5 @@
 ﻿using IntegradorAplicacao;
+using IntegradorAplicacao.DTO;
 using IntegradorView.InteracoesUI.OpenFileDialog;
 using IntegradorViewModel.Context;
 using IntegradorViewModel.ControleUsuario;
@@ -50,7 +51,7 @@ namespace IntegradorView
             services.AddSingleton<IDialogService, DialogService>();
             services.AddSingleton<INavigationService, NavigationService>();
 
-            services.AddSingleton<IContext<string>, NomeModeloContext>();
+            services.AddScoped<IContext<ModeloDTO>, NomeModeloContext>();
 
             ServiceProvider = services.BuildServiceProvider();
         }

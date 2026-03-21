@@ -1,12 +1,12 @@
-﻿using CommunityToolkit.Mvvm.Messaging.Messages;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using IntegradorAplicacao.DTO;
 
 namespace IntegradorViewModel.Context
 {
-    public class NomeModeloContext : IContext<string>
+    public class NomeModeloContext : IContext<ModeloDTO>
     {
-        public string Mensagem { get; set; } = string.Empty;
+        private ModeloDTO _mensagem = new ModeloDTO(string.Empty, string.Empty, string.Empty);
+
+        public void EnviaMensagem(ModeloDTO mensagem) => _mensagem = mensagem;
+        public ModeloDTO RecebeMensagem() => _mensagem;
     }
 }

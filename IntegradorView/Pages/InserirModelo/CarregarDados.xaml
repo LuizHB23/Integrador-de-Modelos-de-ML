@@ -41,13 +41,15 @@
                                      IsReadOnly="True" 
                                      FontSize="16"
                                      materialDesign:TextFieldAssist.HasClearButton="True"
-                                     Style="{StaticResource MaterialDesignTextBox}" 
+                                     Style="{StaticResource MaterialDesignTextBox}"
+                                     Text="{Binding CaminhoArquivoDados}"
                                      VerticalAlignment="Bottom"/>
                             
                             <Button Grid.Column="1" 
                                     Content="Buscar" 
                                     Margin="15,0,0,0"
                                     Style="{StaticResource MaterialDesignOutlinedButton}"
+                                    Command="{Binding CarregarArquivoDadosCommand}"
                                     Cursor="Hand"/>
                         </Grid>
 
@@ -62,8 +64,11 @@
                                            Style="{StaticResource MaterialDesignOverlineTextBlock}" 
                                            Margin="0,0,0,8"/>
                                 
-                                <ComboBox FontSize="15">
-                                    <ComboBoxItem Content="Vírgula (,)" IsSelected="True"/>
+                                <ComboBox FontSize="15"
+                                          Width="270"
+                                          SelectedValuePath="Content"
+                                          SelectedValue="{Binding Delimitador}">
+                                    <ComboBoxItem Content="Vírgula (,)"/>
                                     <ComboBoxItem Content="Ponto e Vírgula (;)"/>
                                     <ComboBoxItem Content="Tabulação (Tab)"/>
                                 </ComboBox>
@@ -74,8 +79,10 @@
                                            Style="{StaticResource MaterialDesignOverlineTextBlock}" 
                                            Margin="0,0,0,8"/>
                                 
-                                <ComboBox FontSize="15">
-                                    <ComboBoxItem Content="UTF-8" IsSelected="True"/>
+                                <ComboBox FontSize="15"
+                                          Width="270"
+                                          SelectedValue="{Binding Codificacao}">
+                                    <ComboBoxItem Content="UTF-8"/>
                                     <ComboBoxItem Content="Windows-1252"/>
                                 </ComboBox>
                             </StackPanel>
@@ -88,12 +95,16 @@
                             </Grid.ColumnDefinitions>
 
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="Decimal" 
+                                <TextBlock Text="DECIMAL" 
                                            Style="{StaticResource MaterialDesignOverlineTextBlock}" 
                                            Margin="0,0,0,8"/>
 
-                                <ComboBox FontSize="15">
-                                    <ComboBoxItem Content="Ponto (.)" IsSelected="True"/>
+                                <ComboBox FontSize="15"
+                                          Width="270"
+                                          SelectedValuePath="Content"
+                                          SelectedValue="{Binding Decimal}"
+                                          Margin="0,0,15,0">
+                                    <ComboBoxItem Content="Ponto (.)"/>
                                     <ComboBoxItem Content="Vírgula (,)"/>
                                 </ComboBox>
                             </StackPanel>
@@ -102,7 +113,7 @@
                                         Margin="30,0"
                                         Grid.Column="1">
                                 <CheckBox Content="Contém cabeçalho na primeira linha" 
-                                          IsChecked="True" 
+                                          IsChecked="{Binding ContemCabecalho}" 
                                           Style="{StaticResource MaterialDesignCheckBox}"/>
                             </StackPanel>
                         </Grid>

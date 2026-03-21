@@ -38,11 +38,11 @@ namespace IntegradorViewModel.Pages.InserirModelo
         public ObservableCollection<ConfiguracaoCardSchemaViewModel> CardsSchema { get; }
 
         private readonly IConverteJson<Dictionary<int, SchemaDTO>> _converter;
-        private readonly IContext<string> _contextNomeModelo;
+        private readonly IContext<ModeloDTO> _contextNomeModelo;
         private readonly IPathProvider _provider;
         private readonly IDialogService _dialogService;
 
-        public ConfigurarSchemaViewModel(INavigationService navigation, IDialogService dialogService, IConverteJson<Dictionary<int, SchemaDTO>> converter, IContext<string> contextNomeModelo, IPathProvider provider)
+        public ConfigurarSchemaViewModel(INavigationService navigation, IDialogService dialogService, IConverteJson<Dictionary<int, SchemaDTO>> converter, IContext<ModeloDTO> contextNomeModelo, IPathProvider provider)
         {
             _converter = converter;
             _contextNomeModelo = contextNomeModelo;
@@ -50,7 +50,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
             _dialogService = dialogService;
             Navigation = navigation;
 
-            _nomeModelo = _contextNomeModelo.Mensagem;
+            _nomeModelo = _contextNomeModelo.RecebeMensagem().NomeModelo;
             NomeColuna = string.Empty;
             Finalidade = string.Empty;
             Tipo = string.Empty;
@@ -93,6 +93,12 @@ namespace IntegradorViewModel.Pages.InserirModelo
         public void CarregarSchema()
         {
             var _caminhoJson = _dialogService.GetCaminhoArquivo();
+
+            if (string.IsNullOrWhiteSpace(_caminhoJson))
+            {
+                return;
+            }
+
             var schema = _converter.CarregarJson(_caminhoJson);
 
             foreach(var card in schema)
@@ -151,20 +157,23 @@ namespace IntegradorViewModel.Pages.InserirModelo
         }
 
         [RelayCommand]
-        public void NavigateToHome() => Navigation.NavigateTo<HomeViewModel>();
-
-        [RelayCommand]
         public void NavigateToCarregarDados()
         {
-            if (CardsSchema.Count != 0) 
-            { 
-                PreparaParaJson();
-                Navigation.NavigateTo<CarregarDadosViewModel>();
-            }
-            else
+            if (CardsSchema.Count == 0) 
             {
-                _dialogService.ShowMessage("Não se pode criar um Schema vazio", "Schema Vazio");
+                _dialogService.ShowMessage("Não se pode criar um Schema vazio. Não se esquecer de consertar este bug", "Schema Vazio");
+                //return;
             }
+
+            //PreparaParaJson();
+            Navigation.NavigateTo<CarregarDadosViewModel>();
+        }
+
+        [RelayCommand]
+        public void NavigateToHome()
+        {
+            Navigation.EndFlow();
+            Navigation.NavigateTo<HomeViewModel>();
         }
     }
 }

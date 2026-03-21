@@ -14,7 +14,9 @@ namespace IntegradorViewModel.JanelaModelo
     public partial class NavigationService : ObservableObject, INavigationService
     {
         private object? _currentView;
-        private readonly IServiceProvider _serviceProvider;
+
+        private readonly IServiceProvider _rootProvider;
+        private IServiceScope? _currentScope;
 
         public object? CurrentView
         {
@@ -22,17 +24,38 @@ namespace IntegradorViewModel.JanelaModelo
             set => SetProperty(ref _currentView, value);
         }
 
-        public NavigationService(IServiceProvider serviceProvider)
+        public NavigationService(IServiceProvider rootProvider)
         {
-            _serviceProvider = serviceProvider;
+            _rootProvider = rootProvider;
+        }
+
+        public void StartFlow()
+        {
+            _currentScope?.Dispose();
+            _currentScope = _rootProvider.CreateScope();
+        }
+
+        public void EndFlow()
+        {
+            _currentScope?.Dispose();
+            _currentScope = null;
+        }
+
+        public void NavigateTo<TViewModel>() where TViewModel : ObservableObject
+        {
+            var provider = _currentScope?.ServiceProvider ?? _rootProvider;
+
+            var viewmodel = provider.GetRequiredService<TViewModel>();
+
+            CurrentView = viewmodel;
         }
 
         //[RelayCommand(CanExecute = nameof(PodeNavegar))]
-        public void NavigateTo<TViewModel>() where TViewModel : ObservableObject
-        {
-            var viewmodel = _serviceProvider.GetService<TViewModel>();
-            CurrentView = (ObservableObject)viewmodel!;
-        }
+        //public void NavigateTo<TViewModel>() where TViewModel : ObservableObject
+        //{
+        //    var viewmodel = _serviceProvider.GetService<TViewModel>();
+        //    CurrentView = (ObservableObject)viewmodel!;
+        //}
 
         //private bool PodeNavegar()
         //{
