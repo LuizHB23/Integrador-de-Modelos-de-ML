@@ -18,16 +18,5 @@ namespace IntegradorView.Pages.InserirModelo
             InitializeComponent();
             DataContext = App.GetService<ConfigurarSchemaViewModel>();
         }
-        public void BtnCarregarColunas_Click(string caminhoArquivo)
-        {
-            using (var sr = new StreamReader(caminhoArquivo))
-            {
-                string texto = sr.ReadToEnd();
-                var listaColunaSchema = JsonSerializer.Deserialize<List<ColunaSchema>>(texto);
-
-                // O ItemsControl vai gerar um Card para cada item desta lista automaticamente!
-                ListaColunasSchema.ItemsSource = listaColunaSchema;
-            }
-        }
     }
 }

@@ -69,23 +69,22 @@ namespace IntegradorViewModel.Pages.InserirModelo
         [RelayCommand]
         public void NavigateToConfigurarSchema()
         {
-            Navigation.NavigateTo<ConfigurarSchemaViewModel>();
-            if (!string.IsNullOrWhiteSpace(NomeModelo) && !string.IsNullOrWhiteSpace(TipoModelo) && !string.IsNullOrWhiteSpace(CaminhoModelo))
-            {
-                try
-                {
-                    var nomeModelo = ConfiguraModelo();
-                    _contextNomeModelo.Mensagem = nomeModelo;
-                    Navigation.NavigateTo<ConfigurarSchemaViewModel>();
-                }
-                catch (IOException ex)
-                {
-                    _dialogService.ShowMessage($"Nome Inválido: {ex.Message}", "Erro");
-                }
-            }
-            else
+            //Navigation.NavigateTo<ConfigurarSchemaViewModel>();
+            if (string.IsNullOrWhiteSpace(NomeModelo) || string.IsNullOrWhiteSpace(TipoModelo) || string.IsNullOrWhiteSpace(CaminhoModelo))
             {
                 _dialogService.ShowMessage("Preencha corretamente os campos", "Campos Faltantes");
+                return;
+            }
+
+            try
+            {
+                var nomeModelo = ConfiguraModelo();
+                _contextNomeModelo.Mensagem = nomeModelo;
+                Navigation.NavigateTo<ConfigurarSchemaViewModel>();
+            }
+            catch (IOException ex)
+            {
+                _dialogService.ShowMessage($"Nome Inválido: {ex.Message}", "Erro");
             }
         }
 

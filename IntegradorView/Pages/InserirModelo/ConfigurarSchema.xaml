@@ -71,7 +71,7 @@
                                               Text="{Binding Finalidade}"
                                               FontSize="20" 
                                               HorizontalAlignment="Stretch">
-                                        <ComboBoxItem Content="Input"/>
+                                        <ComboBoxItem Content="Feature"/>
                                         <ComboBoxItem Content="Label (Target)"/>
                                         <ComboBoxItem Content="Ignore"/>
                                     </ComboBox>
@@ -82,6 +82,7 @@
                                                 FontSize="20" 
                                                 HorizontalAlignment="Stretch">
                                         <ComboBoxItem Content="Single"/>
+                                        <ComboBoxItem Content="String"/>
                                         <ComboBoxItem Content="Boolean"/>
                                         <ComboBoxItem Content="DateTime"/>
                                     </ComboBox>
@@ -119,40 +120,6 @@
 
 
                     <Grid>
-                        <!--Começo Configuração Futura-->
-
-                        <ItemsControl x:Name="ListaColunasSchema">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <UniformGrid x:Name="PainelMapeamento" Columns="1"/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <materialDesign:Card Margin="0,5" Padding="12" materialDesign:ElevationAssist.Elevation="Dp2">
-                                        <UniformGrid Columns="4">
-                                            <TextBox materialDesign:HintAssist.Hint="Nome" Text="{Binding NomeColuna}" Margin="5" Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
-                                            <ComboBox materialDesign:HintAssist.Hint="Finalidade" Margin="5" Style="{StaticResource MaterialDesignOutlinedComboBox}">
-                                                <ComboBoxItem Content="Feature"/>
-                                                <ComboBoxItem Content="Label (Target)"/>
-                                            </ComboBox>
-                                            <ComboBox materialDesign:HintAssist.Hint="Tipo" Margin="5" Style="{StaticResource MaterialDesignOutlinedComboBox}">
-                                                <ComboBoxItem Content="Integer"/>
-                                                <ComboBoxItem Content="Float"/>
-                                                <ComboBoxItem Content="String"/>
-                                            </ComboBox>
-                                            <StackPanel VerticalAlignment="Center">
-                                                <TextBlock Text="Categórico?" HorizontalAlignment="Center" Style="{StaticResource MaterialDesignBody2TextBlock}"/>
-                                                <ToggleButton HorizontalAlignment="Center" Style="{StaticResource MaterialDesignSwitchToggleButton}"/>
-                                            </StackPanel>
-                                        </UniformGrid>
-                                    </materialDesign:Card>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-
-                        <!--Fim Configuração Futura-->
 
                         <!--Começo Cartão Configuração de Schema-->
 

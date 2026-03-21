@@ -1,9 +1,5 @@
 ﻿using IntegradorAplicacao.CaminhoProvider;
 using IntegradorAplicacao.DTO;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
 using System.Text.Json;
 
 namespace IntegradorAplicacao.ConversorJson
@@ -19,30 +15,36 @@ namespace IntegradorAplicacao.ConversorJson
             _caminhoJson = string.Empty;
         }
 
-        public void ConverteJson(Dictionary<int, SchemaDTO> schemas)
+        public void ConverteJson(Dictionary<int, SchemaDTO> schemaNovo)
         {
-            var (posicao, schema) = schemas.First();
-            _caminhoJson = Path.Combine(_provider.GetCaminhoModelo(), /*schema.NomeColuna,*/ "schema.json");
-            string texto = JsonSerializer.Serialize(schemas);
+            string texto = string.Empty;
+
+            if (schemaNovo.Count != 0)
+            {
+                var card = schemaNovo.First();
+
+                _caminhoJson = Path.Combine(_provider.GetCaminhoModelo(), card.Value.NomeModelo, "schema.json");
+
+                texto = JsonSerializer.Serialize(schemaNovo);
+            }
+
             File.WriteAllText(_caminhoJson, texto);
         }
 
         public Dictionary<int, SchemaDTO> CarregarJson(string caminho)
         {
-            if(File.Exists(caminho))
-                using (var sr = new StreamReader(caminho))
+            if (File.Exists(caminho))
+            {
+                var texto = File.ReadAllText(caminho);
+
+                if(!string.IsNullOrWhiteSpace(texto))
                 {
-                    var texto = sr.ReadToEnd();
-                    var listaSchema = JsonSerializer.Deserialize<Dictionary<int, SchemaDTO>>(texto);
-
-                    return listaSchema!;
+                    return JsonSerializer.Deserialize<Dictionary<int, SchemaDTO>>(texto)
+                   ?? new Dictionary<int, SchemaDTO>();
                 }
-            else
-                return new Dictionary<int, SchemaDTO>();
-        }
+            }
 
-        public void EscreverJson(Dictionary<int, SchemaDTO> schema)
-        {
+            return new Dictionary<int, SchemaDTO>();
         }
     }
 }

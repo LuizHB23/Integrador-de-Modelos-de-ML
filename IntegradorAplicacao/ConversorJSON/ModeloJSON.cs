@@ -24,10 +24,5 @@ namespace IntegradorAplicacao.ConversorJson
         {
             throw new NotImplementedException();
         }
-
-        public void EscreverJson(ModeloDTO objeto)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

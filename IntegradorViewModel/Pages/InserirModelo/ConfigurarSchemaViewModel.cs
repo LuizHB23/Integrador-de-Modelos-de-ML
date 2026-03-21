@@ -1,9 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using IntegradorAplicacao.CaminhoProvider;
 using IntegradorAplicacao.ConversorJson;
 using IntegradorAplicacao.DTO;
 using IntegradorViewModel.Context;
 using IntegradorViewModel.ControleUsuario;
+using IntegradorViewModel.Interfaces;
 using IntegradorViewModel.ItensViewModel;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.PrincipalModelo;
@@ -35,13 +37,17 @@ namespace IntegradorViewModel.Pages.InserirModelo
         public ObservableCollection<int> OpcoesPosicao;
         public ObservableCollection<ConfiguracaoCardSchemaViewModel> CardsSchema { get; }
 
-        private IConverteJson<Dictionary<int, SchemaDTO>> _converter;
-        private IContext<string> _contextNomeModelo;
+        private readonly IConverteJson<Dictionary<int, SchemaDTO>> _converter;
+        private readonly IContext<string> _contextNomeModelo;
+        private readonly IPathProvider _provider;
+        private readonly IDialogService _dialogService;
 
-        public ConfigurarSchemaViewModel(INavigationService navigation, IConverteJson<Dictionary<int, SchemaDTO>> converter, IContext<string> contextNomeModelo)
+        public ConfigurarSchemaViewModel(INavigationService navigation, IDialogService dialogService, IConverteJson<Dictionary<int, SchemaDTO>> converter, IContext<string> contextNomeModelo, IPathProvider provider)
         {
             _converter = converter;
             _contextNomeModelo = contextNomeModelo;
+            _provider = provider;
+            _dialogService = dialogService;
             Navigation = navigation;
 
             _nomeModelo = _contextNomeModelo.Mensagem;
@@ -56,9 +62,14 @@ namespace IntegradorViewModel.Pages.InserirModelo
         [RelayCommand]
         public void AdicinarColuna()
         {
-            //var schema = new SchemaDTO(NomeColuna, Finalidade, Tipo, Categorico);
+            if (string.IsNullOrWhiteSpace(NomeColuna) || string.IsNullOrWhiteSpace(Finalidade) || string.IsNullOrWhiteSpace(Tipo))
+            {
+                _dialogService.ShowMessage("Preencha corretamente os campos", "Campos Faltantes");
+                return;
+            }
 
-            var schemaItem = new SchemaItemViewModel(CardsSchema.Count + 1, NomeColuna, Finalidade, Tipo, Categorico);
+            var posicao = CardsSchema.Count + 1;
+            var schemaItem = new SchemaItemViewModel(posicao, NomeColuna, Finalidade, Tipo, Categorico);
             var cardSchema = new ConfiguracaoCardSchemaViewModel(schemaItem, RemoverColuna, OrganizaPosicao);
             CardsSchema.Add(cardSchema);
 
@@ -70,13 +81,28 @@ namespace IntegradorViewModel.Pages.InserirModelo
             OpcoesPosicao.Add(CardsSchema.Count);
 
             AtualizaPosicoes();
-            //_converter.ConverteJson(_configuracaoSchema);
+            PreparaParaJson();
+
+            NomeColuna = string.Empty;
+            Finalidade = string.Empty;
+            Tipo = string.Empty;
+            Categorico = false;
         }
 
         [RelayCommand]
         public void CarregarSchema()
         {
+            var _caminhoJson = _dialogService.GetCaminhoArquivo();
+            var schema = _converter.CarregarJson(_caminhoJson);
 
+            foreach(var card in schema)
+            {
+                var schemaItem = new SchemaItemViewModel(card.Key, card.Value.NomeColuna, card.Value.Finalidade, card.Value.Tipo, card.Value.Categorico);
+                var cardSchema = new ConfiguracaoCardSchemaViewModel(schemaItem, RemoverColuna, OrganizaPosicao);
+                CardsSchema.Add(cardSchema);
+            }
+
+            AtualizaPosicoes();
         }
 
         private void RemoverColuna(ConfiguracaoCardSchemaViewModel cardSchema)
@@ -84,6 +110,8 @@ namespace IntegradorViewModel.Pages.InserirModelo
             CardsSchema.Remove(cardSchema);
             OpcoesPosicao.Remove(CardsSchema.Count + 1);
             AtualizaPosicoes();
+            PreparaParaJson();
+
         }
 
         private void AtualizaPosicoes()
@@ -109,14 +137,34 @@ namespace IntegradorViewModel.Pages.InserirModelo
             AtualizaPosicoes();
         }
 
+        private void PreparaParaJson()
+        {
+            var schemaNovo = new Dictionary<int, SchemaDTO>();
+
+            foreach(var card in CardsSchema)
+            {
+                var schema = new SchemaDTO(card.NomeColuna, card.Finalidade, card.Tipo, card.Categorico, _nomeModelo);
+                schemaNovo.Add(card.Posicao, schema);
+            }
+
+            _converter.ConverteJson(schemaNovo);
+        }
+
         [RelayCommand]
         public void NavigateToHome() => Navigation.NavigateTo<HomeViewModel>();
 
         [RelayCommand]
         public void NavigateToCarregarDados()
         {
-            //_converter.ConverteJson(_configuracaoSchema);
-            Navigation.NavigateTo<CarregarDadosViewModel>();
+            if (CardsSchema.Count != 0) 
+            { 
+                PreparaParaJson();
+                Navigation.NavigateTo<CarregarDadosViewModel>();
+            }
+            else
+            {
+                _dialogService.ShowMessage("Não se pode criar um Schema vazio", "Schema Vazio");
+            }
         }
     }
 }

@@ -44,7 +44,8 @@
                            VerticalAlignment="Center">
                             <StackPanel Margin="5, 10" Width="250">
                                 <TextBox materialDesign:HintAssist.Hint="Coluna" 
-                                         Text="{Binding NomeColuna}" 
+                                         Text="{Binding NomeColuna}"
+                                         IsReadOnly="True"
                                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                                          Width="250"
                                          FontSize="18"/>
