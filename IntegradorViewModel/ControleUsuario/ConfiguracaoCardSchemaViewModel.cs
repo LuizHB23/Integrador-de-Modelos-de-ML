@@ -1,13 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using IntegradorAplicacao.DTO;
-using IntegradorViewModel.Context;
 using IntegradorViewModel.ItensViewModel;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Text;
 
 namespace IntegradorViewModel.ControleUsuario
 {

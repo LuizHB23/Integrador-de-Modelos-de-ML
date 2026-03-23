@@ -24,8 +24,7 @@
 
                         <ComboBox materialDesign:HintAssist.Hint="Tipo"
                                   Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                                  SelectedValuePath="Content"
-                                  SelectedValue="{Binding Posicao}"
+                                  SelectedItem="{Binding Posicao}"
                                   ItemsSource="{Binding OpcoesPosicao}"
                                   materialDesign:TextFieldAssist.TextFieldCornerRadius="10"
                                   Margin="10, 10, 20, 10"

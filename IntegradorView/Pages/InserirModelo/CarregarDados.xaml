@@ -36,7 +36,7 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            
+
                             <TextBox x:Name="TxtFilePath" 
                                      IsReadOnly="True" 
                                      FontSize="16"
@@ -44,7 +44,7 @@
                                      Style="{StaticResource MaterialDesignTextBox}"
                                      Text="{Binding CaminhoArquivoDados}"
                                      VerticalAlignment="Bottom"/>
-                            
+
                             <Button Grid.Column="1" 
                                     Content="Buscar" 
                                     Margin="15,0,0,0"
@@ -63,11 +63,10 @@
                                 <TextBlock Text="DELIMITADOR" 
                                            Style="{StaticResource MaterialDesignOverlineTextBlock}" 
                                            Margin="0,0,0,8"/>
-                                
+
                                 <ComboBox FontSize="15"
                                           Width="270"
-                                          SelectedValuePath="Content"
-                                          SelectedValue="{Binding Delimitador}">
+                                          SelectedItem="{Binding Delimitador}">
                                     <ComboBoxItem Content="Vírgula (,)"/>
                                     <ComboBoxItem Content="Ponto e Vírgula (;)"/>
                                     <ComboBoxItem Content="Tabulação (Tab)"/>
@@ -78,10 +77,10 @@
                                 <TextBlock Text="CODIFICAÇÃO" 
                                            Style="{StaticResource MaterialDesignOverlineTextBlock}" 
                                            Margin="0,0,0,8"/>
-                                
+
                                 <ComboBox FontSize="15"
                                           Width="270"
-                                          SelectedValue="{Binding Codificacao}">
+                                          SelectedItem="{Binding Codificacao}">
                                     <ComboBoxItem Content="UTF-8"/>
                                     <ComboBoxItem Content="Windows-1252"/>
                                 </ComboBox>
@@ -101,14 +100,13 @@
 
                                 <ComboBox FontSize="15"
                                           Width="270"
-                                          SelectedValuePath="Content"
-                                          SelectedValue="{Binding Decimal}"
+                                          SelectedItem="{Binding Decimal}"
                                           Margin="0,0,15,0">
                                     <ComboBoxItem Content="Ponto (.)"/>
                                     <ComboBoxItem Content="Vírgula (,)"/>
                                 </ComboBox>
                             </StackPanel>
-                            
+
                             <StackPanel Orientation="Horizontal" 
                                         Margin="30,0"
                                         Grid.Column="1">
@@ -131,7 +129,7 @@
                                     Style="{StaticResource MaterialDesignOutlinedButton}"
                                     Command="{Binding NavigateToHomeCommand}"
                                     Cursor="Hand"/>
-                            
+
                             <Button x:Name="BotaoContinuar" 
                                     Content="Carregar e Continuar" 
                                     Height="50"
@@ -143,12 +141,9 @@
                                     Style="{StaticResource MaterialDesignRaisedButton}"
                                     Command="{Binding NavigateToPipelineModeloCommand}"
                                     Cursor="Hand"/>
-                            
                         </StackPanel>
-
                     </StackPanel>
                 </materialDesign:Card>
-
             </StackPanel>
         </ScrollViewer>
     </Grid>

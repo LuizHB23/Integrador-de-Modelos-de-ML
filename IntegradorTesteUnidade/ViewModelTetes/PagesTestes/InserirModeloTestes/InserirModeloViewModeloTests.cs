@@ -151,6 +151,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
 
             //Assert
             _mockDialog.Verify(f => f.ShowMessage($"Nome Inválido: {erro}", "Erro"), Times.Once);
+            _mockNavigation.Verify(f => f.NavigateTo<ConfigurarSchemaViewModel>(), Times.Never);
         }
 
         [Fact]

@@ -72,13 +72,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
             var schemaItem = new SchemaItemViewModel(posicao, NomeColuna, Finalidade, Tipo, Categorico);
             var cardSchema = new ConfiguracaoCardSchemaViewModel(schemaItem, RemoverColuna, OrganizaPosicao);
             CardsSchema.Add(cardSchema);
-
-            foreach (var card in CardsSchema)
-            {
-                card.EstouReposicionando = true;
-            }
-
-            OpcoesPosicao.Add(CardsSchema.Count);
+            OpcoesPosicao.Add(posicao);
 
             AtualizaPosicoes();
             PreparaParaJson();
@@ -99,13 +93,17 @@ namespace IntegradorViewModel.Pages.InserirModelo
                 return;
             }
 
+            CardsSchema.Clear();
+            OpcoesPosicao.Clear();
+
             var schema = _converter.CarregarJson(_caminhoJson);
 
-            foreach(var card in schema)
+            foreach (var card in schema)
             {
                 var schemaItem = new SchemaItemViewModel(card.Key, card.Value.NomeColuna, card.Value.Finalidade, card.Value.Tipo, card.Value.Categorico);
                 var cardSchema = new ConfiguracaoCardSchemaViewModel(schemaItem, RemoverColuna, OrganizaPosicao);
                 CardsSchema.Add(cardSchema);
+                OpcoesPosicao.Add(card.Key);
             }
 
             AtualizaPosicoes();
@@ -117,7 +115,6 @@ namespace IntegradorViewModel.Pages.InserirModelo
             OpcoesPosicao.Remove(CardsSchema.Count + 1);
             AtualizaPosicoes();
             PreparaParaJson();
-
         }
 
         private void AtualizaPosicoes()
@@ -161,11 +158,11 @@ namespace IntegradorViewModel.Pages.InserirModelo
         {
             if (CardsSchema.Count == 0) 
             {
-                _dialogService.ShowMessage("Não se pode criar um Schema vazio. Não se esquecer de consertar este bug", "Schema Vazio");
-                //return;
+                _dialogService.ShowMessage("Não se pode criar um Schema vazio.", "Schema Vazio");
+                return;
             }
 
-            //PreparaParaJson();
+            PreparaParaJson();
             Navigation.NavigateTo<CarregarDadosViewModel>();
         }
 
