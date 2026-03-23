@@ -80,13 +80,13 @@ namespace IntegradorViewModel.Pages.InserirModelo
             if (string.IsNullOrWhiteSpace(NomeModelo) || string.IsNullOrWhiteSpace(TipoModelo) || string.IsNullOrWhiteSpace(CaminhoModelo))
             {
                 _dialogService.ShowMessage("Preencha corretamente os campos", "Campos Faltantes");
-                //return;
+                return;
             }
 
             try
             {
-                //var nomeModelo = ConfiguraModelo();
-                //_contextNomeModelo.EnviaMensagem(nomeModelo);
+                var nomeModelo = ConfiguraModelo();
+                _contextNomeModelo.EnviaMensagem(nomeModelo);
                 Navigation.NavigateTo<ConfigurarSchemaViewModel>();
             }
             catch (IOException ex)
