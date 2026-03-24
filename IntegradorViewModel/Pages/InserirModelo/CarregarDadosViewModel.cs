@@ -68,7 +68,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
             if(string.IsNullOrWhiteSpace(CaminhoArquivoDados))
             {
                 _dialogService.ShowMessage("Precisa-se de um arquivo prévio", "Schema Vazio");
-                return;
+                //return;
             }
 
             Navigation.NavigateTo<PipelineModeloViewModel>();

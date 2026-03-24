@@ -4,6 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:local="clr-namespace:IntegradorView.Pages.InserirModelo"
+        xmlns:usercontrol="clr-namespace:IntegradorView.ControleUsuario"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d" 
         d:DesignHeight="450" d:DesignWidth="800"
@@ -93,15 +94,25 @@
                                           Grid.Row="1">
                                 <Grid Margin="16">
                                     <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                        <ItemsControl ItemsSource="{Binding Steps}">
+                                        <ItemsControl ItemsSource="{Binding ListaFeatureEngineering}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
-                                                    <ComboBox Margin="0,8"
-                                                              Style="{StaticResource MaterialDesignFloatingHintComboBox}"
-                                                              materialDesign:HintAssist.Hint="{Binding Hint}"
-                                                              materialDesign:TextFieldAssist.HasClearButton="True"
-                                                              ItemsSource="{Binding Options}"
-                                                              SelectedItem="{Binding SelectedOption, Mode=TwoWay}" />
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding NomeProcesso}"
+                                                                   Grid.Row="1"
+                                                                   FontSize="16"
+                                                                   Style="{StaticResource MaterialDesignSubtitle1TextBlock}" 
+                                                                   Margin="0,15"/>
+
+                                                        <ComboBox Margin="0,0,0,15"
+                                                                  Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                                                                  Height="Auto"
+                                                                  FontSize="14"
+                                                                  materialDesign:TextFieldAssist.HasClearButton="True"
+                                                                  ItemsSource="{Binding ListaProcessos}"
+                                                                  DisplayMemberPath="NomeExibicao"
+                                                                  SelectedItem="{Binding NomeExibicao, Mode=TwoWay}"/>
+                                                    </StackPanel>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
@@ -117,6 +128,7 @@
                                         Margin="20,10,0,10"
                                         FontWeight="Bold"
                                         Style="{StaticResource MaterialDesignRaisedButton}"
+                                        Command="{Binding ListaFeatureCommand}"
                                         Cursor="Hand"/>
                                 
                                 <Button Content="Próximo"
@@ -125,6 +137,7 @@
                                         FontSize="14"
                                         FontWeight="Bold"
                                         Style="{StaticResource MaterialDesignRaisedButton}"
+                                        Command="{Binding ListaTransformCommand}"
                                         Cursor="Hand"/>
                             </StackPanel>
                         </Grid>
@@ -159,9 +172,9 @@
                             </materialDesign:ColorZone>
 
                             <TextBlock Text="Parâmetros de Processamento"
-                                               Grid.Row="1"
-                                               Style="{StaticResource MaterialDesignSubtitle1TextBlock}" 
-                                               Margin="16"/>
+                                       Grid.Row="1"
+                                       Style="{StaticResource MaterialDesignSubtitle1TextBlock}" 
+                                       Margin="16"/>
                             <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Padding="20">
                                 <TextBox Grid.Row="2"
                                      Text="{Binding ScriptCodigo, UpdateSourceTrigger=PropertyChanged}"
@@ -177,7 +190,7 @@
                                      VerticalAlignment="Stretch"
                                      materialDesign:HintAssist.Hint="Configure sua função aqui"
                                      MinHeight="200"
-                                     MaxWidth="235">
+                                     Width="235">
                                     
                                 </TextBox>
                             </ScrollViewer>
@@ -190,6 +203,7 @@
                                     FontSize="14"
                                     FontWeight="Bold"
                                     Style="{StaticResource MaterialDesignRaisedButton}"
+                                    Command="{Binding AdicionaFuncaoCommand}"
                                     Cursor="Hand"/>
 
                         </Grid>
@@ -238,59 +252,13 @@
 
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
                                 <StackPanel Margin="10">
-                                    <Border Margin="10"
-                                            BorderThickness="0.5"
-                                            BorderBrush="Black"
-                                            MinHeight="40"
-                                            CornerRadius="5">
-
-                                        <Grid>
-
-                                            <StackPanel Orientation="Horizontal">
-                                                <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                                                          materialDesign:TextFieldAssist.TextFieldCornerRadius="10"
-                                                          BorderBrush="#D1D1D1"
-                                                          Margin="10"
-                                                          Width="Auto"
-                                                          Height="Auto"
-                                                          Grid.Column="0">
-                                                    <ComboBoxItem Content="1"
-                                                                  Width="Auto"/>
-                                                </ComboBox>
-
-                                                <Rectangle Width="1"
-                                                           Grid.Column="1"
-                                                           Fill="#D1D1D1" 
-                                                           Height="Auto"
-                                                           Margin="0,10"/>
-
-                                                <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}"
-                                                           FontWeight="DemiBold"
-                                                           HorizontalAlignment="Left"
-                                                           VerticalAlignment="Center"
-                                                           Margin="10,0"
-                                                           MinHeight="40"
-                                                           Text="GroupBy()"/>
-
-
-                                            </StackPanel>
-
-                                            <Button  Style="{StaticResource MaterialDesignOutlinedButton}"
-                                                     Grid.Row="3"
-                                                     BorderBrush="White"
-                                                     HorizontalAlignment="Right"
-                                                     Height="40"
-                                                     Width="55"
-                                                     Margin="0,10"
-                                                     Cursor="Hand">
-
-                                                <materialDesign:PackIcon Kind="Trash" 
-                                                                         VerticalAlignment="Center"
-                                                                         Width="Auto" 
-                                                                         Height="Auto"/>
-                                            </Button>
-                                        </Grid>
-                                    </Border>
+                                    <ItemsControl ItemsSource="{Binding CardsFuncoes}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <usercontrol:ConfiguracaoCardFuncao/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
                                 </StackPanel>
                             </ScrollViewer>
                         </Border>

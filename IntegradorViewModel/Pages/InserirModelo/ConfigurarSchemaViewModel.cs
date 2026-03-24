@@ -10,8 +10,6 @@ using IntegradorViewModel.ItensViewModel;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.PrincipalModelo;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
 
 namespace IntegradorViewModel.Pages.InserirModelo
 {
@@ -156,6 +154,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
         [RelayCommand]
         public void NavigateToCarregarDados()
         {
+            Navigation.NavigateTo<CarregarDadosViewModel>();
             if (CardsSchema.Count == 0) 
             {
                 _dialogService.ShowMessage("Não se pode criar um Schema vazio.", "Schema Vazio");

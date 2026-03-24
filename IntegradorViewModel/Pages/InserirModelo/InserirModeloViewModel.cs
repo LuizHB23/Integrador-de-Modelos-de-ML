@@ -76,7 +76,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
         [RelayCommand]
         public void NavigateToConfigurarSchema()
         {
-            //Navigation.NavigateTo<ConfigurarSchemaViewModel>();
+            Navigation.NavigateTo<ConfigurarSchemaViewModel>();
             if (string.IsNullOrWhiteSpace(NomeModelo) || string.IsNullOrWhiteSpace(TipoModelo) || string.IsNullOrWhiteSpace(CaminhoModelo))
             {
                 _dialogService.ShowMessage("Preencha corretamente os campos", "Campos Faltantes");
