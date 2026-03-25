@@ -1,0 +1,11 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace IntegradorDominio.Pipeline.AST
+{
+    public class RetornoMetodoPipeline : ComandoMetodoPipeline
+    {
+        public string? Variavel { get; set; }
+    }
+}
