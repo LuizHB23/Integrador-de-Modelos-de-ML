@@ -6,7 +6,13 @@ namespace IntegradorDominio.Pipeline.AST
 {
     public class MetodoChainPipeline
     {
-        public string? Nome { get; set; }
-        public List<ArgumentoMetodoPipeline> Argumentos { get; set; } = new();
+        public string Nome { get; set; }
+        public List<ArgumentoMetodoPipeline> Argumentos { get; set; }
+
+        public MetodoChainPipeline(string nome, List<ArgumentoMetodoPipeline> argumentos)
+        {
+            Nome = nome;
+            Argumentos = argumentos;
+        }
     }
 }

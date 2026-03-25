@@ -7,7 +7,13 @@ namespace IntegradorDominio.Pipeline.AST
 {
     public class ChamadaMetodoPipeline : ExpressaoMetodoPipeline
     {
-        public string? ObjetoInicial { get; set; }
-        public List<MetodoChainPipeline> Metodos { get; set; } = new();
+        public string ObjetoInicial { get; set; }
+        public List<MetodoChainPipeline> Metodos { get; set; }
+
+        public ChamadaMetodoPipeline(string objetoInicial)
+        {
+            ObjetoInicial = objetoInicial;
+            Metodos = new();
+        }
     }
 }

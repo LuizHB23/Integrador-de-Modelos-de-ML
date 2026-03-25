@@ -6,6 +6,11 @@ namespace IntegradorDominio.Pipeline.AST
 {
     public class RetornoMetodoPipeline : ComandoMetodoPipeline
     {
-        public string? Variavel { get; set; }
+        public string Variavel { get; set; }
+
+        public RetornoMetodoPipeline(string variavel)
+        {
+            Variavel = variavel;
+        }
     }
 }
