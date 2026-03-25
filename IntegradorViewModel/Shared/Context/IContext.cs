@@ -1,4 +1,4 @@
-﻿namespace IntegradorViewModel.Context
+﻿namespace IntegradorViewModel.Shared.Context
 {
     public interface IContext<T> where T : class
     {

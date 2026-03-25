@@ -1,0 +1,48 @@
+﻿using IntegradorViewModel.ControleUsuario;
+using IntegradorViewModel.ControleUsuario.ConfiguracaoCard;
+using System.Collections.ObjectModel;
+
+namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
+{
+    public abstract class CardsManager<T> where T : IConfiguracaoCard
+    {
+        protected ObservableCollection<T> _cardsLista;
+        protected ObservableCollection<int> _posicoesLista;
+
+        public CardsManager(ObservableCollection<T> cardsLista, ObservableCollection<int> posicoesLista)
+        {
+            _cardsLista = cardsLista;
+            _posicoesLista = posicoesLista;
+        }
+
+        public virtual void AtualizaPosicoes()
+        {
+            for (int i = 0; i < _cardsLista.Count; i++)
+            {
+                _cardsLista[i].EstouReposicionando = true;
+
+                _cardsLista[i].OpcoesPosicao = _posicoesLista;
+
+                _cardsLista[i].Posicao = i + 1;
+
+                _cardsLista[i].EstouReposicionando = false;
+            }
+        }
+
+        public virtual void OrganizaPosicao(T card, int posicaoNova)
+        {
+            int posicaoOriginal = _cardsLista.IndexOf(card);
+
+            _cardsLista.Move(posicaoOriginal, posicaoNova);
+
+            AtualizaPosicoes();
+        }
+
+        public virtual void RemoverColuna(T card)
+        {
+            _cardsLista.Remove(card);
+            _posicoesLista.Remove(_cardsLista.Count + 1);
+            AtualizaPosicoes();
+        }
+    }
+}

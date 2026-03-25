@@ -1,7 +1,7 @@
-﻿using IntegradorViewModel.Interfaces;
-using IntegradorViewModel.JanelaModelo;
+﻿using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.InserirModelo;
 using IntegradorViewModel.Pages.PrincipalModelo;
+using IntegradorViewModel.Shared.Interfaces;
 using Moq;
 using System;
 using System.Collections.Generic;

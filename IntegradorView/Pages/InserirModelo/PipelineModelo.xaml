@@ -111,7 +111,9 @@
                                                                   materialDesign:TextFieldAssist.HasClearButton="True"
                                                                   ItemsSource="{Binding ListaProcessos}"
                                                                   DisplayMemberPath="NomeExibicao"
-                                                                  SelectedItem="{Binding NomeExibicao, Mode=TwoWay}"/>
+                                                                  SelectedItem="{Binding DataContext.FuncaoSelecionada, 
+                                                                                 RelativeSource={RelativeSource AncestorType=ItemsControl}, 
+                                                                                 Mode=TwoWay}"/>
                                                     </StackPanel>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
@@ -163,7 +165,7 @@
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                         <materialDesign:PackIcon Kind="Settings" Width="24" Height="24" 
                                                  VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                        <TextBlock Text="{Binding FuncaoSelecionada, FallbackValue='Configurar Função'}" 
+                                        <TextBlock Text="Configurar Função"
                                                    Style="{StaticResource MaterialDesignHeadline6TextBlock}"
                                                    VerticalAlignment="Center"
                                                    Margin="0,0,20,0"/>

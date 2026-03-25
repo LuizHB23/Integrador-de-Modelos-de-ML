@@ -1,16 +1,8 @@
 ﻿using IntegradorAplicacao.CaminhoProvider;
 using IntegradorAplicacao.ConversorJson;
 using IntegradorAplicacao.DTO;
-using IntegradorAplicacao.Gerenciador;
-using IntegradorViewModel.Context;
-using IntegradorViewModel.Interfaces;
-using IntegradorViewModel.JanelaModelo;
-using IntegradorViewModel.Pages.InserirModelo;
-using Moq;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
+using Moq;
 
 namespace IntegradorTesteUnidade.AplicacaoTestes.ConversorJson
 {

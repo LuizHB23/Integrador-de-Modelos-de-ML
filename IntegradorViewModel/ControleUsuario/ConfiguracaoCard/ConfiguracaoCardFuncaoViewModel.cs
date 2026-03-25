@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using IntegradorViewModel.ControleUsuario.ConfiguracaoCard;
 using IntegradorViewModel.ItensViewModel;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Text;
 
 namespace IntegradorViewModel.ControleUsuario
 {
-    public partial class ConfiguracaoCardFuncaoViewModel : ObservableObject
+    public partial class ConfiguracaoCardFuncaoViewModel : ObservableObject, IConfiguracaoCard
     {
         private readonly Action<ConfiguracaoCardFuncaoViewModel, int> _onTrocarPosicao;
         private readonly Action<ConfiguracaoCardFuncaoViewModel> _onExcluir;
@@ -20,6 +21,9 @@ namespace IntegradorViewModel.ControleUsuario
         [ObservableProperty]
         private int _posicao;
 
+        [ObservableProperty]
+        private string _funcaoSelecionada;
+
         public bool EstouReposicionando { get; set; }
 
         public ConfiguracaoCardFuncaoViewModel(FuncaoItemViewModel funcaoItem, Action<ConfiguracaoCardFuncaoViewModel> actionExcluir, Action<ConfiguracaoCardFuncaoViewModel, int> actionTrocarPosicao)
@@ -28,6 +32,7 @@ namespace IntegradorViewModel.ControleUsuario
             _onExcluir = actionExcluir;
             _funcaoItem = funcaoItem;
 
+            FuncaoSelecionada = string.Empty;
             OpcoesPosicao = new();
         }
         partial void OnPosicaoChanged(int value)

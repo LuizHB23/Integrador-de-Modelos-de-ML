@@ -1,15 +1,15 @@
 ﻿using IntegradorAplicacao.CaminhoProvider;
 using IntegradorAplicacao.ConversorJson;
 using IntegradorAplicacao.DTO;
-using IntegradorViewModel.Context;
 using IntegradorViewModel.ControleUsuario;
-using IntegradorViewModel.Interfaces;
 using IntegradorViewModel.ItensViewModel;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.InserirModelo;
 using IntegradorViewModel.Pages.PrincipalModelo;
 using Bogus;
 using Moq;
+using IntegradorViewModel.Shared.Interfaces;
+using IntegradorViewModel.Shared.Context;
 
 namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
 {

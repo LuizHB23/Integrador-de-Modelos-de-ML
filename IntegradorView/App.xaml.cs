@@ -1,16 +1,13 @@
 ﻿using IntegradorAplicacao;
 using IntegradorAplicacao.DTO;
 using IntegradorView.InteracoesUI.OpenFileDialog;
-using IntegradorViewModel.Context;
-using IntegradorViewModel.ControleUsuario;
-using IntegradorViewModel.Interfaces;
-using IntegradorViewModel.ItensViewModel;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.GraficoModelo;
 using IntegradorViewModel.Pages.InserirModelo;
 using IntegradorViewModel.Pages.PredicaoModelo;
 using IntegradorViewModel.Pages.PrincipalModelo;
-
+using IntegradorViewModel.Shared.Context;
+using IntegradorViewModel.Shared.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 

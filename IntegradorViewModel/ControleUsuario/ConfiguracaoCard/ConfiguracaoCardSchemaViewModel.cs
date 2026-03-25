@@ -1,11 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using IntegradorViewModel.ControleUsuario.ConfiguracaoCard;
 using IntegradorViewModel.ItensViewModel;
 using System.Collections.ObjectModel;
 
 namespace IntegradorViewModel.ControleUsuario
 {
-    public partial class ConfiguracaoCardSchemaViewModel : ObservableObject
+    public partial class ConfiguracaoCardSchemaViewModel : ObservableObject, IConfiguracaoCard
     {
         private readonly Action<ConfiguracaoCardSchemaViewModel, int> _onTrocarPosicao;
         private readonly Action<ConfiguracaoCardSchemaViewModel> _onExcluir;

@@ -3,10 +3,10 @@ using CommunityToolkit.Mvvm.Input;
 using IntegradorAplicacao.ConversorJson;
 using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.Gerenciador;
-using IntegradorViewModel.Context;
-using IntegradorViewModel.Interfaces;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.PrincipalModelo;
+using IntegradorViewModel.Shared.Context;
+using IntegradorViewModel.Shared.Interfaces;
 
 namespace IntegradorViewModel.Pages.InserirModelo
 {

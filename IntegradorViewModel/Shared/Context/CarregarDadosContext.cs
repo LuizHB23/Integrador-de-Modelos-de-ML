@@ -1,6 +1,6 @@
 ﻿using IntegradorAplicacao.DTO;
 
-namespace IntegradorViewModel.Context
+namespace IntegradorViewModel.Shared.Context
 {
     public class CarregarDadosContext : IContext<ArquivoDadosDTO>
     {

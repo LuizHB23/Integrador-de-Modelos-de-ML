@@ -3,12 +3,13 @@ using CommunityToolkit.Mvvm.Input;
 using IntegradorAplicacao.CaminhoProvider;
 using IntegradorAplicacao.ConversorJson;
 using IntegradorAplicacao.DTO;
-using IntegradorViewModel.Context;
 using IntegradorViewModel.ControleUsuario;
-using IntegradorViewModel.Interfaces;
 using IntegradorViewModel.ItensViewModel;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.PrincipalModelo;
+using IntegradorViewModel.Shared.Context;
+using IntegradorViewModel.Shared.Interfaces;
+using IntegradorViewModel.Shared.Manager.GerenciadorCards;
 using System.Collections.ObjectModel;
 
 namespace IntegradorViewModel.Pages.InserirModelo
@@ -30,10 +31,12 @@ namespace IntegradorViewModel.Pages.InserirModelo
         [ObservableProperty]
         private bool _categorico;
 
-        private readonly string _nomeModelo;
-
         public ObservableCollection<int> OpcoesPosicao;
         public ObservableCollection<ConfiguracaoCardSchemaViewModel> CardsSchema { get; }
+
+        private readonly string _nomeModelo;
+        private readonly CardsConfigurarSchemaManager _cardsManager;
+
 
         private readonly IConverteJson<Dictionary<int, SchemaDTO>> _converter;
         private readonly IContext<ModeloDTO> _contextNomeModelo;
@@ -48,13 +51,15 @@ namespace IntegradorViewModel.Pages.InserirModelo
             _dialogService = dialogService;
             Navigation = navigation;
 
-            _nomeModelo = _contextNomeModelo.RecebeMensagem().NomeModelo;
             NomeColuna = string.Empty;
             Finalidade = string.Empty;
             Tipo = string.Empty;
             Categorico = false;
             CardsSchema = new();
             OpcoesPosicao = new();
+
+            _nomeModelo = _contextNomeModelo.RecebeMensagem().NomeModelo;
+            _cardsManager = new(CardsSchema, OpcoesPosicao);
         }
 
         [RelayCommand]
@@ -68,11 +73,8 @@ namespace IntegradorViewModel.Pages.InserirModelo
 
             var posicao = CardsSchema.Count + 1;
             var schemaItem = new SchemaItemViewModel(posicao, NomeColuna, Finalidade, Tipo, Categorico);
-            var cardSchema = new ConfiguracaoCardSchemaViewModel(schemaItem, RemoverColuna, OrganizaPosicao);
-            CardsSchema.Add(cardSchema);
-            OpcoesPosicao.Add(posicao);
+            _cardsManager.AdicinarColuna(schemaItem, RemoverColuna, OrganizaPosicao);
 
-            AtualizaPosicoes();
             PreparaParaJson();
 
             NomeColuna = string.Empty;
@@ -82,74 +84,15 @@ namespace IntegradorViewModel.Pages.InserirModelo
         }
 
         [RelayCommand]
-        public void CarregarSchema()
-        {
-            var _caminhoJson = _dialogService.GetCaminhoArquivo();
-
-            if (string.IsNullOrWhiteSpace(_caminhoJson))
-            {
-                return;
-            }
-
-            CardsSchema.Clear();
-            OpcoesPosicao.Clear();
-
-            var schema = _converter.CarregarJson(_caminhoJson);
-
-            foreach (var card in schema)
-            {
-                var schemaItem = new SchemaItemViewModel(card.Key, card.Value.NomeColuna, card.Value.Finalidade, card.Value.Tipo, card.Value.Categorico);
-                var cardSchema = new ConfiguracaoCardSchemaViewModel(schemaItem, RemoverColuna, OrganizaPosicao);
-                CardsSchema.Add(cardSchema);
-                OpcoesPosicao.Add(card.Key);
-            }
-
-            AtualizaPosicoes();
-        }
-
+        public void CarregarSchema() => _cardsManager.CarregarSchema(_dialogService, _converter);
         private void RemoverColuna(ConfiguracaoCardSchemaViewModel cardSchema)
         {
-            CardsSchema.Remove(cardSchema);
-            OpcoesPosicao.Remove(CardsSchema.Count + 1);
-            AtualizaPosicoes();
+            _cardsManager.RemoverColuna(cardSchema);
             PreparaParaJson();
         }
+        private void OrganizaPosicao(ConfiguracaoCardSchemaViewModel cardSchema, int posicaoNova) => _cardsManager.OrganizaPosicao(cardSchema, posicaoNova);
+        private void PreparaParaJson() => _cardsManager.PreparaParaJson(_converter, _nomeModelo);
 
-        private void AtualizaPosicoes()
-        {
-            for (int i = 0; i < CardsSchema.Count; i++)
-            {
-                CardsSchema[i].EstouReposicionando = true;
-
-                CardsSchema[i].OpcoesPosicao = OpcoesPosicao;
-
-                CardsSchema[i].Posicao = i + 1;
-
-                CardsSchema[i].EstouReposicionando = false;
-            }
-        }
-
-        private void OrganizaPosicao(ConfiguracaoCardSchemaViewModel cardSchema, int posicaoNova)
-        {
-            int posicaoOriginal = CardsSchema.IndexOf(cardSchema);
-
-            CardsSchema.Move(posicaoOriginal, posicaoNova);
-
-            AtualizaPosicoes();
-        }
-
-        private void PreparaParaJson()
-        {
-            var schemaNovo = new Dictionary<int, SchemaDTO>();
-
-            foreach(var card in CardsSchema)
-            {
-                var schema = new SchemaDTO(card.NomeColuna, card.Finalidade, card.Tipo, card.Categorico, _nomeModelo);
-                schemaNovo.Add(card.Posicao, schema);
-            }
-
-            _converter.ConverteJson(schemaNovo);
-        }
 
         [RelayCommand]
         public void NavigateToCarregarDados()

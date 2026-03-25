@@ -1,4 +1,4 @@
-﻿using IntegradorViewModel.Interfaces;
+﻿using IntegradorViewModel.Shared.Interfaces;
 using System.Windows;
 
 namespace IntegradorView.InteracoesUI.OpenFileDialog

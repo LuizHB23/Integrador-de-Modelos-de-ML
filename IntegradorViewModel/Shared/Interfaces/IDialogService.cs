@@ -1,4 +1,4 @@
-﻿namespace IntegradorViewModel.Interfaces
+﻿namespace IntegradorViewModel.Shared.Interfaces
 {
     public interface IDialogService
     {

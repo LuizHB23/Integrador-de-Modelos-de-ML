@@ -2,11 +2,11 @@
 using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.Gerenciador;
 using IntegradorDominio;
-using IntegradorViewModel.Context;
-using IntegradorViewModel.Interfaces;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.InserirModelo;
 using IntegradorViewModel.Pages.PrincipalModelo;
+using IntegradorViewModel.Shared.Context;
+using IntegradorViewModel.Shared.Interfaces;
 using Moq;
 using System;
 using System.Collections.Generic;

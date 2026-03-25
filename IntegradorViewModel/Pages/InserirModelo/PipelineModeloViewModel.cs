@@ -5,6 +5,8 @@ using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.ItensViewModel;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.PrincipalModelo;
+using IntegradorViewModel.Shared.Interfaces;
+using IntegradorViewModel.Shared.Manager.GerenciadorCards;
 using System.Collections.ObjectModel;
 using System.Reflection;
 
@@ -18,6 +20,14 @@ namespace IntegradorViewModel.Pages.InserirModelo
         [ObservableProperty]
         private INavigationService _navigation;
 
+        [ObservableProperty]
+        private IStepFeature _funcaoSelecionada;
+
+        [ObservableProperty]
+        private string _scriptCodigo;
+
+        private readonly CardsPipelineModeloManager _cardsManager;
+
         public ObservableCollection<int> OpcoesPosicao;
         public ObservableCollection<ConfiguracaoCardFuncaoViewModel> CardsFuncoes { get; }
         public ObservableCollection<FeatureEngineeringItemViewModel> ListaFeatureEngineering { get; }
@@ -30,8 +40,11 @@ namespace IntegradorViewModel.Pages.InserirModelo
             ListaTransformDataView = new();
             CarregarListas();
 
+            ScriptCodigo = string.Empty;
             CardsFuncoes = new();
             OpcoesPosicao = new();
+
+            _cardsManager = new(CardsFuncoes, OpcoesPosicao);
         }
 
         //Precisa de Manutção
@@ -39,7 +52,8 @@ namespace IntegradorViewModel.Pages.InserirModelo
         public void AdicionaFuncao()
         {
             var funcaoItem = new FuncaoItemViewModel(1, "", "");
-            CardsFuncoes.Add(new ConfiguracaoCardFuncaoViewModel(funcaoItem, RemoverColuna, OrganizaPosicao));
+            _cardsManager.AdicinarColuna(funcaoItem, RemoverColuna, OrganizaPosicao);
+            ScriptCodigo = string.Empty;
         }
 
         [RelayCommand]
@@ -48,34 +62,23 @@ namespace IntegradorViewModel.Pages.InserirModelo
         [RelayCommand]
         public void ListaTransform() => ProximasFuncoes = true;
 
-        private void RemoverColuna(ConfiguracaoCardFuncaoViewModel cardFuncao)
+        [RelayCommand]
+        public void CarregarSchema() => _cardsManager.CarregarSchema();
+        private void RemoverColuna(ConfiguracaoCardFuncaoViewModel cardSchema)
         {
-            CardsFuncoes.Remove(cardFuncao);
-            OpcoesPosicao.Remove(CardsFuncoes.Count + 1);
-            AtualizaPosicoes();
+            _cardsManager.RemoverColuna(cardSchema);
+            //PreparaParaJson();
         }
+        private void OrganizaPosicao(ConfiguracaoCardFuncaoViewModel cardSchema, int posicaoNova) => _cardsManager.OrganizaPosicao(cardSchema, posicaoNova);
+        private void PreparaParaJson() => _cardsManager.PreparaParaJson();
 
-        private void AtualizaPosicoes()
+
+        partial void OnFuncaoSelecionadaChanged(IStepFeature value)
         {
-            for (int i = 0; i < CardsFuncoes.Count; i++)
+            if (value is not null)
             {
-                CardsFuncoes[i].EstouReposicionando = true;
-
-                CardsFuncoes[i].OpcoesPosicao = OpcoesPosicao;
-
-                CardsFuncoes[i].Posicao = i + 1;
-
-                CardsFuncoes[i].EstouReposicionando = false;
+                ScriptCodigo = value.NomeExibicao;
             }
-        }
-
-        private void OrganizaPosicao(ConfiguracaoCardFuncaoViewModel cardFuncao, int posicaoNova)
-        {
-            int posicaoOriginal = CardsFuncoes.IndexOf(cardFuncao);
-
-            CardsFuncoes.Move(posicaoOriginal, posicaoNova);
-
-            AtualizaPosicoes();
         }
 
         [RelayCommand]
