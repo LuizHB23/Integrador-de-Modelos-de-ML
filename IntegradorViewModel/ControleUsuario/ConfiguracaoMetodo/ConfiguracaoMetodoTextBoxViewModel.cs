@@ -37,7 +37,7 @@ namespace IntegradorViewModel.ControleUsuario
             _arquivoDados = arquivoDados;
             _onDadosAlterados = onDadosAlterados;
 
-            CarregarDados();
+            //CarregarDados();
         }
 
         public Dictionary<string, List<string>>? MandaCodigoMetodo()

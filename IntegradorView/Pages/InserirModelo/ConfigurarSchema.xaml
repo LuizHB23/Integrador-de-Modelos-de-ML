@@ -152,7 +152,7 @@
                                             Cursor="Hand"/>
 
 
-                                    <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="10" Cursor="">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="10">
                                         <ItemsControl ItemsSource="{Binding CardsSchema}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>

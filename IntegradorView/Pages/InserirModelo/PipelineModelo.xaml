@@ -238,15 +238,13 @@
                                 CornerRadius="5">
 
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                <StackPanel Margin="10">
-                                    <ItemsControl ItemsSource="{Binding CardsFuncoes}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <usercontrol:ConfiguracaoCardFuncao/>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </StackPanel>
+                                <ItemsControl ItemsSource="{Binding CardsFuncoes}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <usercontrol:ConfiguracaoCardFuncao/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
                             </ScrollViewer>
                         </Border>
                     </Grid>

@@ -5,6 +5,7 @@ using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.ItensViewModel;
 using IntegradorViewModel.Shared.Interfaces;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
 {
@@ -20,7 +21,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
             }
 
             var cardFuncao = new ConfiguracaoCardFuncaoViewModel(funcaoItem, actionExcluir, actionTrocarPosicao);
-            _cardsLista.Add(new ConfiguracaoCardFuncaoViewModel(funcaoItem, actionExcluir, actionTrocarPosicao));
+            _cardsLista.Add(cardFuncao);
             _posicoesLista.Add(cardFuncao.Posicao);
             AtualizaPosicoes();
         }

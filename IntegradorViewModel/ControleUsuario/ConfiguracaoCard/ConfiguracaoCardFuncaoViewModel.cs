@@ -23,7 +23,7 @@ namespace IntegradorViewModel.ControleUsuario
         private int _posicao;
 
         [ObservableProperty]
-        private string _funcaoSelecionada;
+        private string _nomeMetodo;
 
         public bool EstouReposicionando { get; set; }
         public FuncaoItemViewModel FuncaoItem { get => _funcaoItem; }
@@ -34,8 +34,9 @@ namespace IntegradorViewModel.ControleUsuario
             _onExcluir = actionExcluir;
             _funcaoItem = funcaoItem;
 
-            FuncaoSelecionada = string.Empty;
             OpcoesPosicao = new();
+            Posicao = _funcaoItem.Posicao;
+            NomeMetodo = _funcaoItem.NomeFuncao;
         }
         partial void OnPosicaoChanged(int value)
         {

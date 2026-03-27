@@ -16,15 +16,14 @@
             <Grid>
                 <StackPanel Orientation="Horizontal">
                     <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                      materialDesign:TextFieldAssist.TextFieldCornerRadius="10"
-                      BorderBrush="#D1D1D1"
-                      Margin="10"
-                      Width="Auto"
-                      Height="Auto"
-                      Grid.Column="0">
-                        <ComboBoxItem Content="1"
-                              Width="Auto"/>
-                    </ComboBox>
+                              SelectedItem="{Binding Posicao}"
+                              ItemsSource="{Binding OpcoesPosicao}"
+                              materialDesign:TextFieldAssist.TextFieldCornerRadius="10"
+                              BorderBrush="#D1D1D1"
+                              Margin="10"
+                              Width="Auto"
+                              Height="Auto"
+                              Grid.Column="0"/>
 
                     <Rectangle Width="1"
                        Grid.Column="1"
@@ -38,7 +37,7 @@
                        VerticalAlignment="Center"
                        Margin="10,0"
                        MinHeight="40"
-                       Text="GroupBy()"/>
+                       Text="{Binding NomeMetodo}"/>
 
 
                 </StackPanel>

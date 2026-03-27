@@ -12,8 +12,6 @@ using IntegradorViewModel.Shared.Interfaces;
 using IntegradorViewModel.Shared.Manager.GerenciadorCards;
 using System.Collections.ObjectModel;
 using System.Data;
-using System.Diagnostics;
-using System.Reflection;
 
 namespace IntegradorViewModel.Pages.InserirModelo
 {
@@ -94,7 +92,12 @@ namespace IntegradorViewModel.Pages.InserirModelo
             _cardsManager.RemoverColuna(cardSchema);
             PreparaParaJson();
         }
-        private void OrganizaPosicao(ConfiguracaoCardFuncaoViewModel cardSchema, int posicaoNova) => _cardsManager.OrganizaPosicao(cardSchema, posicaoNova);
+        private void OrganizaPosicao(ConfiguracaoCardFuncaoViewModel cardSchema, int posicaoNova)
+        {
+            _cardsManager.OrganizaPosicao(cardSchema, posicaoNova);
+            PreparaParaJson();
+        }
+
         private void PreparaParaJson() => _cardsManager.PreparaParaJson(_converter, _nomeModelo);
 
         public void AlterouTabela(DataView dataView)
