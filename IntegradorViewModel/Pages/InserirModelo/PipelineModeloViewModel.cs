@@ -21,10 +21,9 @@ namespace IntegradorViewModel.Pages.InserirModelo
         private INavigationService _navigation;
 
         [ObservableProperty]
-        private IStepFeature _funcaoSelecionada;
+        private ConfiguracaoMetodoTextBoxViewModel _textBox;
 
-        [ObservableProperty]
-        private string _scriptCodigo;
+        private readonly IDialogService _dialogService;
 
         private readonly CardsPipelineModeloManager _cardsManager;
 
@@ -33,27 +32,33 @@ namespace IntegradorViewModel.Pages.InserirModelo
         public ObservableCollection<FeatureEngineeringItemViewModel> ListaFeatureEngineering { get; }
         public ObservableCollection<TransformDataViewItemViewModel> ListaTransformDataView { get; }
 
-        public PipelineModeloViewModel(INavigationService navigation)
+        public PipelineModeloViewModel(INavigationService navigation, IDialogService dialogService)
         {
             _navigation = navigation;
             ListaFeatureEngineering = new();
             ListaTransformDataView = new();
             CarregarListas();
 
-            ScriptCodigo = string.Empty;
             CardsFuncoes = new();
             OpcoesPosicao = new();
 
+            _dialogService = dialogService;
             _cardsManager = new(CardsFuncoes, OpcoesPosicao);
+            _textBox = new ConfiguracaoMetodoTextBoxViewModel(dialogService);
         }
 
         //Precisa de Manutção
         [RelayCommand]
         public void AdicionaFuncao()
         {
-            var funcaoItem = new FuncaoItemViewModel(1, "", "");
-            _cardsManager.AdicinarColuna(funcaoItem, RemoverColuna, OrganizaPosicao);
-            ScriptCodigo = string.Empty;
+            var modeloNomeCorpo = TextBox.MandaCodigoMetodo();
+
+            if (modeloNomeCorpo != null)
+            {
+                var modeloElementos = modeloNomeCorpo.First();
+                var funcaoItem = new FuncaoItemViewModel(CardsFuncoes.Count + 1, modeloElementos.Key, modeloElementos.Value);
+                _cardsManager.AdicinarColuna(funcaoItem, RemoverColuna, OrganizaPosicao);
+            }
         }
 
         [RelayCommand]
@@ -71,15 +76,6 @@ namespace IntegradorViewModel.Pages.InserirModelo
         }
         private void OrganizaPosicao(ConfiguracaoCardFuncaoViewModel cardSchema, int posicaoNova) => _cardsManager.OrganizaPosicao(cardSchema, posicaoNova);
         private void PreparaParaJson() => _cardsManager.PreparaParaJson();
-
-
-        partial void OnFuncaoSelecionadaChanged(IStepFeature value)
-        {
-            if (value is not null)
-            {
-                ScriptCodigo = value.NomeExibicao;
-            }
-        }
 
         [RelayCommand]
         public void NavigateToHome()

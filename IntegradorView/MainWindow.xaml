@@ -74,6 +74,10 @@
             <usercontrol:ConfiguracaoCardFuncao/>
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type vmsusercontrol:ConfiguracaoMetodoTextBoxViewModel}">
+            <usercontrol:ConfiguracaoMetodoTextBox/>
+        </DataTemplate>
+
     </Window.Resources>
 
     <Grid>

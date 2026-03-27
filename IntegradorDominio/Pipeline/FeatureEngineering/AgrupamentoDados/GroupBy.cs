@@ -9,9 +9,6 @@ namespace IntegradorDominio.Pipeline.FeatureEngineering.AgrupamentoDados
     {
         public string NomeExibicao => "GroupBy";
 
-        public void ExecutarExpression()
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }

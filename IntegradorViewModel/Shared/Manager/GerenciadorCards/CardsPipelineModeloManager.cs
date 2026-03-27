@@ -1,4 +1,5 @@
 ﻿
+using IntegradorAplicacao.DTO;
 using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.ItensViewModel;
 using System.Collections.ObjectModel;
@@ -22,7 +23,15 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
 
         public void PreparaParaJson()
         {
-            throw new NotImplementedException();
+        //    var pipelineNovo = new Dictionary<int, FuncaoDTO>();
+
+        //    foreach (var card in _cardsLista)
+        //    {
+        //        var funcao = new FuncaoDTO(card.);
+        //        pipelineNovo.Add(card.Posicao, funcao);
+        //    }
+
+        //    _converter.ConverteJson(schemaNovo);
         }
 
         public override void AtualizaPosicoes() => base.AtualizaPosicoes();

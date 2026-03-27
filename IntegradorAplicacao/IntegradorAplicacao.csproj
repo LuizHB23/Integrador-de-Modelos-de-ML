@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <Folder Include="Interfaces\" />
+    <Folder Include="PipelineAplicacao\ExecutorPipeline\TransformExecutor\" />
   </ItemGroup>
 
 </Project>

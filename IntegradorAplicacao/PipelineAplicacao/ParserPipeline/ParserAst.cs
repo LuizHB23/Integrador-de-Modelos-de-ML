@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace IntegradorAplicacao.ParserPipeline
+namespace IntegradorAplicacao.PipelineAplicacao.ParserPipeline
 {
     public class ParserAst
     {
-        public MetodoPipeline Parse(string codigo)
+        public Dictionary<string, List<string>> ParserCorpo(string codigo)
         {
             var linhas = codigo
                 .Split('\n')
@@ -16,16 +16,26 @@ namespace IntegradorAplicacao.ParserPipeline
                 .Where(l => !string.IsNullOrWhiteSpace(l))
                 .ToList();
 
-            var nomeMetodo = ExtrairNomeMetodo(linhas[0]);
-            var metodo = new MetodoPipeline(nomeMetodo);
-
-            // Corpo (entre { e })
             var corpo = linhas
                 .Skip(1)
                 .Where(l => l != "{" && l != "}")
                 .ToList();
 
-            foreach (var linha in corpo)
+            var metodoNomeCorpo = new Dictionary<string, List<string>>();
+            metodoNomeCorpo.Add(ExtrairNomeMetodo(linhas[0]), corpo);
+
+            return metodoNomeCorpo;
+        }
+
+        public MetodoPipeline Parse(string codigo)
+        { 
+            var metodoNomeCorpo = ParserCorpo(codigo);
+            var metodoElemento = metodoNomeCorpo.First();
+
+            var nomeMetodo = metodoElemento.Key;
+            var metodo = new MetodoPipeline(nomeMetodo);
+
+            foreach (var linha in metodoElemento.Value)
             {
                 metodo.Comandos.Add(ParseLinha(linha));
             }

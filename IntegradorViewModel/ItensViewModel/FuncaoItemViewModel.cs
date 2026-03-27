@@ -8,9 +8,9 @@ namespace IntegradorViewModel.ItensViewModel
     {
         public int Posicao { get; set; }
         public string NomeFuncao { get; private set; } = string.Empty;
-        public string Codigo { get; set; } = string.Empty;
+        public List<string> Codigo { get; set; } = new();
 
-        public FuncaoItemViewModel(int posicao, string nomeFuncao, string codigo)
+        public FuncaoItemViewModel(int posicao, string nomeFuncao, List<string> codigo)
         {
             Posicao = posicao;
             NomeFuncao = nomeFuncao;

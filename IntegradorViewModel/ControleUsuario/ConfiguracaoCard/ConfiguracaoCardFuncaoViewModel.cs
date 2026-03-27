@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using IntegradorAplicacao.PipelineAplicacao.ParserPipeline;
 using IntegradorViewModel.ControleUsuario.ConfiguracaoCard;
 using IntegradorViewModel.ItensViewModel;
 using System;
