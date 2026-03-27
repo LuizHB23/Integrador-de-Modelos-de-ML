@@ -4,5 +4,5 @@ using System.Text;
 
 namespace IntegradorAplicacao.DTO
 {
-    public record FuncaoDTO(string NomeFuncao, string Codigo);
+    public record FuncaoDTO(string NomeFuncao, List<string> Codigo, string NomeModelo);
 }

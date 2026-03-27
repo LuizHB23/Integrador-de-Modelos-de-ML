@@ -1,10 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using IntegradorAplicacao.ConversorJson;
+using IntegradorAplicacao.DTO;
 using IntegradorDominio.Pipeline.InterfacesSteps;
 using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.ItensViewModel;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.PrincipalModelo;
+using IntegradorViewModel.Shared.Context;
 using IntegradorViewModel.Shared.Interfaces;
 using IntegradorViewModel.Shared.Manager.GerenciadorCards;
 using System.Collections.ObjectModel;
@@ -23,28 +26,35 @@ namespace IntegradorViewModel.Pages.InserirModelo
         [ObservableProperty]
         private ConfiguracaoMetodoTextBoxViewModel _textBox;
 
-        private readonly IDialogService _dialogService;
-
-        private readonly CardsPipelineModeloManager _cardsManager;
-
         public ObservableCollection<int> OpcoesPosicao;
         public ObservableCollection<ConfiguracaoCardFuncaoViewModel> CardsFuncoes { get; }
         public ObservableCollection<FeatureEngineeringItemViewModel> ListaFeatureEngineering { get; }
         public ObservableCollection<TransformDataViewItemViewModel> ListaTransformDataView { get; }
 
-        public PipelineModeloViewModel(INavigationService navigation, IDialogService dialogService)
+        private readonly string _nomeModelo;
+        private readonly CardsPipelineModeloManager _cardsManager;
+
+        private readonly IConverteJson<Dictionary<int, FuncaoDTO>> _converter;
+        private readonly IDialogService _dialogService;
+        private readonly IContext<ModeloDTO> _contextNomeModelo;
+
+        public PipelineModeloViewModel(INavigationService navigation, IDialogService dialogService, IConverteJson<Dictionary<int, FuncaoDTO>> converter, IContext<ModeloDTO> contextNomeModelo)
         {
+            _converter = converter;
+            _dialogService = dialogService;
             _navigation = navigation;
+            _contextNomeModelo = contextNomeModelo;
+
             ListaFeatureEngineering = new();
             ListaTransformDataView = new();
             CarregarListas();
 
             CardsFuncoes = new();
             OpcoesPosicao = new();
+            TextBox = new ConfiguracaoMetodoTextBoxViewModel(dialogService);
 
-            _dialogService = dialogService;
+            _nomeModelo = _contextNomeModelo.RecebeMensagem().NomeModelo;
             _cardsManager = new(CardsFuncoes, OpcoesPosicao);
-            _textBox = new ConfiguracaoMetodoTextBoxViewModel(dialogService);
         }
 
         //Precisa de Manutção
@@ -59,6 +69,8 @@ namespace IntegradorViewModel.Pages.InserirModelo
                 var funcaoItem = new FuncaoItemViewModel(CardsFuncoes.Count + 1, modeloElementos.Key, modeloElementos.Value);
                 _cardsManager.AdicinarColuna(funcaoItem, RemoverColuna, OrganizaPosicao);
             }
+
+            PreparaParaJson();
         }
 
         [RelayCommand]
@@ -72,10 +84,10 @@ namespace IntegradorViewModel.Pages.InserirModelo
         private void RemoverColuna(ConfiguracaoCardFuncaoViewModel cardSchema)
         {
             _cardsManager.RemoverColuna(cardSchema);
-            //PreparaParaJson();
+            PreparaParaJson();
         }
         private void OrganizaPosicao(ConfiguracaoCardFuncaoViewModel cardSchema, int posicaoNova) => _cardsManager.OrganizaPosicao(cardSchema, posicaoNova);
-        private void PreparaParaJson() => _cardsManager.PreparaParaJson();
+        private void PreparaParaJson() => _cardsManager.PreparaParaJson(_converter, _nomeModelo);
 
         [RelayCommand]
         public void NavigateToHome()

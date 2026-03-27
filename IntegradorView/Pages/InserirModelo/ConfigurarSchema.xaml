@@ -68,7 +68,7 @@
                                     <ComboBox Margin="30,0" 
                                               materialDesign:HintAssist.Hint="Finalidade" 
                                               Style="{StaticResource MaterialDesignFloatingHintComboBox}"
-                                              SelectedItem="{Binding Finalidade}"
+                                              SelectedValue="{Binding Finalidade}"
                                               FontSize="20" 
                                               HorizontalAlignment="Stretch">
                                         <ComboBoxItem Content="Feature"/>
@@ -78,7 +78,7 @@
 
                                     <ComboBox Margin="30,0" materialDesign:HintAssist.Hint="Tipo" 
                                               Style="{StaticResource MaterialDesignFloatingHintComboBox}"
-                                              SelectedItem="{Binding Tipo}"
+                                              SelectedValue="{Binding Tipo}"
                                               FontSize="20" 
                                               HorizontalAlignment="Stretch">
                                         <ComboBoxItem Content="Single"/>

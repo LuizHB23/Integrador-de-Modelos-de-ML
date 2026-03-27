@@ -1,4 +1,5 @@
 ﻿
+using IntegradorAplicacao.ConversorJson;
 using IntegradorAplicacao.DTO;
 using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.ItensViewModel;
@@ -21,17 +22,17 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
             throw new NotImplementedException();
         }
 
-        public void PreparaParaJson()
+        public void PreparaParaJson(IConverteJson<Dictionary<int, FuncaoDTO>> _converter, string nomeModelo)
         {
-        //    var pipelineNovo = new Dictionary<int, FuncaoDTO>();
+            var pipelineNovo = new Dictionary<int, FuncaoDTO>();
 
-        //    foreach (var card in _cardsLista)
-        //    {
-        //        var funcao = new FuncaoDTO(card.);
-        //        pipelineNovo.Add(card.Posicao, funcao);
-        //    }
+            foreach (var card in _cardsLista)
+            {
+                var funcao = new FuncaoDTO(card.FuncaoItem.NomeFuncao, card.FuncaoItem.Codigo, nomeModelo);
+                pipelineNovo.Add(card.Posicao, funcao);
+            }
 
-        //    _converter.ConverteJson(schemaNovo);
+            _converter.ConverteJson(pipelineNovo);
         }
 
         public override void AtualizaPosicoes() => base.AtualizaPosicoes();

@@ -26,6 +26,7 @@ namespace IntegradorViewModel.ControleUsuario
         private string _funcaoSelecionada;
 
         public bool EstouReposicionando { get; set; }
+        public FuncaoItemViewModel FuncaoItem { get => _funcaoItem; }
 
         public ConfiguracaoCardFuncaoViewModel(FuncaoItemViewModel funcaoItem, Action<ConfiguracaoCardFuncaoViewModel> actionExcluir, Action<ConfiguracaoCardFuncaoViewModel, int> actionTrocarPosicao)
         {
