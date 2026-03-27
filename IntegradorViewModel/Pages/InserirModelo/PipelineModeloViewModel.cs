@@ -11,6 +11,8 @@ using IntegradorViewModel.Shared.Context;
 using IntegradorViewModel.Shared.Interfaces;
 using IntegradorViewModel.Shared.Manager.GerenciadorCards;
 using System.Collections.ObjectModel;
+using System.Data;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace IntegradorViewModel.Pages.InserirModelo
@@ -26,6 +28,9 @@ namespace IntegradorViewModel.Pages.InserirModelo
         [ObservableProperty]
         private ConfiguracaoMetodoTextBoxViewModel _textBox;
 
+        [ObservableProperty]
+        private DataView _dataPreview;
+
         public ObservableCollection<int> OpcoesPosicao;
         public ObservableCollection<ConfiguracaoCardFuncaoViewModel> CardsFuncoes { get; }
         public ObservableCollection<FeatureEngineeringItemViewModel> ListaFeatureEngineering { get; }
@@ -36,23 +41,25 @@ namespace IntegradorViewModel.Pages.InserirModelo
 
         private readonly IConverteJson<Dictionary<int, FuncaoDTO>> _converter;
         private readonly IDialogService _dialogService;
+        private readonly IContext<ArquivoDadosDTO> _contextArquivo;
         private readonly IContext<ModeloDTO> _contextNomeModelo;
 
-        public PipelineModeloViewModel(INavigationService navigation, IDialogService dialogService, IConverteJson<Dictionary<int, FuncaoDTO>> converter, IContext<ModeloDTO> contextNomeModelo)
+        public PipelineModeloViewModel(INavigationService navigation, IDialogService dialogService, IConverteJson<Dictionary<int, FuncaoDTO>> converter, IContext<ModeloDTO> contextNomeModelo, IContext<ArquivoDadosDTO> contextArquivo)
         {
             _converter = converter;
             _dialogService = dialogService;
             _navigation = navigation;
             _contextNomeModelo = contextNomeModelo;
+            _contextArquivo = contextArquivo;
 
             ListaFeatureEngineering = new();
             ListaTransformDataView = new();
             CarregarListas();
 
+            DataPreview = new();
             CardsFuncoes = new();
             OpcoesPosicao = new();
-            TextBox = new ConfiguracaoMetodoTextBoxViewModel(dialogService);
-
+            TextBox = new ConfiguracaoMetodoTextBoxViewModel(dialogService, _contextArquivo.RecebeMensagem(), AlterouTabela, DataPreview);
             _nomeModelo = _contextNomeModelo.RecebeMensagem().NomeModelo;
             _cardsManager = new(CardsFuncoes, OpcoesPosicao);
         }
@@ -63,13 +70,14 @@ namespace IntegradorViewModel.Pages.InserirModelo
         {
             var modeloNomeCorpo = TextBox.MandaCodigoMetodo();
 
-            if (modeloNomeCorpo != null)
+            if ((modeloNomeCorpo is null) || (modeloNomeCorpo.Count == 0))
             {
-                var modeloElementos = modeloNomeCorpo.First();
-                var funcaoItem = new FuncaoItemViewModel(CardsFuncoes.Count + 1, modeloElementos.Key, modeloElementos.Value);
-                _cardsManager.AdicinarColuna(funcaoItem, RemoverColuna, OrganizaPosicao);
+                return;
             }
 
+            var modeloElementos = modeloNomeCorpo.First();
+            var funcaoItem = new FuncaoItemViewModel(CardsFuncoes.Count + 1, modeloElementos.Key, modeloElementos.Value);
+            _cardsManager.AdicinarColuna(funcaoItem, RemoverColuna, OrganizaPosicao);
             PreparaParaJson();
         }
 
@@ -80,7 +88,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
         public void ListaTransform() => ProximasFuncoes = true;
 
         [RelayCommand]
-        public void CarregarSchema() => _cardsManager.CarregarSchema();
+        public void CarregarSchema() => _cardsManager.CarregarSchema(_dialogService, _converter);
         private void RemoverColuna(ConfiguracaoCardFuncaoViewModel cardSchema)
         {
             _cardsManager.RemoverColuna(cardSchema);
@@ -88,6 +96,11 @@ namespace IntegradorViewModel.Pages.InserirModelo
         }
         private void OrganizaPosicao(ConfiguracaoCardFuncaoViewModel cardSchema, int posicaoNova) => _cardsManager.OrganizaPosicao(cardSchema, posicaoNova);
         private void PreparaParaJson() => _cardsManager.PreparaParaJson(_converter, _nomeModelo);
+
+        public void AlterouTabela(DataView dataView)
+        {
+            DataPreview = dataView;
+        }
 
         [RelayCommand]
         public void NavigateToHome()

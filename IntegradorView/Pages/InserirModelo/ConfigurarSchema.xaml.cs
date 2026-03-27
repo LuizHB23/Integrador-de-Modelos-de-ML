@@ -16,7 +16,6 @@ namespace IntegradorView.Pages.InserirModelo
         public ConfigurarSchema()
         {
             InitializeComponent();
-            DataContext = App.GetService<ConfigurarSchemaViewModel>();
         }
     }
 }

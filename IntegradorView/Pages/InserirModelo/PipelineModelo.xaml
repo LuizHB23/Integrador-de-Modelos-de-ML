@@ -271,11 +271,12 @@
                     </GroupBox.HeaderTemplate>
 
                     <DataGrid x:Name="GridPreview" 
-                                AutoGenerateColumns="True" 
-                                IsReadOnly="True"
-                                CanUserAddRows="False"
-                                VerticalScrollBarVisibility="Auto"
-                                Style="{StaticResource MaterialDesignDataGrid}">
+                              ItemsSource="{Binding DataPreview}"
+                              AutoGenerateColumns="True" 
+                              IsReadOnly="True"
+                              CanUserAddRows="False"
+                              VerticalScrollBarVisibility="Auto"
+                              Style="{StaticResource MaterialDesignDataGrid}">
                     </DataGrid>
                 </GroupBox>
             </materialDesign:Card>

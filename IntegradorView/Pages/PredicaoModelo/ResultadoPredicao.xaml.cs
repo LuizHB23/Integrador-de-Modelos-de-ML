@@ -11,7 +11,6 @@ namespace IntegradorView.Pages.PredicaoModelo
         public ResultadoPredicao()
         {
             InitializeComponent();
-            DataContext = App.GetService<ResultadoPredicaoViewModel>();
         }
     }
 }

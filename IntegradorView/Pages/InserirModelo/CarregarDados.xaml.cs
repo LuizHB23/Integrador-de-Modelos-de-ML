@@ -14,7 +14,6 @@ namespace IntegradorView.Pages.InserirModelo
         public CarregarDados()
         {
             InitializeComponent();
-            DataContext = App.GetService<CarregarDadosViewModel>();
         }
     }
 }

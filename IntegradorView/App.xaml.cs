@@ -49,6 +49,7 @@ namespace IntegradorView
             services.AddSingleton<INavigationService, NavigationService>();
 
             services.AddScoped<IContext<ModeloDTO>, NomeModeloContext>();
+            services.AddScoped<IContext<ArquivoDadosDTO>, CarregarDadosContext>();
 
             ServiceProvider = services.BuildServiceProvider();
         }

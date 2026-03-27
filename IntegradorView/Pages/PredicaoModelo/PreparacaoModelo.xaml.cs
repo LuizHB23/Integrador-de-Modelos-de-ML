@@ -13,7 +13,6 @@ namespace IntegradorView.Pages.PredicaoModelo
         public PreparacaoModelo()
         {
             InitializeComponent();
-            DataContext = App.GetService<PreparacaoModeloViewModel>();
         }
     }
 }

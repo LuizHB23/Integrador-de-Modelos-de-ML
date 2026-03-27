@@ -1,8 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using IntegradorAplicacao.DTO;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.PrincipalModelo;
+using IntegradorViewModel.Shared.Context;
 using IntegradorViewModel.Shared.Interfaces;
+using System.Diagnostics;
 
 namespace IntegradorViewModel.Pages.InserirModelo
 {
@@ -27,11 +30,13 @@ namespace IntegradorViewModel.Pages.InserirModelo
         private bool _contemCabecalho;
 
         private readonly IDialogService _dialogService;
+        IContext<ArquivoDadosDTO> _contextArquivo;
 
-        public CarregarDadosViewModel(INavigationService navigation, IDialogService dialogService)
+        public CarregarDadosViewModel(INavigationService navigation, IDialogService dialogService, IContext<ArquivoDadosDTO> contextArquivo)
         {
             _navigation = navigation;
             _dialogService = dialogService;
+            _contextArquivo = contextArquivo;
 
             CaminhoArquivoDados = string.Empty;
             Delimitador = "Vírgula (,)";
@@ -71,6 +76,9 @@ namespace IntegradorViewModel.Pages.InserirModelo
                 //return;
             }
 
+
+            var arquivoDados = new ArquivoDadosDTO(CaminhoArquivoDados, ',', Codificacao, '.', true);
+            _contextArquivo.EnviaMensagem(arquivoDados);
             Navigation.NavigateTo<PipelineModeloViewModel>();
         }
 

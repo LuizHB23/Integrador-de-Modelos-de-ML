@@ -13,7 +13,6 @@ namespace IntegradorView.Pages.InserirModelo
         public PipelineModelo()
         {
             InitializeComponent();
-            DataContext = App.GetService<PipelineModeloViewModel>();
         }
     }
 }

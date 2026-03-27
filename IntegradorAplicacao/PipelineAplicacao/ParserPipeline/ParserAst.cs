@@ -27,11 +27,9 @@ namespace IntegradorAplicacao.PipelineAplicacao.ParserPipeline
             return metodoNomeCorpo;
         }
 
-        public MetodoPipeline Parse(string codigo)
-        { 
-            var metodoNomeCorpo = ParserCorpo(codigo);
+        public MetodoPipeline Parse(Dictionary<string, List<string>> metodoNomeCorpo)
+        {             
             var metodoElemento = metodoNomeCorpo.First();
-
             var nomeMetodo = metodoElemento.Key;
             var metodo = new MetodoPipeline(nomeMetodo);
 

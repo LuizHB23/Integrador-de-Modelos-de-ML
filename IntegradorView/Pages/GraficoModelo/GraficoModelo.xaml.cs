@@ -11,7 +11,6 @@ namespace IntegradorView.Pages.GraficoModelo
         public GraficoModelo()
         {
             InitializeComponent();
-            DataContext = App.GetService<GraficoModeloViewModel>();
         }
     }
 }

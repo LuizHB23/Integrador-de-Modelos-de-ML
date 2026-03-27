@@ -12,7 +12,6 @@ namespace IntegradorView.Pages.InserirModelo
         public InserirModelo()
         {
             InitializeComponent();
-            DataContext = App.GetService<InserirModeloViewModel>();
         }
     }
 }

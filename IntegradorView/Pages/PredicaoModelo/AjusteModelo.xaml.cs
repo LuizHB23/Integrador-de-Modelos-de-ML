@@ -11,7 +11,6 @@ namespace IntegradorView.Pages.PredicaoModelo
         public AjusteModelo()
         {
             InitializeComponent();
-            DataContext = App.GetService<AjusteModeloViewModel>();
         }
     }
 }
