@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using IntegradorAplicacao.ConversorJson;
 using IntegradorAplicacao.DTO;
-using IntegradorDominio.Pipeline.InterfacesSteps;
+using IntegradorDominio.InterfacesSteps;
 using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.ItensViewModel;
 using IntegradorViewModel.JanelaModelo;
@@ -114,7 +114,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
 
         private void CarregarListas()
         {
-            var assembly = typeof(IStepFeature).Assembly;
+            var assembly = typeof(IFeature).Assembly;
 
             var titulosPastas = new Dictionary<string, string>
                 {
@@ -131,16 +131,16 @@ namespace IntegradorViewModel.Pages.InserirModelo
                 var operacoesDaPasta = assembly.GetTypes()
                     .Where(t => t.Namespace != null &&
                         t.Namespace.EndsWith(pasta.Key) &&
-                        typeof(IStepFeature).IsAssignableFrom(t) &&
+                        typeof(IFeature).IsAssignableFrom(t) &&
                         !t.IsInterface &&
                         !t.IsAbstract &&
                         t.IsPublic)
-                    .Select(t => (IStepFeature)Activator.CreateInstance(t)!)
+                    .Select(t => (IFeature)Activator.CreateInstance(t)!)
                     .ToList();
 
                 if (operacoesDaPasta.Any())
                 {
-                    var listaProcessos = new ObservableCollection<IStepFeature>();
+                    var listaProcessos = new ObservableCollection<IFeature>();
 
                     foreach(var classe in operacoesDaPasta)
                     {

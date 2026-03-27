@@ -1,0 +1,18 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace IntegradorDominio.AST
+{
+    public class MetodoChainPipeline
+    {
+        public string Nome { get; set; }
+        public List<ArgumentoMetodoPipeline> Argumentos { get; set; }
+
+        public MetodoChainPipeline(string nome, List<ArgumentoMetodoPipeline> argumentos)
+        {
+            Nome = nome;
+            Argumentos = argumentos;
+        }
+    }
+}

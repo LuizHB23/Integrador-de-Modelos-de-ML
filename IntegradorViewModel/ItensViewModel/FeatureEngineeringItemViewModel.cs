@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
-using IntegradorDominio.Pipeline.InterfacesSteps;
+using IntegradorDominio.InterfacesSteps;
 
 namespace IntegradorViewModel.ItensViewModel
 {
@@ -8,9 +8,9 @@ namespace IntegradorViewModel.ItensViewModel
     {
         [ObservableProperty]
         private string _nomeProcesso;
-        public ObservableCollection<IStepFeature> ListaProcessos { get; }
+        public ObservableCollection<IFeature> ListaProcessos { get; }
 
-        public FeatureEngineeringItemViewModel(ObservableCollection<IStepFeature> listaProcessos, string nomeProcesso)
+        public FeatureEngineeringItemViewModel(ObservableCollection<IFeature> listaProcessos, string nomeProcesso)
         {
             ListaProcessos = listaProcessos;
             _nomeProcesso = nomeProcesso;

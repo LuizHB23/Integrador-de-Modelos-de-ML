@@ -1,6 +1,5 @@
-﻿using IntegradorAplicacao.PipelineAplicacao.Data;
-using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.Interfaces;
-using IntegradorDominio.Pipeline.FeatureEngineering.AgrupamentoDados;
+﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.Interfaces;
+using IntegradorDominio.FeatureEngineering.AgrupamentoDados;
 using System.Linq.Expressions;
 
 

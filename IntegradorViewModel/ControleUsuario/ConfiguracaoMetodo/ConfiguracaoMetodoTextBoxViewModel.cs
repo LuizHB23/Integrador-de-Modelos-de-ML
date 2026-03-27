@@ -59,21 +59,23 @@ namespace IntegradorViewModel.ControleUsuario
         }
         public void CarregarDados()
         {
-            DataTable dt = new DataTable();
+            DataTable dataTable = new DataTable();
 
             using (var reader = new System.IO.StreamReader(_arquivoDados.CaminhoArquivoDados))
             {
                 string[] cabecalho = reader.ReadLine()?.Split(_arquivoDados.Delimitador)!;
-                foreach (var col in cabecalho!) dt.Columns.Add(col);
+                foreach (var col in cabecalho!) dataTable.Columns.Add(col);
 
                 for (int i = 0; i < 20; i++)
                 {
                     string[] linha = reader.ReadLine()?.Split(_arquivoDados.Delimitador)!;
-                    dt.Rows.Add(linha!);
+                    dataTable.Rows.Add(linha!);
                 }
             }
 
-            _onDadosAlterados(dt.DefaultView);
+            _onDadosAlterados(dataTable.DefaultView);
+
+            dataTable.AsEnumerable();
         }
     }
 }
