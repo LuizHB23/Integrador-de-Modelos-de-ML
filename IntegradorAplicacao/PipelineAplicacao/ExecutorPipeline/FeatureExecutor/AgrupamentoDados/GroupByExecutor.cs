@@ -1,16 +1,19 @@
-﻿using IntegradorDominio.FeatureEngineering.AgrupamentoDados;
+﻿using IntegradorAplicacao.PipelineAplicacao.Executors;
+using IntegradorDominio.DataFrameModel;
+using IntegradorDominio.FeatureEngineering.AgrupamentoDados;
 using System.Linq.Expressions;
 
 
 namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.AgrupamentoDados
 {
-    public class GroupByExecutor
+    public class GroupByExecutor : FeatureExecutor<GroupBy>
     {
-        private readonly GroupBy _model;
 
-        public GroupByExecutor(GroupBy model)
+        public GroupByExecutor(GroupBy operacao) : base(operacao) { }
+
+        public override DataFrame Executar(DataFrame df)
         {
-            _model = model;
+            throw new NotImplementedException();
         }
     }
 }

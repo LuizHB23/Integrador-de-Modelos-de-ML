@@ -1,19 +1,14 @@
-﻿using IntegradorAplicacao.PipelineAplicacao.Interfaces;
+﻿using IntegradorAplicacao.PipelineAplicacao.Executors;
 using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.FeatureEngineering.OperacoesAritmeticas;
 
 namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.OperacoesAritmeticas
 {
-    public class ModExecutor : IFeatureExecutor<Mod>
+    public class ModExecutor : FeatureExecutor<Mod>
     {
-        public Mod Operacao { get; }
+        public ModExecutor(Mod operacao) : base(operacao) { }
 
-        public ModExecutor(Mod operacao)
-        {
-            Operacao = operacao;
-        }
-
-        public DataFrame Executar(DataFrame dataFrame)
+        public override DataFrame Executar(DataFrame dataFrame)
         {
             var n = dataFrame.QuantidadeLinhas;
 
@@ -21,10 +16,10 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
             for (int i = 0; i < n; i++)
             {
-                resultado[i] = Operacao.Coluna.Dados[i] % Operacao.Divisor;
+                //resultado[i] = Operacao.Coluna.Dados[i] % Operacao.Divisor;
             }
 
-            dataFrame.AddColumn(Operacao.NomeColunaSaida, resultado);
+            //dataFrame.AddColumn(Operacao.NomeColunaSaida, resultado);
 
             return dataFrame;
         }

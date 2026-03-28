@@ -69,10 +69,10 @@ namespace IntegradorAplicacao.PipelineAplicacao.ParserPipeline
             var variavel = linha.Substring(0, idx).Trim();
             var expressao = linha.Substring(idx + 1).Trim();
 
-            return new AtribuicaoMetodoPipeline(variavel, ParseExpressao(expressao));
+            return new AtribuicaoMetodoPipeline(variavel, ParseChamadaMetodo(expressao));
         }
 
-        private ExpressaoMetodoPipeline ParseExpressao(string expressao)
+        private ChamadaMetodoPipeline ParseChamadaMetodo(string expressao)
         {
             var partes = expressao.Split('.');
 

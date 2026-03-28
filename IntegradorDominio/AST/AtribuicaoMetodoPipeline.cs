@@ -8,12 +8,12 @@ namespace IntegradorDominio.AST
     public class AtribuicaoMetodoPipeline : ComandoMetodoPipeline
     {
         public string Variavel { get; set; }
-        public ExpressaoMetodoPipeline Expressao { get; set; }
+        public ChamadaMetodoPipeline ChamadaMetodo { get; set; }
 
-        public AtribuicaoMetodoPipeline(string variavel, ExpressaoMetodoPipeline expressao)
+        public AtribuicaoMetodoPipeline(string variavel, ChamadaMetodoPipeline chamadaMetodo)
         {
             Variavel = variavel;
-            Expressao = expressao;
+            ChamadaMetodo = chamadaMetodo;
         }
     }
 }

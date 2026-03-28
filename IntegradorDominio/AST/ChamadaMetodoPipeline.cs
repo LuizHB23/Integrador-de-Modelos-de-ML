@@ -5,7 +5,7 @@ using System.Text;
 
 namespace IntegradorDominio.AST
 {
-    public class ChamadaMetodoPipeline : ExpressaoMetodoPipeline
+    public class ChamadaMetodoPipeline
     {
         public string ObjetoInicial { get; set; }
         public List<MetodoChainPipeline> Metodos { get; set; }

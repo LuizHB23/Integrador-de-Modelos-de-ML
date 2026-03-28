@@ -1,26 +1,26 @@
-﻿using IntegradorDominio.DataFrameModel;
+﻿using IntegradorDominio.Attributes;
+using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.InterfacesSteps;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace IntegradorDominio.FeatureEngineering.OperacoesAritmeticas
 {
+    [FeatureName("Subtrair")]
+    [FeatureName("Sub")]
     public class Subtrair : IFeature
     {
         public string NomeExibicao => "Subtrair";
         public string NomeCodigo => "Sub";
 
-        public string NomeColunaSaida { get; set; }
-        public Coluna<float> ColunaEsquerda;
-        public Coluna<float> ColunaDireita;
+        public string exit { get; set; }
+        public Coluna<float> left;
+        public Coluna<float> right;
 
         public Subtrair() { }
         public Subtrair(string nomeColunaSaida, Coluna<float> colunaEsquerda, Coluna<float> colunaDireita)
         {
-            NomeColunaSaida = nomeColunaSaida;
-            ColunaEsquerda = colunaEsquerda;
-            ColunaDireita = colunaDireita;
+            exit = nomeColunaSaida;
+            left = colunaEsquerda;
+            right = colunaDireita;
         }
     }
 }
