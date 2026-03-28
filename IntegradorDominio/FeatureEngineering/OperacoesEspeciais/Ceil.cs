@@ -9,9 +9,6 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesEspeciais
     {
         public string NomeExibicao => "Ceil";
 
-        public void ExecutarExpression()
-        {
-            throw new NotImplementedException();
-        }
+        public string NomeCodigo => throw new NotImplementedException();
     }
 }

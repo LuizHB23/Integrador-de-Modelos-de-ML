@@ -15,6 +15,7 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesAritmeticas
         public Coluna<float> ColunaEsquerda;
         public Coluna<float> ColunaDireita;
 
+        public Multiplicar() { }
         public Multiplicar(string nomeColunaSaida, Coluna<float> colunaEsquerda, Coluna<float> colunaDireita)
         {
             NomeColunaSaida = nomeColunaSaida;

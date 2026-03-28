@@ -9,9 +9,7 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesEspeciais
     {
         public string NomeExibicao => "Absoluto";
 
-        public void ExecutarExpression()
-        {
-            throw new NotImplementedException();
-        }
+        public string NomeCodigo => throw new NotImplementedException();
+
     }
 }

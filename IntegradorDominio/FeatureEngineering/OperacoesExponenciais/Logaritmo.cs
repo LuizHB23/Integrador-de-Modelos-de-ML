@@ -8,10 +8,6 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesExponenciais
     public class Logaritmo : IFeature
     {
         public string NomeExibicao => "Logaritmo";
-
-        public void ExecutarExpression()
-        {
-            throw new NotImplementedException();
-        }
+        public string NomeCodigo => throw new NotImplementedException();
     }
 }

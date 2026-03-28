@@ -8,10 +8,6 @@ namespace IntegradorDominio.FeatureEngineering.LimpezaDados
     public class TrocarTipo : IFeature
     {
         public string NomeExibicao => "Trocar Tipo";
-
-        public void ExecutarExpression()
-        {
-            throw new NotImplementedException();
-        }
+        public string NomeCodigo => throw new NotImplementedException();
     }
 }

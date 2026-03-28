@@ -8,10 +8,6 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesExponenciais
     public class RaizQuadrada : IFeature
     {
         public string NomeExibicao => "Raiz Quadrada";
-
-        public void ExecutarExpression()
-        {
-            throw new NotImplementedException();
-        }
+        public string NomeCodigo => throw new NotImplementedException();
     }
 }

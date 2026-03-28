@@ -15,6 +15,8 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesAritmeticas
         public Coluna<float> ColunaEsquerda;
         public Coluna<float> ColunaDireita;
 
+        public Somar() { }
+
         public Somar(string nomeColunaSaida, Coluna<float> colunaEsquerda, Coluna<float> colunaDireita)
         {
             NomeColunaSaida = nomeColunaSaida;

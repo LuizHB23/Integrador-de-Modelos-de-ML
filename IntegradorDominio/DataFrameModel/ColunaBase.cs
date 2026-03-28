@@ -8,6 +8,7 @@ namespace IntegradorDominio.DataFrameModel
     {
         public string Nome { get; }
         public Type TipoDado { get; }
+        public abstract int Quantidade { get; }
 
         protected ColunaBase(string nome, Type type)
         {
@@ -15,6 +16,7 @@ namespace IntegradorDominio.DataFrameModel
             TipoDado = type;
         }
 
-        public abstract int Quantidade { get; }
+        public abstract object GetValue(int index);
+
     }
 }

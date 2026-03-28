@@ -8,10 +8,6 @@ namespace IntegradorDominio.FeatureEngineering.AgrupamentoDados
     public class Join : IFeature
     {
         public string NomeExibicao => "Join";
-
-        public void ExecutarExpression()
-        {
-            throw new NotImplementedException();
-        }
+        public string NomeCodigo => throw new NotImplementedException();
     }
 }

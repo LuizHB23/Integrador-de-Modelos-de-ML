@@ -8,10 +8,6 @@ namespace IntegradorDominio.FeatureEngineering.LimpezaDados
     public class FillNa : IFeature
     {
         public string NomeExibicao => "Fill NA";
-
-        public void ExecutarExpression()
-        {
-            throw new NotImplementedException();
-        }
+        public string NomeCodigo => throw new NotImplementedException();
     }
 }

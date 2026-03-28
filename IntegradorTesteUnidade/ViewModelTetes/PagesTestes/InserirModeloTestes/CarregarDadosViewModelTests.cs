@@ -1,6 +1,8 @@
-﻿using IntegradorViewModel.JanelaModelo;
+﻿using IntegradorAplicacao.DTO;
+using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.InserirModelo;
 using IntegradorViewModel.Pages.PrincipalModelo;
+using IntegradorViewModel.Shared.Context;
 using IntegradorViewModel.Shared.Interfaces;
 using Moq;
 using System;
@@ -13,11 +15,13 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
     {
         private readonly Mock<IDialogService> _mockDialog;
         private readonly Mock<INavigationService> _mockNavigation;
+        private readonly Mock<IContext<ArquivoDadosDTO>> _mockContext;
 
         public CarregarDadosViewModelTests()
         {
             _mockNavigation = new Mock<INavigationService>();
             _mockDialog = new Mock<IDialogService>();
+            _mockContext = new Mock<IContext<ArquivoDadosDTO>>();
         }
 
         [Fact]
@@ -29,7 +33,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
             var decimalVariavel = "Ponto (.)";
 
             //Act
-            var viewModel = new CarregarDadosViewModel(_mockNavigation.Object, _mockDialog.Object);
+            var viewModel = new CarregarDadosViewModel(_mockNavigation.Object, _mockDialog.Object, _mockContext.Object);
 
             //Assert
             Assert.Equal(delimitador, viewModel.Delimitador);
@@ -43,7 +47,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
         {
             //Arrange
             _mockDialog.Setup(f => f.GetCaminhoArquivo()).Returns("");
-            var viewModel = new CarregarDadosViewModel(_mockNavigation.Object, _mockDialog.Object);
+            var viewModel = new CarregarDadosViewModel(_mockNavigation.Object, _mockDialog.Object, _mockContext.Object);
 
             //Act
             viewModel.CarregarArquivoDadosCommand.Execute(null);
@@ -57,7 +61,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
         {
             //Arrange
             string delimitador = "Ponto e Vírgula (;)";
-            var viewModel = new CarregarDadosViewModel(_mockNavigation.Object, _mockDialog.Object);
+            var viewModel = new CarregarDadosViewModel(_mockNavigation.Object, _mockDialog.Object, _mockContext.Object);
 
             //Act
             viewModel.Decimal = "Vírgula (,)";
@@ -71,7 +75,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
         {
             //Arrange
             string decimalVariavel = "Ponto (.)";
-            var viewModel = new CarregarDadosViewModel(_mockNavigation.Object, _mockDialog.Object);
+            var viewModel = new CarregarDadosViewModel(_mockNavigation.Object, _mockDialog.Object, _mockContext.Object);
 
             viewModel.Delimitador = "Qualquer coisa";
             viewModel.Decimal = "Vírgula (,)";
@@ -87,7 +91,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
         public void RetornaOkParaNavegacaoRealizadaComSucessoEmNavigateToPipelineModeloCommand()
         {
             //Arrange
-            var viewModel = new CarregarDadosViewModel(_mockNavigation.Object, _mockDialog.Object);
+            var viewModel = new CarregarDadosViewModel(_mockNavigation.Object, _mockDialog.Object, _mockContext.Object);
             viewModel.CaminhoArquivoDados = "Caminho Qualquer";
 
             //Act
@@ -101,7 +105,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
         public void RetornaMensageBoxParaCaminhoArquivoDadosNaoPreenchidoEmNavigateToPipelineModeloCommand()
         {
             //Arrange
-            var viewModel = new CarregarDadosViewModel(_mockNavigation.Object, _mockDialog.Object);
+            var viewModel = new CarregarDadosViewModel(_mockNavigation.Object, _mockDialog.Object, _mockContext.Object);
 
             //Act
             viewModel.NavigateToPipelineModeloCommand.Execute(null);
@@ -115,7 +119,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
         public void RetornaOkParaFluxoScopedEncerradoERetonoHomeEmNavigateToHomeCommand()
         {
             //Arrange
-            var viewModel = new CarregarDadosViewModel(_mockNavigation.Object, _mockDialog.Object);
+            var viewModel = new CarregarDadosViewModel(_mockNavigation.Object, _mockDialog.Object, _mockContext.Object);
 
             //Act
             viewModel.NavigateToHomeCommand.Execute(null);

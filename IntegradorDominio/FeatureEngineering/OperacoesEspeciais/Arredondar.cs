@@ -9,9 +9,6 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesEspeciais
     {
         public string NomeExibicao => "Arredondar";
 
-        public void ExecutarExpression()
-        {
-            throw new NotImplementedException();
-        }
+        public string NomeCodigo => throw new NotImplementedException();
     }
 }

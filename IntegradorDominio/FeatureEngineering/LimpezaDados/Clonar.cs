@@ -8,10 +8,6 @@ namespace IntegradorDominio.FeatureEngineering.LimpezaDados
     public class Clonar : IFeature
     {
         public string NomeExibicao => "Clonar";
-
-        public void ExecutarExpression()
-        {
-            throw new NotImplementedException();
-        }
+        public string NomeCodigo => throw new NotImplementedException();
     }
 }

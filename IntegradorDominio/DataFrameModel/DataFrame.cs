@@ -10,6 +10,8 @@ namespace IntegradorDominio.DataFrameModel
         private readonly Dictionary<string, int> _colunaIndex = new();
 
         public int QuantidadeLinhas { get; private set; }
+        public List<ColunaBase> Colunas {  get => _colunas; }
+        public Dictionary<string, int> ColunaIndex { get => _colunaIndex; }
 
         public void AddColumn<T>(string nome, T[] dados)
         {

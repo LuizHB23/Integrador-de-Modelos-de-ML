@@ -8,10 +8,6 @@ namespace IntegradorDominio.FeatureEngineering.LimpezaDados
     public class Replace : IFeature
     {
         public string NomeExibicao => "Replace";
-
-        public void ExecutarExpression()
-        {
-            throw new NotImplementedException();
-        }
+        public string NomeCodigo => throw new NotImplementedException();
     }
 }

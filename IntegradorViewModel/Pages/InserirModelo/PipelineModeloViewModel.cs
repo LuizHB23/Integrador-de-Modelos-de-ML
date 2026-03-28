@@ -128,24 +128,22 @@ namespace IntegradorViewModel.Pages.InserirModelo
 
             foreach (var pasta in titulosPastas)
             {
-                var operacoesDaPasta = assembly.GetTypes()
+                var tiposEncontrados = assembly.GetTypes()
                     .Where(t => t.Namespace != null &&
                         t.Namespace.EndsWith(pasta.Key) &&
                         typeof(IFeature).IsAssignableFrom(t) &&
                         !t.IsInterface &&
                         !t.IsAbstract &&
                         t.IsPublic)
-                    .Select(t => (IFeature)Activator.CreateInstance(t)!)
                     .ToList();
 
-                if (operacoesDaPasta.Any())
+                if (tiposEncontrados.Any())
                 {
-                    var listaProcessos = new ObservableCollection<IFeature>();
+                    var instancias = tiposEncontrados
+                        .Select(t => (IFeature)Activator.CreateInstance(t)!)
+                        .ToList();
 
-                    foreach(var classe in operacoesDaPasta)
-                    {
-                        listaProcessos.Add(classe);
-                    }
+                    var listaProcessos = new ObservableCollection<IFeature>(instancias);
 
                     var featureItem = new FeatureEngineeringItemViewModel(listaProcessos, pasta.Value);
                     ListaFeatureEngineering.Add(featureItem);

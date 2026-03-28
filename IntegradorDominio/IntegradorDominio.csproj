@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Pipeline\TransformDataView\" />
+    <Folder Include="TransformDataView\" />
   </ItemGroup>
 
 </Project>

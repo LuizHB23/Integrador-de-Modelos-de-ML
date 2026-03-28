@@ -15,6 +15,8 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesAritmeticas
         public Coluna<float> Coluna;
         public int Divisor;
 
+        public Mod() { }
+
         public Mod(string nomeColunaSaida, Coluna<float> coluna, int divisor)
         {
             Coluna = coluna;
