@@ -59,7 +59,8 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             float[] resultado = new float[n];
             for (int i = 0; i < n; i++)
             {
-                resultado[i] = Convert.ToSingle(coluna.PegarValor(i));
+                string texto = (string)coluna.PegarValor(i);
+                resultado[i] = Convert.ToSingle(texto.Replace('.',','));
             }
             return resultado;
         }

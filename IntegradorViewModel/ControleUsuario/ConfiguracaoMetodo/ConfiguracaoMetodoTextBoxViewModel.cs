@@ -24,7 +24,8 @@ namespace IntegradorViewModel.ControleUsuario
         private bool _dataFrameMudou;
 
         private ParserAst _parserAst;
-        private DataFrame _dataFrame;
+        private List<string>[] _estadoColuna;
+        private string[] _estadoCabecalho;
 
         private readonly Action<DataView> _onDadosAlterados;
 
@@ -32,19 +33,22 @@ namespace IntegradorViewModel.ControleUsuario
 
         private readonly IDialogService _dialogService;
 
-        public ConfiguracaoMetodoTextBoxViewModel(IDialogService dialogService, ArquivoDadosDTO arquivoDados, Action<DataView> onDadosAlterados, DataView dadosPreview, DataFrame dataFrame)
+        public ConfiguracaoMetodoTextBoxViewModel(IDialogService dialogService, ArquivoDadosDTO arquivoDados, Action<DataView> onDadosAlterados, DataView dadosPreview)
         {
             ScriptCodigo = string.Empty;
             DadosPreview = dadosPreview;
             DataFrameMudou = false;
 
-            _parserAst = new ParserAst();
             _dialogService = dialogService;
             _arquivoDados = arquivoDados;
             _onDadosAlterados = onDadosAlterados;
 
-            _dataFrame = dataFrame;
-            CarregarDados(_dataFrame);
+            _parserAst = new();
+            _estadoColuna = new List<string>[0];
+            _estadoCabecalho = new string[0];
+
+            GuardaEstado();
+            AtualizaTabela(CarregarDados());
         }
 
         public Dictionary<string, List<string>>? MandaCodigoMetodo()
@@ -65,39 +69,34 @@ namespace IntegradorViewModel.ControleUsuario
 
         }
 
-        partial void OnDataFrameMudouChanged(bool value)
-        {
-            if(value)
-            {
-                DataFrameParaDataTable(_dataFrame);
-            }
-
-            DataFrameMudou = false;
-        }
-
-        public void CarregarDados(DataFrame dataFrame)
+        private void GuardaEstado()
         {
             var linhas = File.ReadAllLines(_arquivoDados.CaminhoArquivoDados);
-            var cabecalho = linhas[0].Split(',');
+            _estadoCabecalho = linhas[0].Split(',');
 
-            var colunas = cabecalho.Select(_ => new List<string>()).ToArray();
+            _estadoColuna = _estadoCabecalho.Select(_ => new List<string>()).ToArray();
 
             for (int i = 1; i < 22; i++)
             {
                 var partes = linhas[i].Split(_arquivoDados.Delimitador);
                 for (int j = 0; j < partes.Length; j++)
-                    colunas[j].Add(partes[j]);
+                    _estadoColuna[j].Add(partes[j]);
             }
+        }
 
-            for (int i = 0; i < cabecalho.Length; i++)
+        public DataFrame CarregarDados()
+        {
+            var dataFrame = new DataFrame();
+
+            for (int i = 0; i < _estadoCabecalho.Length; i++)
             {
-                var dado = colunas[i].ToArray();
-                dataFrame.AdiconarColuna(cabecalho[i], dado);
+                var dado = _estadoColuna[i].ToArray();
+                dataFrame.AdiconarColuna(_estadoCabecalho[i], dado);
             }
 
-            var dataTable = DataFrameParaDataTable(dataFrame);
+            AtualizaTabela(dataFrame);
 
-            _onDadosAlterados(dataTable.DefaultView);
+            return dataFrame;
         }
 
         public static DataTable DataFrameParaDataTable(DataFrame dataFrame)
@@ -134,6 +133,13 @@ namespace IntegradorViewModel.ControleUsuario
             }
 
             return tabela;
+        }
+
+        public void AtualizaTabela(DataFrame dataFrame)
+        {
+            var dataTable = DataFrameParaDataTable(dataFrame);
+
+            _onDadosAlterados(dataTable.DefaultView);
         }
     }
 }

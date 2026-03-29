@@ -8,54 +8,46 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
 {
     public class BuilderExecutor
     {
-        private readonly IConverteJson<Dictionary<int, FuncaoDTO>> _conversor;
-        private readonly ParserAst _parser;
-
-        private Dictionary<string, DataFrame> _dataFramesUtilizados;
+        private Dictionary<string, object?> _objetosUtilizados;
         private List<ComandoMetodoPipeline> _listaComandos;
         private List<EtapaExecucao> _etapasExecutor;
         private string _dataFrameRetorno;
 
-        public BuilderExecutor(IConverteJson<Dictionary<int, FuncaoDTO>> conversor)
+        public BuilderExecutor()
         {
-            _parser = new ParserAst();
-            _conversor = conversor;
-
             _etapasExecutor = new();
-            _dataFramesUtilizados = new();
+            _objetosUtilizados = new();
             _listaComandos = new();
             _dataFrameRetorno = string.Empty;
         }
 
-        public DataFrame ExecutarTudo(DataFrame dataFrame)
+        public DataFrame ExecutarMetodo(DataFrame dataFrame)
         {
-            _dataFramesUtilizados["df"] = dataFrame;
+            _objetosUtilizados["df"] = dataFrame;
 
-            DataFrame? dataFrameOrigem = null;
+            DataFrame? dataFrameOrigem;
 
             foreach (var etapas in _etapasExecutor)
             {
-                dataFrameOrigem = _dataFramesUtilizados[etapas.DataFrameOrigem];
+                dataFrameOrigem = (DataFrame)_objetosUtilizados[etapas.DataFrameOrigem]!;
 
-                _dataFramesUtilizados[etapas.DataFrameDestino] = etapas.Executor!.Executar(dataFrameOrigem!);
+                _objetosUtilizados[etapas.DataFrameDestino] = etapas.Executor!.Executar(dataFrameOrigem!);
             }
 
-            var dataFrameRetorno = _dataFramesUtilizados[_dataFrameRetorno!];
+            var dataFrameRetorno = (DataFrame)_objetosUtilizados[_dataFrameRetorno]!;
 
-            _dataFramesUtilizados.Clear();
+            _objetosUtilizados.Clear();
             _etapasExecutor.Clear();
             _listaComandos.Clear();
 
-            return dataFrameRetorno;
+            return dataFrameRetorno!;
         }
 
-        public void ConstroiMetodo(DataFrame dataFrame, string caminhoFuncao)
+        public void ConstroiMetodo(MetodoPipeline metodoPipeline)
         {
-            _dataFramesUtilizados["df"] = dataFrame;
+            _objetosUtilizados["df"] = null;
 
-            var modeloPipeline = RecuperaMetodoPipeline(caminhoFuncao);
-
-            foreach (var comando in modeloPipeline.Comandos)
+            foreach (var comando in metodoPipeline.Comandos)
             {
                 if (comando is AtribuicaoMetodoPipeline atribuicao)
                 {
@@ -64,7 +56,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
                 }
                 else if(comando is RetornoMetodoPipeline retorno)
                 {
-                    if (!_dataFramesUtilizados.ContainsKey(retorno.Variavel))
+                    if (!_objetosUtilizados.ContainsKey(retorno.Variavel))
                     {
                         throw new Exception($"Erro de Sintaxe: A variável '{retorno.Variavel}' não foi declarada.");
                     }
@@ -76,39 +68,27 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
 
         public void ConstroiAtribuicao(AtribuicaoMetodoPipeline atribuicao)
         {
-            if (!_dataFramesUtilizados.ContainsKey(atribuicao.ChamadaMetodo.ObjetoInicial))
+            if (!_objetosUtilizados.ContainsKey(atribuicao.ChamadaMetodo.ObjetoInicial))
             {
                 throw new Exception($"Erro de Sintaxe: A variável '{atribuicao.ChamadaMetodo.ObjetoInicial}' não foi declarada.");
             }
 
-            if (!_dataFramesUtilizados.ContainsKey(atribuicao.Variavel))
+            if (!_objetosUtilizados.ContainsKey(atribuicao.Variavel))
             {
-                _dataFramesUtilizados[atribuicao.Variavel] = new DataFrame();
+                _objetosUtilizados[atribuicao.Variavel] = null;
             }
 
             var featureExecutor = new FeatureExecutor();
 
             foreach(var metodo in atribuicao.ChamadaMetodo.Metodos)
             {
+                featureExecutor.PassaDicionarioObjetos(_objetosUtilizados);
                 featureExecutor.CriarExecutorDinamico(metodo);
             }
 
             var expressaoExecutor = new EtapaExecucao(atribuicao.Variavel, atribuicao.ChamadaMetodo.ObjetoInicial, featureExecutor);
 
             _etapasExecutor.Add(expressaoExecutor);
-        }
-
-        private MetodoPipeline RecuperaMetodoPipeline(string caminhoFuncao)
-        {
-            var codigosJson = _conversor.CarregarJson(caminhoFuncao);
-            var metodoNomeCorpo = new Dictionary<string, List<string>>();
-
-            foreach (var elemento in codigosJson)
-            {
-                metodoNomeCorpo.Add(elemento.Value.NomeFuncao, elemento.Value.Codigo);
-            }
-
-            return _parser.Parse(metodoNomeCorpo);
         }
     }
 }

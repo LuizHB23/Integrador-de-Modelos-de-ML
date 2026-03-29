@@ -40,8 +40,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
 
         private readonly string _nomeModelo;
         private readonly CardsPipelineModeloManager _cardsManager;
-        private readonly DataFrame _dataFrame;
-        private readonly BuilderExecutor _builder;
+        private readonly ExecutorFinal _executor;
 
         private readonly IConverteJson<Dictionary<int, FuncaoDTO>> _converter;
         private readonly IDialogService _dialogService;
@@ -62,12 +61,11 @@ namespace IntegradorViewModel.Pages.InserirModelo
             ListaTransformDataView = new();
             CarregarListas();
 
-            _builder = new(_converter);
-            _dataFrame = new();
+            _executor = new(_converter);
             DataPreview = new();
             CardsFuncoes = new();
             OpcoesPosicao = new();
-            TextBox = new ConfiguracaoMetodoTextBoxViewModel(dialogService, _contextArquivo.RecebeMensagem(), AlterouTabela, DataPreview, _dataFrame);
+            TextBox = new ConfiguracaoMetodoTextBoxViewModel(dialogService, _contextArquivo.RecebeMensagem(), AlterouTabela, DataPreview);
             _nomeModelo = _contextNomeModelo.RecebeMensagem().NomeModelo;
             _cardsManager = new(CardsFuncoes, OpcoesPosicao);
         }
@@ -88,21 +86,10 @@ namespace IntegradorViewModel.Pages.InserirModelo
             _cardsManager.AdicinarColuna(funcaoItem, RemoverColuna, OrganizaPosicao);
             PreparaParaJson();
 
-            _builder.ConstroiMetodo(_dataFrame, Path.Combine(_provider.GetCaminhoModelo(),"pipeline.json"));
-            _builder.ExecutarTudo(_dataFrame);
-
-            Debug.WriteLine("=== Estrutura do DataFrame ===");
-
-            foreach (var coluna in _dataFrame.Colunas)
-            {
-                // Acessa o nome da coluna e o nome do tipo (Single, String, etc.)
-                string nome = coluna.Nome;
-                string tipo = coluna.TipoDado.Name;
-
-                Debug.WriteLine($"Coluna: {nome.PadRight(15)} | Tipo: {tipo}");
-            }
-
-            Debug.WriteLine("==============================\n");
+            var dataFrame = TextBox.CarregarDados();
+            _executor.ConstroiSequenciaMetodoPipeline(Path.Combine(_provider.GetCaminhoModelo(),"pipeline.json"));
+            dataFrame = _executor.ExecutarTudo(dataFrame);
+            TextBox.AtualizaTabela(dataFrame);
         }
 
         [RelayCommand]

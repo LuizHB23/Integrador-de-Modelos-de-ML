@@ -11,6 +11,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
     public class FeatureExecutor
     {
         private readonly List<object> _executores = new();
+        Dictionary<string, object?>? _objetosUtilizados;
 
         private static readonly Lazy<Dictionary<string, Type>> _cacheExecutores =
             new(() =>
@@ -91,7 +92,17 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
                     continue;
                 }
 
-                var valorConvertido = Convert.ChangeType(argumento.Valor, propriedade.PropertyType);
+                object? valorConvertido;
+
+                if (_objetosUtilizados!.ContainsKey(argumento.Valor))
+                {
+                    valorConvertido = Convert.ChangeType(_objetosUtilizados[argumento.Valor], propriedade.PropertyType);
+                }
+                else
+                {
+                    valorConvertido = Convert.ChangeType(argumento.Valor, propriedade.PropertyType);
+                }
+
                 propriedade.SetValue(operacao, valorConvertido);
             }
 
@@ -101,7 +112,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
             _executores.Add(executor);
         }
 
-        public Type EncontrarClassePorNome(string nomeFuncao)
+        private Type EncontrarClassePorNome(string nomeFuncao)
         {
 
             if (_cacheExecutores.Value.TryGetValue(nomeFuncao, out var tipo))
@@ -109,5 +120,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
 
             throw new Exception($"Executor para '{nomeFuncao}' não encontrado.");
         }
+
+        public void PassaDicionarioObjetos(Dictionary<string, object?> objetosUtilizados) => _objetosUtilizados = objetosUtilizados;
     }
 }
