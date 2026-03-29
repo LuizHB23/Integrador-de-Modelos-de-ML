@@ -1,5 +1,4 @@
-﻿using IntegradorAplicacao.PipelineAplicacao.Executors;
-using IntegradorAplicacao.PipelineAplicacao.Interfaces;
+﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.Executors;
 using IntegradorDominio.AST;
 using IntegradorDominio.Attributes;
 using IntegradorDominio.DataFrameModel;
@@ -7,7 +6,7 @@ using IntegradorDominio.InterfacesSteps;
 using System.Reflection;
 
 
-namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.ExecutorAplicacao
+namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
 {
     public class FeatureExecutor
     {

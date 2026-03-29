@@ -1,7 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using IntegradorAplicacao.CaminhoProvider;
 using IntegradorAplicacao.ConversorJson;
 using IntegradorAplicacao.DTO;
+using IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao;
+using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.InterfacesSteps;
 using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.ItensViewModel;
@@ -12,6 +15,7 @@ using IntegradorViewModel.Shared.Interfaces;
 using IntegradorViewModel.Shared.Manager.GerenciadorCards;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.Diagnostics;
 
 namespace IntegradorViewModel.Pages.InserirModelo
 {
@@ -36,28 +40,34 @@ namespace IntegradorViewModel.Pages.InserirModelo
 
         private readonly string _nomeModelo;
         private readonly CardsPipelineModeloManager _cardsManager;
+        private readonly DataFrame _dataFrame;
+        private readonly BuilderExecutor _builder;
 
         private readonly IConverteJson<Dictionary<int, FuncaoDTO>> _converter;
         private readonly IDialogService _dialogService;
         private readonly IContext<ArquivoDadosDTO> _contextArquivo;
         private readonly IContext<ModeloDTO> _contextNomeModelo;
+        private readonly IPathProvider _provider;
 
-        public PipelineModeloViewModel(INavigationService navigation, IDialogService dialogService, IConverteJson<Dictionary<int, FuncaoDTO>> converter, IContext<ModeloDTO> contextNomeModelo, IContext<ArquivoDadosDTO> contextArquivo)
+        public PipelineModeloViewModel(INavigationService navigation, IDialogService dialogService, IConverteJson<Dictionary<int, FuncaoDTO>> converter, IContext<ModeloDTO> contextNomeModelo, IContext<ArquivoDadosDTO> contextArquivo, IPathProvider provider)
         {
             _converter = converter;
             _dialogService = dialogService;
             _navigation = navigation;
             _contextNomeModelo = contextNomeModelo;
             _contextArquivo = contextArquivo;
+            _provider = provider;
 
             ListaFeatureEngineering = new();
             ListaTransformDataView = new();
             CarregarListas();
 
+            _builder = new(_converter);
+            _dataFrame = new();
             DataPreview = new();
             CardsFuncoes = new();
             OpcoesPosicao = new();
-            TextBox = new ConfiguracaoMetodoTextBoxViewModel(dialogService, _contextArquivo.RecebeMensagem(), AlterouTabela, DataPreview);
+            TextBox = new ConfiguracaoMetodoTextBoxViewModel(dialogService, _contextArquivo.RecebeMensagem(), AlterouTabela, DataPreview, _dataFrame);
             _nomeModelo = _contextNomeModelo.RecebeMensagem().NomeModelo;
             _cardsManager = new(CardsFuncoes, OpcoesPosicao);
         }
@@ -77,6 +87,22 @@ namespace IntegradorViewModel.Pages.InserirModelo
             var funcaoItem = new FuncaoItemViewModel(CardsFuncoes.Count + 1, modeloElementos.Key, modeloElementos.Value);
             _cardsManager.AdicinarColuna(funcaoItem, RemoverColuna, OrganizaPosicao);
             PreparaParaJson();
+
+            _builder.ConstroiMetodo(_dataFrame, Path.Combine(_provider.GetCaminhoModelo(),"pipeline.json"));
+            _builder.ExecutarTudo(_dataFrame);
+
+            Debug.WriteLine("=== Estrutura do DataFrame ===");
+
+            foreach (var coluna in _dataFrame.Colunas)
+            {
+                // Acessa o nome da coluna e o nome do tipo (Single, String, etc.)
+                string nome = coluna.Nome;
+                string tipo = coluna.TipoDado.Name;
+
+                Debug.WriteLine($"Coluna: {nome.PadRight(15)} | Tipo: {tipo}");
+            }
+
+            Debug.WriteLine("==============================\n");
         }
 
         [RelayCommand]

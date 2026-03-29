@@ -12,15 +12,14 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesAritmeticas
     public class Somar : IFeature
     {
         public string NomeExibicao => "Somar";
-        public string NomeCodigo => "Sum";
 
         public string exit { get; set; }
-        public Coluna<float> left;
-        public Coluna<float> right;
+        public string left { get; set; }
+        public string right { get; set; }
 
         public Somar() { }
 
-        public Somar(string nomeColunaSaida, Coluna<float> colunaEsquerda, Coluna<float> colunaDireita)
+        public Somar(string nomeColunaSaida, string colunaEsquerda, string colunaDireita)
         {
             exit = nomeColunaSaida;
             left = colunaEsquerda;

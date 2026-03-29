@@ -1,10 +1,10 @@
-﻿using IntegradorAplicacao.PipelineAplicacao.Executors;
+﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.Executors;
 using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.FeatureEngineering.OperacoesAritmeticas;
 
 namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.OperacoesAritmeticas
 {
-    public class SomarExecutor : FeatureExecutor<Somar>
+    public class SomarExecutor : FeatureExecutorBase<Somar>
     {
         public SomarExecutor(Somar operacao) : base(operacao) { }
 

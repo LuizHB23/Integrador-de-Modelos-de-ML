@@ -12,27 +12,17 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesAritmeticas
     public class Multiplicar : IFeature
     {
         public string NomeExibicao => "Multiplicar";
-        public string NomeCodigo => "Mult";
 
-        public DataFrame df { get; set; }
         public string exit { get; set; }
-        //public Coluna<float> left 
-        //{ get; 
-            
-        //  set
-        //  {
-        //        if(float.GetType(value))
-        //  }
-        //}
-        public Coluna<float> right { get; set; }
+        public string left { get; set; }
+        public string right { get; set; }
 
         public Multiplicar() { }
-        public Multiplicar(DataFrame df, string nomeColunaSaida, Coluna<float> colunaEsquerda, Coluna<float> colunaDireita)
+        public Multiplicar(string nomeColunaSaida, string colunaEsquerda, string colunaDireita)
         {
             exit = nomeColunaSaida;
-            //left = colunaEsquerda;
+            left = colunaEsquerda;
             right = colunaDireita;
-            this.df = df;
         }
     }
 }

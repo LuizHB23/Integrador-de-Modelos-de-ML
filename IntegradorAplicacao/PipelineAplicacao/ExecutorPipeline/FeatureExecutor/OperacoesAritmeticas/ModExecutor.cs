@@ -1,10 +1,10 @@
-﻿using IntegradorAplicacao.PipelineAplicacao.Executors;
+﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.Executors;
 using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.FeatureEngineering.OperacoesAritmeticas;
 
 namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.OperacoesAritmeticas
 {
-    public class ModExecutor : FeatureExecutor<Mod>
+    public class ModExecutor : FeatureExecutorBase<Mod>
     {
         public ModExecutor(Mod operacao) : base(operacao) { }
 

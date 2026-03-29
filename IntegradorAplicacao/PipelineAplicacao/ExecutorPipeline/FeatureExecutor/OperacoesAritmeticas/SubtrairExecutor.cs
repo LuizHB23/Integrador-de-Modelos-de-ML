@@ -1,4 +1,4 @@
-﻿using IntegradorAplicacao.PipelineAplicacao.Executors;
+﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.Executors;
 using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.FeatureEngineering.OperacoesAritmeticas;
 using System;
@@ -7,7 +7,7 @@ using System.Text;
 
 namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.OperacoesAritmeticas
 {
-    public class SubtrairExecutor : FeatureExecutor<Subtrair>
+    public class SubtrairExecutor : FeatureExecutorBase<Subtrair>
     {
         public SubtrairExecutor(Subtrair operacao) : base(operacao) { }
 

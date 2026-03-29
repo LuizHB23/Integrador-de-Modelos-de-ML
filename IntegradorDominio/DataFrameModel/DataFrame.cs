@@ -13,7 +13,7 @@ namespace IntegradorDominio.DataFrameModel
         public List<ColunaBase> Colunas {  get => _colunas; }
         public Dictionary<string, int> ColunaIndex { get => _colunaIndex; }
 
-        public void AdiconarColuna<T>(string nome, T[] dados)
+        public void AdiconarColuna<T>(string nome, T?[] dados)
         {
             if (_colunas.Count > 0 && dados.Length != QuantidadeLinhas)
                 throw new Exception("Column size mismatch");
@@ -40,6 +40,16 @@ namespace IntegradorDominio.DataFrameModel
             }
 
             return null;
+        }
+
+        public void AlteraColuna<T>(string nome, T?[] valor)
+        {
+            if (!_colunaIndex.TryGetValue(nome, out int index))
+            {
+                AdiconarColuna<T>(nome, valor);
+            }
+
+            _colunas[index] = new Coluna<T>(nome, valor);
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using IntegradorDominio.DataFrameModel;
-namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.ExecutorAplicacao
+﻿namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
 {
     public class EtapaExecucao
     {

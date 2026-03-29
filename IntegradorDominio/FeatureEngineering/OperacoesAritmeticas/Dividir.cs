@@ -12,15 +12,14 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesAritmeticas
     public class Dividir : IFeature
     {
         public string NomeExibicao => "Dividir";
-        public string NomeCodigo => "Div";
 
         public string Exit { get; set; }
-        public Coluna<float> Left;
-        public Coluna<float> Right;
+        public string Left { get; set; }
+        public string Right { get; set; }
 
         public Dividir() { }
 
-        public Dividir(string nomeColunaSaida, Coluna<float> colunaEsquerda, Coluna<float> colunaDireita)
+        public Dividir(string nomeColunaSaida, string colunaEsquerda, string colunaDireita)
         {
             Exit = nomeColunaSaida;
             Left = colunaEsquerda;

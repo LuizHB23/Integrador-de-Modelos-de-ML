@@ -20,6 +20,9 @@ namespace IntegradorViewModel.ControleUsuario
         [ObservableProperty]
         private string _scriptCodigo;
 
+        [ObservableProperty]
+        private bool _dataFrameMudou;
+
         private ParserAst _parserAst;
         private DataFrame _dataFrame;
 
@@ -29,17 +32,19 @@ namespace IntegradorViewModel.ControleUsuario
 
         private readonly IDialogService _dialogService;
 
-        public ConfiguracaoMetodoTextBoxViewModel(IDialogService dialogService, ArquivoDadosDTO arquivoDados, Action<DataView> onDadosAlterados, DataView dadosPreview)
+        public ConfiguracaoMetodoTextBoxViewModel(IDialogService dialogService, ArquivoDadosDTO arquivoDados, Action<DataView> onDadosAlterados, DataView dadosPreview, DataFrame dataFrame)
         {
             ScriptCodigo = string.Empty;
             DadosPreview = dadosPreview;
+            DataFrameMudou = false;
 
             _parserAst = new ParserAst();
             _dialogService = dialogService;
             _arquivoDados = arquivoDados;
             _onDadosAlterados = onDadosAlterados;
 
-            _dataFrame = CarregarDados();
+            _dataFrame = dataFrame;
+            CarregarDados(_dataFrame);
         }
 
         public Dictionary<string, List<string>>? MandaCodigoMetodo()
@@ -60,7 +65,17 @@ namespace IntegradorViewModel.ControleUsuario
 
         }
 
-        public DataFrame CarregarDados()
+        partial void OnDataFrameMudouChanged(bool value)
+        {
+            if(value)
+            {
+                DataFrameParaDataTable(_dataFrame);
+            }
+
+            DataFrameMudou = false;
+        }
+
+        public void CarregarDados(DataFrame dataFrame)
         {
             var linhas = File.ReadAllLines(_arquivoDados.CaminhoArquivoDados);
             var cabecalho = linhas[0].Split(',');
@@ -74,45 +89,48 @@ namespace IntegradorViewModel.ControleUsuario
                     colunas[j].Add(partes[j]);
             }
 
-            var dataFrame = new DataFrame();
-
             for (int i = 0; i < cabecalho.Length; i++)
             {
                 var dado = colunas[i].ToArray();
-                dataFrame.AddColumn(cabecalho[i], dado);
+                dataFrame.AdiconarColuna(cabecalho[i], dado);
             }
 
             var dataTable = DataFrameParaDataTable(dataFrame);
 
             _onDadosAlterados(dataTable.DefaultView);
-
-            return dataFrame;
         }
 
         public static DataTable DataFrameParaDataTable(DataFrame dataFrame)
         {
             var tabela = new DataTable();
-
             var colunas = dataFrame.Colunas;
             var quantidadeColunas = colunas.Count;
+            var quantidadeLinhas = dataFrame.QuantidadeLinhas;
 
             for (int j = 0; j < quantidadeColunas; j++)
             {
-                tabela.Columns.Add(colunas[j].Nome, colunas[j].TipoDado);
+                tabela.Columns.Add(colunas[j].Nome, typeof(object));
             }
 
-            var quantidadeLinhas = dataFrame.QuantidadeLinhas;
+            // Criar a primeira linha com as informações de TIPAGEM
+            var linhaTipagem = tabela.NewRow();
+            for (int j = 0; j < quantidadeColunas; j++)
+            {
+                linhaTipagem[j] = colunas[j].TipoDado.Name;
+            }
+            tabela.Rows.Add(linhaTipagem);
 
+            // Adicionar o restante dos dados do DataFrame
             for (int i = 0; i < quantidadeLinhas; i++)
             {
-                var linha = tabela.NewRow();
+                var linhaDados = tabela.NewRow();
 
                 for (int j = 0; j < quantidadeColunas; j++)
                 {
-                    linha[j] = colunas[j].GetValue(i) ?? DBNull.Value;
+                    linhaDados[j] = colunas[j].PegarValor(i) ?? DBNull.Value;
                 }
 
-                tabela.Rows.Add(linha);
+                tabela.Rows.Add(linhaDados);
             }
 
             return tabela;

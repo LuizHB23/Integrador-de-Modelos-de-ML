@@ -1,12 +1,11 @@
-﻿using IntegradorAplicacao.PipelineAplicacao.Executors;
+﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.Executors;
 using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.FeatureEngineering.AgrupamentoDados;
-using System.Linq.Expressions;
 
 
 namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.AgrupamentoDados
 {
-    public class GroupByExecutor : FeatureExecutor<GroupBy>
+    public class GroupByExecutor : FeatureExecutorBase<GroupBy>
     {
 
         public GroupByExecutor(GroupBy operacao) : base(operacao) { }

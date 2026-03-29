@@ -3,11 +3,8 @@ using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.PipelineAplicacao.ParserPipeline;
 using IntegradorDominio.AST;
 using IntegradorDominio.DataFrameModel;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.ExecutorAplicacao
+namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
 {
     public class BuilderExecutor
     {
@@ -30,7 +27,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.ExecutorAplicac
             _dataFrameRetorno = string.Empty;
         }
 
-        public DataFrame ExecutarTudo(DataFrame dataFrame, string caminhoFuncao)
+        public DataFrame ExecutarTudo(DataFrame dataFrame)
         {
             _dataFramesUtilizados["df"] = dataFrame;
 
@@ -52,8 +49,10 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.ExecutorAplicac
             return dataFrameRetorno;
         }
 
-        public void ConstroiMetodo(string caminhoFuncao)
+        public void ConstroiMetodo(DataFrame dataFrame, string caminhoFuncao)
         {
+            _dataFramesUtilizados["df"] = dataFrame;
+
             var modeloPipeline = RecuperaMetodoPipeline(caminhoFuncao);
 
             foreach (var comando in modeloPipeline.Comandos)

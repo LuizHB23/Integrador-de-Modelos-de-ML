@@ -16,7 +16,7 @@ namespace IntegradorDominio.DataFrameModel
             TipoDado = type;
         }
 
-        public abstract object GetValue(int index);
+        public abstract object PegarValor(int index);
 
     }
 }

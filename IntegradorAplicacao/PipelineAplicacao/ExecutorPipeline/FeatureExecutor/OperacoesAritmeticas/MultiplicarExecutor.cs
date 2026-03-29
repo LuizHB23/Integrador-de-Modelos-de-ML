@@ -1,4 +1,4 @@
-﻿using IntegradorAplicacao.PipelineAplicacao.Executors;
+﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.Executors;
 using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.FeatureEngineering.OperacoesAritmeticas;
 using IntegradorDominio.InterfacesSteps;
@@ -8,7 +8,7 @@ using System.Text;
 
 namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.OperacoesAritmeticas
 {
-    public class MultiplicarExecutor : FeatureExecutor<Multiplicar>
+    public class MultiplicarExecutor : FeatureExecutorBase<Multiplicar>
     {
         public MultiplicarExecutor(Multiplicar operacao) : base(operacao) { }
 

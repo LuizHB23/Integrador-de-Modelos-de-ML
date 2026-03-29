@@ -1,4 +1,4 @@
-﻿using IntegradorAplicacao.PipelineAplicacao.Executors;
+﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.Executors;
 using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.FeatureEngineering.OperacoesAritmeticas;
 using System;
@@ -7,7 +7,7 @@ using System.Text;
 
 namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.OperacoesAritmeticas
 {
-    internal class DividirExecutor : FeatureExecutor<Dividir>
+    internal class DividirExecutor : FeatureExecutorBase<Dividir>
     {
         public DividirExecutor(Dividir operacao) : base(operacao) { }
 
@@ -19,10 +19,10 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
             for (int i = 0; i < n; i++)
             {
-                //resultado[i] = Operacao.ColunaEsquerda.Dados[i] / Operacao.ColunaDireita.Dados[i];
+                resultado[i] = dataFrame.PegarColuna<float>(Operacao.Left).Dados[i] / dataFrame.PegarColuna<float>(Operacao.Left).Dados[i];
             }
 
-            //dataFrame.AddColumn(Operacao.NomeColunaSaida, resultado);
+            dataFrame.AlteraColuna(Operacao.Exit, resultado);
 
             return dataFrame;
         }
