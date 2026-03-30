@@ -25,7 +25,7 @@ namespace IntegradorDominio.DataFrameModel
             QuantidadeLinhas = dados.Length;
         }
 
-        public Coluna<T>? PegarColuna<T>(string nome)
+        public Coluna<T?> PegarColuna<T>(string nome)
         {
             if (!_colunaIndex.TryGetValue(nome, out int index))
             {
@@ -34,7 +34,7 @@ namespace IntegradorDominio.DataFrameModel
 
             var coluna = _colunas[index];
 
-            if (coluna is Coluna<T> colunaTipada)
+            if (coluna is Coluna<T?> colunaTipada)
             {
                 return colunaTipada;
             }
@@ -46,10 +46,10 @@ namespace IntegradorDominio.DataFrameModel
         {
             if (!_colunaIndex.TryGetValue(nome, out int index))
             {
-                AdiconarColuna<T>(nome, valor);
+                AdiconarColuna<T?>(nome, valor);
             }
 
-            _colunas[index] = new Coluna<T>(nome, valor);
+            _colunas[index] = new Coluna<T?>(nome, valor);
         }
     }
 }

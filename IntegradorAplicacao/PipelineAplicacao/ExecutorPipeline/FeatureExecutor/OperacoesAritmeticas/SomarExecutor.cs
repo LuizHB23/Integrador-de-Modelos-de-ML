@@ -16,10 +16,10 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
             for (int i = 0; i < n; i++)
             {
-                //resultado[i] =  Operacao.ColunaEsquerda.Dados[i] + Operacao.ColunaDireita.Dados[i];
+                resultado[i] =  dataFrame.PegarColuna<float>(Operacao.left).Dados[i] + dataFrame.PegarColuna<float>(Operacao.right).Dados[i];
             }
 
-            //dataFrame.AddColumn(Operacao.NomeColunaSaida, resultado);
+            dataFrame.AlteraColuna(Operacao.exit, resultado);
 
             return dataFrame;
         }

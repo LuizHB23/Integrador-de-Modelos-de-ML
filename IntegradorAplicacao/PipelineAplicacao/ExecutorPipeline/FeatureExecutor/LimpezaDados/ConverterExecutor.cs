@@ -27,27 +27,27 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                     break;
 
                 case "boolean":
-                    bool[] dadosBoolean = ConverterParaBool(colunaBase, n);
+                    bool?[] dadosBoolean = ConverterParaBool(colunaBase, n);
                     dataFrame.AlteraColuna(Operacao.col, dadosBoolean);
                     break;
 
                 case "bool":
-                    bool[] dadosBool = ConverterParaBool(colunaBase, n);
+                    bool?[] dadosBool = ConverterParaBool(colunaBase, n);
                     dataFrame.AlteraColuna(Operacao.col, dadosBool);
                     break;
 
                 case "string":
-                    string[] dadosString = ConverterParaString(colunaBase, n);
+                    string?[] dadosString = ConverterParaString(colunaBase, n);
                     dataFrame.AlteraColuna(Operacao.col, dadosString);
                     break;
 
                 case "str":
-                    string[] dadosStr = ConverterParaString(colunaBase, n);
+                    string?[] dadosStr = ConverterParaString(colunaBase, n);
                     dataFrame.AlteraColuna(Operacao.col, dadosStr);
                     break;
 
                 case "datetime":
-                    DateTime[] dadosdatetime = ConverterParaDateTime(colunaBase, n);
+                    DateTime?[] dadosdatetime = ConverterParaDateTime(colunaBase, n);
                     dataFrame.AlteraColuna(Operacao.col, dadosdatetime);
                     break;
             }
@@ -57,23 +57,41 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
         private float[] ConverterParaSingle(ColunaBase coluna, int n)
         {
             float[] resultado = new float[n];
+
             for (int i = 0; i < n; i++)
             {
-                string texto = (string)coluna.PegarValor(i);
-                resultado[i] = Convert.ToSingle(texto.Replace('.',','));
+                var valor = coluna.PegarValor(i);
+
+                //if (valor is null || valor == "")
+                //{
+                //    resultado[i] = null;
+                //    continue;
+                //}
+
+                var texto = valor.ToString()!.Replace('.', ',');
+
+                if (float.TryParse(texto, out float convertido))
+                    resultado[i] = convertido;
+                //else
+                    //resultado[i] = null; // ou throw, se quiser mais rígido
             }
+
             return resultado;
         }
 
-        private bool[] ConverterParaBool(ColunaBase coluna, int n)
+        private bool?[] ConverterParaBool(ColunaBase coluna, int n)
         {
-            bool[] resultado = new bool[n];
+            bool?[] resultado = new bool?[n];
 
             for (int i = 0; i < n; i++)
             {
                 var valor = coluna.PegarValor(i)?.ToString()?.Trim();
 
-                if (valor == "1")
+                if (string.IsNullOrEmpty(valor))
+                {
+                    resultado[i] = null;
+                }
+                else if (valor == "1")
                 {
                     resultado[i] = true;
                 }
@@ -81,31 +99,52 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                 {
                     resultado[i] = false;
                 }
+                else if (bool.TryParse(valor, out bool convertido))
+                {
+                    resultado[i] = convertido;
+                }
                 else
                 {
-                    resultado[i] = Convert.ToBoolean(valor);
+                    resultado[i] = null;
                 }
             }
+
             return resultado;
         }
 
-        private string[] ConverterParaString(ColunaBase coluna, int n)
+        private string?[] ConverterParaString(ColunaBase coluna, int n)
         {
-            string[] resultado = new string[n];
+            string?[] resultado = new string?[n];
+
             for (int i = 0; i < n; i++)
             {
-                resultado[i] = Convert.ToString(coluna.PegarValor(i))!;
+                var valor = coluna.PegarValor(i);
+                resultado[i] = valor?.ToString();
             }
+
             return resultado;
         }
 
-        private DateTime[] ConverterParaDateTime(ColunaBase coluna, int n)
+        private DateTime?[] ConverterParaDateTime(ColunaBase coluna, int n)
         {
-            DateTime[] resultado = new DateTime[n];
+            DateTime?[] resultado = new DateTime?[n];
+
             for (int i = 0; i < n; i++)
             {
-                resultado[i] = Convert.ToDateTime(coluna.PegarValor(i));
+                var valor = coluna.PegarValor(i);
+
+                if (valor == null)
+                {
+                    resultado[i] = null;
+                    continue;
+                }
+
+                if (DateTime.TryParse(valor.ToString(), out DateTime convertido))
+                    resultado[i] = convertido;
+                else
+                    resultado[i] = null;
             }
+
             return resultado;
         }
     }

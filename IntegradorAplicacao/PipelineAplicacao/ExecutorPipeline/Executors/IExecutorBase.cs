@@ -4,6 +4,6 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.Executors
 {
     public interface IExecutorBase
     {
-        DataFrame Executar(DataFrame df);
+        object Executar(DataFrame df);
     }
 }

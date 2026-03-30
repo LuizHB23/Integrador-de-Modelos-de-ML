@@ -56,7 +56,12 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
             {
                 if (executorobj is IExecutorBase executor)
                 {
-                    dataFrameNovo = executor.Executar(dataFrameNovo);
+                    if (executor == null)
+                        throw new Exception("dataFrameExecutor está null");
+
+                    if (dataFrameNovo == null)
+                        throw new Exception("dataFrameNovo está null");
+                    dataFrameNovo = executor.Executar(dataFrameNovo) as DataFrame;
                 }
             }
 

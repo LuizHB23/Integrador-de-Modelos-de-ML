@@ -1,13 +1,14 @@
-﻿using IntegradorDominio.InterfacesSteps;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using IntegradorDominio.Attributes;
+using IntegradorDominio.InterfacesSteps;
 
 namespace IntegradorDominio.FeatureEngineering.LimpezaDados
 {
+    [FeatureName("FillNa")]
     public class FillNa : IFeature
     {
         public string NomeExibicao => "Fill NA";
-        public string NomeCodigo => throw new NotImplementedException();
+
+        public string col { get; set; }
+        public string value {  get; set; }
     }
 }
