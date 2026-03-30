@@ -1,6 +1,7 @@
 ﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.Executors;
 using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.FeatureEngineering.LimpezaDados;
+using System.Diagnostics;
 
 namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.LimpezaDados
 {
@@ -15,11 +16,22 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                 throw new Exception($"Coluna '{Operacao.col}' não encontrada");
             }
 
+            object? valorOperacao;
+
+            if (Operacao.Contexto!.ContainsKey(Operacao.value))
+            {
+                valorOperacao = Operacao.Contexto[Operacao.value];
+            }
+            else
+            {
+                valorOperacao = Operacao.value;
+            }
+
             var coluna = dataFrame.Colunas[index];
 
             if (coluna is Coluna<Single?> colunaFloat)
             {
-                float valor = Convert.ToSingle(Operacao.value);
+                float valor = Convert.ToSingle(valorOperacao);
 
                 for (int i = 0; i < colunaFloat.Dados.Length; i++)
                 {
@@ -31,7 +43,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             }
             else if (coluna is Coluna<Boolean?> colunaBool)
             {
-                bool valor = Convert.ToBoolean(Operacao.value);
+                bool valor = Convert.ToBoolean(valorOperacao);
 
                 for (int i = 0; i < colunaBool.Dados.Length; i++)
                 {
@@ -43,7 +55,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             }
             else if (coluna is Coluna<DateTime?> colunaDate)
             {
-                DateTime valor = Convert.ToDateTime(Operacao.value);
+                DateTime valor = Convert.ToDateTime(valorOperacao);
 
                 for (int i = 0; i < colunaDate.Dados.Length; i++)
                 {
@@ -55,7 +67,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             }
             else if (coluna is Coluna<string?> colunaString)
             {
-                string valor = Operacao.value;
+                string valor = (string)valorOperacao!;
 
                 for (int i = 0; i < colunaString.Dados.Length; i++)
                 {

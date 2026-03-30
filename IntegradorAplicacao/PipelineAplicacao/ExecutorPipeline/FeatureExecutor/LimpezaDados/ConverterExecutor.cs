@@ -3,6 +3,7 @@ using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.FeatureEngineering.LimpezaDados;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.LimpezaDados
@@ -22,7 +23,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             switch (tipoDestino.ToLower())
             {
                 case "single":
-                    float[] dadosFloat = ConverterParaSingle(colunaBase, n);
+                    float?[] dadosFloat = ConverterParaSingle(colunaBase, n);
                     dataFrame.AlteraColuna(Operacao.col, dadosFloat);
                     break;
 
@@ -54,26 +55,32 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
             return dataFrame;
         }
-        private float[] ConverterParaSingle(ColunaBase coluna, int n)
+        private float?[] ConverterParaSingle(ColunaBase coluna, int n)
         {
-            float[] resultado = new float[n];
+            float?[] resultado = new float?[n];
 
             for (int i = 0; i < n; i++)
             {
-                var valor = coluna.PegarValor(i);
+                var valorOriginal = coluna.PegarValor(i);
 
-                //if (valor is null || valor == "")
-                //{
-                //    resultado[i] = null;
-                //    continue;
-                //}
-
-                var texto = valor.ToString()!.Replace('.', ',');
-
-                if (float.TryParse(texto, out float convertido))
-                    resultado[i] = convertido;
-                //else
-                    //resultado[i] = null; // ou throw, se quiser mais rígido
+                if (valorOriginal == null)
+                {
+                    resultado[i] = null;
+                    continue;
+                }
+                else if (valorOriginal is string texto && string.IsNullOrWhiteSpace(texto.Trim()))
+                {
+                    resultado[i] = null;
+                    continue;
+                }
+                else if (float.TryParse(valorOriginal.ToString().Replace(',', '.'), CultureInfo.InvariantCulture, out float valor))
+                {
+                    resultado[i] = valor;
+                }
+                else
+                {
+                    resultado[i] = null;
+                }
             }
 
             return resultado;

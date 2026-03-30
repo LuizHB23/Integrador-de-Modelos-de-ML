@@ -3,6 +3,7 @@ using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.PipelineAplicacao.ParserPipeline;
 using IntegradorDominio.AST;
 using IntegradorDominio.DataFrameModel;
+using System.Diagnostics;
 
 namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
 {
@@ -31,7 +32,11 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
             {
                 dataFrameOrigem = (DataFrame)_objetosUtilizados[etapas.DataFrameOrigem]!;
 
+                Debug.WriteLine(etapas.DataFrameDestino);
+
                 _objetosUtilizados[etapas.DataFrameDestino] = etapas.Executor!.Executar(dataFrameOrigem!);
+
+                Debug.WriteLine(_objetosUtilizados[etapas.DataFrameDestino]);
             }
 
             var dataFrameRetorno = (DataFrame)_objetosUtilizados[_dataFrameRetorno]!;

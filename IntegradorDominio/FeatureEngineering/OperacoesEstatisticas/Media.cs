@@ -9,5 +9,6 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesEstatisticas
         public string NomeExibicao => "Média";
         
         public string col { get; set; }
+        public Dictionary<string, object?>? Contexto { get; set; }
     }
 }

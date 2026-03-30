@@ -15,6 +15,7 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesAritmeticas
         public string Exit { get; set; }
         public string Col { get; set; }
         public string Divisor { get; set; }
+        public Dictionary<string, object?>? Contexto { get; set; }
 
         public Mod() { }
 

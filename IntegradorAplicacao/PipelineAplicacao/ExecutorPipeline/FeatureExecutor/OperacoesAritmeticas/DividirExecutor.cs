@@ -19,10 +19,10 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
             for (int i = 0; i < n; i++)
             {
-                resultado[i] = dataFrame.PegarColuna<float>(Operacao.Left).Dados[i] / dataFrame.PegarColuna<float>(Operacao.Left).Dados[i];
+                resultado[i] = dataFrame.PegarColuna<float>(Operacao.left).Dados[i] / dataFrame.PegarColuna<float>(Operacao.left).Dados[i];
             }
 
-            dataFrame.AlteraColuna(Operacao.Exit, resultado);
+            dataFrame.AlteraColuna(Operacao.exit, resultado);
 
             return dataFrame;
         }

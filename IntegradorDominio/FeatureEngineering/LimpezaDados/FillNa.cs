@@ -10,5 +10,6 @@ namespace IntegradorDominio.FeatureEngineering.LimpezaDados
 
         public string col { get; set; }
         public string value {  get; set; }
+        public Dictionary<string, object?>? Contexto { get; set; }
     }
 }

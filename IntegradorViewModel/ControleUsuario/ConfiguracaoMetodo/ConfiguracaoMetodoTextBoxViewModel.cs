@@ -106,20 +106,33 @@ namespace IntegradorViewModel.ControleUsuario
             var quantidadeColunas = colunas.Count;
             var quantidadeLinhas = dataFrame.QuantidadeLinhas;
 
+            // Adicionar colunas ao DataTable
             for (int j = 0; j < quantidadeColunas; j++)
             {
                 tabela.Columns.Add(colunas[j].Nome, typeof(object));
             }
 
-            // Criar a primeira linha com as informações de TIPAGEM
+            // Criar a primeira linha com TIPAGEM
             var linhaTipagem = tabela.NewRow();
             for (int j = 0; j < quantidadeColunas; j++)
             {
-                linhaTipagem[j] = colunas[j].TipoDado.Name;
+                Type tipo = colunas[j].TipoDado;
+
+                // Mapear nullable para tipo “base” que você quer mostrar
+                string tipoExibicao = tipo switch
+                {
+                    Type t when t == typeof(float) || t == typeof(float?) => "Single",
+                    Type t when t == typeof(string) => "String",
+                    Type t when t == typeof(bool) || t == typeof(bool?) => "Boolean",
+                    Type t when t == typeof(DateTime) || t == typeof(DateTime?) => "DateTime",
+                    _ => "Object"
+                };
+
+                linhaTipagem[j] = tipoExibicao;
             }
             tabela.Rows.Add(linhaTipagem);
 
-            // Adicionar o restante dos dados do DataFrame
+            // Adicionar dados do DataFrame
             for (int i = 0; i < quantidadeLinhas; i++)
             {
                 var linhaDados = tabela.NewRow();

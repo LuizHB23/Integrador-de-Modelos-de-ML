@@ -10,7 +10,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
 {
     public class FeatureExecutor
     {
-        private readonly List<object> _executores = new();
+        private readonly List<IExecutorBase> _executores = new();
         Dictionary<string, object?>? _objetosUtilizados;
 
         private static readonly Lazy<Dictionary<string, Type>> _cacheExecutores =
@@ -48,24 +48,39 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
             _executores.Add(executor);
         }
 
-        public DataFrame Executar(DataFrame dataFrame)
+        public object Executar(DataFrame dataFrame)
         {
-            var dataFrameNovo = dataFrame;
+            object? objetoNovo = dataFrame;
+            var dataFrameAuxiliar = dataFrame;
 
-            foreach (var executorobj in _executores)
+            foreach (var executorObjeto in _executores)
             {
-                if (executorobj is IExecutorBase executor)
+                if (objetoNovo is DataFrame)
+                {
+                    dataFrameAuxiliar = (DataFrame)objetoNovo;
+                }
+                else
+                {
+                    throw new Exception($"Você precisa de um DataFrame para esta operacao, pois a operação retornou um {objetoNovo}");
+                }
+
+                if (executorObjeto is IExecutorBase executor)
                 {
                     if (executor == null)
+                    {
                         throw new Exception("dataFrameExecutor está null");
+                    }
 
-                    if (dataFrameNovo == null)
-                        throw new Exception("dataFrameNovo está null");
-                    dataFrameNovo = executor.Executar(dataFrameNovo) as DataFrame;
+                    if (dataFrameAuxiliar == null)
+                    {
+                        throw new Exception("dataFrameAuxiliar está null");
+                    }
+
+                    objetoNovo = executor.Executar(dataFrameAuxiliar);
                 }
             }
 
-            return dataFrameNovo;
+            return objetoNovo!;
         }
 
         public void CriarExecutorDinamico(MetodoChainPipeline metodoChain)
@@ -97,19 +112,14 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
                     continue;
                 }
 
-                object? valorConvertido;
-
-                if (_objetosUtilizados!.ContainsKey(argumento.Valor))
-                {
-                    valorConvertido = Convert.ChangeType(_objetosUtilizados[argumento.Valor], propriedade.PropertyType);
-                }
-                else
-                {
-                    valorConvertido = Convert.ChangeType(argumento.Valor, propriedade.PropertyType);
-                }
+                var valorConvertido = Convert.ChangeType(argumento.Valor, propriedade.PropertyType);
 
                 propriedade.SetValue(operacao, valorConvertido);
             }
+
+            var contexto = tipoOperacao.GetProperty("Contexto");
+
+            contexto!.SetValue(operacao, _objetosUtilizados);
 
             // Criar executor passando a operação
             var executor = (IExecutorBase)Activator.CreateInstance(executorType, operacao)!;
