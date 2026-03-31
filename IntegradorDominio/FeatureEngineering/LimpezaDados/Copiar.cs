@@ -1,13 +1,15 @@
-﻿using IntegradorDominio.InterfacesSteps;
+﻿using IntegradorDominio.Attributes;
+using IntegradorDominio.InterfacesSteps;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace IntegradorDominio.FeatureEngineering.LimpezaDados
 {
+    [FeatureName("Copy")]
     public class Copiar : IFeature
     {
-        public string NomeExibicao => "Clonar";
+        public string NomeExibicao => "Copiar";
         public Dictionary<string, object?>? Contexto { get; set; }
     }
 }

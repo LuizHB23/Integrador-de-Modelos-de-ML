@@ -70,6 +70,10 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                     functionAgregacao = AgregacaoMaximo;
                     break;
 
+                case "diff":
+                    functionAgregacao = AgregacaoDiff;
+                    break;
+
                 default:
                     throw new Exception($"Operação {agregacao} não suportada");
             }
@@ -193,6 +197,31 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                     max = valor;
             }
             return max;
+        }
+
+        private object? AgregacaoDiff(ColunaBase coluna, List<int> indices)
+        {
+            if (indices.Count < 2)
+                return null;
+
+            object? primeiro = null;
+            object? ultimo = null;
+
+            foreach (var i in indices)
+            {
+                var valor = coluna.PegarValor(i);
+                if (valor == null) continue;
+
+                if (primeiro == null)
+                    primeiro = valor;
+
+                ultimo = valor;
+            }
+
+            if (primeiro == null || ultimo == null)
+                return null;
+
+            return (Single)ultimo - (Single)primeiro;
         }
 
         private void AdicionarColunaTipada<T>(DataFrame df, string nomeColuna, List<object?> valores)

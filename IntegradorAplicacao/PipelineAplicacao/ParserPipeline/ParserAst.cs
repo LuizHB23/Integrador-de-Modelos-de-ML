@@ -102,7 +102,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ParserPipeline
             if (string.IsNullOrWhiteSpace(argumentos))
                 return lista;
 
-            var partes = argumentos.Split(',');
+            var partes = SplitInteligente(argumentos);
 
             foreach (var parte in partes)
             {
@@ -121,6 +121,48 @@ namespace IntegradorAplicacao.PipelineAplicacao.ParserPipeline
             }
 
             return lista;
+        }
+
+        private List<string> SplitInteligente(string input)
+        {
+            var resultado = new List<string>();
+            var atual = new StringBuilder();
+
+            int nivelColchetes = 0;
+            int nivelChaves = 0;
+            bool dentroAspas = false;
+
+            foreach (char caracter in input)
+            {
+                if (caracter == '"')
+                {
+                    dentroAspas = !dentroAspas;
+                }
+
+                if (!dentroAspas)
+                {
+                    if (caracter == '[') nivelColchetes++;
+                    else if (caracter == ']') nivelColchetes--;
+
+                    else if (caracter == '{') nivelChaves++;
+                    else if (caracter == '}') nivelChaves--;
+                }
+
+                if (caracter == ',' && !dentroAspas && nivelColchetes == 0 && nivelChaves == 0)
+                {
+                    resultado.Add(atual.ToString().Trim());
+                    atual.Clear();
+                }
+                else
+                {
+                    atual.Append(caracter);
+                }
+            }
+
+            if (atual.Length > 0)
+                resultado.Add(atual.ToString().Trim());
+
+            return resultado;
         }
     }
 }
