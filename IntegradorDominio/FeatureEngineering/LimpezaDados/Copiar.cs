@@ -5,7 +5,7 @@ using System.Text;
 
 namespace IntegradorDominio.FeatureEngineering.LimpezaDados
 {
-    public class Clonar : IFeature
+    public class Copiar : IFeature
     {
         public string NomeExibicao => "Clonar";
         public Dictionary<string, object?>? Contexto { get; set; }
