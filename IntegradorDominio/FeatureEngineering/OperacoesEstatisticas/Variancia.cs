@@ -8,6 +8,6 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesEstatisticas
     public class Variancia : IFeature
     {
         public string NomeExibicao => "Variância";
-        public string NomeCodigo => throw new NotImplementedException();
+        public Dictionary<string, object?>? Contexto { get; set; }
     }
 }

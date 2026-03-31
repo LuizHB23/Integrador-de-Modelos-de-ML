@@ -8,6 +8,6 @@ namespace IntegradorDominio.FeatureEngineering.LimpezaDados
     public class RenomearColuna : IFeature
     {
         public string NomeExibicao => "Renomear Coluna";
-        public string NomeCodigo => throw new NotImplementedException();
+        public Dictionary<string, object?>? Contexto { get; set; }
     }
 }

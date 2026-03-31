@@ -8,6 +8,6 @@ namespace IntegradorDominio.FeatureEngineering.AgrupamentoDados
     public class GroupBy : IFeature
     {
         public string NomeExibicao => "GroupBy";
-        public string NomeCodigo => throw new NotImplementedException();
+        public Dictionary<string, object?>? Contexto { get; set; }
     }
 }

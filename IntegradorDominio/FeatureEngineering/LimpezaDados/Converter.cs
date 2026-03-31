@@ -11,9 +11,9 @@ namespace IntegradorDominio.FeatureEngineering.LimpezaDados
     public class Converter : IFeature
     {
         public string NomeExibicao => "Converter";
+        public Dictionary<string, object?>? Contexto { get; set; }
 
         public string col { get; set; }
         public string type { get; set; }
-        public Dictionary<string, object?>? Contexto { get; set; }
     }
 }

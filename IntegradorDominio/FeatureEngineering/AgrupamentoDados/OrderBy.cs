@@ -8,6 +8,6 @@ namespace IntegradorDominio.FeatureEngineering.AgrupamentoDados
     public class OrderBy : IFeature
     {
         public string NomeExibicao => "OrderBy";
-        public string NomeCodigo => throw new NotImplementedException();
+        public Dictionary<string, object?>? Contexto { get ; set; }
     }
 }

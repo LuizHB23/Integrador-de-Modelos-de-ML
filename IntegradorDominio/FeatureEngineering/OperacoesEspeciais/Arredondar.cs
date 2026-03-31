@@ -8,7 +8,6 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesEspeciais
     public class Arredondar : IFeature
     {
         public string NomeExibicao => "Arredondar";
-
-        public string NomeCodigo => throw new NotImplementedException();
+        public Dictionary<string, object?>? Contexto { get; set; }
     }
 }

@@ -8,6 +8,6 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesEspeciais
     public class Maximo : IFeature
     {
         public string NomeExibicao => "Máximo";
-        public string NomeCodigo => throw new NotImplementedException();
+        public Dictionary<string, object?>? Contexto { get; set; }
     }
 }

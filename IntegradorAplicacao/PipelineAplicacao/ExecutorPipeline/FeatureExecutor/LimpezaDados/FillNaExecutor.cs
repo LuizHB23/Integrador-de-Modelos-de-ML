@@ -33,7 +33,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             {
                 float valor = Convert.ToSingle(valorOperacao);
 
-                for (int i = 0; i < colunaFloat.Dados.Length; i++)
+                for (int i = 0; i < colunaFloat.Dados.Count; i++)
                 {
                     if (colunaFloat.Dados[i] is null)
                     {
@@ -45,7 +45,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             {
                 bool valor = Convert.ToBoolean(valorOperacao);
 
-                for (int i = 0; i < colunaBool.Dados.Length; i++)
+                for (int i = 0; i < colunaBool.Dados.Count; i++)
                 {
                     if (colunaBool.Dados[i] == null)
                     {
@@ -57,7 +57,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             {
                 DateTime valor = Convert.ToDateTime(valorOperacao);
 
-                for (int i = 0; i < colunaDate.Dados.Length; i++)
+                for (int i = 0; i < colunaDate.Dados.Count; i++)
                 {
                     if (colunaDate.Dados[i] == null)
                     {
@@ -69,7 +69,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             {
                 string valor = (string)valorOperacao!;
 
-                for (int i = 0; i < colunaString.Dados.Length; i++)
+                for (int i = 0; i < colunaString.Dados.Count; i++)
                 {
                     if (colunaString.Dados[i] == null)
                     {

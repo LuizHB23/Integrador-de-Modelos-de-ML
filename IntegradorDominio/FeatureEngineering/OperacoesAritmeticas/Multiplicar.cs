@@ -12,11 +12,11 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesAritmeticas
     public class Multiplicar : IFeature
     {
         public string NomeExibicao => "Multiplicar";
+        public Dictionary<string, object?>? Contexto { get; set; }
 
         public string exit { get; set; }
         public string left { get; set; }
         public string right { get; set; }
-        public Dictionary<string, object?>? Contexto { get; set; }
 
         public Multiplicar() { }
         public Multiplicar(string nomeColunaSaida, string colunaEsquerda, string colunaDireita)

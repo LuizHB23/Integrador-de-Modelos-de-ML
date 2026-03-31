@@ -12,11 +12,11 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesAritmeticas
     public class Dividir : IFeature
     {
         public string NomeExibicao => "Dividir";
+        public Dictionary<string, object?>? Contexto { get; set; }
 
         public string exit { get; set; }
         public string left { get; set; }
         public string right { get; set; }
-        public Dictionary<string, object?>? Contexto { get; set; }
 
         public Dividir() { }
 

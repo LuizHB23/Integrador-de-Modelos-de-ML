@@ -23,41 +23,41 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             switch (tipoDestino.ToLower())
             {
                 case "single":
-                    float?[] dadosFloat = ConverterParaSingle(colunaBase, n);
+                    List<float?> dadosFloat = ConverterParaSingle(colunaBase, n);
                     dataFrame.AlteraColuna(Operacao.col, dadosFloat);
                     break;
 
                 case "boolean":
-                    bool?[] dadosBoolean = ConverterParaBool(colunaBase, n);
+                    List<bool?> dadosBoolean = ConverterParaBool(colunaBase, n);
                     dataFrame.AlteraColuna(Operacao.col, dadosBoolean);
                     break;
 
                 case "bool":
-                    bool?[] dadosBool = ConverterParaBool(colunaBase, n);
+                    List<bool?> dadosBool = ConverterParaBool(colunaBase, n);
                     dataFrame.AlteraColuna(Operacao.col, dadosBool);
                     break;
 
                 case "string":
-                    string?[] dadosString = ConverterParaString(colunaBase, n);
+                    List<string?> dadosString = ConverterParaString(colunaBase, n);
                     dataFrame.AlteraColuna(Operacao.col, dadosString);
                     break;
 
                 case "str":
-                    string?[] dadosStr = ConverterParaString(colunaBase, n);
+                    List<string?> dadosStr = ConverterParaString(colunaBase, n);
                     dataFrame.AlteraColuna(Operacao.col, dadosStr);
                     break;
 
                 case "datetime":
-                    DateTime?[] dadosdatetime = ConverterParaDateTime(colunaBase, n);
+                    List<DateTime?> dadosdatetime = ConverterParaDateTime(colunaBase, n);
                     dataFrame.AlteraColuna(Operacao.col, dadosdatetime);
                     break;
             }
 
             return dataFrame;
         }
-        private float?[] ConverterParaSingle(ColunaBase coluna, int n)
+        private List<float?> ConverterParaSingle(ColunaBase coluna, int n)
         {
-            float?[] resultado = new float?[n];
+            List<float?> resultado = new List<float?>();
 
             for (int i = 0; i < n; i++)
             {
@@ -65,30 +65,30 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
                 if (valorOriginal == null)
                 {
-                    resultado[i] = null;
+                    resultado.Add(null);
                     continue;
                 }
                 else if (valorOriginal is string texto && string.IsNullOrWhiteSpace(texto.Trim()))
                 {
-                    resultado[i] = null;
+                    resultado.Add(null);
                     continue;
                 }
                 else if (float.TryParse(valorOriginal.ToString().Replace(',', '.'), CultureInfo.InvariantCulture, out float valor))
                 {
-                    resultado[i] = valor;
+                    resultado.Add(valor);
                 }
                 else
                 {
-                    resultado[i] = null;
+                    resultado.Add(null);
                 }
             }
 
             return resultado;
         }
 
-        private bool?[] ConverterParaBool(ColunaBase coluna, int n)
+        private List<bool?> ConverterParaBool(ColunaBase coluna, int n)
         {
-            bool?[] resultado = new bool?[n];
+            List<bool?> resultado = new List<bool?>();
 
             for (int i = 0; i < n; i++)
             {
@@ -96,45 +96,45 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
                 if (string.IsNullOrEmpty(valor))
                 {
-                    resultado[i] = null;
+                    resultado.Add(null);
                 }
                 else if (valor == "1")
                 {
-                    resultado[i] = true;
+                    resultado.Add(true);
                 }
                 else if (valor == "0")
                 {
-                    resultado[i] = false;
+                    resultado.Add(false);
                 }
                 else if (bool.TryParse(valor, out bool convertido))
                 {
-                    resultado[i] = convertido;
+                    resultado.Add(convertido);
                 }
                 else
                 {
-                    resultado[i] = null;
+                    resultado.Add(null);
                 }
             }
 
             return resultado;
         }
 
-        private string?[] ConverterParaString(ColunaBase coluna, int n)
+        private List<string?> ConverterParaString(ColunaBase coluna, int n)
         {
-            string?[] resultado = new string?[n];
+            List<string?> resultado = new List<string?>();
 
             for (int i = 0; i < n; i++)
             {
                 var valor = coluna.PegarValor(i);
-                resultado[i] = valor?.ToString();
+                resultado.Add(valor?.ToString());
             }
 
             return resultado;
         }
 
-        private DateTime?[] ConverterParaDateTime(ColunaBase coluna, int n)
+        private List<DateTime?> ConverterParaDateTime(ColunaBase coluna, int n)
         {
-            DateTime?[] resultado = new DateTime?[n];
+            List<DateTime?> resultado = new List<DateTime?>();
 
             for (int i = 0; i < n; i++)
             {
@@ -142,14 +142,14 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
                 if (valor == null)
                 {
-                    resultado[i] = null;
+                    resultado.Add(null);
                     continue;
                 }
 
                 if (DateTime.TryParse(valor.ToString(), out DateTime convertido))
-                    resultado[i] = convertido;
+                    resultado.Add(convertido);
                 else
-                    resultado[i] = null;
+                    resultado.Add(null);
             }
 
             return resultado;

@@ -7,9 +7,9 @@ namespace IntegradorDominio.FeatureEngineering.LimpezaDados
     public class FillNa : IFeature
     {
         public string NomeExibicao => "Fill NA";
+        public Dictionary<string, object?>? Contexto { get; set; }
 
         public string col { get; set; }
         public string value {  get; set; }
-        public Dictionary<string, object?>? Contexto { get; set; }
     }
 }

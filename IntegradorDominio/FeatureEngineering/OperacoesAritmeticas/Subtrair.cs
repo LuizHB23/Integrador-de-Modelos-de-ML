@@ -9,11 +9,11 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesAritmeticas
     public class Subtrair : IFeature
     {
         public string NomeExibicao => "Subtrair";
+        public Dictionary<string, object?>? Contexto { get; set; }
 
         public string exit { get; set; }
         public string left { get; set; }
         public string right { get; set; }
-        public Dictionary<string, object?>? Contexto { get; set; }
 
         public Subtrair() { }
         public Subtrair(string nomeColunaSaida, string colunaEsquerda, string colunaDireita)

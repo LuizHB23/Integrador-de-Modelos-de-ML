@@ -8,6 +8,6 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesEstatisticas
     public class Percentil : IFeature
     {
         public string NomeExibicao => "Percentil";
-        public string NomeCodigo => throw new NotImplementedException();
+        public Dictionary<string, object?>? Contexto { get; set; }
     }
 }

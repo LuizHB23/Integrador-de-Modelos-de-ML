@@ -8,6 +8,6 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesEspeciais
     public class Floor : IFeature
     {
         public string NomeExibicao => "Floor";
-        public string NomeCodigo => throw new NotImplementedException();
+        public Dictionary<string, object?>? Contexto { get; set; }
     }
 }

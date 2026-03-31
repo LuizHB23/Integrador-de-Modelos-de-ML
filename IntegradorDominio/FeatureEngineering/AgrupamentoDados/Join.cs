@@ -8,6 +8,6 @@ namespace IntegradorDominio.FeatureEngineering.AgrupamentoDados
     public class Join : IFeature
     {
         public string NomeExibicao => "Join";
-        public string NomeCodigo => throw new NotImplementedException();
+        public Dictionary<string, object?>? Contexto { get; set; }
     }
 }

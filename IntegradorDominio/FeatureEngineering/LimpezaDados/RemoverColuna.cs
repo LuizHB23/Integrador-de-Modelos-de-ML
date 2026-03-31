@@ -8,6 +8,6 @@ namespace IntegradorDominio.FeatureEngineering.LimpezaDados
     public class RemoverColuna : IFeature
     {
         public string NomeExibicao => "Remover Coluna";
-        public string NomeCodigo => throw new NotImplementedException();
+        public Dictionary<string, object?>? Contexto { get; set; }
     }
 }

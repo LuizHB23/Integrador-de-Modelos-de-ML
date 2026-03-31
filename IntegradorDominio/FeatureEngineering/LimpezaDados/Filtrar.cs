@@ -8,6 +8,6 @@ namespace IntegradorDominio.FeatureEngineering.LimpezaDados
     public class Filtrar : IFeature
     {
         public string NomeExibicao => "Filtrar";
-        public string NomeCodigo => throw new NotImplementedException();
+        public Dictionary<string, object?>? Contexto { get; set; }
     }
 }

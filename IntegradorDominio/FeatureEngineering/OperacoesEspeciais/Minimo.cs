@@ -8,6 +8,6 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesEspeciais
     public class Minimo : IFeature
     {
         public string NomeExibicao => "Mínimo";
-        public string NomeCodigo => throw new NotImplementedException();
+        public Dictionary<string, object?>? Contexto { get; set; }
     }
 }

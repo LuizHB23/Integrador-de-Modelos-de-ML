@@ -8,6 +8,6 @@ namespace IntegradorDominio.FeatureEngineering.AgrupamentoDados
     public class Pivot : IFeature
     {
         public string NomeExibicao => "Pivot";
-        public string NomeCodigo => throw new NotImplementedException();
+        public Dictionary<string, object?>? Contexto { get ; set; }
     }
 }

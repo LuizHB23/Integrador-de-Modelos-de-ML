@@ -12,11 +12,11 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesAritmeticas
     public class Somar : IFeature
     {
         public string NomeExibicao => "Somar";
+        public Dictionary<string, object?>? Contexto { get; set; }
 
         public string exit { get; set; }
         public string left { get; set; }
         public string right { get; set; }
-        public Dictionary<string, object?>? Contexto { get; set; }
 
         public Somar() { }
 

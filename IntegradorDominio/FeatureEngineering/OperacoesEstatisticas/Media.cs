@@ -7,8 +7,8 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesEstatisticas
     public class Media : IFeature
     {
         public string NomeExibicao => "Média";
+        public Dictionary<string, object?>? Contexto { get; set; }
         
         public string col { get; set; }
-        public Dictionary<string, object?>? Contexto { get; set; }
     }
 }

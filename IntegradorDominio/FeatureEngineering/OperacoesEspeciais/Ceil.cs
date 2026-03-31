@@ -8,7 +8,6 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesEspeciais
     public class Ceil : IFeature
     {
         public string NomeExibicao => "Ceil";
-
-        public string NomeCodigo => throw new NotImplementedException();
+        public Dictionary<string, object?>? Contexto { get; set; }
     }
 }

@@ -8,6 +8,6 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesEstatisticas
     public class Mediana : IFeature
     {
         public string NomeExibicao => "Mediana";
-        public string NomeCodigo => throw new NotImplementedException();
+        public Dictionary<string, object?>? Contexto { get; set; }
     }
 }

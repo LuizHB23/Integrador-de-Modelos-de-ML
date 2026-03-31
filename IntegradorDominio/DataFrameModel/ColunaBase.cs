@@ -17,6 +17,8 @@ namespace IntegradorDominio.DataFrameModel
         }
 
         public abstract object PegarValor(int index);
+        public abstract void AdicionaValor(object? valor);
+        public abstract void InjetarValor(int index, object? valor);
 
     }
 }

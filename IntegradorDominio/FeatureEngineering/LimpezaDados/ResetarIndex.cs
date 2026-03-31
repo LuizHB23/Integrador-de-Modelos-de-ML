@@ -8,6 +8,6 @@ namespace IntegradorDominio.FeatureEngineering.LimpezaDados
     public class ResetarIndex : IFeature
     {
         public string NomeExibicao => "Resetar Index";
-        public string NomeCodigo => throw new NotImplementedException();
+        public Dictionary<string, object?>? Contexto { get; set; }
     }
 }

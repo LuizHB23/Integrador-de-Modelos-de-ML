@@ -76,7 +76,9 @@ namespace IntegradorViewModel.ControleUsuario
 
             _estadoColuna = _estadoCabecalho.Select(_ => new List<string>()).ToArray();
 
-            for (int i = 1; i < 22; i++)
+            var quantidadeLinhas = (linhas.Length >= 22) ? 22 : linhas.Length;
+
+            for (int i = 1; i < quantidadeLinhas; i++)
             {
                 var partes = linhas[i].Split(_arquivoDados.Delimitador);
                 for (int j = 0; j < partes.Length; j++)
@@ -90,8 +92,8 @@ namespace IntegradorViewModel.ControleUsuario
 
             for (int i = 0; i < _estadoCabecalho.Length; i++)
             {
-                var dado = _estadoColuna[i].ToArray();
-                dataFrame.AdiconarColuna(_estadoCabecalho[i], dado);
+                var dado = _estadoColuna[i];
+                dataFrame.AdicionarColuna(_estadoCabecalho[i], dado);
             }
 
             AtualizaTabela(dataFrame);
@@ -109,6 +111,7 @@ namespace IntegradorViewModel.ControleUsuario
             // Adicionar colunas ao DataTable
             for (int j = 0; j < quantidadeColunas; j++)
             {
+                Debug.WriteLine(colunas[j].Nome);
                 tabela.Columns.Add(colunas[j].Nome, typeof(object));
             }
 

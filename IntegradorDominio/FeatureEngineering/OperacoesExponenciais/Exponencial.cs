@@ -8,6 +8,6 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesExponenciais
     public class Exponencial : IFeature
     {
         public string NomeExibicao => "Exponencial";
-        public string NomeCodigo => throw new NotImplementedException();
+        public Dictionary<string, object?>? Contexto { get; set; }
     }
 }

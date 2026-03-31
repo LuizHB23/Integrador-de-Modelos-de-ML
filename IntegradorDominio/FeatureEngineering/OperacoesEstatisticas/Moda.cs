@@ -8,6 +8,6 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesEstatisticas
     public class Moda : IFeature
     {
         public string NomeExibicao => "Moda";
-        public string NomeCodigo => throw new NotImplementedException();
+        public Dictionary<string, object?>? Contexto { get; set; }
     }
 }

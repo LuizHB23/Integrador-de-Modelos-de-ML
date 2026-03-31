@@ -8,6 +8,6 @@ namespace IntegradorDominio.FeatureEngineering.AgrupamentoDados
     public class Concat : IFeature
     {
         public string NomeExibicao => "Concat";
-        public string NomeCodigo => throw new NotImplementedException();
+        public Dictionary<string, object?>? Contexto { get; set; }
     }
 }

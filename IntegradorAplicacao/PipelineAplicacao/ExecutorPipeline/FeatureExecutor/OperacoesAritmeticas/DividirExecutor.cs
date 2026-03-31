@@ -15,7 +15,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
         {
             var n = dataFrame.QuantidadeLinhas;
 
-            var resultado = new float[n];
+            var resultado = new List<float?>();
 
             for (int i = 0; i < n; i++)
             {

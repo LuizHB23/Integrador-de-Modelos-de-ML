@@ -8,6 +8,6 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesExponenciais
     public class Potencia : IFeature
     {
         public string NomeExibicao => "Potência";
-        public string NomeCodigo => throw new NotImplementedException();
+        public Dictionary<string, object?>? Contexto { get; set; }
     }
 }

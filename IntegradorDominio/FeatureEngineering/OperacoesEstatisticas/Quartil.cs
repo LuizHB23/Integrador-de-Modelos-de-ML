@@ -5,6 +5,6 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesEstatisticas
     public class Quartil : IFeature
     {
         public string NomeExibicao => "Quartil";
-        public string NomeCodigo => throw new NotImplementedException();
+        public Dictionary<string, object?>? Contexto { get; set; }
     }
 }

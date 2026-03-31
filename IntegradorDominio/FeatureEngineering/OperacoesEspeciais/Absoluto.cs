@@ -8,8 +8,7 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesEspeciais
     public class Absoluto : IFeature
     {
         public string NomeExibicao => "Absoluto";
-
-        public string NomeCodigo => throw new NotImplementedException();
+        public Dictionary<string, object?>? Contexto { get; set; }
 
     }
 }

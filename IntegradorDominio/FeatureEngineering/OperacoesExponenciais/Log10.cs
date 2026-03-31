@@ -8,6 +8,6 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesExponenciais
     public class Log10 : IFeature
     {
         public string NomeExibicao => "Log10";
-        public string NomeCodigo => throw new NotImplementedException();
+        public Dictionary<string, object?>? Contexto { get; set; }
     }
 }

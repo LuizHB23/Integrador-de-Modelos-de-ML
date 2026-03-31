@@ -11,11 +11,11 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesAritmeticas
     public class Mod : IFeature
     {
         public string NomeExibicao => "Mod";
+        public Dictionary<string, object?>? Contexto { get; set; }
 
         public string Exit { get; set; }
         public string Col { get; set; }
         public string Divisor { get; set; }
-        public Dictionary<string, object?>? Contexto { get; set; }
 
         public Mod() { }
 

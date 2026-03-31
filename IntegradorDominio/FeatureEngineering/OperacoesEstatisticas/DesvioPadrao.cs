@@ -8,6 +8,6 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesEstatisticas
     public class DesvioPadrao : IFeature
     {
         public string NomeExibicao => "Desvio Padrão";
-        public string NomeCodigo => throw new NotImplementedException();
+        public Dictionary<string, object?>? Contexto { get; set; }
     }
 }
