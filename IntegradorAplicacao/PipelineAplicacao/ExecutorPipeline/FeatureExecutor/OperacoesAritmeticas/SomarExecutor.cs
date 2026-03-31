@@ -12,14 +12,14 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
         {
             var n = dataFrame.QuantidadeLinhas;
 
-            var resultado = new List<float?>();
+            var resultado = new List<Single?>();
 
             for (int i = 0; i < n; i++)
             {
-                resultado.Add(dataFrame.PegarColuna<float?>(Operacao.left).Dados[i] + dataFrame.PegarColuna<float?>(Operacao.right).Dados[i]);
+                resultado.Add(dataFrame.PegarColuna<Single?>(Operacao.left).Dados[i] + dataFrame.PegarColuna<Single?>(Operacao.right).Dados[i]);
             }
 
-            dataFrame.AlteraColuna(Operacao.exit, resultado);
+            dataFrame.AlterarColuna(Operacao.exit, resultado);
 
             return dataFrame;
         }

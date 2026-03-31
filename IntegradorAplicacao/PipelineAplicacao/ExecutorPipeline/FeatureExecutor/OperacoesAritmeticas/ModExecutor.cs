@@ -11,15 +11,16 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
         public override DataFrame Executar(DataFrame dataFrame)
         {
             var n = dataFrame.QuantidadeLinhas;
+            var divisor = Convert.ToInt32(Operacao.value);
 
-            var resultado = new List<float?>();
+            var resultado = new List<Single?>();
 
             for (int i = 0; i < n; i++)
             {
-                //resultado[i] = Operacao.Coluna.Dados[i] % Operacao.Divisor;
+                resultado.Add(dataFrame.PegarColuna<Single?>(Operacao.col).Dados[i] % divisor);
             }
 
-            //dataFrame.AddColumn(Operacao.NomeColunaSaida, resultado);
+            dataFrame.AlterarColuna(Operacao.exit, resultado);
 
             return dataFrame;
         }

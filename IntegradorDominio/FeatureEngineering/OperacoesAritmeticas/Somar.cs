@@ -14,17 +14,8 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesAritmeticas
         public string NomeExibicao => "Somar";
         public Dictionary<string, object?>? Contexto { get; set; }
 
-        public string exit { get; set; }
         public string left { get; set; }
         public string right { get; set; }
-
-        public Somar() { }
-
-        public Somar(string nomeColunaSaida, string colunaEsquerda, string colunaDireita)
-        {
-            exit = nomeColunaSaida;
-            left = colunaEsquerda;
-            right = colunaDireita;
-        }
+        public string exit { get; set; }
     }
 }

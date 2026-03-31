@@ -3,6 +3,7 @@ using IntegradorDominio.AST;
 using IntegradorDominio.Attributes;
 using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.InterfacesSteps;
+using System.Diagnostics;
 using System.Reflection;
 
 
@@ -104,6 +105,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
                 {
                     continue;
                 }
+                Debug.WriteLine(argumento.Nome!);
 
                 var propriedade = tipoOperacao.GetProperty(argumento.Nome!);
 

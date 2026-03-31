@@ -24,32 +24,32 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             {
                 case "single":
                     List<float?> dadosFloat = ConverterParaSingle(colunaBase, n);
-                    dataFrame.AlteraColuna(Operacao.col, dadosFloat);
+                    dataFrame.AlterarColuna(Operacao.col, dadosFloat);
                     break;
 
                 case "boolean":
                     List<bool?> dadosBoolean = ConverterParaBool(colunaBase, n);
-                    dataFrame.AlteraColuna(Operacao.col, dadosBoolean);
+                    dataFrame.AlterarColuna(Operacao.col, dadosBoolean);
                     break;
 
                 case "bool":
                     List<bool?> dadosBool = ConverterParaBool(colunaBase, n);
-                    dataFrame.AlteraColuna(Operacao.col, dadosBool);
+                    dataFrame.AlterarColuna(Operacao.col, dadosBool);
                     break;
 
                 case "string":
                     List<string?> dadosString = ConverterParaString(colunaBase, n);
-                    dataFrame.AlteraColuna(Operacao.col, dadosString);
+                    dataFrame.AlterarColuna(Operacao.col, dadosString);
                     break;
 
                 case "str":
                     List<string?> dadosStr = ConverterParaString(colunaBase, n);
-                    dataFrame.AlteraColuna(Operacao.col, dadosStr);
+                    dataFrame.AlterarColuna(Operacao.col, dadosStr);
                     break;
 
                 case "datetime":
                     List<DateTime?> dadosdatetime = ConverterParaDateTime(colunaBase, n);
-                    dataFrame.AlteraColuna(Operacao.col, dadosdatetime);
+                    dataFrame.AlterarColuna(Operacao.col, dadosdatetime);
                     break;
             }
 
