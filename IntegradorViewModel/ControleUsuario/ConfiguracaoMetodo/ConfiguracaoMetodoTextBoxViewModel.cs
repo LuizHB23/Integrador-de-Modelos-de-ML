@@ -111,7 +111,6 @@ namespace IntegradorViewModel.ControleUsuario
             // Adicionar colunas ao DataTable
             for (int j = 0; j < quantidadeColunas; j++)
             {
-                Debug.WriteLine(colunas[j].Nome);
                 tabela.Columns.Add(colunas[j].Nome, typeof(object));
             }
 

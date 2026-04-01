@@ -28,7 +28,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                 }
             }
 
-            Single moda = null;
+            Single? moda = null;
             int frequenciaMaxima = 0;
 
             foreach (var valor in frequencias)

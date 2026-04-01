@@ -275,6 +275,18 @@
                               CanUserAddRows="False"
                               VerticalScrollBarVisibility="Auto"
                               Style="{StaticResource MaterialDesignDataGrid}">
+
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+                                <Setter Property="ContentTemplate">
+                                    <Setter.Value>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding}" TextWrapping="Wrap"/>
+                                        </DataTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
                     </DataGrid>
                 </GroupBox>
             </materialDesign:Card>
