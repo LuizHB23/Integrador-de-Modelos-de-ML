@@ -1,6 +1,7 @@
 ﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.Executors;
 using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.FeatureEngineering.AgrupamentoDados;
+using System.ComponentModel.DataAnnotations;
 
 
 namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.AgrupamentoDados
@@ -47,6 +48,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             }
 
             Func<ColunaBase, List<int>, object?> functionAgregacao;
+            bool ehDiff = false;
 
             switch(agregacao)
             {
@@ -71,6 +73,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                     break;
 
                 case "diff":
+                    ehDiff = true;
                     functionAgregacao = AgregacaoDiff;
                     break;
 
@@ -113,7 +116,16 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             {
                 if (colunaOriginal.Nome == nomeColuna) continue;
 
-                var tipo = colunaOriginal.TipoDado;
+                Type tipo;
+
+                if (ehDiff && colunaOriginal.TipoDado == typeof(DateTime))
+                {
+                    tipo = typeof(Single);
+                }
+                else
+                {
+                    tipo = colunaOriginal.TipoDado;
+                }
 
                 var metodo = typeof(GroupByExecutor)
                     .GetMethod(nameof(AdicionarColunaTipada), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!
@@ -133,9 +145,10 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
         private object? AgregacaoSoma(ColunaBase coluna, List<int> indices)
         {
             Single? soma = 0;
+            Single? valor;
             foreach (var i in indices)
             {
-                var valor = coluna.PegarValor(i);
+                valor = (Single?)coluna.PegarValor(i);
                 if (valor != null)
                     soma += (Single)valor; // assume já tipado corretamente
             }
@@ -158,9 +171,11 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
         {
             Single? total = 0;
             int contar = 0;
+            Single? valor;
+
             foreach (var i in indices)
             {
-                var valor = coluna.PegarValor(i);
+                valor = (Single?)coluna.PegarValor(i);
                 if (valor != null)
                 {
                     total += (Single)valor;
@@ -174,9 +189,11 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
         private object? AgregacaoMinimo(ColunaBase coluna, List<int> indices)
         {
             object? min = null;
+            Single? valor;
+
             foreach (var i in indices)
             {
-                var valor = coluna.PegarValor(i);
+                valor = (Single?)coluna.PegarValor(i);
                 if (valor == null) continue;
 
                 if (min == null || ((IComparable)valor).CompareTo(min) < 0)
@@ -188,9 +205,11 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
         private object? AgregacaoMaximo(ColunaBase coluna, List<int> indices)
         {
             object? max = null;
+            Single? valor;
+
             foreach (var i in indices)
             {
-                var valor = coluna.PegarValor(i);
+                valor = (Single?)coluna.PegarValor(i);
                 if (valor == null) continue;
 
                 if (max == null || ((IComparable)valor).CompareTo(max) > 0)
@@ -206,10 +225,11 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
             object? primeiro = null;
             object? ultimo = null;
+            object? valor;
 
             foreach (var i in indices)
             {
-                var valor = coluna.PegarValor(i);
+                valor = coluna.PegarValor(i);
                 if (valor == null) continue;
 
                 if (primeiro == null)
@@ -221,7 +241,19 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             if (primeiro == null || ultimo == null)
                 return null;
 
-            return (Single)ultimo - (Single)primeiro;
+            Single? resultado;
+
+            if (ultimo is DateTime && primeiro is DateTime)
+            {
+                TimeSpan tempo = (DateTime)ultimo - (DateTime)primeiro;
+                resultado = Convert.ToSingle(tempo.TotalDays);
+            }
+            else
+            {
+                resultado = (Single)ultimo - (Single)primeiro;
+            }
+
+            return resultado;
         }
 
         private void AdicionarColunaTipada<T>(DataFrame df, string nomeColuna, List<object?> valores)
