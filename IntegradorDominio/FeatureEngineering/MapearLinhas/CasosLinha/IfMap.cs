@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
-
-namespace IntegradorDominio.FeatureEngineering.MapearLinhas.CasosLinha
+﻿namespace IntegradorDominio.FeatureEngineering.MapearLinhas.CasosLinha
 {
     public class IfMap : NodeMap
     {
@@ -16,5 +11,4 @@ namespace IntegradorDominio.FeatureEngineering.MapearLinhas.CasosLinha
             Corpo = corpo;
         }
     }
-}
 }

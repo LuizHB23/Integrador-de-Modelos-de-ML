@@ -20,10 +20,21 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             Right = right;
         }
 
-        public override Expression ParaExpression(Dictionary<string, ParameterExpression> variaveis)
+        public override Expression ParaExpression(Dictionary<string, ParameterExpression> variaveis, Dictionary<string, object> contexto, ParameterExpression indexVar)
         {
-            var leftExpr = Left.ParaExpression(variaveis);
-            var rightExpr = Right.ParaExpression(variaveis);
+
+            var leftExpr = Left.ParaExpression(variaveis, contexto, indexVar);
+            var rightExpr = Right.ParaExpression(variaveis, contexto, indexVar);
+
+            var tipoLeft = leftExpr.Type;
+            var tipoRight = rightExpr.Type;
+
+            // Se os tipos forem diferentes, converte ambos para float?
+            if (tipoLeft != tipoRight)
+            {
+                leftExpr = Expression.Convert(leftExpr, typeof(float?));
+                rightExpr = Expression.Convert(rightExpr, typeof(float?));
+            }
 
             return Operador switch
             {

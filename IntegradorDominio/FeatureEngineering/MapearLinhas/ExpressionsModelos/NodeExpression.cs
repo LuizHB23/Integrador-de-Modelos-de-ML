@@ -7,6 +7,6 @@ namespace IntegradorDominio.FeatureEngineering.MapearLinhas.ExpressionsModelos
 {
     public abstract class NodeExpression
     {
-        public abstract Expression ParaExpression(Dictionary<string, ParameterExpression> variaveis);
+        public abstract Expression ParaExpression(Dictionary<string, ParameterExpression> variaveis, Dictionary<string, object> contexto, ParameterExpression indexVar);
     }
 }

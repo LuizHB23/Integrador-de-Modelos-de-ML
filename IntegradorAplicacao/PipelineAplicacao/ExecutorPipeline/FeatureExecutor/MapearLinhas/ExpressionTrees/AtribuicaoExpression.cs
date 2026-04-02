@@ -14,13 +14,13 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             Valor = valor;
         }
 
-        public override Expression ParaExpression(Dictionary<string, ParameterExpression> variaveis)
+        public override Expression ParaExpression(Dictionary<string, ParameterExpression> variaveis, Dictionary<string, object> contexto, ParameterExpression indexVar)
         {
             if (!variaveis.ContainsKey(Target))
                 variaveis[Target] = Expression.Parameter(typeof(int), Target);
 
             // Aqui chamamos ParaExpression do NodeExpression correto
-            return Expression.Assign(variaveis[Target], Valor.ParaExpression(variaveis));
+            return Expression.Assign(variaveis[Target], Valor.ParaExpression(variaveis, contexto, indexVar));
         }
     }
 }

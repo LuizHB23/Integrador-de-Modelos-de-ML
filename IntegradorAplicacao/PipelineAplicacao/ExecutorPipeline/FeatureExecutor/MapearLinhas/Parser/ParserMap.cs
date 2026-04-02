@@ -6,7 +6,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 {
     public class ParserMap
     {
-        public List<Node> Parse(string input)
+        public List<NodeMap> Parse(string input)
         {
             input = input.Trim();
 
@@ -15,7 +15,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
             var partes = SplitInteligente(input);
 
-            var lista = new List<Node>();
+            var lista = new List<NodeMap>();
 
             foreach (var parte in partes)
             {
@@ -25,7 +25,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             return lista;
         }
 
-        private Node ParseElemento(string trecho)
+        private NodeMap ParseElemento(string trecho)
         {
             trecho = trecho.Trim();
 
@@ -41,7 +41,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             throw new Exception($"DSL inválida: {trecho}");
         }
 
-        private Node ParseLine(string trecho)
+        private NodeMap ParseLine(string trecho)
         {
             var idx = trecho.IndexOf(':');
             var valor = trecho.Substring(idx + 1).Trim().Trim('"');
@@ -49,13 +49,13 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             return new LineMap(valor);
         }
 
-        private Node ParseIf(string trecho)
+        private NodeMap ParseIf(string trecho)
         {
             var conteudo = ExtrairConteudoChaves(trecho);
             var partes = SplitInteligente(conteudo);
 
             string condicao = null;
-            var corpo = new List<Node>();
+            var corpo = new List<NodeMap>();
 
             foreach (var parte in partes)
             {
@@ -68,13 +68,13 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             return new IfMap(condicao, corpo);
         }
 
-        private Node ParseFor(string trecho)
+        private NodeMap ParseFor(string trecho)
         {
             var conteudo = ExtrairConteudoChaves(trecho);
             var partes = SplitInteligente(conteudo);
 
             string condicao = null;
-            var corpo = new List<Node>();
+            var corpo = new List<NodeMap>();
 
             foreach (var parte in partes)
             {

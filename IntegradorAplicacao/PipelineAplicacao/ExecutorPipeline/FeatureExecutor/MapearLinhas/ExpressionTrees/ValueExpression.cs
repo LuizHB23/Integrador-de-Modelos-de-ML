@@ -8,22 +8,15 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 {
     public class ValueExpression : NodeExpression
     {
-        public string Nome { get; set; } // variável ou valor
-        public ValueExpression(string nome) => Nome = nome;
-
-        public override Expression ParaExpression(Dictionary<string, ParameterExpression> variaveis)
+        public object? Valor { get; set; }
+        public ValueExpression(object valor)
         {
-            if (int.TryParse(Nome, out int literal))
-            {
-                return Expression.Constant(literal);
-            }
+            Valor = valor;
+        }
 
-            if (!variaveis.ContainsKey(Nome))
-            {
-                variaveis[Nome] = Expression.Parameter(typeof(int), Nome);
-            }
-
-            return variaveis[Nome];
+        public override Expression ParaExpression(Dictionary<string, ParameterExpression> variaveis, Dictionary<string, object> contexto, ParameterExpression indexVar)
+        {
+            return Expression.Constant(Valor);
         }
     }
 }

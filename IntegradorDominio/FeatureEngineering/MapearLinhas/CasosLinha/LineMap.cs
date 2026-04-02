@@ -6,11 +6,11 @@ namespace IntegradorDominio.FeatureEngineering.MapearLinhas.CasosLinha
 {
     public class LineMap : NodeMap
     {
-        public string Expressao { get; set; }
+        public string Linha { get; set; }
 
-        public LineMap(string expressao)
+        public LineMap(string linha)
         {
-            Expressao = expressao;
+            Linha = linha;
         }
     }
 }

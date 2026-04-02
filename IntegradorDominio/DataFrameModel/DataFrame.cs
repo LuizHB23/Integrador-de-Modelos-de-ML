@@ -40,6 +40,14 @@ namespace IntegradorDominio.DataFrameModel
             return null;
         }
 
+        public ColunaBase? PegarColunaBase(string nome)
+        {
+            if (!_colunaIndex.TryGetValue(nome, out int index))
+                return null;
+
+            return _colunas[index];
+        }
+
         public void AlterarColuna<T>(string nome, List<T?> valor)
         {
             if (!_colunaIndex.TryGetValue(nome, out int index))

@@ -108,11 +108,19 @@ namespace IntegradorAplicacao.PipelineAplicacao.ParserPipeline
             {
                 var valorPartes = parte.Trim();
 
-                if (valorPartes.Contains("="))
-                {
-                    var valor = valorPartes.Split('=');
+                int idxPrimeiroIgual = valorPartes.IndexOf('=');
 
-                    lista.Add(new ArgumentoMetodoPipeline(valor[0].Trim(), valor[1].Trim().Trim('"')));
+                if (idxPrimeiroIgual > 0)
+                {
+                    var nomeParametro = valorPartes.Substring(0, idxPrimeiroIgual).Trim();
+
+                    // O valor é TUDO o que vem depois do primeiro '=', sem mais splits
+                    var valorParametro = valorPartes.Substring(idxPrimeiroIgual + 1).Trim();
+
+                    // Limpeza padrão de aspas para strings simples
+                    valorParametro = valorParametro.Trim().Trim('"');
+
+                    lista.Add(new ArgumentoMetodoPipeline(nomeParametro, valorParametro));
                 }
                 else
                 {
