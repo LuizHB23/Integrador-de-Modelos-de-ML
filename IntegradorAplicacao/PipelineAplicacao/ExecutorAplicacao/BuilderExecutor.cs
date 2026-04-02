@@ -32,11 +32,14 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
             {
                 dataFrameOrigem = (DataFrame)_objetosUtilizados[etapas.DataFrameOrigem]!;
 
-                Debug.WriteLine(etapas.DataFrameDestino);
+                var dataFrameDestino = etapas.Executor!.Executar(dataFrameOrigem!);
 
-                _objetosUtilizados[etapas.DataFrameDestino] = etapas.Executor!.Executar(dataFrameOrigem!);
+                if(dataFrameDestino is DataFrame df)
+                {
+                    df.NomeContexto = etapas.DataFrameDestino;
+                }
 
-                Debug.WriteLine(_objetosUtilizados[etapas.DataFrameDestino]);
+                _objetosUtilizados[etapas.DataFrameDestino] = dataFrameDestino;
             }
 
             var dataFrameRetorno = (DataFrame)_objetosUtilizados[_dataFrameRetorno]!;

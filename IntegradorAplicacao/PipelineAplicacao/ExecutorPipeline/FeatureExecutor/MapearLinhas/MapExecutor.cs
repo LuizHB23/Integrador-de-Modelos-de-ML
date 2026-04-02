@@ -57,7 +57,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                 Operacao.Contexto["df"] = dataFrame;
 
             var parserExpr = new ParserExpression();
-            var exprTree = parserExpr.ParseLine(line.Linha, Operacao.Contexto, "df");
+            var exprTree = parserExpr.ParseLine(line.Linha, Operacao.Contexto, dataFrame);
 
             var indexParam = Expression.Parameter(typeof(int), "i");
             var variaveis = new Dictionary<string, ParameterExpression>();

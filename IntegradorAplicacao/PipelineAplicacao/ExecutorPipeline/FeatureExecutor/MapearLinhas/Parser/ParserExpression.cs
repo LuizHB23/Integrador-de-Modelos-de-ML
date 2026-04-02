@@ -6,7 +6,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 {
     public class ParserExpression
     {
-        public ColunaAtribuicaoExpression ParseLine(string line, Dictionary<string, object> contexto, string defaultDf = "df")
+        public NodeExpression ParseLine(string line, Dictionary<string, object> contexto, DataFrame dataFrame)
         {
             if (line.StartsWith("line:"))
                 line = line.Substring("line:".Length).Trim();
@@ -21,17 +21,23 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             string left = leftRaw.Trim('\'', '\"').Trim();
 
             // Parse da expressão da direita
-            NodeExpression rightNode = ParseExpression(rightRaw, contexto, defaultDf);
+            NodeExpression rightNode = ParseExpression(rightRaw, contexto, dataFrame.NomeContexto);
 
             // Descobre tipo real da coluna
             Type tipoColuna = typeof(object); // fallback genérico
-            if (contexto.TryGetValue(defaultDf, out var dfObj) && dfObj is DataFrame df)
+            if (contexto.TryGetValue(dataFrame.NomeContexto, out var dfObj) && dfObj is DataFrame df)
             {
                 var colunaBase = df.PegarColunaBase(left); // agora aceita só o nome da coluna
-                if (colunaBase != null) tipoColuna = colunaBase.TipoDado;
+
+                if (colunaBase != null)
+                {
+                    tipoColuna = colunaBase.TipoDado;
+                    return new ColunaAtribuicaoExpression(dataFrame.NomeContexto, left, rightNode, tipoColuna);
+                }
             }
 
-            return new ColunaAtribuicaoExpression(defaultDf, left, rightNode, tipoColuna);
+            return new VariavelExpression(left, rightNode, dataFrame.QuantidadeLinhas);
+
         }
 
         private NodeExpression ParseExpression(string expr, Dictionary<string, object> contexto, string defaultDf)
@@ -66,7 +72,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             if (Single.TryParse(expr, out var floatVal))
                 return new ValueExpression(floatVal);
 
-            throw new Exception("Token não reconhecido: " + expr);
+            return new VariavelUsoExpression(expr);
         }
     }
 }
