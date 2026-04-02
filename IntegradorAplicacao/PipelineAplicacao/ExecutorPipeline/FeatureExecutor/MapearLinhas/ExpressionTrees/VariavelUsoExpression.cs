@@ -18,7 +18,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
         public override Expression ParaExpression(Dictionary<string, ParameterExpression> variaveis, Dictionary<string, object> contexto, ParameterExpression indexVar)
         {
             if (!contexto.TryGetValue(Nome, out var varObj))
-            {
+            { 
                 throw new Exception($"Variável '{Nome}' não existe");
             }
 

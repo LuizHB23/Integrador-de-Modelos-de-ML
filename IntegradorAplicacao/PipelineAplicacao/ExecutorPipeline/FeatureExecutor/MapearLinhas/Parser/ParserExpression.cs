@@ -44,22 +44,50 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
         {
             expr = expr.Trim();
 
-            foreach (var op in new[] { "*", "/", "+", "-" })
+            // 1. TRATAMENTO DE PARÊNTESES (Se a expressão estiver toda entre parênteses, removemos)
+            if (expr.StartsWith("(") && expr.EndsWith(")"))
             {
-                int idx = expr.IndexOf(op);
-                if (idx > 0)
+                // Verifica se o parêntese que abre é o mesmo que fecha no final
+                if (TemParentesesCorrespondentes(expr))
+                    return ParseExpression(expr.Substring(1, expr.Length - 2), contexto, defaultDf);
+            }
+
+            // 2. PRECEDÊNCIA MATEMÁTICA (Procuramos o operador de MENOR precedência primeiro)
+            // Procuramos de trás para frente para manter a associatividade à esquerda
+            string[] operadores = { "+", "-", "*", "/" };
+
+            // Primeiro procuramos + e -, depois * e /
+            // Isso garante que o + seja a "raiz" e o * seja feito antes
+            foreach (var op in new[] { "+", "-", "*", "/" })
+            {
+                int nivelParenteses = 0;
+                for (int i = expr.Length - 1; i >= 0; i--)
                 {
-                    var esquerda = expr.Substring(0, idx);
-                    var direita = expr.Substring(idx + 1);
-                    return new BinarioExpression(
-                        ParseExpression(esquerda, contexto, defaultDf),
-                        op,
-                        ParseExpression(direita, contexto, defaultDf)
-                    );
+                    char c = expr[i];
+                    if (c == ')') nivelParenteses++;
+                    else if (c == '(') nivelParenteses--;
+
+                    // Só quebramos se o operador estiver fora de qualquer parêntese
+                    if (nivelParenteses == 0 && expr[i].ToString() == op)
+                    {
+                        var esquerda = expr.Substring(0, i);
+                        var direita = expr.Substring(i + 1);
+                        return new BinarioExpression(
+                            ParseExpression(esquerda, contexto, defaultDf),
+                            op,
+                            ParseExpression(direita, contexto, defaultDf)
+                        );
+                    }
                 }
             }
 
-            // agora aceita só o nome da coluna
+            // 3. IDENTIFICAÇÃO DE FOLHAS (Números, Colunas ou Variáveis)
+
+            // Tenta converter para número
+            if (Single.TryParse(expr, out var floatVal))
+                return new ValueExpression(floatVal);
+
+            // Tenta ver se é uma coluna no DataFrame
             if (contexto.TryGetValue(defaultDf, out var dfObj) && dfObj is DataFrame df)
             {
                 var colName = expr.Trim('\'', '\"').Trim();
@@ -68,11 +96,21 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                     return new ColunaExpression(defaultDf, colName, colunaBase.TipoDado);
             }
 
-            // tenta converter para número
-            if (Single.TryParse(expr, out var floatVal))
-                return new ValueExpression(floatVal);
+            // Se não é nada acima, é o uso de uma variável (como o seu 'x')
+            return new VariavelUsoExpression(expr.Trim());
+        }
 
-            return new VariavelUsoExpression(expr);
+        // Método auxiliar para validar parênteses
+        private bool TemParentesesCorrespondentes(string s)
+        {
+            int nivel = 0;
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (s[i] == '(') nivel++;
+                else if (s[i] == ')') nivel--;
+                if (nivel == 0 && i < s.Length - 1) return false;
+            }
+            return nivel == 0;
         }
     }
 }
