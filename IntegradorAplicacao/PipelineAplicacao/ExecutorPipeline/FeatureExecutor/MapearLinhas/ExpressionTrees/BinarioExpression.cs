@@ -30,11 +30,10 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             var tipoRight = rightExpr.Type;
 
             // Se os tipos forem diferentes, converte ambos para float?
-            if (tipoLeft != tipoRight)
-            {
+            if (leftExpr.Type != typeof(float?))
                 leftExpr = Expression.Convert(leftExpr, typeof(float?));
+            if (rightExpr.Type != typeof(float?))
                 rightExpr = Expression.Convert(rightExpr, typeof(float?));
-            }
 
             return Operador switch
             {

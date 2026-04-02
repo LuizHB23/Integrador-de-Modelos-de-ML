@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.ExpressionTrees
+namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.ExpressionTrees.Variaveis
 {
     public class VariavelUsoExpression : NodeExpression
     {
@@ -17,6 +17,11 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
         public override Expression ParaExpression(Dictionary<string, ParameterExpression> variaveis, Dictionary<string, object> contexto, ParameterExpression indexVar)
         {
+            if (variaveis.TryGetValue(Nome, out var param))
+            {
+                return param;
+            }
+
             if (!contexto.TryGetValue(Nome, out var varObj))
             { 
                 throw new Exception($"Variável '{Nome}' não existe");

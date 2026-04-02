@@ -3,7 +3,7 @@ using IntegradorDominio.FeatureEngineering.MapearLinhas.Variavel;
 using System.Drawing;
 using System.Linq.Expressions;
 
-namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.ExpressionTrees
+namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.ExpressionTrees.Variaveis
 {
     public class VariavelExpression : NodeExpression
     {

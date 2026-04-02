@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Xml.Linq;
 
-namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.ExpressionTrees
+namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.ExpressionTrees.If
 {
     public class IfExpression : NodeExpression
     {

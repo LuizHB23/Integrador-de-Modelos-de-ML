@@ -78,7 +78,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
             foreach (var parte in partes)
             {
-                if (parte.StartsWith("condicion"))
+                if (parte.StartsWith("loop"))
                     condicao = ExtrairValor(parte);
                 else
                     corpo.Add(ParseElemento(parte));

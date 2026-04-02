@@ -5,25 +5,22 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.ExpressionTrees
+namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.ExpressionTrees.Line
 {
-    public class ColunaAtribuicaoExpression : NodeExpression
+    public class ColunaExpression : NodeExpression
     {
         public string NomeColuna { get; set; }
         public string NomeDataFrame { get; set; }
-        public NodeExpression Valor { get; set; }
         public Type TipoDado { get; set; }
 
-        public ColunaAtribuicaoExpression(string nomeDataFrame, string nomeColuna, NodeExpression valor, Type tipoDado)
+        public ColunaExpression(string nomeDataFrame, string nomeColuna, Type tipoDado)
         {
             NomeDataFrame = nomeDataFrame;
             NomeColuna = nomeColuna;
-            Valor = valor;
             TipoDado = tipoDado;
         }
 
-        public override Expression ParaExpression(Dictionary<string, ParameterExpression> variaveis,
-            Dictionary<string, object> contexto, ParameterExpression indexVar)
+        public override Expression ParaExpression(Dictionary<string, ParameterExpression> variaveis, Dictionary<string, object> contexto, ParameterExpression indexVar)
         {
             if (!contexto.TryGetValue(NomeDataFrame, out var dfObj) || dfObj is not DataFrame df)
                 throw new Exception($"DataFrame '{NomeDataFrame}' não encontrado no contexto");
@@ -36,13 +33,17 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                 Expression.Constant(NomeColuna)
             );
 
-            var valorExpr = Valor.ParaExpression(variaveis, contexto, indexVar);
+            var pegarValor = Expression.Call(
+                pegarColuna,
+                typeof(Coluna<>).MakeGenericType(TipoDado).GetMethod("Get")!,
+                indexVar
+            );
 
-            // converte para object apenas para InjetarValor
-            var valorConvertido = Expression.Convert(valorExpr, typeof(object));
+            // se for value type não-nullable, converte para Nullable
+            if (TipoDado.IsValueType && Nullable.GetUnderlyingType(TipoDado) == null)
+                return Expression.Convert(pegarValor, typeof(Nullable<>).MakeGenericType(TipoDado));
 
-            var metodoInjetar = typeof(Coluna<>).MakeGenericType(TipoDado).GetMethod("InjetarValor")!;
-            return Expression.Call(pegarColuna, metodoInjetar, indexVar, valorConvertido);
+            return pegarValor;
         }
     }
 }

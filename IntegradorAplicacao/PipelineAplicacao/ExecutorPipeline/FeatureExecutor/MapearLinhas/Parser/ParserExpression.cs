@@ -1,6 +1,8 @@
-﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.ExpressionTrees;
-using IntegradorDominio.DataFrameModel;
+﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.ExpressionTrees.Variaveis;
+using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.ExpressionTrees.Line;
+using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.ExpressionTrees;
 using IntegradorDominio.FeatureEngineering.MapearLinhas.ExpressionsModelos;
+using IntegradorDominio.DataFrameModel;
 
 namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.Parser
 {
@@ -40,7 +42,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
         }
 
-        private NodeExpression ParseExpression(string expr, Dictionary<string, object> contexto, string defaultDf)
+        public NodeExpression ParseExpression(string expr, Dictionary<string, object> contexto, string defaultDf)
         {
             expr = expr.Trim();
 
@@ -52,13 +54,9 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                     return ParseExpression(expr.Substring(1, expr.Length - 2), contexto, defaultDf);
             }
 
-            // 2. PRECEDÊNCIA MATEMÁTICA (Procuramos o operador de MENOR precedência primeiro)
-            // Procuramos de trás para frente para manter a associatividade à esquerda
-            string[] operadores = { "+", "-", "*", "/" };
-
             // Primeiro procuramos + e -, depois * e /
             // Isso garante que o + seja a "raiz" e o * seja feito antes
-            foreach (var op in new[] { "+", "-", "*", "/" })
+            foreach (var op in new[] { "+", "-", "*", "/", "<=", ">=", "==", "!=", "<", ">" })
             {
                 int nivelParenteses = 0;
                 for (int i = expr.Length - 1; i >= 0; i--)
