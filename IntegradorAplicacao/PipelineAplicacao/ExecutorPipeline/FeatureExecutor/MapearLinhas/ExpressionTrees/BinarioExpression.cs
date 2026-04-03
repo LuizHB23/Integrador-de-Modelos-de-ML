@@ -30,10 +30,20 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             var tipoRight = rightExpr.Type;
 
             // Se os tipos forem diferentes, converte ambos para float?
-            if (leftExpr.Type != typeof(float?))
-                leftExpr = Expression.Convert(leftExpr, typeof(float?));
-            if (rightExpr.Type != typeof(float?))
-                rightExpr = Expression.Convert(rightExpr, typeof(float?));
+            if(Operador != "&&" && Operador != "||")
+            {
+                if (leftExpr.Type != typeof(float?))
+                    leftExpr = Expression.Convert(leftExpr, typeof(float?));
+                if (rightExpr.Type != typeof(float?))
+                    rightExpr = Expression.Convert(rightExpr, typeof(float?));
+            }
+            else
+            {
+                if (leftExpr.Type != typeof(Boolean))
+                    leftExpr = Expression.Convert(leftExpr, typeof(Boolean));
+                if (rightExpr.Type != typeof(Boolean))
+                    rightExpr = Expression.Convert(rightExpr, typeof(Boolean));
+            }
 
             return Operador switch
             {
@@ -47,8 +57,8 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                 "<=" => Expression.LessThanOrEqual(leftExpr, rightExpr),
                 "==" => Expression.Equal(leftExpr, rightExpr),
                 "!=" => Expression.NotEqual(leftExpr, rightExpr),
-                "&&" => Expression.And(leftExpr, rightExpr),
-                "||" => Expression.Or(leftExpr, rightExpr),
+                "&&" => Expression.AndAlso(leftExpr, rightExpr),
+                "||" => Expression.OrElse(leftExpr, rightExpr),
                 _ => throw new Exception($"Operador desconhecido: {Operador}")
             };
         }

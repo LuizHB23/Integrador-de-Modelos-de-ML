@@ -64,7 +64,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ParserPipeline
 
         private AtribuicaoMetodoPipeline ParseAtribuicao(string linha)
         {
-            var idx = linha.IndexOf('=');
+            var idx = IndexOfAtribuicao(linha);
 
             var variavel = linha.Substring(0, idx).Trim();
             var expressao = linha.Substring(idx + 1).Trim();
@@ -74,13 +74,13 @@ namespace IntegradorAplicacao.PipelineAplicacao.ParserPipeline
 
         private ChamadaMetodoPipeline ParseChamadaMetodo(string expressao)
         {
-            var partes = expressao.Split('.');
+            var partes = SplitPorPontoMetodo(expressao);
 
             var objetoInicial = partes[0];
 
             var chamada = new ChamadaMetodoPipeline(objetoInicial);
 
-            for (int i = 1; i < partes.Length; i++)
+            for (int i = 1; i < partes.Count; i++)
             {
                 var parte = partes[i];
 
@@ -172,6 +172,109 @@ namespace IntegradorAplicacao.PipelineAplicacao.ParserPipeline
 
             return resultado;
         }
+
+        private int IndexOfAtribuicao(string texto)
+        {
+            bool dentroAspas = false;
+            int nivelParenteses = 0;
+
+            for (int i = 0; i < texto.Length; i++)
+            {
+                char c = texto[i];
+
+                if (c == '"')
+                    dentroAspas = !dentroAspas;
+
+                if (!dentroAspas)
+                {
+                    if (c == '(') nivelParenteses++;
+                    else if (c == ')') nivelParenteses--;
+
+                    if (c == '=' && nivelParenteses == 0)
+                    {
+                        bool ehComparador =
+                            (i > 0 && (texto[i - 1] == '>' || texto[i - 1] == '<' || texto[i - 1] == '!' || texto[i - 1] == '=')) ||
+                            (i < texto.Length - 1 && texto[i + 1] == '=');
+
+                        if (!ehComparador)
+                            return i;
+                    }
+                }
+            }
+
+            return -1;
+        }
+        private List<string> SplitPorPontoMetodo(string input)
+        {
+            var resultado = new List<string>();
+            var atual = new StringBuilder();
+
+            bool dentroAspas = false;
+            int nivelParenteses = 0;
+
+            for (int i = 0; i < input.Length; i++)
+            {
+                char c = input[i];
+
+                if (c == '"')
+                    dentroAspas = !dentroAspas;
+
+                if (!dentroAspas)
+                {
+                    if (c == '(') nivelParenteses++;
+                    else if (c == ')') nivelParenteses--;
+
+                    // 🔥 só quebra no ponto certo
+                    if (c == '.' && nivelParenteses == 0)
+                    {
+                        // verifica se é número decimal
+                        bool ehDecimal = EhPontoDecimal(input, i);
+
+                        if (!ehDecimal)
+                        {
+                            resultado.Add(atual.ToString().Trim());
+                            atual.Clear();
+                            continue;
+                        }
+                    }
+                }
+
+                atual.Append(c);
+            }
+
+            if (atual.Length > 0)
+                resultado.Add(atual.ToString().Trim());
+
+            return resultado;
+        }
+
+        private bool EhPontoDecimal(string input, int index)
+        {
+            // precisa ter algo antes e depois
+            if (index <= 0 || index >= input.Length - 1)
+                return false;
+
+            // verifica se antes tem número (incluindo vários dígitos)
+            int i = index - 1;
+            bool temNumeroAntes = false;
+
+            while (i >= 0 && char.IsDigit(input[i]))
+            {
+                temNumeroAntes = true;
+                i--;
+            }
+
+            // verifica se depois tem número
+            i = index + 1;
+            bool temNumeroDepois = false;
+
+            while (i < input.Length && char.IsDigit(input[i]))
+            {
+                temNumeroDepois = true;
+                i++;
+            }
+
+            return temNumeroAntes && temNumeroDepois;
+        }
     }
 }
-

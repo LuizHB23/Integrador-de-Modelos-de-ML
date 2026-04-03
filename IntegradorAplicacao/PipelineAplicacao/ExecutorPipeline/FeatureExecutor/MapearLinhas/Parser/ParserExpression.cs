@@ -1,8 +1,9 @@
-﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.ExpressionTrees.Variaveis;
+﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.ExpressionTrees;
 using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.ExpressionTrees.Line;
-using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.ExpressionTrees;
-using IntegradorDominio.FeatureEngineering.MapearLinhas.ExpressionsModelos;
+using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.ExpressionTrees.Variaveis;
 using IntegradorDominio.DataFrameModel;
+using IntegradorDominio.FeatureEngineering.MapearLinhas.ExpressionsModelos;
+using System.Globalization;
 
 namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.Parser
 {
@@ -46,35 +47,51 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
         {
             expr = expr.Trim();
 
-            // 1. TRATAMENTO DE PARÊNTESES (Se a expressão estiver toda entre parênteses, removemos)
             if (expr.StartsWith("(") && expr.EndsWith(")"))
             {
-                // Verifica se o parêntese que abre é o mesmo que fecha no final
                 if (TemParentesesCorrespondentes(expr))
                     return ParseExpression(expr.Substring(1, expr.Length - 2), contexto, defaultDf);
             }
 
-            // Primeiro procuramos + e -, depois * e /
-            // Isso garante que o + seja a "raiz" e o * seja feito antes
-            foreach (var op in new[] { "+", "-", "*", "/", "<=", ">=", "==", "!=", "<", ">" })
+            string[][] operadoresPorPrioridade = new[]
+            {
+                new[] { "||", "&&" },                         // Booleanos
+                new[] { "==", "!=", "<=", ">=", "<", ">" },  // Comparadores
+                new[] { "+", "-" },                           // Aritméticos
+                new[] { "*", "/" }                            // Multiplicação/Divisão
+            };
+
+            foreach (var grupoOp in operadoresPorPrioridade)
             {
                 int nivelParenteses = 0;
+                bool dentroAspas = false;
+
                 for (int i = expr.Length - 1; i >= 0; i--)
                 {
                     char c = expr[i];
-                    if (c == ')') nivelParenteses++;
-                    else if (c == '(') nivelParenteses--;
-
-                    // Só quebramos se o operador estiver fora de qualquer parêntese
-                    if (nivelParenteses == 0 && expr[i].ToString() == op)
+                    if (c == '"') dentroAspas = !dentroAspas;
+                    if (!dentroAspas)
                     {
-                        var esquerda = expr.Substring(0, i);
-                        var direita = expr.Substring(i + 1);
-                        return new BinarioExpression(
-                            ParseExpression(esquerda, contexto, defaultDf),
-                            op,
-                            ParseExpression(direita, contexto, defaultDf)
-                        );
+                        if (c == ')') nivelParenteses++;
+                        else if (c == '(') nivelParenteses--;
+                    }
+
+                    if (nivelParenteses != 0 || dentroAspas) continue;
+
+                    foreach (var op in grupoOp)
+                    {
+                        if (i - op.Length + 1 >= 0 &&
+                            expr.Substring(i - op.Length + 1, op.Length) == op)
+                        {
+                            var esquerda = expr.Substring(0, i - op.Length + 1);
+                            var direita = expr.Substring(i + 1);
+
+                            return new BinarioExpression(
+                                ParseExpression(esquerda, contexto, defaultDf),
+                                op,
+                                ParseExpression(direita, contexto, defaultDf)
+                            );
+                        }
                     }
                 }
             }
@@ -82,7 +99,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             // 3. IDENTIFICAÇÃO DE FOLHAS (Números, Colunas ou Variáveis)
 
             // Tenta converter para número
-            if (Single.TryParse(expr, out var floatVal))
+            if (Single.TryParse(expr, NumberStyles.Any, CultureInfo.InvariantCulture, out var floatVal))
                 return new ValueExpression(floatVal);
 
             // Tenta ver se é uma coluna no DataFrame
