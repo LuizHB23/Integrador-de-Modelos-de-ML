@@ -24,6 +24,23 @@ namespace IntegradorDominio.DataFrameModel
             _colunas.Add(col);
         }
 
+        public void RenomearColunas(string antigoNome, string novoNome)
+        {
+            if (!_colunaIndex.TryGetValue(antigoNome, out int index))
+            {
+                throw new Exception($"Coluna '{antigoNome}' não encontrada.");
+            }
+
+            // Atualiza o nome da coluna
+            _colunas[index].GetType()
+                .GetProperty("Nome")?
+                .SetValue(_colunas[index], novoNome);
+
+            // Atualiza o índice no dicionário
+            _colunaIndex.Remove(antigoNome);
+            _colunaIndex[novoNome] = index;
+        }
+
         public Coluna<T?> PegarColuna<T>(string nome)
         {
             if (!_colunaIndex.TryGetValue(nome, out int index))

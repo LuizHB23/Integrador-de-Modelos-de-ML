@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace IntegradorDominio.FeatureEngineering.LimpezaDados
+namespace IntegradorDominio.FeatureEngineering.ManipulacaoDados
 {
     [FeatureName("Converter")]
     [FeatureName("Convert")]

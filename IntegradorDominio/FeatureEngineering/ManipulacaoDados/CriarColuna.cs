@@ -4,16 +4,16 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace IntegradorDominio.FeatureEngineering.LimpezaDados
+namespace IntegradorDominio.FeatureEngineering.ManipulacaoDados
 {
-    [FeatureName("Replace")]
-    public class Replace : IFeature
+    [FeatureName("Create")]
+    public class CriarColuna : IFeature
     {
-        public string NomeExibicao => "Replace";
+        public string NomeExibicao => "Criar Coluna";
         public Dictionary<string, object?>? Contexto { get; set; }
 
-        public string col { get; set; }
-        public string old { get; set; }
+        public string name { get; set; }
         public string value { get; set; }
+        public string type { get; set; }
     }
 }

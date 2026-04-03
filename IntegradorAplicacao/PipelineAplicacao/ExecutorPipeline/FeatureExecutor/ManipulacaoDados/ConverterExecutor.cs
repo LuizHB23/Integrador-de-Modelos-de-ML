@@ -1,12 +1,12 @@
 ﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.Executors;
 using IntegradorDominio.DataFrameModel;
-using IntegradorDominio.FeatureEngineering.LimpezaDados;
+using IntegradorDominio.FeatureEngineering.ManipulacaoDados;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
-namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.LimpezaDados
+namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.ManipulacaoDados
 {
     public class ConverterExecutor : FeatureExecutorBase<Converter>
     {

@@ -1,27 +1,29 @@
 ﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.Executors;
 using IntegradorDominio.DataFrameModel;
-using IntegradorDominio.FeatureEngineering.LimpezaDados;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using IntegradorDominio.FeatureEngineering.ManipulacaoDados;
 
-namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.LimpezaDados
+namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.ManipulacaoDados
 {
-    public class RemoverColunaExecutor : FeatureExecutorBase<RemoverColuna>
+    public class SelecionarColunaExecutor : FeatureExecutorBase<SelecionarColuna>
     {
-        public RemoverColunaExecutor(RemoverColuna operacao) : base(operacao) { }
+        public SelecionarColunaExecutor(SelecionarColuna operacao) : base(operacao) { }
 
         public override object Executar(DataFrame dataFrame)
         {
-            var colunasParaRemover = TransformaStringColunasEmListaColunas(Operacao.col);
             var novoDataFrame = new DataFrame();
+            var colunas = TransformaStringColunasEmListaColunas(Operacao.col);
+
+            var colunasDesejadas = new HashSet<string>(colunas);
 
             foreach (var coluna in dataFrame.Colunas)
             {
-                if (!colunasParaRemover.Contains(coluna.Nome))
-                {
-                    novoDataFrame.Colunas.Add(coluna);
-                }
+                if (!colunasDesejadas.Contains(coluna.Nome))
+                    continue;
+
+                var novaColuna = coluna.Clonar();
+
+                novoDataFrame.Colunas.Add(novaColuna);
+                novoDataFrame.ColunaIndex[novaColuna.Nome] = novoDataFrame.Colunas.Count - 1;
             }
 
             return novoDataFrame;

@@ -4,14 +4,15 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace IntegradorDominio.FeatureEngineering.LimpezaDados
+namespace IntegradorDominio.FeatureEngineering.ManipulacaoDados
 {
-    [FeatureName("Drop")]
-    public class RemoverColuna : IFeature
+    [FeatureName("Rename")]
+    public class RenomearColuna : IFeature
     {
-        public string NomeExibicao => "Remover Coluna";
+        public string NomeExibicao => "Renomear Coluna";
         public Dictionary<string, object?>? Contexto { get; set; }
 
         public string col {  get; set; }
+        public string name { get; set; }
     }
 }

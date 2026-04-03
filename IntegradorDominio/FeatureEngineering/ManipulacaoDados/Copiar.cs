@@ -4,12 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace IntegradorDominio.FeatureEngineering.LimpezaDados
+namespace IntegradorDominio.FeatureEngineering.ManipulacaoDados
 {
-    [FeatureName("Filter")]
-    public class Filtrar : IFeature
+    [FeatureName("Copy")]
+    public class Copiar : IFeature
     {
-        public string NomeExibicao => "Filtrar";
+        public string NomeExibicao => "Copiar";
         public Dictionary<string, object?>? Contexto { get; set; }
     }
 }

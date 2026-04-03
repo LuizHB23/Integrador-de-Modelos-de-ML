@@ -47,6 +47,8 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                 "<=" => Expression.LessThanOrEqual(leftExpr, rightExpr),
                 "==" => Expression.Equal(leftExpr, rightExpr),
                 "!=" => Expression.NotEqual(leftExpr, rightExpr),
+                "&&" => Expression.And(leftExpr, rightExpr),
+                "||" => Expression.Or(leftExpr, rightExpr),
                 _ => throw new Exception($"Operador desconhecido: {Operador}")
             };
         }

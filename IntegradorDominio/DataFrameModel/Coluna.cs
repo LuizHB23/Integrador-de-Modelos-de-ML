@@ -6,13 +6,18 @@ namespace IntegradorDominio.DataFrameModel
 {
     public class Coluna<T> : ColunaBase
     {
-        public List<T?> Dados;
+        public List<T?> Dados { get; }
         public override int Quantidade => Dados.Count;
 
         public Coluna(string nome, List<T?> dados) : base(nome, typeof(T))
         {
             Dados = dados;
         }
+        public override ColunaBase Clonar()
+        {
+            return new Coluna<T>(Nome, new List<T?>(Dados));
+        }
+
         public override object? PegarValor(int index)
         {
             return Dados[index]!;
