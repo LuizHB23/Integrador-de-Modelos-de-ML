@@ -64,6 +64,10 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                     functionAgregacao = AgregacaoMedia;
                     break;
 
+                case "std":
+                    functionAgregacao = AgregacaoDesvioPadrao;
+                    break;
+
                 case "min":
                     functionAgregacao = AgregacaoMinimo;
                     break;
@@ -184,6 +188,30 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             }
 
             return contar == 0 ? null : total / contar;
+        }
+
+        private object? AgregacaoDesvioPadrao(ColunaBase coluna, List<int> indices)
+        {
+            List<Single> valores = new List<Single>();
+
+            foreach (var i in indices)
+            {
+                var valor = (Single?)coluna.PegarValor(i);
+                if (valor != null)
+                    valores.Add((Single)valor);
+            }
+
+            if (valores.Count == 0)
+                return null;
+
+            // calcula média
+            Single media = valores.Sum() / valores.Count;
+
+            // calcula variância
+            Single variancia = valores.Sum(v => (v - media) * (v - media)) / valores.Count;
+
+            // desvio padrão
+            return (Single)Math.Sqrt(variancia);
         }
 
         private object? AgregacaoMinimo(ColunaBase coluna, List<int> indices)

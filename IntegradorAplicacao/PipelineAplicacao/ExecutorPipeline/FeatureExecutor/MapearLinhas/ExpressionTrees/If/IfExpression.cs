@@ -18,24 +18,26 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             Condition = condition;
         }
 
-        public override Expression ParaExpression(Dictionary<string, ParameterExpression> variaveis, Dictionary<string, object> contexto, ParameterExpression indexVar)
+        public override Expression ParaExpression(
+            Dictionary<string, ParameterExpression> variaveis,
+            Dictionary<string, object> contexto,
+            ParameterExpression indexVar)
         {
-            // Corpo do IF
-            BlockExpression bodyBlock = Expression.Block(
-                Body.ConvertAll(b => b.ParaExpression(variaveis, contexto, indexVar))
-            );
+            // Constrói todas as expressões do corpo do IF
+            var bodyExpressions = Body.ConvertAll(b => b.ParaExpression(variaveis, contexto, indexVar));
+            var bodyBlock = Expression.Block(bodyExpressions);
 
-            // Corpo do ELSE (opcional)
-            Expression elseExpr = ElseBody.Count > 0
+            // Constrói todas as expressões do corpo do ELSE, se houver
+            Expression elseBlock = ElseBody.Count > 0
                 ? Expression.Block(ElseBody.ConvertAll(b => b.ParaExpression(variaveis, contexto, indexVar)))
                 : Expression.Empty();
 
-            // IF com ELSE
+            // Retorna a expressão completa do IF
             if (ElseBody.Count > 0)
                 return Expression.IfThenElse(
                     Condition.ParaExpression(variaveis, contexto, indexVar),
                     bodyBlock,
-                    elseExpr
+                    elseBlock
                 );
             else
                 return Expression.IfThen(

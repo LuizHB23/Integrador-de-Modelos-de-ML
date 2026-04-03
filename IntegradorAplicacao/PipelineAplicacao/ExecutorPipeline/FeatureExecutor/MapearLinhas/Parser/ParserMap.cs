@@ -51,21 +51,40 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
         private NodeMap ParseIf(string trecho)
         {
-            var conteudo = ExtrairConteudoChaves(trecho);
+            var conteudo = ExtrairConteudoChaves(trecho); // pega tudo dentro de {}
             var partes = SplitInteligente(conteudo);
 
             string condicao = null;
             var corpo = new List<NodeMap>();
+            var elseCorpo = new List<NodeMap>();
 
             foreach (var parte in partes)
             {
-                if (parte.StartsWith("condicion"))
-                    condicao = ExtrairValor(parte);
+                var p = parte.Trim();
+                if (p.StartsWith("condicao"))
+                {
+                    condicao = ExtrairValor(p);
+                }
+                else if (p.StartsWith("line"))
+                {
+                    corpo.Add(ParseLine(p));
+                }
+                else if (p.StartsWith("else"))
+                {
+                    var elseConteudo = ExtrairConteudoChaves(p);
+                    var elsePartes = SplitInteligente(elseConteudo);
+                    foreach (var ep in elsePartes)
+                    {
+                        elseCorpo.Add(ParseElemento(ep));
+                    }
+                }
                 else
+                {
                     corpo.Add(ParseElemento(parte));
+                }
             }
 
-            return new IfMap(condicao, corpo);
+            return new IfMap(condicao, corpo, elseCorpo.Count > 0 ? elseCorpo : null);
         }
 
         private NodeMap ParseFor(string trecho)

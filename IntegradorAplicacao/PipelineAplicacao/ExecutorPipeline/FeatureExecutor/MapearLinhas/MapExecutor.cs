@@ -1,5 +1,6 @@
 ﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.Executors;
 using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.ExpressionTrees.For;
+using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.ExpressionTrees.If;
 using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.Parser;
 using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.FeatureEngineering.MapearLinhas;
@@ -7,6 +8,7 @@ using IntegradorDominio.FeatureEngineering.MapearLinhas.CasosLinha;
 using IntegradorDominio.FeatureEngineering.MapearLinhas.ExpressionsModelos;
 using System.Linq.Expressions;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas
 {
@@ -27,89 +29,64 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
         {
             var resultado = _parserMap.Parse(Operacao.lambdax);
 
-            BuilderExpression(resultado, 0, dataFrame);
+            // Constrói todas as expressões sem compilar
+            var corpoExpressions = new List<NodeExpression>();
+            foreach (var node in resultado)
+            {
+                corpoExpressions.AddRange(BuilderExpression(node, dataFrame));
+            }
+
+            // Cria um parâmetro único para o índice da linha
+            var indexParam = Expression.Parameter(typeof(int), "i");
+            var variaveis = new Dictionary<string, ParameterExpression>();
+
+            // Monta a expressão final de todas as linhas
+            var bloco = Expression.Block(corpoExpressions.Select(e => e.ParaExpression(variaveis, Operacao.Contexto, indexParam)));
+
+            // Compila a lambda apenas aqui
+            var lambda = Expression.Lambda<Action<int>>(bloco, indexParam).Compile();
+
+            // Itera sobre cada linha do DataFrame
+            for (int i = 0; i < dataFrame.QuantidadeLinhas; i++)
+                lambda(i);
 
             return dataFrame;
         }
 
-        private void BuilderExpression(List<NodeMap> nodes, int nivel, DataFrame dataFrame)
+        private IEnumerable<NodeExpression> BuilderExpression(NodeMap node, DataFrame dataFrame)
         {
-            foreach (var node in nodes)
+            switch (node)
             {
-                switch (node)
-                {
-                    case LineMap line:
-                        ExecutarLineMap(line, dataFrame);
-                        break;
+                case LineMap line:
+                    return new[] { _parserExpression.ParseLine(line.Linha, Operacao.Contexto, dataFrame) };
 
-                    case IfMap ifNode:
-                        BuilderExpression(ifNode.Corpo, nivel + 1, dataFrame);
-                        break;
+                case IfMap ifNode:
+                    return new[] { CriarIfExpression(ifNode, dataFrame) };
 
-                    case ForMap forNode:
-                        ExecutarForMap(forNode, dataFrame);
-                        break;
-                }
+                case ForMap forNode:
+                    return new[] { CriarForExpression(forNode, dataFrame) };
+
+                default:
+                    return Enumerable.Empty<NodeExpression>();
             }
         }
 
-        private void ExecutarLineMap(LineMap line, DataFrame dataFrame)
+        private IfExpression CriarIfExpression(IfMap ifNode, DataFrame dataFrame)
         {
-            // Garante que o contexto contém o DataFrame
-            if (!Operacao.Contexto.ContainsKey("df"))
-                Operacao.Contexto["df"] = dataFrame;
+            var conditionExpr = _parserExpression.ParseExpression(ifNode.Condicao, Operacao.Contexto, dataFrame.NomeContexto);
 
-            var exprTree = _parserExpression.ParseLine(line.Linha, Operacao.Contexto, dataFrame);
+            var ifExpr = new IfExpression(conditionExpr);
 
-            var indexParam = Expression.Parameter(typeof(int), "i");
-            var variaveis = new Dictionary<string, ParameterExpression>();
+            // Corpo do IF
+            foreach (var item in ifNode.Corpo)
+                ifExpr.Body.AddRange(BuilderExpression(item, dataFrame));
 
-            var assignExpr = exprTree.ParaExpression(variaveis, Operacao.Contexto, indexParam);
+            // Corpo do ELSE, se houver
+            if (ifNode.Else != null)
+                foreach (var item in ifNode.Else)
+                    ifExpr.ElseBody.AddRange(BuilderExpression(item, dataFrame));
 
-            var lambda = Expression.Lambda<Action<int>>(assignExpr, indexParam).Compile();
-
-            for (int i = 0; i < dataFrame.QuantidadeLinhas; i++)
-                lambda(i);
-        }
-
-        private void ExecutarForMap(ForMap forNode, DataFrame dataFrame)
-        {
-            var partes = forNode.Condicao.Split(';');
-            if (partes.Length != 3) throw new Exception("Loop for inválido. Use: init; cond; inc");
-
-            string initStr = partes[0].Trim();
-            string condStr = partes[1].Trim();
-            string incStr = partes[2].Trim();
-
-            var eqIdx = initStr.IndexOf('=');
-            string nomeVariavel = initStr.Substring(0, eqIdx).Trim();
-
-            var indexParam = Expression.Parameter(typeof(int), "row");
-            var variaveis = new Dictionary<string, ParameterExpression>();
-
-            var inicializador = _parserExpression.ParseLine(initStr, Operacao.Contexto, dataFrame);
-            var condicao = _parserExpression.ParseExpression(condStr, Operacao.Contexto, dataFrame.NomeContexto);
-            var incremento = _parserExpression.ParseLine(incStr, Operacao.Contexto, dataFrame);
-
-            var corpoNodes = new List<NodeExpression>();
-            foreach (var item in forNode.Corpo)
-            {
-                if (item is LineMap line)
-                    corpoNodes.Add(_parserExpression.ParseLine(line.Linha, Operacao.Contexto, dataFrame));
-                else if (item is ForMap nestedFor)
-                    corpoNodes.Add(CriarForExpression(nestedFor, dataFrame));
-            }
-
-            var forExpr = new ForExpression(nomeVariavel, inicializador, condicao, incremento)
-            {
-                Corpo = corpoNodes
-            };
-
-            var lambda = Expression.Lambda<Action<int>>(forExpr.ParaExpression(variaveis, Operacao.Contexto, indexParam), indexParam).Compile();
-
-            // ✅ Executa o for por linha do DataFrame
-            for (int i = 0; i < dataFrame.QuantidadeLinhas; i++)
-                lambda(i);
+            return ifExpr;
         }
 
         private ForExpression CriarForExpression(ForMap forNode, DataFrame dataFrame)
