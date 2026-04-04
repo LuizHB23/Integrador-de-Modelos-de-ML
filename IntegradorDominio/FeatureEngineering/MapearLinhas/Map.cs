@@ -9,7 +9,6 @@ namespace IntegradorDominio.FeatureEngineering.MapearLinhas
         public string NomeExibicao => "Map";
         public Dictionary<string, object?>? Contexto { get; set; }
 
-        public string col { get; set; }
         public string lambdax { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.FeatureEngineering.AgrupamentoDados;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
@@ -13,56 +14,67 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
         public override object Executar(DataFrame dataFrame)
         {
-            var nomeColuna = Operacao.col;
-            var colunaBase = dataFrame.Colunas[dataFrame.ColunaIndex[nomeColuna]];
+            var colunasChave = TransformaStringColunasEmListaColunas(Operacao.col);
+            if (colunasChave.Count == 0)
+                throw new Exception("É necessário informar pelo menos uma coluna para ordenação.");
 
-            int n = colunaBase.Quantidade;
+            int n = dataFrame.QuantidadeLinhas;
 
-            // Cria array de índices
-            int[] indices = new int[n];
-            for (int i = 0; i < n; i++) indices[i] = i;
+            // 🔹 2. Cria array de índices
+            int[] indices = Enumerable.Range(0, n).ToArray();
 
-            // Ordena índices considerando nulls no final (como Pandas)
-            bool crescente = Operacao.asc?.ToLower() != "false";
-            // padrão = crescente (como Pandas)
+            // 🔹 3. Determina ordem crescente ou decrescente
+            bool crescente = Operacao.asc?.ToLower() != "false"; // padrão = crescente
 
+            // 🔹 4. Ordena índices considerando múltiplas colunas
             Array.Sort(indices, (i1, i2) =>
             {
-                var v1 = colunaBase.PegarValor(i1);
-                var v2 = colunaBase.PegarValor(i2);
+                foreach (var nomeCol in colunasChave)
+                {
+                    var coluna = dataFrame.PegarColunaBase(nomeCol);
+                    var v1 = coluna.PegarValor(i1);
+                    var v2 = coluna.PegarValor(i2);
 
-                if (v1 == null && v2 == null) return 0;
-                if (v1 == null) return 1; // nulls sempre no final
-                if (v2 == null) return -1;
+                    if (v1 == null && v2 == null) continue;
+                    if (v1 == null) return 1; // nulls no final
+                    if (v2 == null) return -1;
 
-                int resultado = ((IComparable)v1).CompareTo(v2);
-
-                return crescente ? resultado : -resultado;
+                    int cmp = ((IComparable)v1).CompareTo(v2);
+                    if (cmp != 0) return crescente ? cmp : -cmp;
+                }
+                return 0;
             });
 
-            for (int c = 0; c < dataFrame.Colunas.Count; c++)
+            // 🔹 5. Reordenar todas as colunas dinamicamente
+            var novoDataFrame = new DataFrame();
+            foreach (var colBase in dataFrame.Colunas)
             {
-                var colBase = dataFrame.Colunas[c];
-                var novaLista = new List<object?>(n);
+                var tipo = colBase.TipoDado;
+                var listaNova = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(tipo))!;
 
                 for (int i = 0; i < n; i++)
-                    novaLista.Add(colBase.PegarValor(indices[i]));
+                    listaNova.Add(colBase.PegarValor(indices[i]));
 
-                var tipo = colBase.TipoDado;
+                var metodoAdicionar = typeof(DataFrame)
+                    .GetMethod("AdicionarColuna")!
+                    .MakeGenericMethod(tipo);
 
-                if (tipo == typeof(Single?))
-                    dataFrame.AlterarColuna<Single?>(colBase.Nome, novaLista.ConvertAll(x => (Single?)x));
-                else if (tipo == typeof(String))
-                    dataFrame.AlterarColuna<String?>(colBase.Nome, novaLista.ConvertAll(x => (String?)x));
-                else if (tipo == typeof(Boolean?))
-                    dataFrame.AlterarColuna<Boolean?>(colBase.Nome, novaLista.ConvertAll(x => (Boolean?)x));
-                else if (tipo == typeof(DateTime?))
-                    dataFrame.AlterarColuna<DateTime?>(colBase.Nome, novaLista.ConvertAll(x => (DateTime?)x));
-                else
-                    throw new Exception($"Tipo de coluna {tipo.Name} não suportado para ordenação.");
+                metodoAdicionar.Invoke(novoDataFrame, new object[] { colBase.Nome, listaNova });
+            }
+            return novoDataFrame;
+        }
+
+        private List<string> TransformaStringColunasEmListaColunas(string colunas)
+        {
+            var texto = colunas.Trim('[', ']').Split(',');
+            List<string> colunasParaRemover = new();
+
+            foreach (var coluna in texto)
+            {
+                colunasParaRemover.Add(coluna.Trim().Trim('"'));
             }
 
-            return dataFrame;
+            return colunasParaRemover;
         }
     }
 }

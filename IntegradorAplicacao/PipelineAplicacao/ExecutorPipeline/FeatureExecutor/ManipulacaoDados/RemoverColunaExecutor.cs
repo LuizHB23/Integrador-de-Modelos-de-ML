@@ -20,9 +20,26 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             {
                 if (!colunasParaRemover.Contains(coluna.Nome))
                 {
-                    var tipoLista = typeof(List<>).MakeGenericType(coluna.TipoDado);
-                    var listaVazia = Activator.CreateInstance(tipoLista);
-                    novoDataFrame.AdicionarColuna(coluna.Nome, (dynamic)listaVazia);
+                    // Tipo da coluna original
+                    var tipoElemento = coluna.TipoDado;
+
+                    // Cria List<tipoElemento> dinamicamente
+                    var tipoLista = typeof(List<>).MakeGenericType(tipoElemento);
+                    var lista = (System.Collections.IList)Activator.CreateInstance(tipoLista)!;
+
+                    // Preenche a lista com os valores existentes da coluna
+                    for (int i = 0; i < coluna.Quantidade; i++)
+                    {
+                        var valor = coluna.PegarValor(i);
+                        lista.Add(valor);
+                    }
+
+                    // Chama AdicionarColuna<T> dinamicamente
+                    var metodoAdicionar = typeof(DataFrame)
+                        .GetMethod("AdicionarColuna")!
+                        .MakeGenericMethod(tipoElemento);
+
+                    metodoAdicionar.Invoke(novoDataFrame, new object[] { coluna.Nome, lista });
                 }
             }
 

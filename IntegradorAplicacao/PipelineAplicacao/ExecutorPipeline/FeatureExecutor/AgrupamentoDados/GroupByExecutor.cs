@@ -12,18 +12,22 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
         public override object Executar(DataFrame dataFrame)
         {
-            var nomeColuna = Operacao.col;
+            var colunasChave = TransformaStringColunasEmListaColunas(Operacao.col); // múltiplas colunas
             var agregacao = Operacao.agg?.ToLower();
 
-            var colunaChave = dataFrame.Colunas[dataFrame.ColunaIndex[nomeColuna]];
-            int n = dataFrame.QuantidadeLinhas;
+            if (colunasChave == null || colunasChave.Count == 0)
+                throw new Exception("É necessário informar pelo menos uma coluna-chave para o groupby.");
 
-            // 🔹 1. Agrupar índices
-            var grupos = new Dictionary<object?, List<int>>();
+            // 🔹 2. Criar grupos por combinação de chaves
+            var grupos = new Dictionary<string, List<int>>();
 
-            for (int i = 0; i < n; i++)
+            for (int i = 0; i < dataFrame.QuantidadeLinhas; i++)
             {
-                var chave = colunaChave.PegarValor(i);
+                var chave = string.Join("|", colunasChave.Select(c =>
+                {
+                    var valor = dataFrame.PegarColunaBase(c)?.PegarValor(i);
+                    return valor?.ToString() ?? "NULL";
+                }));
 
                 if (!grupos.TryGetValue(chave, out var lista))
                 {
@@ -34,113 +38,56 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                 lista.Add(i);
             }
 
-            // 🔹 2. Novo DataFrame
+            // 🔹 3. Preparar novo DataFrame
             var novoDataFrame = new DataFrame();
-
-            var listaChaves = new List<object?>(grupos.Count);
-
-            // prepara colunas (exceto chave)
             var colunasResultado = new Dictionary<string, List<object?>>();
+
             foreach (var col in dataFrame.Colunas)
             {
-                if (col.Nome == nomeColuna) continue;
-                colunasResultado[col.Nome] = new List<object?>(grupos.Count);
+                colunasResultado[col.Nome] = new List<object?>();
             }
 
-            Func<ColunaBase, List<int>, object?> functionAgregacao;
-            bool ehDiff = false;
-
-            switch(agregacao)
+            // 🔹 4. Função de agregação
+            Func<ColunaBase, List<int>, object?> functionAgregacao = agregacao?.ToLower() switch
             {
-                case "count":
-                    functionAgregacao = AgregacaoCount;
-                    break;
+                "sum" => AgregacaoSoma,
+                "count" => AgregacaoCount,
+                "mean" => AgregacaoMedia,
+                "std" => AgregacaoDesvioPadrao,
+                "min" => AgregacaoMinimo,
+                "max" => AgregacaoMaximo,
+                "diff" => AgregacaoDiff,
+                _ => throw new Exception($"Operação {agregacao} não suportada")
+            };
 
-                case "sum":
-                    functionAgregacao = AgregacaoSoma;
-                    break;
+            bool ehDiff = agregacao == "diff";
 
-                case "mean":
-                    functionAgregacao = AgregacaoMedia;
-                    break;
-
-                case "std":
-                    functionAgregacao = AgregacaoDesvioPadrao;
-                    break;
-
-                case "min":
-                    functionAgregacao = AgregacaoMinimo;
-                    break;
-
-                case "max":
-                    functionAgregacao = AgregacaoMaximo;
-                    break;
-
-                case "diff":
-                    ehDiff = true;
-                    functionAgregacao = AgregacaoDiff;
-                    break;
-
-                default:
-                    throw new Exception($"Operação {agregacao} não suportada");
-            }
-
-            // 🔹 3. Processar grupos
+            // 🔹 5. Processar cada grupo
             foreach (var grupo in grupos)
             {
-                listaChaves.Add(grupo.Key);
                 var indices = grupo.Value;
 
-                foreach (var coluna in dataFrame.Colunas)
+                foreach (var col in dataFrame.Colunas)
                 {
-                    if (coluna.Nome == nomeColuna) continue;
-
-                    object? resultado = functionAgregacao(coluna, indices);
-
-                    colunasResultado[coluna.Nome].Add(resultado);
+                    if (colunasChave.Contains(col.Nome))
+                    {
+                        // pegar a primeira chave para cada grupo
+                        colunasResultado[col.Nome].Add(col.PegarValor(indices[0]));
+                    }
+                    else
+                    {
+                        var resultado = functionAgregacao(col, indices);
+                        colunasResultado[col.Nome].Add(resultado);
+                    }
                 }
             }
 
-            // 🔹 4. Montar resultado
-            var tipoChave = colunaChave.TipoDado;
-
-            var metodoChave = typeof(GroupByExecutor)
-                .GetMethod(nameof(AdicionarColunaTipada), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!
-                .MakeGenericMethod(tipoChave);
-
-            metodoChave.Invoke(this, new object[]
+            // 🔹 6. Adicionar colunas ao novo DataFrame dinamicamente
+            foreach (var col in dataFrame.Colunas)
             {
-                novoDataFrame,
-                nomeColuna,
-                listaChaves
-            });
+                Type tipo = col.TipoDado;
 
-            // colunas agregadas com tipagem correta
-            foreach (var colunaOriginal in dataFrame.Colunas)
-            {
-                if (colunaOriginal.Nome == nomeColuna) continue;
-
-                Type tipo;
-
-                if (ehDiff && colunaOriginal.TipoDado == typeof(DateTime))
-                {
-                    tipo = typeof(Single);
-                }
-                else
-                {
-                    tipo = colunaOriginal.TipoDado;
-                }
-
-                var metodo = typeof(GroupByExecutor)
-                    .GetMethod(nameof(AdicionarColunaTipada), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!
-                    .MakeGenericMethod(tipo);
-
-                metodo.Invoke(this, new object[]
-                {
-                    novoDataFrame,
-                    colunaOriginal.Nome,
-                    colunasResultado[colunaOriginal.Nome]
-                });
+                AdicionarColunaTipadaDynamic(novoDataFrame, col.Nome, colunasResultado[col.Nome], tipo, ehDiff);
             }
 
             return novoDataFrame;
@@ -294,6 +241,64 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             }
 
             df.AdicionarColuna<T?>(nomeColuna, listaTipada);
+        }
+
+        private void AdicionarColunaTipadaDynamic(DataFrame df, string nomeColuna, List<object?> valores, Type tipoOriginal, bool ehDiff = false)
+        {
+            Type tipoFinal = (ehDiff && tipoOriginal == typeof(DateTime?)) ? typeof(Single?) : tipoOriginal;
+
+            var listaTipada = (System.Collections.IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(tipoFinal))!;
+
+            foreach (var v in valores)
+            {
+                if (v == null)
+                {
+                    listaTipada.Add(null);
+                }
+                else
+                {
+                    object valorConvertido;
+
+                    if (ehDiff && tipoOriginal == typeof(DateTime))
+                    {
+                        // Converte DateTime para Single (dias)
+                        if (v is DateTime dt)
+                        {
+                            valorConvertido = Convert.ToSingle(dt.Subtract(DateTime.MinValue).TotalDays);
+                        }
+                        else
+                        {
+                            valorConvertido = Convert.ToSingle(v); // já deve ser Single
+                        }
+                    }
+                    else
+                    {
+                        // Mantém o tipo original
+                        valorConvertido = Convert.ChangeType(v, Nullable.GetUnderlyingType(tipoFinal) ?? tipoFinal);
+                    }
+
+                    listaTipada.Add(valorConvertido);
+                }
+            }
+
+            var metodoAdicionar = typeof(DataFrame)
+                .GetMethod("AdicionarColuna")!
+                .MakeGenericMethod(tipoFinal);
+
+            metodoAdicionar.Invoke(df, new object[] { nomeColuna, listaTipada });
+        }
+
+        private List<string> TransformaStringColunasEmListaColunas(string colunas)
+        {
+            var texto = colunas.Trim('[', ']').Split(',');
+            List<string> colunasParaRemover = new();
+
+            foreach (var coluna in texto)
+            {
+                colunasParaRemover.Add(coluna.Trim().Trim('"'));
+            }
+
+            return colunasParaRemover;
         }
     }
 }

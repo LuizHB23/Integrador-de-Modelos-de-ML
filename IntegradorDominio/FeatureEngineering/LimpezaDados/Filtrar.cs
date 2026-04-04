@@ -11,5 +11,7 @@ namespace IntegradorDominio.FeatureEngineering.LimpezaDados
     {
         public string NomeExibicao => "Filtrar";
         public Dictionary<string, object?>? Contexto { get; set; }
+
+        public string condition { get; set; }
     }
 }
