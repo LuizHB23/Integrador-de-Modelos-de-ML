@@ -1,4 +1,4 @@
-﻿using IntegradorDominio.FeatureEngineering.MapearLinhas.ExpressionsModelos;
+﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.ExpressionTrees.ExpressionsNo;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;

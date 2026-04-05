@@ -1,8 +1,8 @@
-﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.ExpressionTrees;
-using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.ExpressionTrees.Line;
+﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.ExpressionTrees.ExpressionsNo;
 using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.ExpressionTrees.Variaveis;
+using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.ExpressionTrees.Line;
+using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.ExpressionTrees;
 using IntegradorDominio.DataFrameModel;
-using IntegradorDominio.FeatureEngineering.MapearLinhas.ExpressionsModelos;
 using System.Globalization;
 
 namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.Parser
@@ -47,6 +47,16 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
         {
             expr = expr.Trim();
 
+            if (Single.TryParse(expr, NumberStyles.Any, CultureInfo.InvariantCulture, out var floatVal))
+                return new ValueExpression(floatVal);
+
+            if (expr.StartsWith("-") || expr.StartsWith("(-"))
+            {
+                if (Single.TryParse(expr.Trim('(', ')'), NumberStyles.Any, CultureInfo.InvariantCulture, out floatVal))
+                    return new ValueExpression(floatVal);
+            }
+
+            // 🔹 Mantém tratamento de parênteses
             if (expr.StartsWith("(") && expr.EndsWith(")"))
             {
                 if (TemParentesesCorrespondentes(expr))
@@ -97,11 +107,6 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             }
 
             // 3. IDENTIFICAÇÃO DE FOLHAS (Números, Colunas ou Variáveis)
-
-            // Tenta converter para número
-            if (Single.TryParse(expr, NumberStyles.Any, CultureInfo.InvariantCulture, out var floatVal))
-                return new ValueExpression(floatVal);
-
             // Tenta ver se é uma coluna no DataFrame
             if (contexto.TryGetValue(defaultDf, out var dfObj) && dfObj is DataFrame df)
             {

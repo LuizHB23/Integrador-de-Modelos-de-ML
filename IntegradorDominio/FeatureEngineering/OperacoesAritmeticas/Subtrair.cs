@@ -13,6 +13,7 @@ namespace IntegradorDominio.FeatureEngineering.OperacoesAritmeticas
 
         public string left { get; set; }
         public string right { get; set; }
+        public string value { get; set; }
         public string exit { get; set; }
     }
 }

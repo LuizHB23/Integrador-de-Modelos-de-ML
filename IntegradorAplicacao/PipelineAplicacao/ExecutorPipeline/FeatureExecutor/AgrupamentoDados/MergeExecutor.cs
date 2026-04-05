@@ -20,74 +20,89 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
             var novoDataFrame = new DataFrame();
 
-            // Adiciona todas as colunas do DataFrame esquerdo
+            // 🔥 Mapa: nome coluna -> índice no novo DF
+            var mapaIndices = new Dictionary<string, int>();
+
+            // 🔹 Colunas do esquerdo
             foreach (var coluna in dataFrame.Colunas)
             {
                 var tipoLista = typeof(List<>).MakeGenericType(coluna.TipoDado);
                 var listaVazia = Activator.CreateInstance(tipoLista);
+
                 novoDataFrame.AdicionarColuna(coluna.Nome, (dynamic)listaVazia);
+                mapaIndices[coluna.Nome] = novoDataFrame.Colunas.Count - 1;
             }
 
-            //Adiciona colunas do DataFrame direito com cuidado com conflitos
+            // 🔥 Mapa fixo de nomes do direito
+            var mapaNomesDireito = new Dictionary<string, string>();
+
+            // 🔹 Colunas do direito
             foreach (var coluna in dataFrameDireito.Colunas)
             {
-                if (coluna.Nome == Operacao.on) 
+                if (coluna.Nome == Operacao.on)
                     continue;
 
                 string nomeDestino = coluna.Nome;
 
-                if (novoDataFrame.Colunas.Exists(c => c.Nome == nomeDestino))
+                if (mapaIndices.ContainsKey(nomeDestino))
                     nomeDestino = $"{nomeDestino}_{Operacao.right}";
+
+                mapaNomesDireito[coluna.Nome] = nomeDestino;
 
                 var tipoLista = typeof(List<>).MakeGenericType(coluna.TipoDado);
                 var listaVazia = Activator.CreateInstance(tipoLista);
+
                 novoDataFrame.AdicionarColuna(nomeDestino, (dynamic)listaVazia);
+                mapaIndices[nomeDestino] = novoDataFrame.Colunas.Count - 1;
             }
 
-            // Cria lookup do DataFrame direito baseado na Operacao.on
+            // 🔥 Lookup (índice da linha)
             int idxOnDireito = dataFrameDireito.Colunas.FindIndex(c => c.Nome == Operacao.on);
             if (idxOnDireito == -1)
                 throw new InvalidOperationException($"Coluna '{Operacao.on}' não encontrada no DataFrame direito.");
 
-            var lookupDireito = new Dictionary<object?, List<object?>>();
+            var lookupDireito = new Dictionary<object?, int>();
+
             for (int i = 0; i < dataFrameDireito.QuantidadeLinhas; i++)
             {
                 var chave = dataFrameDireito.Colunas[idxOnDireito].PegarValor(i);
-                var linha = new List<object?>();
-                foreach (var col in dataFrameDireito.Colunas)
-                    linha.Add(col.PegarValor(i));
-                lookupDireito[chave] = linha;
+                lookupDireito[chave] = i;
             }
 
-            //Preenche o novo DataFrame
+            // 🔥 Índice chave esquerdo
             int idxOnEsquerdo = dataFrame.Colunas.FindIndex(c => c.Nome == Operacao.on);
             if (idxOnEsquerdo == -1)
                 throw new InvalidOperationException($"Coluna '{Operacao.on}' não encontrada no DataFrame esquerdo.");
 
+            // 🔥 Loop principal
             for (int i = 0; i < dataFrame.QuantidadeLinhas; i++)
             {
                 var chave = dataFrame.Colunas[idxOnEsquerdo].PegarValor(i);
 
-                // Adiciona valores das colunas do DataFrame esquerdo
-                for (int j = 0; j < dataFrame.Colunas.Count; j++)
-                    novoDataFrame.Colunas[j].AdicionaValor(dataFrame.Colunas[j].PegarValor(i));
+                int? linhaDireita = lookupDireito.ContainsKey(chave)
+                    ? lookupDireito[chave]
+                    : (int?)null;
 
-                // Busca a linha correspondente no lookup do DataFrame direito
-                List<object?>? linhaDireita = lookupDireito.ContainsKey(chave) ? lookupDireito[chave] : null;
-
-                // Adiciona valores das colunas do DataFrame direito
-                for (int j = 0; j < dataFrameDireito.Colunas.Count; j++)
+                // 🔹 esquerdo
+                foreach (var col in dataFrame.Colunas)
                 {
-                    var colDireita = dataFrameDireito.Colunas[j];
-                    if (colDireita.Nome == Operacao.on) continue;
+                    int idxDestino = mapaIndices[col.Nome];
+                    novoDataFrame.Colunas[idxDestino].AdicionaValor(col.PegarValor(i));
+                }
 
-                    string nomeDestino = colDireita.Nome;
-                    if (novoDataFrame.Colunas.Exists(c => c.Nome == nomeDestino))
-                        nomeDestino = $"{nomeDestino}_{Operacao.right}";
+                // 🔹 direito
+                foreach (var colDireita in dataFrameDireito.Colunas)
+                {
+                    if (colDireita.Nome == Operacao.on)
+                        continue;
 
-                    int idxDestino = novoDataFrame.Colunas.FindIndex(c => c.Nome == nomeDestino);
+                    string nomeDestino = mapaNomesDireito[colDireita.Nome];
+                    int idxDestino = mapaIndices[nomeDestino];
 
-                    object? valor = linhaDireita != null ? linhaDireita[j] : null;
+                    object? valor = linhaDireita != null
+                        ? colDireita.PegarValor(linhaDireita.Value)
+                        : null;
+
                     novoDataFrame.Colunas[idxDestino].AdicionaValor(valor);
                 }
             }

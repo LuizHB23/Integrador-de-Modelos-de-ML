@@ -1,5 +1,5 @@
-﻿using IntegradorDominio.DataFrameModel;
-using IntegradorDominio.FeatureEngineering.MapearLinhas.ExpressionsModelos;
+﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.ExpressionTrees.ExpressionsNo;
+using IntegradorDominio.DataFrameModel;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;

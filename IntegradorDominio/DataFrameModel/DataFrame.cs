@@ -77,5 +77,39 @@ namespace IntegradorDominio.DataFrameModel
                 _colunas[index] = new Coluna<T?>(nome, valor);
             }
         }
+
+        public void AlterarColuna<T>(string nome, List<T?> valor, Type tipo)
+        {
+            var tipoLista = typeof(List<>).MakeGenericType(tipo);
+            var listaConvertida = (System.Collections.IList)Activator.CreateInstance(tipoLista)!;
+
+            foreach (var v in valor)
+            {
+                if (v == null)
+                {
+                    listaConvertida.Add(null);
+                }
+                else
+                {
+                    var tipoBase = Nullable.GetUnderlyingType(tipo) ?? tipo;
+                    var convertido = Convert.ChangeType(v, tipoBase);
+                    listaConvertida.Add(convertido);
+                }
+            }
+
+            // 🔥 cria Coluna<TipoReal>
+            var tipoColuna = typeof(Coluna<>).MakeGenericType(tipo);
+            var novaColuna = Activator.CreateInstance(tipoColuna, nome, listaConvertida);
+
+            if (!_colunaIndex.TryGetValue(nome, out int index))
+            {
+                _colunas.Add((ColunaBase)novaColuna!);
+                _colunaIndex[nome] = _colunas.Count - 1;
+            }
+            else
+            {
+                _colunas[index] = (ColunaBase)novaColuna!;
+            }
+        }
     }
 }

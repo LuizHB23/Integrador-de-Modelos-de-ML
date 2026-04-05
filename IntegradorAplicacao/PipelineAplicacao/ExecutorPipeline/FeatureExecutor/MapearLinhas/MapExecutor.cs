@@ -1,14 +1,13 @@
-﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.Executors;
+﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.ExpressionTrees.ExpressionsNo;
 using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.ExpressionTrees.For;
 using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.ExpressionTrees.If;
 using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.Parser;
-using IntegradorDominio.DataFrameModel;
-using IntegradorDominio.FeatureEngineering.MapearLinhas;
+using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.Executors;
 using IntegradorDominio.FeatureEngineering.MapearLinhas.CasosLinha;
-using IntegradorDominio.FeatureEngineering.MapearLinhas.ExpressionsModelos;
+using IntegradorDominio.FeatureEngineering.MapearLinhas;
+using IntegradorDominio.DataFrameModel;
 using System.Linq.Expressions;
-using System.Xml;
-using System.Xml.Linq;
+
 
 namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas
 {

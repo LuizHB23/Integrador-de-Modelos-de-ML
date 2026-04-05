@@ -61,7 +61,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             foreach (var parte in partes)
             {
                 var p = parte.Trim();
-                if (p.StartsWith("condicao"))
+                if (p.StartsWith("condition"))
                 {
                     condicao = ExtrairValor(p);
                 }
@@ -116,7 +116,11 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
         private string ExtrairValor(string parte)
         {
             var idx = parte.IndexOf(':');
-            return parte.Substring(idx + 1).Trim().Trim('"');
+            if (idx < 0) return null;  // não encontrou ':', retorna nulo
+            var valor = parte.Substring(idx + 1).Trim().Trim('"');
+            if (string.IsNullOrEmpty(valor))
+                throw new Exception($"DSL inválida: valor vazio em '{parte}'");
+            return valor;
         }
 
         private List<string> SplitInteligente(string input)
@@ -131,7 +135,11 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             foreach (char caracter in input)
             {
                 if (caracter == '"')
+                {
                     dentroAspas = !dentroAspas;
+                    atual.Append(caracter); // mantém as aspas na string
+                    continue;
+                }
 
                 if (!dentroAspas)
                 {
@@ -142,9 +150,12 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                     else if (caracter == '}') nivelChaves--;
                 }
 
+                // Separador principal: vírgula fora de chaves/colchetes/aspas
                 if (caracter == ',' && !dentroAspas && nivelColchetes == 0 && nivelChaves == 0)
                 {
-                    resultado.Add(atual.ToString().Trim());
+                    var token = atual.ToString().Trim();
+                    if (!string.IsNullOrEmpty(token)) // 🔥 ignora tokens vazios
+                        resultado.Add(token);
                     atual.Clear();
                 }
                 else
@@ -153,8 +164,10 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                 }
             }
 
-            if (atual.Length > 0)
-                resultado.Add(atual.ToString().Trim());
+            // Adiciona o último token, se houver
+            var ultimo = atual.ToString().Trim();
+            if (!string.IsNullOrEmpty(ultimo))
+                resultado.Add(ultimo);
 
             return resultado;
         }

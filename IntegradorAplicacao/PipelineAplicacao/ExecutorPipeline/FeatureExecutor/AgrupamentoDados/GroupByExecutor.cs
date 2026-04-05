@@ -82,12 +82,31 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                 }
             }
 
-            // 🔹 6. Adicionar colunas ao novo DataFrame dinamicamente
-            foreach (var col in dataFrame.Colunas)
-            {
-                Type tipo = col.TipoDado;
+            var ordemFinal = new List<string>();
 
-                AdicionarColunaTipadaDynamic(novoDataFrame, col.Nome, colunasResultado[col.Nome], tipo, ehDiff);
+            // 1. colunas chave primeiro (na ordem do groupby)
+            ordemFinal.AddRange(colunasChave);
+
+            // 2. depois as outras
+            ordemFinal.AddRange(
+                dataFrame.Colunas
+                    .Select(c => c.Nome)
+                    .Where(nome => !colunasChave.Contains(nome))
+            );
+
+
+            // 🔹 6. Adicionar colunas ao novo DataFrame dinamicamente
+            foreach (var nomeColuna in ordemFinal)
+            {
+                var colOriginal = dataFrame.Colunas.First(c => c.Nome == nomeColuna);
+
+                AdicionarColunaTipadaDynamic(
+                    novoDataFrame,
+                    nomeColuna,
+                    colunasResultado[nomeColuna],
+                    colOriginal.TipoDado,
+                    ehDiff
+                );
             }
 
             return novoDataFrame;

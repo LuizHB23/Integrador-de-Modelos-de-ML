@@ -19,7 +19,18 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
             for (int i = 0; i < n; i++)
             {
-                resultado.Add(dataFrame.PegarColuna<Single?>(Operacao.left).Dados[i] / dataFrame.PegarColuna<Single?>(Operacao.right).Dados[i]);
+                if(Operacao.left is not null && Operacao.right is not null)
+                {
+                    resultado.Add(dataFrame.PegarColuna<Single?>(Operacao.left).Dados[i] / dataFrame.PegarColuna<Single?>(Operacao.right).Dados[i]);
+                }
+                else if(Operacao.left is not null && Operacao.right is null)
+                {
+                    resultado.Add(dataFrame.PegarColuna<Single?>(Operacao.left).Dados[i] / Convert.ToSingle(Operacao.value));
+                }
+                else
+                {
+                    resultado.Add(Convert.ToSingle(Operacao.value) / dataFrame.PegarColuna<Single?>(Operacao.right).Dados[i]);
+                }
             }
 
             dataFrame.AlterarColuna(Operacao.exit, resultado);

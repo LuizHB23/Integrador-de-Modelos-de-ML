@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace IntegradorDominio.FeatureEngineering.MapearLinhas.ExpressionsModelos
+namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.ExpressionTrees.ExpressionsNo
 {
     public abstract class NodeExpression
     {
