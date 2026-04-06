@@ -97,7 +97,6 @@ namespace IntegradorDominio.DataFrameModel
                 }
             }
 
-            // 🔥 cria Coluna<TipoReal>
             var tipoColuna = typeof(Coluna<>).MakeGenericType(tipo);
             var novaColuna = Activator.CreateInstance(tipoColuna, nome, listaConvertida);
 

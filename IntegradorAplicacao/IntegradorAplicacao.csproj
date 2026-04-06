@@ -15,7 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="PipelineAplicacao\ExecutorPipeline\FeatureExecutor\JanelasTemporais\" />
     <Folder Include="PipelineAplicacao\ExecutorPipeline\TransformExecutor\" />
   </ItemGroup>
 

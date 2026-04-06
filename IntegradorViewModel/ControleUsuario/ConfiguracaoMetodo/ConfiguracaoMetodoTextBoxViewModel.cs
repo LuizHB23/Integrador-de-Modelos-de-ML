@@ -4,6 +4,7 @@ using IntegradorAplicacao.PipelineAplicacao.ParserPipeline;
 using IntegradorDominio.DataFrameModel;
 using IntegradorViewModel.Shared.Context;
 using IntegradorViewModel.Shared.Interfaces;
+using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -72,18 +73,52 @@ namespace IntegradorViewModel.ControleUsuario
         private void GuardaEstado()
         {
             var linhas = File.ReadAllLines(_arquivoDados.CaminhoArquivoDados);
-            _estadoCabecalho = linhas[0].Split(',');
+            _estadoCabecalho = ParseCsvLine(linhas[0]);
 
             _estadoColuna = _estadoCabecalho.Select(_ => new List<string>()).ToArray();
 
-            var quantidadeLinhas = (linhas.Length >= 22) ? 22 : linhas.Length;
-
-            for (int i = 1; i < quantidadeLinhas; i++)
+            for (int i = 1; i < linhas.Length; i++)
             {
-                var partes = linhas[i].Split(_arquivoDados.Delimitador);
-                for (int j = 0; j < partes.Length; j++)
-                    _estadoColuna[j].Add(partes[j]);
+                var partes = ParseCsvLine(linhas[i]);
+
+                for (int j = 0; j < _estadoColuna.Length; j++)
+                {
+                    if (j < partes.Length)
+                        _estadoColuna[j].Add(partes[j]);
+                    else
+                        _estadoColuna[j].Add(string.Empty);
+                }
             }
+        }
+
+        // Função simples para parsear CSV com aspas
+        private string[] ParseCsvLine(string linha)
+        {
+            var resultado = new List<string>();
+            bool dentroAspas = false;
+            var buffer = new StringBuilder();
+
+            foreach (char c in linha)
+            {
+                if (c == '"')
+                {
+                    dentroAspas = !dentroAspas; // alterna estado
+                    continue; // remove as aspas
+                }
+
+                if (c == ',' && !dentroAspas)
+                {
+                    resultado.Add(buffer.ToString());
+                    buffer.Clear();
+                }
+                else
+                {
+                    buffer.Append(c);
+                }
+            }
+
+            resultado.Add(buffer.ToString()); // adiciona último campo
+            return resultado.ToArray();
         }
 
         public DataFrame CarregarDados()

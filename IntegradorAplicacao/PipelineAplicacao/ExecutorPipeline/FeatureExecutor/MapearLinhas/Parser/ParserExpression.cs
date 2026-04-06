@@ -47,6 +47,12 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
         {
             expr = expr.Trim();
 
+            if ((expr.StartsWith("\"") && expr.EndsWith("\"")) || (expr.StartsWith("'") && expr.EndsWith("'")))
+            {
+                var str = expr.Substring(1, expr.Length - 2);
+                return new ValueExpression(str);
+            }
+
             if (Single.TryParse(expr, NumberStyles.Any, CultureInfo.InvariantCulture, out var floatVal))
                 return new ValueExpression(floatVal);
 

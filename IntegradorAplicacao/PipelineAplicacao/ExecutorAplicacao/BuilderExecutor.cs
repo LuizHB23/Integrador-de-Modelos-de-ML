@@ -14,18 +14,16 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
         private List<EtapaExecucao> _etapasExecutor;
         private string _dataFrameRetorno;
 
-        public BuilderExecutor()
+        public BuilderExecutor(Dictionary<string, object?> objetosUtilizados)
         {
+            _objetosUtilizados = objetosUtilizados;
             _etapasExecutor = new();
-            _objetosUtilizados = new();
             _listaComandos = new();
             _dataFrameRetorno = string.Empty;
         }
 
         public DataFrame ExecutarMetodo(DataFrame dataFrame)
         {
-            _objetosUtilizados["df"] = dataFrame;
-
             DataFrame? dataFrameOrigem;
 
             foreach (var etapas in _etapasExecutor)
@@ -44,7 +42,6 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
 
             var dataFrameRetorno = (DataFrame)_objetosUtilizados[_dataFrameRetorno]!;
 
-            _objetosUtilizados.Clear();
             _etapasExecutor.Clear();
             _listaComandos.Clear();
 
@@ -53,8 +50,6 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
 
         public void ConstroiMetodo(MetodoPipeline metodoPipeline)
         {
-            _objetosUtilizados["df"] = null;
-
             foreach (var comando in metodoPipeline.Comandos)
             {
                 if (comando is AtribuicaoMetodoPipeline atribuicao)

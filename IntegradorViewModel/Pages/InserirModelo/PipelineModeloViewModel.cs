@@ -86,10 +86,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
             _cardsManager.AdicinarColuna(funcaoItem, RemoverColuna, OrganizaPosicao);
             PreparaParaJson();
 
-            var dataFrame = TextBox.CarregarDados();
-            _executor.ConstroiSequenciaMetodoPipeline(Path.Combine(_provider.GetCaminhoModelo(),"pipeline.json"));
-            dataFrame = _executor.ExecutarTudo(dataFrame);
-            TextBox.AtualizaTabela(dataFrame);
+            ConstroiPipeline();
         }
 
         [RelayCommand]
@@ -99,11 +96,17 @@ namespace IntegradorViewModel.Pages.InserirModelo
         public void ListaTransform() => ProximasFuncoes = true;
 
         [RelayCommand]
-        public void CarregarSchema() => _cardsManager.CarregarSchema(_dialogService, _converter);
+        public void CarregarSchema()
+        {
+            _cardsManager.CarregarSchema(_dialogService, _converter);
+            ConstroiPipeline();
+        }
+
         private void RemoverColuna(ConfiguracaoCardFuncaoViewModel cardSchema)
         {
             _cardsManager.RemoverColuna(cardSchema);
             PreparaParaJson();
+            //ConstroiPipeline();
         }
         private void OrganizaPosicao(ConfiguracaoCardFuncaoViewModel cardSchema, int posicaoNova)
         {
@@ -123,6 +126,14 @@ namespace IntegradorViewModel.Pages.InserirModelo
         {
             Navigation.EndFlow();
             Navigation.NavigateTo<HomeViewModel>();
+        }
+
+        private void ConstroiPipeline()
+        {
+            var dataFrame = TextBox.CarregarDados();
+            _executor.ConstroiSequenciaMetodoPipeline(Path.Combine(_provider.GetCaminhoModelo(), "pipeline.json"));
+            dataFrame = _executor.ExecutarTudo(dataFrame);
+            TextBox.AtualizaTabela(dataFrame);
         }
 
         private void CarregarListas()

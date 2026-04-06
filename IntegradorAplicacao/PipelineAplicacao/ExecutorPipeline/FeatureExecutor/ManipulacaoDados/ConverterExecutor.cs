@@ -28,23 +28,15 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                     break;
 
                 case "boolean":
+                case "bool":
                     List<bool?> dadosBoolean = ConverterParaBool(colunaBase, n);
                     dataFrame.AlterarColuna(Operacao.col, dadosBoolean);
                     break;
 
-                case "bool":
-                    List<bool?> dadosBool = ConverterParaBool(colunaBase, n);
-                    dataFrame.AlterarColuna(Operacao.col, dadosBool);
-                    break;
-
                 case "string":
+                case "str":
                     List<string?> dadosString = ConverterParaString(colunaBase, n);
                     dataFrame.AlterarColuna(Operacao.col, dadosString);
-                    break;
-
-                case "str":
-                    List<string?> dadosStr = ConverterParaString(colunaBase, n);
-                    dataFrame.AlterarColuna(Operacao.col, dadosStr);
                     break;
 
                 case "datetime":
@@ -146,7 +138,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                     continue;
                 }
 
-                if (DateTime.TryParse(valor.ToString(), out DateTime convertido))
+                if (DateTime.TryParse(valor.ToString(), new CultureInfo("en-US"),DateTimeStyles.AllowWhiteSpaces, out DateTime convertido))
                     resultado.Add(convertido);
                 else
                     resultado.Add(null);

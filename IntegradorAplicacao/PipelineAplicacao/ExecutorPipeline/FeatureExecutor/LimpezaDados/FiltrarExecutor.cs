@@ -115,6 +115,17 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                     var leftExpr = CriarOperando(left, param, df);
                     var rightExpr = CriarOperando(right, param, df);
 
+                    // Se ambos forem strings, usar métodos de comparação para == e !=
+                    if (leftExpr.Type == typeof(string) && rightExpr.Type == typeof(string))
+                    {
+                        return op switch
+                        {
+                            "==" => Expression.Equal(leftExpr, rightExpr),
+                            "!=" => Expression.NotEqual(leftExpr, rightExpr),
+                            _ => throw new Exception($"Operador {op} não suportado para strings")
+                        };
+                    }
+
                     return op switch
                     {
                         ">" => Expression.GreaterThan(leftExpr, rightExpr),
@@ -134,6 +145,16 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
         // Cria expressão para colunas ou valores literais
         private Expression CriarOperando(string token, ParameterExpression param, DataFrame df)
         {
+            token = token.Trim();
+
+            // Se for literal string entre aspas
+            if (token.StartsWith("\'") && token.EndsWith("\'") && token.Length >= 2)
+            {
+                string valor = token.Substring(1, token.Length - 2).Replace("\"\"", "\""); // permite "" dentro da string
+                return Expression.Constant(valor, typeof(string));
+            }
+
+            // Se for uma coluna
             if (df.ColunaIndex.ContainsKey(token))
             {
                 var coluna = df.PegarColunaBase(token);
@@ -143,19 +164,16 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                 Expression acesso = Expression.Property(param, "Item", Expression.Constant(token));
 
                 if (tipoBase == typeof(DateTime) || tipoBase == typeof(DateTime?))
-                {
                     return Expression.Convert(acesso, typeof(DateTime?));
-                }
 
                 if (tipoBase == typeof(Single) || tipoBase == typeof(Single?))
-                {
                     return Expression.Convert(acesso, typeof(Single?));
-                }
 
                 if (tipoBase == typeof(bool) || tipoBase == typeof(bool?))
-                {
                     return Expression.Convert(acesso, typeof(bool?));
-                }
+
+                if (tipoBase == typeof(string))
+                    return Expression.Convert(acesso, typeof(string));
 
                 throw new Exception($"Tipo da coluna {token} não suportado para filtro");
             }

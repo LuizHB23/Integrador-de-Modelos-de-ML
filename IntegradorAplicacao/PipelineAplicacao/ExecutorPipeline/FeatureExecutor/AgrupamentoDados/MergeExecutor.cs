@@ -12,38 +12,33 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
         public override object Executar(DataFrame dataFrame)
         {
+            var colunas = TransformaStringColunasEmListaColunas(Operacao.on); // múltiplas colunas
             DataFrame dataFrameDireito = (DataFrame)Operacao.Contexto[Operacao.right]!;
 
             if (dataFrame == null) throw new ArgumentNullException(nameof(dataFrame));
             if (dataFrameDireito == null) throw new ArgumentNullException(nameof(dataFrameDireito));
-            if (string.IsNullOrEmpty(Operacao.on)) throw new ArgumentNullException(nameof(Operacao.on));
+            if (colunas == null || colunas.Count == 0) throw new ArgumentNullException(nameof(Operacao.on));
 
             var novoDataFrame = new DataFrame();
-
-            // 🔥 Mapa: nome coluna -> índice no novo DF
             var mapaIndices = new Dictionary<string, int>();
+            var mapaNomesDireito = new Dictionary<string, string>();
 
             // 🔹 Colunas do esquerdo
             foreach (var coluna in dataFrame.Colunas)
             {
                 var tipoLista = typeof(List<>).MakeGenericType(coluna.TipoDado);
                 var listaVazia = Activator.CreateInstance(tipoLista);
-
                 novoDataFrame.AdicionarColuna(coluna.Nome, (dynamic)listaVazia);
                 mapaIndices[coluna.Nome] = novoDataFrame.Colunas.Count - 1;
             }
 
-            // 🔥 Mapa fixo de nomes do direito
-            var mapaNomesDireito = new Dictionary<string, string>();
-
             // 🔹 Colunas do direito
             foreach (var coluna in dataFrameDireito.Colunas)
             {
-                if (coluna.Nome == Operacao.on)
+                if (colunas.Contains(coluna.Nome))
                     continue;
 
                 string nomeDestino = coluna.Nome;
-
                 if (mapaIndices.ContainsKey(nomeDestino))
                     nomeDestino = $"{nomeDestino}_{Operacao.right}";
 
@@ -51,63 +46,61 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
                 var tipoLista = typeof(List<>).MakeGenericType(coluna.TipoDado);
                 var listaVazia = Activator.CreateInstance(tipoLista);
-
                 novoDataFrame.AdicionarColuna(nomeDestino, (dynamic)listaVazia);
                 mapaIndices[nomeDestino] = novoDataFrame.Colunas.Count - 1;
             }
 
-            // 🔥 Lookup (índice da linha)
-            int idxOnDireito = dataFrameDireito.Colunas.FindIndex(c => c.Nome == Operacao.on);
-            if (idxOnDireito == -1)
-                throw new InvalidOperationException($"Coluna '{Operacao.on}' não encontrada no DataFrame direito.");
-
-            var lookupDireito = new Dictionary<object?, int>();
-
+            // 🔹 Lookup múltiplas colunas (direito)
+            var lookupDireito = new Dictionary<string, int>();
             for (int i = 0; i < dataFrameDireito.QuantidadeLinhas; i++)
             {
-                var chave = dataFrameDireito.Colunas[idxOnDireito].PegarValor(i);
+                var chave = string.Join("|", colunas.Select(c => dataFrameDireito.PegarColunaBase(c).PegarValor(i)?.ToString() ?? "NULL"));
                 lookupDireito[chave] = i;
             }
 
-            // 🔥 Índice chave esquerdo
-            int idxOnEsquerdo = dataFrame.Colunas.FindIndex(c => c.Nome == Operacao.on);
-            if (idxOnEsquerdo == -1)
-                throw new InvalidOperationException($"Coluna '{Operacao.on}' não encontrada no DataFrame esquerdo.");
-
-            // 🔥 Loop principal
+            // 🔹 Loop principal
             for (int i = 0; i < dataFrame.QuantidadeLinhas; i++)
             {
-                var chave = dataFrame.Colunas[idxOnEsquerdo].PegarValor(i);
+                var chave = string.Join("|", colunas.Select(c => dataFrame.PegarColunaBase(c).PegarValor(i)?.ToString() ?? "NULL"));
 
-                int? linhaDireita = lookupDireito.ContainsKey(chave)
-                    ? lookupDireito[chave]
-                    : (int?)null;
+                int? linhaDireita = lookupDireito.ContainsKey(chave) ? lookupDireito[chave] : (int?)null;
 
-                // 🔹 esquerdo
+                // esquerdo
                 foreach (var col in dataFrame.Colunas)
                 {
                     int idxDestino = mapaIndices[col.Nome];
                     novoDataFrame.Colunas[idxDestino].AdicionaValor(col.PegarValor(i));
                 }
 
-                // 🔹 direito
+                // direito
                 foreach (var colDireita in dataFrameDireito.Colunas)
                 {
-                    if (colDireita.Nome == Operacao.on)
-                        continue;
+                    if (colunas.Contains(colDireita.Nome)) continue;
 
                     string nomeDestino = mapaNomesDireito[colDireita.Nome];
                     int idxDestino = mapaIndices[nomeDestino];
 
-                    object? valor = linhaDireita != null
-                        ? colDireita.PegarValor(linhaDireita.Value)
-                        : null;
-
+                    object? valor = linhaDireita != null ? colDireita.PegarValor(linhaDireita.Value) : null;
                     novoDataFrame.Colunas[idxDestino].AdicionaValor(valor);
                 }
             }
 
             return novoDataFrame;
+
+            return novoDataFrame;
+        }
+
+        private List<string> TransformaStringColunasEmListaColunas(string colunas)
+        {
+            var texto = colunas.Trim('[', ']').Split(',');
+            List<string> colunasParaRemover = new();
+
+            foreach (var coluna in texto)
+            {
+                colunasParaRemover.Add(coluna.Trim().Trim('"'));
+            }
+
+            return colunasParaRemover;
         }
     }
 }

@@ -1,8 +1,9 @@
 ﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.Executors;
 using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.FeatureEngineering.AgrupamentoDados;
-using System.ComponentModel.DataAnnotations;
-
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.AgrupamentoDados
 {
@@ -12,13 +13,21 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
         public override object Executar(DataFrame dataFrame)
         {
-            var colunasChave = TransformaStringColunasEmListaColunas(Operacao.col); // múltiplas colunas
+            var colunasChave = TransformaStringColunasEmListaColunas(Operacao.col);
             var agregacao = Operacao.agg?.ToLower();
 
             if (colunasChave == null || colunasChave.Count == 0)
                 throw new Exception("É necessário informar pelo menos uma coluna-chave para o groupby.");
 
-            // 🔹 2. Criar grupos por combinação de chaves
+            bool ehDiff = agregacao == "diff";
+
+            // 🔥 CASO ESPECIAL: diff como janela (igual GroupWindow)
+            if (ehDiff)
+            {
+                return ExecutarDiffComoJanela(dataFrame, colunasChave);
+            }
+
+            // 🔹 Criar grupos
             var grupos = new Dictionary<string, List<int>>();
 
             for (int i = 0; i < dataFrame.QuantidadeLinhas; i++)
@@ -38,7 +47,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                 lista.Add(i);
             }
 
-            // 🔹 3. Preparar novo DataFrame
+            // 🔹 Preparar novo DataFrame
             var novoDataFrame = new DataFrame();
             var colunasResultado = new Dictionary<string, List<object?>>();
 
@@ -47,8 +56,8 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                 colunasResultado[col.Nome] = new List<object?>();
             }
 
-            // 🔹 4. Função de agregação
-            Func<ColunaBase, List<int>, object?> functionAgregacao = agregacao?.ToLower() switch
+            // 🔹 Função de agregação
+            Func<ColunaBase, List<int>, object?> functionAgregacao = agregacao switch
             {
                 "sum" => AgregacaoSoma,
                 "count" => AgregacaoCount,
@@ -56,13 +65,10 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                 "std" => AgregacaoDesvioPadrao,
                 "min" => AgregacaoMinimo,
                 "max" => AgregacaoMaximo,
-                "diff" => AgregacaoDiff,
                 _ => throw new Exception($"Operação {agregacao} não suportada")
             };
 
-            bool ehDiff = agregacao == "diff";
-
-            // 🔹 5. Processar cada grupo
+            // 🔹 Processar cada grupo
             foreach (var grupo in grupos)
             {
                 var indices = grupo.Value;
@@ -71,7 +77,6 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                 {
                     if (colunasChave.Contains(col.Nome))
                     {
-                        // pegar a primeira chave para cada grupo
                         colunasResultado[col.Nome].Add(col.PegarValor(indices[0]));
                     }
                     else
@@ -83,19 +88,14 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             }
 
             var ordemFinal = new List<string>();
-
-            // 1. colunas chave primeiro (na ordem do groupby)
             ordemFinal.AddRange(colunasChave);
-
-            // 2. depois as outras
             ordemFinal.AddRange(
                 dataFrame.Colunas
                     .Select(c => c.Nome)
                     .Where(nome => !colunasChave.Contains(nome))
             );
 
-
-            // 🔹 6. Adicionar colunas ao novo DataFrame dinamicamente
+            // 🔹 Adicionar colunas
             foreach (var nomeColuna in ordemFinal)
             {
                 var colOriginal = dataFrame.Colunas.First(c => c.Nome == nomeColuna);
@@ -105,7 +105,83 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                     nomeColuna,
                     colunasResultado[nomeColuna],
                     colOriginal.TipoDado,
-                    ehDiff
+                    false
+                );
+            }
+
+            return novoDataFrame;
+        }
+
+        // 🔥 NOVO: diff estilo janela
+        private DataFrame ExecutarDiffComoJanela(DataFrame dataFrame, List<string> colunasChave)
+        {
+            var grupos = new Dictionary<string, List<int>>();
+
+            for (int i = 0; i < dataFrame.QuantidadeLinhas; i++)
+            {
+                var chave = string.Join("|", colunasChave.Select(c =>
+                {
+                    var valor = dataFrame.PegarColunaBase(c)?.PegarValor(i);
+                    return valor?.ToString() ?? "NULL";
+                }));
+
+                if (!grupos.TryGetValue(chave, out var lista))
+                {
+                    lista = new List<int>();
+                    grupos[chave] = lista;
+                }
+
+                lista.Add(i);
+            }
+
+            var novoDataFrame = new DataFrame();
+
+            foreach (var col in dataFrame.Colunas)
+            {
+                var valores = new List<object?>();
+
+                if (colunasChave.Contains(col.Nome))
+                {
+                    for (int i = 0; i < dataFrame.QuantidadeLinhas; i++)
+                        valores.Add(col.PegarValor(i));
+                }
+                else
+                {
+                    var resultados = new object?[dataFrame.QuantidadeLinhas];
+
+                    foreach (var grupo in grupos.Values)
+                    {
+                        for (int j = 0; j < grupo.Count; j++)
+                        {
+                            if (j == 0)
+                            {
+                                resultados[grupo[j]] = null;
+                                continue;
+                            }
+
+                            var atual = col.PegarValor(grupo[j]);
+                            var anterior = col.PegarValor(grupo[j - 1]);
+
+                            if (atual is Single sAtual && anterior is Single sAnterior)
+                            {
+                                resultados[grupo[j]] = sAtual - sAnterior;
+                            }
+                            else
+                            {
+                                resultados[grupo[j]] = null;
+                            }
+                        }
+                    }
+
+                    valores.AddRange(resultados);
+                }
+
+                AdicionarColunaTipadaDynamic(
+                    novoDataFrame,
+                    col.Nome,
+                    valores,
+                    typeof(Single),
+                    true
                 );
             }
 
@@ -115,12 +191,12 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
         private object? AgregacaoSoma(ColunaBase coluna, List<int> indices)
         {
             Single? soma = 0;
-            Single? valor;
+
             foreach (var i in indices)
             {
-                valor = (Single?)coluna.PegarValor(i);
+                var valor = (Single?)coluna.PegarValor(i);
                 if (valor != null)
-                    soma += (Single)valor; // assume já tipado corretamente
+                    soma += valor;
             }
 
             return soma;
@@ -128,27 +204,28 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
         private object? AgregacaoCount(ColunaBase coluna, List<int> indices)
         {
-            int? count = 0;
+            int count = 0;
+
             foreach (var i in indices)
             {
                 if (coluna.PegarValor(i) != null)
                     count++;
             }
+
             return count;
         }
 
         private object? AgregacaoMedia(ColunaBase coluna, List<int> indices)
         {
-            Single? total = 0;
+            Single total = 0;
             int contar = 0;
-            Single? valor;
 
             foreach (var i in indices)
             {
-                valor = (Single?)coluna.PegarValor(i);
+                var valor = (Single?)coluna.PegarValor(i);
                 if (valor != null)
                 {
-                    total += (Single)valor;
+                    total += valor.Value;
                     contar++;
                 }
             }
@@ -158,115 +235,67 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
         private object? AgregacaoDesvioPadrao(ColunaBase coluna, List<int> indices)
         {
-            List<Single> valores = new List<Single>();
+            var valores = new List<Single>();
 
             foreach (var i in indices)
             {
                 var valor = (Single?)coluna.PegarValor(i);
                 if (valor != null)
-                    valores.Add((Single)valor);
+                    valores.Add(valor.Value);
             }
 
             if (valores.Count == 0)
                 return null;
 
-            // calcula média
-            Single media = valores.Sum() / valores.Count;
+            var media = valores.Sum() / valores.Count;
+            var variancia = valores.Sum(v => (v - media) * (v - media)) / valores.Count;
 
-            // calcula variância
-            Single variancia = valores.Sum(v => (v - media) * (v - media)) / valores.Count;
-
-            // desvio padrão
             return (Single)Math.Sqrt(variancia);
         }
 
         private object? AgregacaoMinimo(ColunaBase coluna, List<int> indices)
         {
-            object? min = null;
-            Single? valor;
+            Single? min = null;
 
             foreach (var i in indices)
             {
-                valor = (Single?)coluna.PegarValor(i);
+                var valor = (Single?)coluna.PegarValor(i);
                 if (valor == null) continue;
 
-                if (min == null || ((IComparable)valor).CompareTo(min) < 0)
+                if (min == null || valor < min)
                     min = valor;
             }
+
             return min;
         }
 
         private object? AgregacaoMaximo(ColunaBase coluna, List<int> indices)
         {
-            object? max = null;
-            Single? valor;
+            Single? max = null;
 
             foreach (var i in indices)
             {
-                valor = (Single?)coluna.PegarValor(i);
+                var valor = (Single?)coluna.PegarValor(i);
                 if (valor == null) continue;
 
-                if (max == null || ((IComparable)valor).CompareTo(max) > 0)
+                if (max == null || valor > max)
                     max = valor;
             }
+
             return max;
         }
 
-        private object? AgregacaoDiff(ColunaBase coluna, List<int> indices)
+        private void AdicionarColunaTipadaDynamic(
+            DataFrame df,
+            string nomeColuna,
+            List<object?> valores,
+            Type tipoOriginal,
+            bool ehDiff = false)
         {
-            if (indices.Count < 2)
-                return null;
+            Type tipoFinal = ehDiff ? typeof(Single?) : tipoOriginal;
 
-            object? primeiro = null;
-            object? ultimo = null;
-            object? valor;
-
-            foreach (var i in indices)
-            {
-                valor = coluna.PegarValor(i);
-                if (valor == null) continue;
-
-                if (primeiro == null)
-                    primeiro = valor;
-
-                ultimo = valor;
-            }
-
-            if (primeiro == null || ultimo == null)
-                return null;
-
-            Single? resultado;
-
-            if (ultimo is DateTime && primeiro is DateTime)
-            {
-                TimeSpan tempo = (DateTime)ultimo - (DateTime)primeiro;
-                resultado = Convert.ToSingle(tempo.TotalDays);
-            }
-            else
-            {
-                resultado = (Single)ultimo - (Single)primeiro;
-            }
-
-            return resultado;
-        }
-
-        private void AdicionarColunaTipada<T>(DataFrame df, string nomeColuna, List<object?> valores)
-        {
-            var listaTipada = new List<T?>(valores.Count);
-
-            foreach (var v in valores)
-            {
-                listaTipada.Add((T?)v);
-            }
-
-            df.AdicionarColuna<T?>(nomeColuna, listaTipada);
-        }
-
-        private void AdicionarColunaTipadaDynamic(DataFrame df, string nomeColuna, List<object?> valores, Type tipoOriginal, bool ehDiff = false)
-        {
-            Type tipoFinal = (ehDiff && tipoOriginal == typeof(DateTime?)) ? typeof(Single?) : tipoOriginal;
-
-            var listaTipada = (System.Collections.IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(tipoFinal))!;
+            var listaTipada = (System.Collections.IList)
+                Activator.CreateInstance(typeof(List<>).MakeGenericType(tipoFinal))!;
 
             foreach (var v in valores)
             {
@@ -278,22 +307,16 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                 {
                     object valorConvertido;
 
-                    if (ehDiff && tipoOriginal == typeof(DateTime))
+                    if (ehDiff)
                     {
-                        // Converte DateTime para Single (dias)
-                        if (v is DateTime dt)
-                        {
-                            valorConvertido = Convert.ToSingle(dt.Subtract(DateTime.MinValue).TotalDays);
-                        }
-                        else
-                        {
-                            valorConvertido = Convert.ToSingle(v); // já deve ser Single
-                        }
+                        valorConvertido = Convert.ToSingle(v);
                     }
                     else
                     {
-                        // Mantém o tipo original
-                        valorConvertido = Convert.ChangeType(v, Nullable.GetUnderlyingType(tipoFinal) ?? tipoFinal);
+                        valorConvertido = Convert.ChangeType(
+                            v,
+                            Nullable.GetUnderlyingType(tipoFinal) ?? tipoFinal
+                        );
                     }
 
                     listaTipada.Add(valorConvertido);
@@ -310,14 +333,14 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
         private List<string> TransformaStringColunasEmListaColunas(string colunas)
         {
             var texto = colunas.Trim('[', ']').Split(',');
-            List<string> colunasParaRemover = new();
+            var lista = new List<string>();
 
             foreach (var coluna in texto)
             {
-                colunasParaRemover.Add(coluna.Trim().Trim('"'));
+                lista.Add(coluna.Trim().Trim('"'));
             }
 
-            return colunasParaRemover;
+            return lista;
         }
     }
 }

@@ -218,6 +218,7 @@
                                            Margin="20,5"/>
 
                                 <Button Content="Carregar"
+                                        Command="{Binding CarregarSchemaCommand}"
                                         Style="{StaticResource MaterialDesignOutlinedButton}"
                                         Foreground="White"
                                         BorderBrush="White"

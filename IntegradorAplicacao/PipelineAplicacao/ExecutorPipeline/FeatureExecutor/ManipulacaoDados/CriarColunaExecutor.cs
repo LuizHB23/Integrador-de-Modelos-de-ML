@@ -13,8 +13,30 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
         {
             Type tipoColuna = typeof(object);
             object? valor = null;
+            List<object?>? valoresExistentes = null;
 
-            if(Operacao.value != "")
+            // Verifica se value é o nome de um DataFrame existente
+            if (!string.IsNullOrWhiteSpace(Operacao.value) && Operacao.Contexto != null && Operacao.Contexto.ContainsKey(Operacao.value))
+            {
+                if (Operacao.Contexto[Operacao.value] is DataFrame dfExistente)
+                {
+                    // Pegamos a primeira coluna do DataFrame existente (ou você pode parametrizar qual coluna)
+                    var colunaBase = dfExistente.Colunas.Count > 0 ? dfExistente.Colunas[0] : null;
+
+                    if (colunaBase != null)
+                    {
+                        tipoColuna = colunaBase.TipoDado;
+                        valoresExistentes = new List<object?>();
+                        for (int i = 0; i < colunaBase.Quantidade; i++)
+                        {
+                            valoresExistentes.Add(colunaBase.PegarValor(i));
+                        }
+                    }
+                }
+            }
+
+            // Se não for DataFrame existente, usamos o valor fixo
+            if (valoresExistentes == null && Operacao.value != "")
             {
                 switch (Operacao.type)
                 {
@@ -24,20 +46,12 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                         break;
 
                     case "boolean":
-                        tipoColuna = typeof(Boolean?);
-                        valor = Convert.ToBoolean(Operacao.value);
-                        break;
-
                     case "bool":
                         tipoColuna = typeof(Boolean?);
                         valor = Convert.ToBoolean(Operacao.value);
                         break;
 
                     case "string":
-                        tipoColuna = typeof(String);
-                        valor = Convert.ToString(Operacao.value);
-                        break;
-
                     case "str":
                         tipoColuna = typeof(String);
                         valor = Convert.ToString(Operacao.value);
@@ -56,13 +70,21 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
             // Criar a lista do tipo correto
             Type listType = typeof(List<>).MakeGenericType(tipoColuna);
-            var listaNova = (IList)Activator.CreateInstance(listType)!;
+            var listaNova = (System.Collections.IList)Activator.CreateInstance(listType)!;
 
-            // Preencher a lista com o valor (ou nulo) repetido para todas as linhas
             int quantidadeLinhas = dataFrame.Colunas.Count > 0 ? dataFrame.QuantidadeLinhas : 1;
-            for (int i = 0; i < quantidadeLinhas; i++)
+
+            if (valoresExistentes != null)
             {
-                listaNova.Add(valor);
+                // Preenche a nova coluna com os valores do DataFrame existente
+                foreach (var v in valoresExistentes)
+                    listaNova.Add(v);
+            }
+            else
+            {
+                // Preencher a lista com o valor (ou nulo) repetido para todas as linhas
+                for (int i = 0; i < quantidadeLinhas; i++)
+                    listaNova.Add(valor);
             }
 
             // Criar a coluna dinamicamente
@@ -75,6 +97,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             metodoAdd.Invoke(dataFrame, new object[] { Operacao.name, listaNova });
 
             return dataFrame;
+
         }
     }
 }
