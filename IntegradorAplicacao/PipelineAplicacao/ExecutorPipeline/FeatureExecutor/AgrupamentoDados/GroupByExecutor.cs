@@ -235,20 +235,26 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
         private object? AgregacaoDesvioPadrao(ColunaBase coluna, List<int> indices)
         {
-            var valores = new List<Single>();
+            var valores = new List<double>();
 
             foreach (var i in indices)
             {
-                var valor = (Single?)coluna.PegarValor(i);
-                if (valor != null)
-                    valores.Add(valor.Value);
+                var valor = coluna.PegarValor(i);
+                if (valor is Single s)
+                    valores.Add(s);
+                else if (valor is double d)
+                    valores.Add(d);
+                else if (valor != null)
+                    valores.Add(Convert.ToDouble(valor));
             }
 
-            if (valores.Count == 0)
-                return null;
+            if (valores.Count <= 1)
+                return null; // Pandas retorna NaN se só tiver 1 valor
 
             var media = valores.Sum() / valores.Count;
-            var variancia = valores.Sum(v => (v - media) * (v - media)) / valores.Count;
+
+            // Variância amostral (divide por N-1)
+            var variancia = valores.Sum(v => (v - media) * (v - media)) / (valores.Count - 1);
 
             return (Single)Math.Sqrt(variancia);
         }
