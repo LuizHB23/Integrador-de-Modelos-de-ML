@@ -9,13 +9,6 @@ namespace IntegradorTesteUnidade.AplicacaoTestes.PipelineAplicacaoTestes.Executo
 {
     public class FillNaExecutorTests
     {
-        private DataFrame CriarDataFrameExemplo<T>(string nomeColuna, List<T?> dados)
-        {
-            var df = new DataFrame();
-            df.AdicionarColuna(nomeColuna, dados);
-            return df;
-        }
-
         [Fact]
         public void FillNa_PreencheValoresNulos()
         {
