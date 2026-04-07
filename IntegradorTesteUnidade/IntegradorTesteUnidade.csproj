@@ -21,10 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DominioTestes\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\IntegradorAplicacao\IntegradorAplicacao.csproj" />
     <ProjectReference Include="..\IntegradorDominio\IntegradorDominio.csproj" />
     <ProjectReference Include="..\IntegradorViewModel\IntegradorViewModel.csproj" />
