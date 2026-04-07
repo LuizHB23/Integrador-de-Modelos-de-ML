@@ -7,7 +7,7 @@ using System.Text;
 
 namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.OperacoesAritmeticas
 {
-    internal class DividirExecutor : FeatureExecutorBase<Dividir>
+    public class DividirExecutor : FeatureExecutorBase<Dividir>
     {
         public DividirExecutor(Dividir operacao) : base(operacao) { }
 
