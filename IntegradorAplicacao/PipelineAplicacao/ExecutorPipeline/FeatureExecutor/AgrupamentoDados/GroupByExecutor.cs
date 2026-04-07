@@ -17,7 +17,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             var agregacao = Operacao.agg?.ToLower();
 
             if (colunasChave == null || colunasChave.Count == 0)
-                throw new Exception("É necessário informar pelo menos uma coluna-chave para o groupby.");
+                throw new InvalidCastException("É necessário informar pelo menos uma coluna-chave para o groupby.");
 
             bool ehDiff = agregacao == "diff";
 
@@ -117,6 +117,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
         {
             var grupos = new Dictionary<string, List<int>>();
 
+            // Criar grupos com base nas colunas-chave
             for (int i = 0; i < dataFrame.QuantidadeLinhas; i++)
             {
                 var chave = string.Join("|", colunasChave.Select(c =>
@@ -142,11 +143,21 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
                 if (colunasChave.Contains(col.Nome))
                 {
+                    // Coluna-chave: mantemos o tipo original
                     for (int i = 0; i < dataFrame.QuantidadeLinhas; i++)
                         valores.Add(col.PegarValor(i));
+
+                    AdicionarColunaTipadaDynamic(
+                        novoDataFrame,
+                        col.Nome,
+                        valores,
+                        col.TipoDado, // mantém o tipo original da coluna
+                        false
+                    );
                 }
                 else
                 {
+                    // Coluna de valores: calculamos diff
                     var resultados = new object?[dataFrame.QuantidadeLinhas];
 
                     foreach (var grupo in grupos.Values)
@@ -163,26 +174,22 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                             var anterior = col.PegarValor(grupo[j - 1]);
 
                             if (atual is Single sAtual && anterior is Single sAnterior)
-                            {
                                 resultados[grupo[j]] = sAtual - sAnterior;
-                            }
                             else
-                            {
                                 resultados[grupo[j]] = null;
-                            }
                         }
                     }
 
                     valores.AddRange(resultados);
-                }
 
-                AdicionarColunaTipadaDynamic(
-                    novoDataFrame,
-                    col.Nome,
-                    valores,
-                    typeof(Single),
-                    true
-                );
+                    AdicionarColunaTipadaDynamic(
+                        novoDataFrame,
+                        col.Nome,
+                        valores,
+                        col.TipoDado, // agora respeita o tipo original também
+                        true         // continua sendo diff
+                    );
+                }
             }
 
             return novoDataFrame;

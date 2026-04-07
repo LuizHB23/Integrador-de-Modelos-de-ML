@@ -9,13 +9,13 @@ using System.IO;
 namespace IntegradorTesteUnidade.AplicacaoTestes.GerenciadorTestes
 {
     // Adicionei IDisposable aqui
-    public class ModeloGerenciadorTets : IDisposable
+    public class ModeloGerenciadorTests : IDisposable
     {
         private readonly Mock<IPathProvider> _mockProvider;
         private readonly string _appFolder;
         private readonly string _nomeModelo = "Teste Qualquer Aqui";
 
-        public ModeloGerenciadorTets()
+        public ModeloGerenciadorTests()
         {
             _mockProvider = new Mock<IPathProvider>();
 
