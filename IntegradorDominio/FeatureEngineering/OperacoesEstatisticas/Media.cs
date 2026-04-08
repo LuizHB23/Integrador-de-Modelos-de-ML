@@ -3,6 +3,7 @@ using IntegradorDominio.InterfacesSteps;
 
 namespace IntegradorDominio.FeatureEngineering.OperacoesEstatisticas
 {
+    [Feature("Mean", "Operações Estatísticas")]
     [FeatureName("Mean")]
     public class Media : IFeature
     {

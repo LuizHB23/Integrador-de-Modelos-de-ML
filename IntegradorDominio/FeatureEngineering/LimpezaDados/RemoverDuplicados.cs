@@ -6,6 +6,7 @@ using System.Text;
 
 namespace IntegradorDominio.FeatureEngineering.LimpezaDados
 {
+    [Feature("DropDuplicates", "Limpeza de Dados")]
     [FeatureName("DropDuplicates")]
     public class RemoverDuplicados : IFeature
     {

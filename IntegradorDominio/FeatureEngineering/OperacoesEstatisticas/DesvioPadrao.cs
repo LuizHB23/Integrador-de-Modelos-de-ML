@@ -6,6 +6,7 @@ using System.Text;
 
 namespace IntegradorDominio.FeatureEngineering.OperacoesEstatisticas
 {
+    [Feature("Std", "Operações Estatísticas")]
     [FeatureName("Std")]
     public class DesvioPadrao : IFeature
     {

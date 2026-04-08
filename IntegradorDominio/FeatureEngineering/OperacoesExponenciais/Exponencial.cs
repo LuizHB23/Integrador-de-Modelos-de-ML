@@ -6,6 +6,7 @@ using System.Text;
 
 namespace IntegradorDominio.FeatureEngineering.OperacoesExponenciais
 {
+    [Feature("Exp", "Operações Exponenciais")]
     [FeatureName("Exp")]
     public class Exponencial : IFeature
     {

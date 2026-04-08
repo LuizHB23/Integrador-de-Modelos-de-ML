@@ -6,6 +6,7 @@ using System.Text;
 
 namespace IntegradorDominio.FeatureEngineering.OperacoesExponenciais
 {
+    [Feature("Log", "Operações Exponenciais")]
     [FeatureName("Log")]
     public class Logaritmo : IFeature
     {

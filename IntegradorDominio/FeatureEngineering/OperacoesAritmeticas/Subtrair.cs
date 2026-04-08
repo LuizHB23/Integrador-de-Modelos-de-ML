@@ -4,7 +4,7 @@ using IntegradorDominio.InterfacesSteps;
 
 namespace IntegradorDominio.FeatureEngineering.OperacoesAritmeticas
 {
-    [FeatureName("Subtrair")]
+    [Feature("Sub", "Operações Aritméticas")]
     [FeatureName("Sub")]
     public class Subtrair : IFeature
     {

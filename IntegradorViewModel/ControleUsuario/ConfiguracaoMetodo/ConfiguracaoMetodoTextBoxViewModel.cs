@@ -192,16 +192,50 @@ namespace IntegradorViewModel.ControleUsuario
             _onDadosAlterados(dataTable.DefaultView);
         }
 
-        public void EscreveScript(string texto)
+        public void EscreveScript(string featureName, List<string> listaPropriedades)
         {
             if(string.IsNullOrWhiteSpace(ScriptCodigo))
             {
                 ScriptCodigo ="SuaFuncao()\n{\nreturn df\n}";
             }
 
-            var index = ScriptCodigo.IndexOf("return");
+            var indeReturn = ScriptCodigo.IndexOf("return");
 
-            ScriptCodigo = ScriptCodigo.Insert(index, "    novaLinha;\n\n");
+            var codigo = $"df = df.{featureName}()";
+            var indexParenteses = codigo.IndexOf("()");
+
+            if (featureName == "Map")
+            {
+
+                if (indexParenteses != -1)
+                {
+                    codigo = codigo.Insert(indexParenteses + 1, "lambdax=[for{loop:\"\", line:\"\"}, if:{condition:\"\", line:\"\", else:{line:\"\"}}, line:\"\"]");
+                }
+            }
+            else
+            {
+                var propriedades = string.Empty;
+
+                foreach (var propriedade in listaPropriedades)
+                {
+                    if(propriedade != "Contexto")
+                    {
+                        if(string.IsNullOrWhiteSpace(propriedades))
+                        {
+                            propriedades = $"{propriedade}=";
+                        }
+                        else
+                        {
+                            propriedades += $", {propriedade}=";
+                        }
+                    }
+                }
+
+                codigo = codigo.Insert(indexParenteses + 1, propriedades);
+            }
+
+
+            ScriptCodigo = ScriptCodigo.Insert(indeReturn, $"{codigo};\n\n");
         }
 
         public void EsvaziaScript()

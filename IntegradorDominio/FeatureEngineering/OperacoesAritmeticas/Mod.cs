@@ -7,6 +7,7 @@ using System.Text;
 
 namespace IntegradorDominio.FeatureEngineering.OperacoesAritmeticas
 {
+    [Feature("Mod", "Operações Aritméticas")]
     [FeatureName("Mod")]
     public class Mod : IFeature
     {

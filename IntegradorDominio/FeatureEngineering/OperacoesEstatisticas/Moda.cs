@@ -6,6 +6,7 @@ using System.Text;
 
 namespace IntegradorDominio.FeatureEngineering.OperacoesEstatisticas
 {
+    [Feature("Mode", "Operações Estatísticas")]
     [FeatureName("Mode")]
     public class Moda : IFeature
     {

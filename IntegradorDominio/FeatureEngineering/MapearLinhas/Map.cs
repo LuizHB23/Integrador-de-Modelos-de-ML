@@ -3,6 +3,7 @@ using IntegradorDominio.InterfacesSteps;
 
 namespace IntegradorDominio.FeatureEngineering.MapearLinhas
 {
+    [Feature("Map", "Mapear Linhas")]
     [FeatureName("Map")]
     public class Map : IFeature
     {

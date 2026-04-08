@@ -6,6 +6,7 @@ using System.Text;
 
 namespace IntegradorDominio.FeatureEngineering.ManipulacaoDados
 {
+    [Feature("Copy", "Manipulação de Dados")]
     [FeatureName("Copy")]
     public class Copiar : IFeature
     {

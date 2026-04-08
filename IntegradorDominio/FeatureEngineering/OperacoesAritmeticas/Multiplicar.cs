@@ -7,7 +7,7 @@ using System.Text;
 
 namespace IntegradorDominio.FeatureEngineering.OperacoesAritmeticas
 {
-    [FeatureName("Multiplicar")]
+    [Feature("Mult", "Operações Aritméticas")]
     [FeatureName("Mult")]
     public class Multiplicar : IFeature
     {

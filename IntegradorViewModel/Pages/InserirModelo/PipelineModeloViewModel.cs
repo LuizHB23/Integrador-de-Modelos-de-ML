@@ -4,6 +4,7 @@ using IntegradorAplicacao.CaminhoProvider;
 using IntegradorAplicacao.ConversorJson;
 using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao;
+using IntegradorDominio.Attributes;
 using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.InterfacesSteps;
 using IntegradorViewModel.ControleUsuario;
@@ -68,8 +69,6 @@ namespace IntegradorViewModel.Pages.InserirModelo
             TextBox = new ConfiguracaoMetodoTextBoxViewModel(dialogService, _contextArquivo.RecebeMensagem(), AlterouTabela, DataPreview);
             _nomeModelo = _contextNomeModelo.RecebeMensagem().NomeModelo;
             _cardsManager = new(CardsFuncoes, OpcoesPosicao);
-
-            TextBox.EscreveScript();
         }
 
         //Precisa de Manutção
@@ -141,6 +140,8 @@ namespace IntegradorViewModel.Pages.InserirModelo
 
         private void PreparaParaJson() => _cardsManager.PreparaParaJson(_converter, _nomeModelo);
 
+        private void RecebeListaPropriedades(string featureName, List<string> listaPropriedades) => TextBox.EscreveScript(featureName, listaPropriedades);
+
         public void AlterouTabela(DataView dataView)
         {
             DataPreview = dataView;
@@ -165,38 +166,39 @@ namespace IntegradorViewModel.Pages.InserirModelo
         {
             var assembly = typeof(IFeature).Assembly;
 
-            var titulosPastas = new Dictionary<string, string>
+            var features = assembly.GetTypes()
+                .Where(t =>
+                    typeof(IFeature).IsAssignableFrom(t) &&
+                    !t.IsInterface &&
+                    !t.IsAbstract &&
+                    t.IsPublic)
+                .Select(t => new
                 {
-                    { "OperacoesAritmeticas", "Operações Aritméticas" },
-                    { "OperacoesEstatisticas", "Operações Estatísticas" },
-                    { "OperacoesExponenciais", "Operações Exponenciais" },
-                    { "OperacoesEspeciais", "Operações Especiais" },
-                    { "LimpezaDados", "Limpeza de Dados" },
-                    { "AgrupamentoDados", "Agrupamento de Dados" }
-                };
+                    Tipo = t,
+                    Atributo = t.GetCustomAttributes(typeof(FeatureAttribute), false)
+                                .Cast<FeatureAttribute>()
+                                .FirstOrDefault()
+                })
+                .Where(x => x.Atributo != null)
+                .ToList();
 
-            foreach (var pasta in titulosPastas)
+            var grupos = features.GroupBy(x => x.Atributo!.Categoria);
+
+            foreach (var grupo in grupos)
             {
-                var tiposEncontrados = assembly.GetTypes()
-                    .Where(t => t.Namespace != null &&
-                        t.Namespace.EndsWith(pasta.Key) &&
-                        typeof(IFeature).IsAssignableFrom(t) &&
-                        !t.IsInterface &&
-                        !t.IsAbstract &&
-                        t.IsPublic)
+                var instancias = grupo
+                    .Select(x => (IFeature)Activator.CreateInstance(x.Tipo)!)
                     .ToList();
 
-                if (tiposEncontrados.Any())
-                {
-                    var instancias = tiposEncontrados
-                        .Select(t => (IFeature)Activator.CreateInstance(t)!)
-                        .ToList();
+                var listaProcessos = new ObservableCollection<IFeature>(instancias);
 
-                    var listaProcessos = new ObservableCollection<IFeature>(instancias);
+                var featureItem = new FeatureEngineeringItemViewModel(
+                    listaProcessos,
+                    grupo.Key,
+                    RecebeListaPropriedades
+                );
 
-                    var featureItem = new FeatureEngineeringItemViewModel(listaProcessos, pasta.Value);
-                    ListaFeatureEngineering.Add(featureItem);
-                }
+                ListaFeatureEngineering.Add(featureItem);
             }
         }
     }

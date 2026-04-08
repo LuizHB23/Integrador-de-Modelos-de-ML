@@ -6,6 +6,7 @@ using System.Text;
 
 namespace IntegradorDominio.FeatureEngineering.ManipulacaoDados
 {
+    [Feature("Drop", "Manipulação de Dados")]
     [FeatureName("Drop")]
     public class RemoverColuna : IFeature
     {

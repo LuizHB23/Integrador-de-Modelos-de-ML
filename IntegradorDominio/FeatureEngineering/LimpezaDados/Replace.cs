@@ -6,6 +6,7 @@ using System.Text;
 
 namespace IntegradorDominio.FeatureEngineering.LimpezaDados
 {
+    [Feature("Replace", "Limpeza de Dados")]
     [FeatureName("Replace")]
     public class Replace : IFeature
     {

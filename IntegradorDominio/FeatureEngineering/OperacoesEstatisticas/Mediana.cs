@@ -6,6 +6,7 @@ using System.Text;
 
 namespace IntegradorDominio.FeatureEngineering.OperacoesEstatisticas
 {
+    [Feature("Median", "Operações Estatísticas")]
     [FeatureName("Median")]
     public class Mediana : IFeature
     {

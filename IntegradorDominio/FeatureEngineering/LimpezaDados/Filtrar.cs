@@ -6,6 +6,7 @@ using System.Text;
 
 namespace IntegradorDominio.FeatureEngineering.LimpezaDados
 {
+    [Feature("Filter", "Limpeza de Dados")]
     [FeatureName("Filter")]
     public class Filtrar : IFeature
     {

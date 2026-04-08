@@ -6,6 +6,7 @@ using System.Text;
 
 namespace IntegradorDominio.FeatureEngineering.OperacoesEspeciais
 {
+    [Feature("Round", "Operações Especiais")]
     [FeatureName("Round")]
     public class Arredondar : IFeature
     {

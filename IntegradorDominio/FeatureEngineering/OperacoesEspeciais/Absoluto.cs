@@ -6,6 +6,7 @@ using System.Text;
 
 namespace IntegradorDominio.FeatureEngineering.OperacoesEspeciais
 {
+    [Feature("Abs", "Operações Especiais")]
     [FeatureName("Abs")]
     public class Absoluto : IFeature
     {

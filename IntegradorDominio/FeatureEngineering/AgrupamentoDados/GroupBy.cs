@@ -6,6 +6,7 @@ using System.Text;
 
 namespace IntegradorDominio.FeatureEngineering.AgrupamentoDados
 {
+    [Feature("GroupBy", "Agroupamento de Dados")]
     [FeatureName("GroupBy")]
     public class GroupBy : IFeature
     {

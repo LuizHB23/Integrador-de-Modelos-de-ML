@@ -6,7 +6,7 @@ using System.Text;
 
 namespace IntegradorDominio.FeatureEngineering.ManipulacaoDados
 {
-    [FeatureName("Converter")]
+    [Feature("Convert", "Manipulação de Dados")]
     [FeatureName("Convert")]
     public class Converter : IFeature
     {

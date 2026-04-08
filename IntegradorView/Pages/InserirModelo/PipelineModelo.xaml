@@ -111,9 +111,7 @@
                                                                   materialDesign:TextFieldAssist.HasClearButton="True"
                                                                   ItemsSource="{Binding ListaProcessos}"
                                                                   DisplayMemberPath="NomeExibicao"
-                                                                  SelectedItem="{Binding DataContext.FuncaoSelecionada, 
-                                                                                 RelativeSource={RelativeSource AncestorType=ItemsControl}, 
-                                                                                 Mode=TwoWay}"/>
+                                                                  SelectedItem="{Binding FuncaoSelecionada, Mode=TwoWay}"/>
                                                     </StackPanel>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>

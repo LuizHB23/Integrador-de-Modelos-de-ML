@@ -7,7 +7,7 @@ using System.Text;
 
 namespace IntegradorDominio.FeatureEngineering.OperacoesAritmeticas
 {
-    [FeatureName("Somar")]
+    [Feature("Sum", "Operações Aritméticas")]
     [FeatureName("Sum")]
     public class Somar : IFeature
     {

@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System.Collections.ObjectModel;
+using IntegradorDominio.Attributes;
 using IntegradorDominio.InterfacesSteps;
+using System.Collections.ObjectModel;
 
 namespace IntegradorViewModel.ItensViewModel
 {
@@ -8,12 +9,45 @@ namespace IntegradorViewModel.ItensViewModel
     {
         [ObservableProperty]
         private string _nomeProcesso;
+
+        [ObservableProperty]
+        private IFeature? _funcaoSelecionada;
         public ObservableCollection<IFeature> ListaProcessos { get; }
 
-        public FeatureEngineeringItemViewModel(ObservableCollection<IFeature> listaProcessos, string nomeProcesso)
+        private Action<string, List<string>> _devolveListaPropriedades;
+
+        public List<string> PropriedadesSelecionadas { get; private set; } = new();
+
+        public FeatureEngineeringItemViewModel(ObservableCollection<IFeature> listaProcessos, string nomeProcesso, Action<string, List<string>> devolveListaPropriedades)
         {
             ListaProcessos = listaProcessos;
             _nomeProcesso = nomeProcesso;
+            _devolveListaPropriedades = devolveListaPropriedades;
+        }
+
+        partial void OnFuncaoSelecionadaChanged(IFeature? value)
+        {
+            if (value == null)
+            {
+                return;
+            }
+
+            var tipo = value.GetType();
+
+            var featureName = tipo
+                .GetCustomAttributes(typeof(FeatureNameAttribute), false)
+                .Cast<FeatureNameAttribute>()
+                .FirstOrDefault()?.Nome;
+
+            // propriedades
+            PropriedadesSelecionadas = tipo
+                .GetProperties()
+                .Where(p => p.CanWrite)
+                .Select(p => p.Name)
+                .ToList();
+
+            _devolveListaPropriedades(featureName, PropriedadesSelecionadas);
+            FuncaoSelecionada = null;
         }
     }
 }

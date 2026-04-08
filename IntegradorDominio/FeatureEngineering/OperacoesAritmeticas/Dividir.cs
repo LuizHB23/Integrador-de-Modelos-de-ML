@@ -7,7 +7,7 @@ using System.Text;
 
 namespace IntegradorDominio.FeatureEngineering.OperacoesAritmeticas
 {
-    [FeatureName("Dividir")]
+    [Feature("Div", "Operações Aritméticas")]
     [FeatureName("Div")]
     public class Dividir : IFeature
     {

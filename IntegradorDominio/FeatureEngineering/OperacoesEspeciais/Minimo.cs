@@ -6,6 +6,7 @@ using System.Text;
 
 namespace IntegradorDominio.FeatureEngineering.OperacoesEspeciais
 {
+    [Feature("Min", "Operações Especiais")]
     [FeatureName("Min")]
     public class Minimo : IFeature
     {

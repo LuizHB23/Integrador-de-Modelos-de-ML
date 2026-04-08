@@ -7,6 +7,7 @@ using System.Text;
 
 namespace IntegradorDominio.FeatureEngineering.OperacoesExponenciais
 {
+    [Feature("Sqrt", "Operações Exponenciais")]
     [FeatureName("Sqrt")]
     public class RaizQuadrada : IFeature
     {

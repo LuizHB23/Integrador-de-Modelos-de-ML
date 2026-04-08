@@ -3,6 +3,7 @@ using IntegradorDominio.InterfacesSteps;
 
 namespace IntegradorDominio.FeatureEngineering.LimpezaDados
 {
+    [Feature("FillNa", "Limpeza de Dados")]
     [FeatureName("FillNa")]
     public class FillNa : IFeature
     {

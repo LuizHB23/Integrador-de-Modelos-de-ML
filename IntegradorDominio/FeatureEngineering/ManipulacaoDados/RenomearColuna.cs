@@ -6,6 +6,7 @@ using System.Text;
 
 namespace IntegradorDominio.FeatureEngineering.ManipulacaoDados
 {
+    [Feature("Rename", "Manipulação de Dados")]
     [FeatureName("Rename")]
     public class RenomearColuna : IFeature
     {

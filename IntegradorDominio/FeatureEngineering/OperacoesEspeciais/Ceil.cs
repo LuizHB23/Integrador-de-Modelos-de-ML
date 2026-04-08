@@ -6,6 +6,7 @@ using System.Text;
 
 namespace IntegradorDominio.FeatureEngineering.OperacoesEspeciais
 {
+    [Feature("Ceil", "Operações Especiais")]
     [FeatureName("Ceil")]
     public class Ceil : IFeature
     {

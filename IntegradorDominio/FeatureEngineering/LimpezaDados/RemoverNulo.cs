@@ -6,6 +6,7 @@ using System.Text;
 
 namespace IntegradorDominio.FeatureEngineering.LimpezaDados
 {
+    [Feature("DropNa", "Limpeza de Dados")]
     [FeatureName("DropNa")]
     public class RemoverNulo : IFeature
     {

@@ -6,6 +6,7 @@ using System.Text;
 
 namespace IntegradorDominio.FeatureEngineering.ManipulacaoDados
 {
+    [Feature("Select", "Manipulação de Dados")]
     [FeatureName("Select")]
     public class SelecionarColuna : IFeature
     {

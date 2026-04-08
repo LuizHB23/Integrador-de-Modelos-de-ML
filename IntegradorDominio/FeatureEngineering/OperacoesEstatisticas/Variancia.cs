@@ -6,6 +6,7 @@ using System.Text;
 
 namespace IntegradorDominio.FeatureEngineering.OperacoesEstatisticas
 {
+    [Feature("Var", "Operações Estatísticas")]
     [FeatureName("Var")]
     public class Variancia : IFeature
     {

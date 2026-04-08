@@ -6,6 +6,7 @@ using System.Text;
 
 namespace IntegradorDominio.FeatureEngineering.OperacoesEspeciais
 {
+    [Feature("Max", "Operações Especiais")]
     [FeatureName("Max")]
     public class Maximo : IFeature
     {

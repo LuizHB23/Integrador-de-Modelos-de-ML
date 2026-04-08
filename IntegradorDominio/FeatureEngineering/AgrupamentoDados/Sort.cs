@@ -6,6 +6,7 @@ using System.Text;
 
 namespace IntegradorDominio.FeatureEngineering.AgrupamentoDados
 {
+    [Feature("Sort", "Agroupamento de Dados")]
     [FeatureName("Sort")]
     public class Sort : IFeature
     {
