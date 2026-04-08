@@ -20,7 +20,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             {
                 valor = (Single?)coluna.PegarValor(i);
 
-                if (valor is not null && valor != 0)
+                if (valor is not null && valor > 0)
                 {
                     valorDouble = Convert.ToDouble(valor);
                     valor = Convert.ToSingle(Math.Log10(valorDouble));
