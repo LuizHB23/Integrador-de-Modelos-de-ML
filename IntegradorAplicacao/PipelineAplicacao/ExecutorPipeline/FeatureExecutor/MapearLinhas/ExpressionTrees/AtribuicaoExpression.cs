@@ -17,7 +17,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
         public override Expression ParaExpression(Dictionary<string, ParameterExpression> variaveis, Dictionary<string, object> contexto, ParameterExpression indexVar)
         {
             if (!variaveis.ContainsKey(Target))
-                variaveis[Target] = Expression.Parameter(typeof(int), Target);
+                variaveis[Target] = Expression.Parameter(typeof(object), Target);
 
             // Aqui chamamos ParaExpression do NodeExpression correto
             return Expression.Assign(variaveis[Target], Valor.ParaExpression(variaveis, contexto, indexVar));

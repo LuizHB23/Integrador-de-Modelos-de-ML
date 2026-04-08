@@ -136,7 +136,7 @@ namespace IntegradorViewModel.ControleUsuario
             return dataFrame;
         }
 
-        public static DataTable DataFrameParaDataTable(DataFrame dataFrame)
+        private static DataTable DataFrameParaDataTable(DataFrame dataFrame)
         {
             var tabela = new DataTable();
             var colunas = dataFrame.Colunas;
@@ -190,6 +190,23 @@ namespace IntegradorViewModel.ControleUsuario
             var dataTable = DataFrameParaDataTable(dataFrame);
 
             _onDadosAlterados(dataTable.DefaultView);
+        }
+
+        public void EscreveScript(string texto)
+        {
+            if(string.IsNullOrWhiteSpace(ScriptCodigo))
+            {
+                ScriptCodigo ="SuaFuncao()\n{\nreturn df\n}";
+            }
+
+            var index = ScriptCodigo.IndexOf("return");
+
+            ScriptCodigo = ScriptCodigo.Insert(index, "    novaLinha;\n\n");
+        }
+
+        public void EsvaziaScript()
+        {
+            ScriptCodigo = string.Empty;
         }
     }
 }

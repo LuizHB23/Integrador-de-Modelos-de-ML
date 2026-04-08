@@ -68,6 +68,8 @@ namespace IntegradorViewModel.Pages.InserirModelo
             TextBox = new ConfiguracaoMetodoTextBoxViewModel(dialogService, _contextArquivo.RecebeMensagem(), AlterouTabela, DataPreview);
             _nomeModelo = _contextNomeModelo.RecebeMensagem().NomeModelo;
             _cardsManager = new(CardsFuncoes, OpcoesPosicao);
+
+            TextBox.EscreveScript();
         }
 
         //Precisa de Manutção
@@ -86,7 +88,15 @@ namespace IntegradorViewModel.Pages.InserirModelo
             _cardsManager.AdicinarColuna(funcaoItem, RemoverColuna, OrganizaPosicao);
             PreparaParaJson();
 
-            ConstroiPipeline();
+            try
+            {
+                ConstroiPipeline();
+                TextBox.EsvaziaScript();
+            }
+            catch (Exception ex)
+            {
+                _dialogService.ShowMessage($"Houve um erro no comando: {ex.Message}", "Erro de Comando");
+            }
         }
 
         [RelayCommand]
@@ -99,14 +109,29 @@ namespace IntegradorViewModel.Pages.InserirModelo
         public void CarregarSchema()
         {
             _cardsManager.CarregarSchema(_dialogService, _converter);
-            ConstroiPipeline();
+            try
+            {
+                ConstroiPipeline();
+            }
+            catch (Exception ex)
+            {
+                _dialogService.ShowMessage($"Erro no ao carregar Pipeline: {ex.Message}", "Erro de Comando");
+            }
         }
 
         private void RemoverColuna(ConfiguracaoCardFuncaoViewModel cardSchema)
         {
             _cardsManager.RemoverColuna(cardSchema);
             PreparaParaJson();
-            //ConstroiPipeline();
+
+            try
+            {
+                ConstroiPipeline();
+            }
+            catch (Exception ex)
+            {
+                _dialogService.ShowMessage($"Houve um erro no comando {ex.Message}", "Erro de Comando");
+            }
         }
         private void OrganizaPosicao(ConfiguracaoCardFuncaoViewModel cardSchema, int posicaoNova)
         {
