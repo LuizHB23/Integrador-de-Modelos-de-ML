@@ -4,7 +4,7 @@ using IntegradorDominio.FeatureEngineering.OperacoesEstatisticas;
 
 namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.OperacoesEstatisticas
 {
-    internal class MedianaExecutor : FeatureExecutorBase<Mediana>
+    public class MedianaExecutor : FeatureExecutorBase<Mediana>
     {
         public MedianaExecutor(Mediana operacao) : base(operacao) { }
 

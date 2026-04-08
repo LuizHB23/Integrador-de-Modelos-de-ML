@@ -11,19 +11,21 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
         public MediaExecutor(Media operacao) : base(operacao) { }
         public override object Executar(DataFrame dataFrame)
         {
-            int quantidadeLinhas = dataFrame.QuantidadeLinhas;
-            float? valor = 0.0f;
             var valorColuna = dataFrame.PegarColuna<Single?>(Operacao.col).Dados;
 
-            for(int i = 0; i < quantidadeLinhas; i++)
+            float soma = 0f;
+            int count = 0;
+
+            foreach (var v in valorColuna)
             {
-                if(valorColuna[i] is not null)
+                if (v is not null)
                 {
-                    valor += valorColuna[i];
+                    soma += v.Value;
+                    count++;
                 }
             }
 
-            return valor / quantidadeLinhas;
+            return count > 0 ? soma / count : 0f;
         }
     }
 }
