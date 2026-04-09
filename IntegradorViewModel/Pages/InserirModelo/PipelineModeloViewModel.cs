@@ -216,6 +216,12 @@ namespace IntegradorViewModel.Pages.InserirModelo
         }
 
         [RelayCommand]
+        public void NavigateToTransformers()
+        {
+            Navigation.NavigateTo<TransformadoresModeloViewModel>();
+        }
+
+        [RelayCommand]
         public void NavigateToHome()
         {
             Navigation.EndFlow();

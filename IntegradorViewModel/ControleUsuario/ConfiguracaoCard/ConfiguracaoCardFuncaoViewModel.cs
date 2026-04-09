@@ -40,11 +40,12 @@ namespace IntegradorViewModel.ControleUsuario
             Posicao = _funcaoItem.Posicao;
             NomeMetodo = _funcaoItem.NomeFuncao;
         }
+
         partial void OnPosicaoChanged(int value)
         {
             if (!EstouReposicionando && _funcaoItem.Posicao != value)
             {
-                _onTrocarPosicao.Invoke(this, value - 1);
+                _onTrocarPosicao(this, value - 1);
             }
 
             _funcaoItem.Posicao = value;

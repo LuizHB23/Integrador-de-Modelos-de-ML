@@ -37,6 +37,7 @@ namespace IntegradorView
 
             services.AddTransient<PipelineModeloViewModel>();
             services.AddTransient<InserirModeloViewModel>();
+            services.AddTransient<TransformadoresModeloViewModel>();
             services.AddTransient<ConfigurarSchemaViewModel>();
             services.AddTransient<CarregarDadosViewModel>();
 

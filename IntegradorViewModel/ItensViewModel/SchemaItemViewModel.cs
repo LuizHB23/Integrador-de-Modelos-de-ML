@@ -9,7 +9,7 @@ namespace IntegradorViewModel.ItensViewModel
     public class SchemaItemViewModel
     {
         public int Posicao { get; set; }
-        public string NomeColuna { get; private set; } = string.Empty;
+        public string NomeColuna { get; set; } = string.Empty;
         public string Finalidade { get; set; } = string.Empty;
         public string Tipo { get; set; } = string.Empty;
         public bool Categorico { get; set; }

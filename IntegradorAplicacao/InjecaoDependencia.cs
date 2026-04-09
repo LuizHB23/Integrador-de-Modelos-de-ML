@@ -15,10 +15,12 @@ namespace IntegradorAplicacao
         {
             // Registre aqui tudo o que é "bruto" do sistema
             services.AddTransient<IGerenciador<ModeloDTO>, ModeloGerenciador>();
+            services.AddTransient<IGerenciador<TransformadorDTO>, TransformadorGerenciador>();
 
             services.AddTransient<IConverteJson<ModeloDTO>, ModeloJson>();
             services.AddTransient<IConverteJson<Dictionary<int, SchemaDTO>>, SchemaJson>();
             services.AddTransient<IConverteJson<Dictionary<int, FuncaoDTO>>, PipelineJson>();
+            services.AddTransient<IConverteJson<Dictionary<int, TransformadorDTO>>, TransformadorJson>();
 
             services.AddSingleton<IPathProvider, PathProvider>();
 

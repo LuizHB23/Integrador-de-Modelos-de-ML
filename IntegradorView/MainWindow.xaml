@@ -45,6 +45,10 @@
             <inserir:PipelineModelo/>
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type vmsinserir:TransformadoresModeloViewModel}">
+            <inserir:TransformadoresModelo/>
+        </DataTemplate>
+
         <!--Fim Fluxo de Páginas do InserirModelo-->
 
         <!--Inicio Fluxo de Páginas do PredicaoModelo-->

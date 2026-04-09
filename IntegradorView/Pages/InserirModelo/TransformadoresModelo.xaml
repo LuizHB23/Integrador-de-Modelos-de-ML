@@ -1,0 +1,134 @@
+﻿<UserControl x:Class="IntegradorView.Pages.InserirModelo.TransformadoresModelo"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:usercontrol="clr-namespace:IntegradorView.ControleUsuario"
+             xmlns:local="clr-namespace:IntegradorView.Pages.InserirModelo"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             Background="{DynamicResource MaterialDesignPaper}">
+    <Grid>
+        <DockPanel Margin="20">
+            <StackPanel DockPanel.Dock="Bottom" 
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right" 
+                    Margin="0,15,0,0">
+
+                <Button x:Name="BotaoCancelar" 
+                    Content="Cancelar" 
+                    Style="{StaticResource MaterialDesignOutlinedButton}"
+                    Command="{Binding NavigateToHomeCommand}"
+                    Width="120"
+                    Margin="10,0"
+                    Cursor="Hand"/>
+
+                <Button x:Name="BotaoFinalizar" 
+                    Content="Finalizar" 
+                    Style="{StaticResource MaterialDesignRaisedButton}"
+                    Command="{Binding NavigateToHomeCommand}"
+                    Width="120" 
+                    Margin="10,0"
+                    Cursor="Hand"/>
+            </StackPanel>
+
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="10">
+                <StackPanel Margin="20">
+                    <TextBlock Margin="25"
+                           Text="Sequenciamento de Transformações ONNX"
+                           Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                           HorizontalAlignment="Center" FontSize="28"/>
+
+                    <StackPanel HorizontalAlignment="Stretch" MaxWidth="1200">
+
+                        <Grid HorizontalAlignment="Stretch" Margin="0,0,0,20">
+                            <materialDesign:Card UniformCornerRadius="10" Padding="15">
+                                <StackPanel>
+                                    <TextBlock Text="Adicionar Etapa ao Pipeline" 
+                                           Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                                           HorizontalAlignment="Center" FontSize="22" Margin="0,0,0,15"/>
+
+                                    <UniformGrid Columns="4" VerticalAlignment="Center">
+
+                                        <TextBox materialDesign:HintAssist.Hint="Nome Transformador" 
+                                                 Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                                                 Text="{Binding NomeTransformador}"
+                                                 HorizontalAlignment="Stretch"
+                                                 VerticalAlignment="Center"
+                                                 FontSize="20" 
+                                                 Margin="20,0"/>
+
+
+                                        <TextBox materialDesign:HintAssist.Hint="Transformador ONNX"
+                                                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                                                    Text="{Binding CaminhoTransformador}"
+                                                    HorizontalAlignment="Stretch"
+                                                    VerticalAlignment="Center"
+                                                    IsReadOnly="True"
+                                                    FontSize="20" 
+                                                    Margin="10,0"/>
+
+                                        <Button Grid.Column="1" 
+                                                Content="Buscar" 
+                                                Margin="20,0"
+                                                Width="165"
+                                                Height="40"
+                                                Style="{StaticResource MaterialDesignOutlinedButton}"
+                                                Command="{Binding CarregarCaminhoTransformadorOnnxCommand}"
+                                                Cursor="Hand"/>
+
+                                        <Button Content="Adicionar"
+                                            Command="{Binding AdicionaTransformadorCommand}"
+                                            Margin="0,20,20,20"
+                                            Width="165"
+                                            Height="40"
+                                            FontSize="20"
+                                            HorizontalAlignment="Right"
+                                            Cursor="Hand"/>
+                                    </UniformGrid>
+                                </StackPanel>
+                            </materialDesign:Card>
+                        </Grid>
+
+                        <materialDesign:Card UniformCornerRadius="10">
+                            <GroupBox Header="FLUXO DE EXECUÇÃO (SEQUÊNCIA)" Margin="0" Height="450">
+                                <GroupBox.HeaderTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <materialDesign:PackIcon Kind="VectorArrangeBelow" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                            <TextBlock Text="{Binding}" FontWeight="Bold"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </GroupBox.HeaderTemplate>
+                                <DockPanel>
+                                    <Button DockPanel.Dock="Top"
+                                            Style="{StaticResource MaterialDesignRaisedButton}"
+                                            Command="{Binding CarregarSchemaCommand}"
+                                            Content="Carregar Transformadores" 
+                                            Margin="30,0,30,10" 
+                                            MaxWidth="300"
+                                            Height="40" 
+                                            FontSize="20"
+                                            HorizontalAlignment="Right"
+                                            Cursor="Hand"/>
+                                    
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                        <ItemsControl ItemsSource="{Binding CardsTransformador}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <usercontrol:ConfiguracaoCardTransformador Margin="5"/>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                </DockPanel>
+                            </GroupBox>
+                        </materialDesign:Card>
+
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+        </DockPanel>
+    </Grid>
+</UserControl>
