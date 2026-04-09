@@ -9,19 +9,24 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Border Margin="10"
-        BorderThickness="0.5"
-        BorderBrush="Black"
-        MinHeight="40"
-        CornerRadius="5">
+                BorderThickness="0.5"
+                BorderBrush="Black"
+                Height="85"
+                CornerRadius="5">
             <Grid>
-                <StackPanel Orientation="Horizontal">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal" Grid.Column="0">
                     <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}"
                               SelectedItem="{Binding Posicao}"
                               ItemsSource="{Binding OpcoesPosicao}"
                               materialDesign:TextFieldAssist.TextFieldCornerRadius="10"
                               BorderBrush="#D1D1D1"
                               Margin="10"
-                              Width="Auto"
+                              Width="63"
                               Height="Auto"
                               Grid.Column="0"/>
 
@@ -30,32 +35,60 @@
                        Fill="#D1D1D1" 
                        Height="Auto"
                        Margin="0,10"/>
-
-                    <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}"
-                       FontWeight="DemiBold"
-                       HorizontalAlignment="Left"
-                       VerticalAlignment="Center"
-                       Margin="10,0"
-                       MinHeight="40"
-                       Text="{Binding NomeMetodo}"/>
-
-
                 </StackPanel>
 
-                <Button  Style="{StaticResource MaterialDesignOutlinedButton}"
-                         Command="{Binding FoiRemovidoCommand}"
-                         Grid.Row="3"
-                         HorizontalAlignment="Right"
-                         Height="40"
-                         Width="55"
-                         Margin="10"
-                         Cursor="Hand">
 
-                    <materialDesign:PackIcon Kind="Trash" 
-                                     VerticalAlignment="Center"
-                                     Width="Auto" 
-                                     Height="Auto"/>
-                </Button>
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}"
+                               Grid.Row="0"
+                               FontWeight="DemiBold"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Center"
+                               Margin="20,5,0,0"
+                               MinHeight="40"
+                               MaxWidth="130"
+                               TextTrimming="CharacterEllipsis"
+                               TextWrapping="NoWrap"
+                               Text="{Binding NomeMetodo}"/>
+
+                    <UniformGrid Grid.Row="1" VerticalAlignment="Bottom" Margin="10,0">
+                        <Button  Style="{StaticResource MaterialDesignOutlinedButton}"
+                                 Command="{Binding ConfigurarFuncaoCommand}"
+                                 Grid.Row="3"
+                                 HorizontalAlignment="Center"
+                                 Height="30"
+                                 Width="55"
+                                 Margin="10,0"
+                                 Cursor="Hand">
+
+                            <materialDesign:PackIcon Kind="Settings" 
+                                                     VerticalAlignment="Center"
+                                                     Width="Auto" 
+                                                     Height="Auto"/>
+                        </Button>
+
+                        <Button  Style="{StaticResource MaterialDesignOutlinedButton}"
+                                 Command="{Binding FoiRemovidoCommand}"
+                                 Grid.Row="3"
+                                 HorizontalAlignment="Center"
+                                 Height="30"
+                                 Width="55"
+                                 Margin="10,0"
+                                 Cursor="Hand">
+
+                            <materialDesign:PackIcon Kind="Trash" 
+                                                     VerticalAlignment="Center"
+                                                     Width="Auto" 
+                                                     Height="Auto"/>
+                        </Button>
+                    </UniformGrid>
+
+                </Grid>
             </Grid>
         </Border>
     </Grid>

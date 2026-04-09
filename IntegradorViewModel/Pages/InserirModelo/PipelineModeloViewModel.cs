@@ -5,7 +5,6 @@ using IntegradorAplicacao.ConversorJson;
 using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao;
 using IntegradorDominio.Attributes;
-using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.InterfacesSteps;
 using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.ItensViewModel;
@@ -16,7 +15,6 @@ using IntegradorViewModel.Shared.Interfaces;
 using IntegradorViewModel.Shared.Manager.GerenciadorCards;
 using System.Collections.ObjectModel;
 using System.Data;
-using System.Diagnostics;
 
 namespace IntegradorViewModel.Pages.InserirModelo
 {
@@ -39,9 +37,10 @@ namespace IntegradorViewModel.Pages.InserirModelo
         public ObservableCollection<FeatureEngineeringItemViewModel> ListaFeatureEngineering { get; }
         public ObservableCollection<TransformDataViewItemViewModel> ListaTransformDataView { get; }
 
+        private  ExecutorFinal? _executor;
+
         private readonly string _nomeModelo;
         private readonly CardsPipelineModeloManager _cardsManager;
-        private readonly ExecutorFinal _executor;
 
         private readonly IConverteJson<Dictionary<int, FuncaoDTO>> _converter;
         private readonly IDialogService _dialogService;
@@ -62,7 +61,6 @@ namespace IntegradorViewModel.Pages.InserirModelo
             ListaTransformDataView = new();
             CarregarListas();
 
-            _executor = new(_converter);
             DataPreview = new();
             CardsFuncoes = new();
             OpcoesPosicao = new();
@@ -71,7 +69,6 @@ namespace IntegradorViewModel.Pages.InserirModelo
             _cardsManager = new(CardsFuncoes, OpcoesPosicao);
         }
 
-        //Precisa de Manutção
         [RelayCommand]
         public void AdicionaFuncao()
         {
@@ -84,7 +81,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
 
             var modeloElementos = modeloNomeCorpo.First();
             var funcaoItem = new FuncaoItemViewModel(CardsFuncoes.Count + 1, modeloElementos.Key, modeloElementos.Value);
-            _cardsManager.AdicinarColuna(funcaoItem, RemoverColuna, OrganizaPosicao);
+            _cardsManager.AdicinarColuna(funcaoItem, RemoverColuna, OrganizaPosicao, ConfigurarFuncao);
             PreparaParaJson();
 
             try
@@ -99,15 +96,9 @@ namespace IntegradorViewModel.Pages.InserirModelo
         }
 
         [RelayCommand]
-        public void ListaFeature() => ProximasFuncoes = false;
-
-        [RelayCommand]
-        public void ListaTransform() => ProximasFuncoes = true;
-
-        [RelayCommand]
         public void CarregarSchema()
         {
-            _cardsManager.CarregarSchema(_dialogService, _converter);
+            _cardsManager.CarregarSchema(_dialogService, _converter, ConfigurarFuncao);
             try
             {
                 ConstroiPipeline();
@@ -132,6 +123,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
                 _dialogService.ShowMessage($"Houve um erro no comando {ex.Message}", "Erro de Comando");
             }
         }
+
         private void OrganizaPosicao(ConfiguracaoCardFuncaoViewModel cardSchema, int posicaoNova)
         {
             _cardsManager.OrganizaPosicao(cardSchema, posicaoNova);
@@ -148,6 +140,82 @@ namespace IntegradorViewModel.Pages.InserirModelo
         }
 
         [RelayCommand]
+        public void AtualizaFuncao()
+        {
+            var modeloNomeCorpo = TextBox.MandaCodigoMetodo();
+
+            if (modeloNomeCorpo is null)
+            {
+                return;
+            }
+
+            var caminhoPasta = _provider.GetCaminhoModelo();
+            caminhoPasta = Path.Combine(caminhoPasta, _nomeModelo, "pipeline.json");
+
+            var dicionarioFuncoes = _converter.CarregarJson(caminhoPasta);
+
+            foreach (var elemento in dicionarioFuncoes)
+            {
+                if (elemento.Value.NomeFuncao == modeloNomeCorpo.First().Key)
+                {
+                    int posicao = elemento.Key;
+                    var listaCodigo = modeloNomeCorpo.First().Value;
+
+                    var funcaoDto = new FuncaoDTO(elemento.Value.NomeFuncao, listaCodigo, elemento.Value.NomeModelo);
+
+                    var funcaoReserva = dicionarioFuncoes[posicao];
+                    dicionarioFuncoes[posicao] = funcaoDto;
+                    _converter.ConverteJson(dicionarioFuncoes);
+
+                    try
+                    {
+                        ConstroiPipeline();
+                        TextBox.EsvaziaScript();
+                    }
+                    catch (Exception ex)
+                    {
+                        _dialogService.ShowMessage($"Houve um erro no comando: {ex.Message}", "Erro de Comando");
+
+                        dicionarioFuncoes[posicao] = funcaoReserva;
+                        _converter.ConverteJson(dicionarioFuncoes);
+                        ConstroiPipeline();
+                    }
+
+                    return;
+                }
+            }
+
+            _dialogService.ShowMessage("Não há método para sobrevescrever");
+        }
+
+
+        public void ConfigurarFuncao(ConfiguracaoCardFuncaoViewModel cardSchema)
+        {
+            var caminhoPasta = _provider.GetCaminhoModelo();
+            caminhoPasta = Path.Combine(caminhoPasta, _nomeModelo, "pipeline.json");
+
+            var dicionarioFuncoes = _converter.CarregarJson(caminhoPasta);
+            var codigo = string.Empty;
+
+            foreach (var elemento in dicionarioFuncoes)
+            {
+                if (elemento.Value.NomeFuncao == cardSchema.NomeMetodo)
+                {
+                    codigo = $"{cardSchema.NomeMetodo}()" + "\n{";
+
+                    foreach (var linha in elemento.Value.Codigo)
+                    {
+
+                        codigo += $"\n{linha}\n";
+                    }
+                    codigo += "}";
+                }
+            }
+
+            TextBox.ScriptCodigo = codigo;
+        }
+
+        [RelayCommand]
         public void NavigateToHome()
         {
             Navigation.EndFlow();
@@ -157,8 +225,10 @@ namespace IntegradorViewModel.Pages.InserirModelo
         private void ConstroiPipeline()
         {
             var dataFrame = TextBox.CarregarDados();
+            _executor = new(_converter);
             _executor.ConstroiSequenciaMetodoPipeline(Path.Combine(_provider.GetCaminhoModelo(), "pipeline.json"));
             dataFrame = _executor.ExecutarTudo(dataFrame);
+            _executor = null;
             TextBox.AtualizaTabela(dataFrame);
         }
 

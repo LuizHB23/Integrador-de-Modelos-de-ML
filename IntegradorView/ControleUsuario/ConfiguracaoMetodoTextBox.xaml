@@ -17,11 +17,11 @@
                   VerticalScrollBarVisibility="Auto"
                   HorizontalScrollBarVisibility="Auto"
                   TextWrapping="Wrap"
-                  Margin="16,5,16,16"
+                  Margin="16,16,16,16"
                   VerticalAlignment="Stretch"
                   materialDesign:HintAssist.Hint="Configure sua função aqui"
                   MinHeight="200"
-                  Width="235">   
+                  Width="548">   
 
         </TextBox>
     </Grid>

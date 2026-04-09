@@ -14,6 +14,7 @@ namespace IntegradorViewModel.ControleUsuario
     {
         private readonly Action<ConfiguracaoCardFuncaoViewModel, int> _onTrocarPosicao;
         private readonly Action<ConfiguracaoCardFuncaoViewModel> _onExcluir;
+        private readonly Action<ConfiguracaoCardFuncaoViewModel> _onConfigurarFuncao;
         private FuncaoItemViewModel _funcaoItem;
 
         [ObservableProperty]
@@ -28,8 +29,9 @@ namespace IntegradorViewModel.ControleUsuario
         public bool EstouReposicionando { get; set; }
         public FuncaoItemViewModel FuncaoItem { get => _funcaoItem; }
 
-        public ConfiguracaoCardFuncaoViewModel(FuncaoItemViewModel funcaoItem, Action<ConfiguracaoCardFuncaoViewModel> actionExcluir, Action<ConfiguracaoCardFuncaoViewModel, int> actionTrocarPosicao)
+        public ConfiguracaoCardFuncaoViewModel(FuncaoItemViewModel funcaoItem, Action<ConfiguracaoCardFuncaoViewModel> actionExcluir, Action<ConfiguracaoCardFuncaoViewModel, int> actionTrocarPosicao, Action<ConfiguracaoCardFuncaoViewModel> actionConfigurarFuncao)
         {
+            _onConfigurarFuncao = actionConfigurarFuncao;
             _onTrocarPosicao = actionTrocarPosicao;
             _onExcluir = actionExcluir;
             _funcaoItem = funcaoItem;
@@ -51,7 +53,13 @@ namespace IntegradorViewModel.ControleUsuario
         [RelayCommand]
         public void FoiRemovido()
         {
-            _onExcluir.Invoke(this);
+            _onExcluir(this);
+        }
+
+        [RelayCommand]
+        public void ConfigurarFuncao()
+        {
+            _onConfigurarFuncao(this);
         }
     }
 }

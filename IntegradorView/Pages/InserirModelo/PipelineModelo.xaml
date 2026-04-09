@@ -66,7 +66,6 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
-                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
                             <materialDesign:ColorZone Mode="PrimaryMid" 
@@ -119,32 +118,11 @@
                                     </ScrollViewer>
                                 </Grid>
                             </ScrollViewer>
-                            <StackPanel Orientation="Horizontal"
-                                        Grid.Row="2">
-                                
-                                <Button Content="Anterior"
-                                        Height="40"
-                                        FontSize="14"
-                                        Margin="20,10,0,10"
-                                        FontWeight="Bold"
-                                        Style="{StaticResource MaterialDesignRaisedButton}"
-                                        Command="{Binding ListaFeatureCommand}"
-                                        Cursor="Hand"/>
-                                
-                                <Button Content="Próximo"
-                                        Height="40"
-                                        Margin="20,10"
-                                        FontSize="14"
-                                        FontWeight="Bold"
-                                        Style="{StaticResource MaterialDesignRaisedButton}"
-                                        Command="{Binding ListaTransformCommand}"
-                                        Cursor="Hand"/>
-                            </StackPanel>
                         </Grid>
                     </materialDesign:Card>
 
                     <materialDesign:Card Grid.Column="1"
-                                         Width="Auto"
+                                         Width="325"
                                          Height="Auto"
                                          VerticalAlignment="Stretch" 
                                          HorizontalAlignment="Stretch" 
@@ -160,27 +138,34 @@
                             </Grid.RowDefinitions>
 
                             <materialDesign:ColorZone Mode="PrimaryMid" Padding="16" CornerRadius="8,8,0,0">
-                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                        <materialDesign:PackIcon Kind="Settings" Width="24" Height="24" 
-                                                 VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                        <TextBlock Text="Configurar Função"
-                                                   Style="{StaticResource MaterialDesignHeadline6TextBlock}"
-                                                   VerticalAlignment="Center"
-                                                   Margin="0,0,20,0"/>
-                                </StackPanel>
+                                <TextBlock Text="Pipeline" 
+                                        Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                                        HorizontalAlignment="Center"
+                                        Width="Auto"
+                                        Margin="20,0"/>
 
                             </materialDesign:ColorZone>
 
-                            <TextBlock Text="Parâmetros de Processamento"
-                                       Grid.Row="1"
-                                       Style="{StaticResource MaterialDesignSubtitle1TextBlock}" 
-                                       Margin="16"/>
-                            
-                            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Padding="20">
-                                <ContentControl Content="{Binding TextBox}"/>
-                            </ScrollViewer>
+                            <Border Grid.Row="2"
+                                    BorderThickness="0.5"
+                                    Margin="20"
+                                    BorderBrush="Black"
+                                    CornerRadius="5">
 
-                            <Button Content="ADICIONAR"
+                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                    <ItemsControl ItemsSource="{Binding CardsFuncoes}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <usercontrol:ConfiguracaoCardFuncao/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                            </Border>
+
+                            
+
+                            <Button Content="Carregar"
                                     Grid.Row="3"
                                     HorizontalAlignment="Right"
                                     Height="40"
@@ -188,64 +173,73 @@
                                     FontSize="14"
                                     FontWeight="Bold"
                                     Style="{StaticResource MaterialDesignRaisedButton}"
-                                    Command="{Binding AdicionaFuncaoCommand}"
+                                    Command="{Binding CarregarSchemaCommand}"
                                     Cursor="Hand"/>
 
                         </Grid>
                     </materialDesign:Card>
                 </Grid>
+                
                 <materialDesign:Card Grid.Row="1"
-                                     UniformCornerRadius="10">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+                                     UniformCornerRadius="10"
+                                     HorizontalAlignment="Stretch">
+                    
+                    <Grid HorizontalAlignment="Stretch">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
                         <materialDesign:ColorZone Mode="PrimaryMid" 
-                                                  CornerRadius="8,0,0,8"
-                                                  Grid.Column="0"
-                                                  VerticalAlignment="Stretch">
-                            <StackPanel HorizontalAlignment="Center"
+                                                  CornerRadius="8,8,0,0"
+                                                  Grid.Row="0"
+                                                  HorizontalAlignment="Stretch"
+                                                  Width="Auto"
+                                                  Height="60"> 
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center"
                                         VerticalAlignment="Center">
+                                
+                                <materialDesign:PackIcon Kind="Settings" Width="24" Height="24" 
+                                                         VerticalAlignment="Center" Margin="0,0,16,0"/>
 
-                                <TextBlock Text="Pipeline" 
+                                <TextBlock Text="Configurar Função"
                                            Style="{StaticResource MaterialDesignHeadline6TextBlock}"
-                                           HorizontalAlignment="Center"
-                                           Width="Auto"
-                                           Margin="20,5"/>
+                                          VerticalAlignment="Center"
+                                          Margin="0,0,30,0"/>
 
-                                <Button Content="Carregar"
-                                        Command="{Binding CarregarSchemaCommand}"
+                                <Button Content="Atualizar"
+                                        Command="{Binding AtualizaFuncaoCommand}"
                                         Style="{StaticResource MaterialDesignOutlinedButton}"
                                         Foreground="White"
                                         BorderBrush="White"
                                         Grid.Row="3"
                                         HorizontalAlignment="Right"
                                         Height="40"
-                                        Margin="20"
+                                        Margin="30,10,10,10"
+                                        FontSize="14"
+                                        FontWeight="Bold"
+                                        Cursor="Hand"/>
+
+                                <Button Content="Adicionar"
+                                        Command="{Binding AdicionaFuncaoCommand}"
+                                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                                        Foreground="White"
+                                        BorderBrush="White"
+                                        Grid.Row="3"
+                                        HorizontalAlignment="Right"
+                                        Height="40"
+                                        Margin="30,10,10,10"
                                         FontSize="14"
                                         FontWeight="Bold"
                                         Cursor="Hand"/>
                             </StackPanel>
                         </materialDesign:ColorZone>
 
-                        <Border Grid.Column="1"
-                                BorderThickness="0.5"
-                                Margin="20"
-                                BorderBrush="Black"
-                                CornerRadius="5">
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="20">
+                            <ContentControl Content="{Binding TextBox}"/>
+                        </ScrollViewer>
 
-                            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                <ItemsControl ItemsSource="{Binding CardsFuncoes}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <usercontrol:ConfiguracaoCardFuncao/>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </ScrollViewer>
-                        </Border>
                     </Grid>
                 </materialDesign:Card>
             </Grid>

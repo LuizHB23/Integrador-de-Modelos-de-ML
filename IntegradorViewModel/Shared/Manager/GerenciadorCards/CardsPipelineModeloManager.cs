@@ -13,20 +13,20 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
     {
         public CardsPipelineModeloManager(ObservableCollection<ConfiguracaoCardFuncaoViewModel> cardsLista, ObservableCollection<int> posicoesLista) : base(cardsLista, posicoesLista) { }
 
-        public void AdicinarColuna(FuncaoItemViewModel funcaoItem, Action<ConfiguracaoCardFuncaoViewModel> actionExcluir, Action<ConfiguracaoCardFuncaoViewModel, int> actionTrocarPosicao)
+        public void AdicinarColuna(FuncaoItemViewModel funcaoItem, Action<ConfiguracaoCardFuncaoViewModel> actionExcluir, Action<ConfiguracaoCardFuncaoViewModel, int> actionTrocarPosicao, Action<ConfiguracaoCardFuncaoViewModel> actionConfigurarFuncao)
         {
             if (funcaoItem is null)
             {
                 return;
             }
 
-            var cardFuncao = new ConfiguracaoCardFuncaoViewModel(funcaoItem, actionExcluir, actionTrocarPosicao);
+            var cardFuncao = new ConfiguracaoCardFuncaoViewModel(funcaoItem, actionExcluir, actionTrocarPosicao, actionConfigurarFuncao);
             _cardsLista.Add(cardFuncao);
             _posicoesLista.Add(cardFuncao.Posicao);
             AtualizaPosicoes();
         }
 
-        public void CarregarSchema(IDialogService _dialogService, IConverteJson<Dictionary<int, FuncaoDTO>> _converter)
+        public void CarregarSchema(IDialogService _dialogService, IConverteJson<Dictionary<int, FuncaoDTO>> _converter, Action<ConfiguracaoCardFuncaoViewModel> actionConfigurarFuncao)
         {
             var _caminhoJson = _dialogService.GetCaminhoArquivo();
 
@@ -43,7 +43,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
             foreach (var card in schema)
             {
                 var funcaoItem = new FuncaoItemViewModel(card.Key, card.Value.NomeFuncao, card.Value.Codigo);
-                var cardFuncao = new ConfiguracaoCardFuncaoViewModel(funcaoItem, RemoverColuna, OrganizaPosicao);
+                var cardFuncao = new ConfiguracaoCardFuncaoViewModel(funcaoItem, RemoverColuna, OrganizaPosicao, actionConfigurarFuncao);
                 _cardsLista.Add(cardFuncao);
                 _posicoesLista.Add(card.Key);
             }
