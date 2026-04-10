@@ -4,8 +4,6 @@ using IntegradorAplicacao.CaminhoProvider;
 using IntegradorAplicacao.ConversorJson;
 using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.Gerenciador;
-using IntegradorDominio.FeatureEngineering.ManipulacaoDados;
-using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.ControleUsuario.ConfiguracaoCard;
 using IntegradorViewModel.ItensViewModel;
 using IntegradorViewModel.JanelaModelo;
@@ -13,11 +11,8 @@ using IntegradorViewModel.Pages.PrincipalModelo;
 using IntegradorViewModel.Shared.Context;
 using IntegradorViewModel.Shared.Interfaces;
 using IntegradorViewModel.Shared.Manager.GerenciadorCards;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Text;
 
 namespace IntegradorViewModel.Pages.InserirModelo
 {

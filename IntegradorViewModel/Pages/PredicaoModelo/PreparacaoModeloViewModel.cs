@@ -1,6 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using IntegradorAplicacao.DTO;
 using IntegradorViewModel.JanelaModelo;
+using IntegradorViewModel.Shared.Context;
+using System.Diagnostics;
 
 namespace IntegradorViewModel.Pages.PredicaoModelo
 {
@@ -9,9 +12,13 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
         [ObservableProperty]
         private INavigationService _navigation;
 
-        public PreparacaoModeloViewModel(INavigationService navigation)
+        IContext<ModeloDTO> _context;
+
+        public PreparacaoModeloViewModel(INavigationService navigation, IContext<ModeloDTO> context)
         {
             _navigation = navigation;
+
+            _context = context;
         }
 
         [RelayCommand]

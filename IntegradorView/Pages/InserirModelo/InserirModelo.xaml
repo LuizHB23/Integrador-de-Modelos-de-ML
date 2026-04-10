@@ -32,7 +32,8 @@
                               FontSize="20"
                               VerticalContentAlignment="Center" 
                               Margin="0,0,0,20"
-                              SelectedItem="{Binding TipoModelo}"
+                              SelectedValue="{Binding TipoModelo}"
+                              SelectedValuePath="Content"
                               Style="{StaticResource MaterialDesignFloatingHintComboBox}">
                         <ComboBoxItem Content="Regressão"/>
                         <ComboBoxItem Content="Classificação"/>

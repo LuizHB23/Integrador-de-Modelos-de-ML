@@ -51,33 +51,45 @@
     <Grid>
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="30">
-                <TextBlock Text="Seus Modelos" FontSize="24" FontWeight="SemiBold" Foreground="#333" Margin="0,0,0,20"/>
+                <TextBlock Text="Seus Modelos" FontSize="28" FontWeight="SemiBold" Foreground="#333" Margin="0,0,0,20"/>
 
                 <WrapPanel Orientation="Horizontal">
+                    <ItemsControl ItemsSource="{Binding ListaModelos}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Style="{StaticResource ModelCardStyle}"
+                                        Command="{Binding DataContext.NavigateToPreparacaoModeloCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                        CommandParameter="{Binding}"
+                                        Cursor="Hand"
+                                        Width="350"
+                                        Height="300"
+                                        Margin="10,0">
+                                    <StackPanel>
+                                        <Border x:Name="BotaoModelo" Height="180" Background="#E0E0E0" CornerRadius="8,8,0,0">
+                                            <TextBlock Text="📊" FontSize="40" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <TextBlock Text="{Binding NomeModelo}" Padding="15,10,15,5" FontWeight="Bold" FontSize="30"/>
+                                        <TextBlock Text="{Binding Tipo}" Padding="15,0,15,15" FontSize="24" Foreground="Gray"/>
+                                    </StackPanel>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
 
-                    <Button Style="{StaticResource ModelCardStyle}"
+                    <!--<Button Style="{StaticResource ModelCardStyle}"
                             Command="{Binding NavigateToPreparacaoModeloCommand}"
-                            Cursor="Hand">
+                            Cursor="Hand"
+                            Width="350"
+                            Height="300"
+                            Margin="10,0">
                         <StackPanel>
-                            <Border x:Name="BotaoModelo" Height="120" Background="#E0E0E0" CornerRadius="8,8,0,0">
-                                <TextBlock Text="📊" FontSize="40" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                            <TextBlock Text="Modelo Alpha" Padding="15,10,15,5" FontWeight="Bold" FontSize="16"/>
-                            <TextBlock Text="Regressão Linear" Padding="15,0,15,15" FontSize="12" Foreground="Gray"/>
-                        </StackPanel>
-                    </Button>
-
-                    <Button Style="{StaticResource ModelCardStyle}"
-                            Command="{Binding NavigateToPreparacaoModeloCommand}"
-                            Cursor="Hand">
-                        <StackPanel>
-                            <Border Height="120" Background="#E0E0E0" CornerRadius="8,8,0,0">
+                            <Border Height="180" Background="#E0E0E0" CornerRadius="8,8,0,0">
                                 <TextBlock Text="🧠" FontSize="40" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
-                            <TextBlock Text="Modelo Beta" Padding="15,10,15,5" FontWeight="Bold" FontSize="16"/>
-                            <TextBlock Text="Rede Neural" Padding="15,0,15,15" FontSize="12" Foreground="Gray"/>
+                            <TextBlock Text="Modelo Beta" Padding="15,10,15,5" FontWeight="Bold" FontSize="30"/>
+                            <TextBlock Text="Rede Neural" Padding="15,0,15,15" FontSize="24" Foreground="Gray"/>
                         </StackPanel>
-                    </Button>
+                    </Button>-->
 
                 </WrapPanel>
             </StackPanel>

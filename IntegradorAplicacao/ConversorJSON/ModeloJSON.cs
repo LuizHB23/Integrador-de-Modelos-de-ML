@@ -22,7 +22,18 @@ namespace IntegradorAplicacao.ConversorJson
 
         public ModeloDTO CarregarJson(string caminho)
         {
-            throw new NotImplementedException();
+            if (File.Exists(caminho))
+            {
+                var texto = File.ReadAllText(caminho);
+
+                if (!string.IsNullOrWhiteSpace(texto))
+                {
+                    return JsonSerializer.Deserialize<ModeloDTO>(texto)
+                   ?? throw new Exception($"Arquivo corrompido: {caminho}");
+                }
+            }
+
+            throw new Exception($"Pasta vazia: {caminho}");
         }
     }
 }
