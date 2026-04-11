@@ -1,9 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using IntegradorAplicacao.DTO;
+using IntegradorDominio.DataFrameModel;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Shared.Context;
+using IntegradorViewModel.Shared.Interfaces;
 using System.Diagnostics;
+using System.Text;
 
 namespace IntegradorViewModel.Pages.PredicaoModelo
 {
@@ -12,16 +15,39 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
         [ObservableProperty]
         private INavigationService _navigation;
 
-        IContext<ModeloDTO> _context;
+        [ObservableProperty]
+        private string _caminhoArquivoDados;
 
-        public PreparacaoModeloViewModel(INavigationService navigation, IContext<ModeloDTO> context)
+        IDialogService _dialogService;
+        IContext<ArquivoDadosDTO> _context;
+
+
+        public PreparacaoModeloViewModel(INavigationService navigation, IDialogService dialogService, IContext<ArquivoDadosDTO> context)
         {
-            _navigation = navigation;
+            Navigation = navigation;
 
             _context = context;
+            _dialogService = dialogService;
+
+            CaminhoArquivoDados = string.Empty;
         }
 
         [RelayCommand]
-        public void NavigateToResultadoPredicao() => Navigation.NavigateTo<ResultadoPredicaoViewModel>();
+        public void CarregarArquivoDados()
+        {
+            CaminhoArquivoDados = _dialogService.GetCaminhoArquivo()!;
+        }
+
+        [RelayCommand]
+        public void NavigateToResultadoPredicao()
+        {
+            if(string.IsNullOrWhiteSpace(CaminhoArquivoDados))
+            {
+                return;
+            }
+
+            _context.EnviaMensagem(new ArquivoDadosDTO(CaminhoArquivoDados, ' ', "", ' ', true));
+            Navigation.NavigateTo<ResultadoPredicaoViewModel>();
+        }
     }
 }

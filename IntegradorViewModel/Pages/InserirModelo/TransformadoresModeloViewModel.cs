@@ -31,7 +31,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
         public ObservableCollection<ConfiguracaoCardTransformadorViewModel> CardsTransformador { get; }
 
         private readonly CardsTransformadoresModeloManager _cardsManager;
-        private string caminhoProvisorio;
+        private string _caminhoProvisorio;
         private string _nomeModelo;
 
         private readonly IConverteJson<Dictionary<int, TransformadorDTO>> _converter;
@@ -54,6 +54,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
             CardsTransformador = new();
             OpcoesPosicao = new();
 
+            _caminhoProvisorio = string.Empty;
             _nomeModelo = contextNomeModelo.RecebeMensagem().NomeModelo;
             _cardsManager = new(CardsTransformador, OpcoesPosicao);
         }
@@ -67,7 +68,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
                 return;
             }
 
-            var novoCaminho = _gerenciador.Salvar(new TransformadorDTO(NomeTransformador, caminhoProvisorio, _nomeModelo));
+            var novoCaminho = _gerenciador.Salvar(new TransformadorDTO(NomeTransformador, _caminhoProvisorio, _nomeModelo));
 
             var transformadorItem = new TransformadorItemViewModel(CardsTransformador.Count + 1, NomeTransformador, novoCaminho);
 
@@ -105,7 +106,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
                 if (tipoArquivo.Equals(".onnx", StringComparison.OrdinalIgnoreCase))
                 {
                     CaminhoTransformador = Path.GetFileName(caminhoArquivo);
-                    caminhoProvisorio = caminhoArquivo;
+                    _caminhoProvisorio = caminhoArquivo;
                 }
             }
         }

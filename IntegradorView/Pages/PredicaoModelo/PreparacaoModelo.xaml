@@ -67,7 +67,10 @@
                                          VerticalAlignment="Center"
                                          Margin="0,10,10,10"
                                          FontSize="14"/>
-                                <Button Grid.Column="1" Content="BUSCAR" Style="{StaticResource MaterialDesignOutlinedButton}"/>
+                                <Button Grid.Column="1" 
+                                        Content="BUSCAR" 
+                                        Command="{Binding CarregarArquivoDadosCommand}"
+                                        Style="{StaticResource MaterialDesignOutlinedButton}"/>
                             </Grid>
 
                             <Button x:Name="BotaoProcessamento"
