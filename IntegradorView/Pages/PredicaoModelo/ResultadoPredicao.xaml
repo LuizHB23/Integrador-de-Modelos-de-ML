@@ -41,11 +41,25 @@
                                    FontWeight="Bold"/>
                     </DataTemplate>
                 </GroupBox.HeaderTemplate>
-                <DataGrid x:Name="GridResultados" 
-                          ItemsSource="{Binding ListaPredicoes}"
-                          AutoGenerateColumns="True"
+                <DataGrid x:Name="GridPreview" 
+                          ItemsSource="{Binding DataPreview}"
+                          AutoGenerateColumns="True" 
                           IsReadOnly="True"
+                          CanUserAddRows="False"
+                          VerticalScrollBarVisibility="Auto"
                           Style="{StaticResource MaterialDesignDataGrid}">
+
+                    <DataGrid.ColumnHeaderStyle>
+                        <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+                            <Setter Property="ContentTemplate">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}" TextWrapping="Wrap"/>
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </DataGrid.ColumnHeaderStyle>
                 </DataGrid>
             </GroupBox>
         </materialDesign:Card>

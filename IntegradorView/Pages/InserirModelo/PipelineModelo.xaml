@@ -247,7 +247,7 @@
             <materialDesign:Card Grid.Column="2"
                                  UniformCornerRadius="10"
                                  Margin="20,10,0,0">
-                
+
                 <GroupBox Header="PREVIEW DOS DADOS"
                           materialDesign:ColorZoneAssist.Mode="PrimaryMid"
                           materialDesign:ColorZoneAssist.Foreground="White">
@@ -283,7 +283,6 @@
                     </DataGrid>
                 </GroupBox>
             </materialDesign:Card>
-
         </Grid>
     </DockPanel>
 </UserControl>

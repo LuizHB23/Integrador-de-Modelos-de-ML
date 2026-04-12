@@ -73,7 +73,7 @@
                                               FontSize="20" 
                                               HorizontalAlignment="Stretch">
                                         <ComboBoxItem Content="Feature"/>
-                                        <ComboBoxItem Content="Label (Target)"/>
+                                        <ComboBoxItem Content="ID"/>
                                         <ComboBoxItem Content="Ignore"/>
                                     </ComboBox>
 
