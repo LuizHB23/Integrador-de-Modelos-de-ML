@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using IntegradorAplicacao.CaminhoProvider;
 using IntegradorAplicacao.DTO;
+using IntegradorAplicacao.InferenciaAplicacao;
 using IntegradorDominio.DataFrameModel;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Shared.Context;
@@ -13,21 +15,33 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
         [ObservableProperty]
         private INavigationService _navigation;
 
-        IContext<ArquivoDadosDTO> _contextArquivo;
-        IContext<ModeloDTO> _contextModelo;
+        private readonly IContext<ArquivoDadosDTO> _contextArquivo;
+        private readonly IContext<ModeloDTO> _contextModelo;
+
+        private Inferencia _inferencia;
 
         private ArquivoDadosDTO _arquivo { get; set; }
 
-        public ResultadoPredicaoViewModel(INavigationService navigation, IContext<ModeloDTO> contextModelo, IContext<ArquivoDadosDTO> contextArquivo)
+        public ResultadoPredicaoViewModel(INavigationService navigation, IContext<ModeloDTO> contextModelo, IContext<ArquivoDadosDTO> contextArquivo, Inferencia inferencia)
         {
             Navigation = navigation;
 
             _contextArquivo = contextArquivo;
             _contextModelo = contextModelo;
 
-            _arquivo = _contextArquivo.RecebeMensagem();
+            _arquivo = contextArquivo.RecebeMensagem();
 
-            var dataFrame = CarregarDataFrame();
+            _inferencia = inferencia;
+
+            var caminhoModelo = _contextModelo.RecebeMensagem().CaminhoPasta;
+            var caminhoPasta = Path.GetDirectoryName(caminhoModelo);
+            var caminhoSchema = Path.Combine(caminhoPasta, "schema.json");
+            var caminhoPipeline = Path.Combine(caminhoPasta, "pipeline.json");
+            var caminhoTransformadores = Path.Combine(caminhoPasta, "transformador.json");
+
+
+            _inferencia.RealizaInferencia(CarregarDataFrame(), caminhoModelo, caminhoSchema, caminhoPipeline, caminhoTransformadores);
+
         }
         private DataFrame CarregarDataFrame()
         {

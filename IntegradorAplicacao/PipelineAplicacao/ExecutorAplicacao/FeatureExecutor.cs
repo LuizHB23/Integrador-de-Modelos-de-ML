@@ -105,7 +105,6 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
                 {
                     continue;
                 }
-                Debug.WriteLine(argumento.Nome!);
 
                 var propriedade = tipoOperacao.GetProperty(argumento.Nome!);
 

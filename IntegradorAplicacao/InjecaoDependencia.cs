@@ -1,11 +1,9 @@
 ﻿using IntegradorAplicacao.CaminhoProvider;
 using IntegradorAplicacao.ConversorJson;
 using IntegradorAplicacao.DTO;
-using IntegradorAplicacao.Gerenciador;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using IntegradorAplicacao.InferenciaAplicacao;
+using IntegradorAplicacao.Gerenciador;
 
 namespace IntegradorAplicacao
 {
@@ -21,6 +19,8 @@ namespace IntegradorAplicacao
             services.AddTransient<IConverteJson<Dictionary<int, SchemaDTO>>, SchemaJson>();
             services.AddTransient<IConverteJson<Dictionary<int, FuncaoDTO>>, PipelineJson>();
             services.AddTransient<IConverteJson<Dictionary<int, TransformadorDTO>>, TransformadorJson>();
+
+            services.AddTransient<Inferencia>();
 
             services.AddSingleton<IPathProvider, PathProvider>();
 
