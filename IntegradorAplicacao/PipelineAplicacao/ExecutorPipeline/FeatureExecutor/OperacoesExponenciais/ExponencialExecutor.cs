@@ -1,6 +1,7 @@
 ﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.Executors;
 using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.FeatureEngineering.OperacoesExponenciais;
+using System.Diagnostics;
 
 namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.OperacoesExponenciais
 {
@@ -11,6 +12,14 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
         public override object Executar(DataFrame dataFrame)
         {
             var coluna = dataFrame.PegarColuna<Single?>(Operacao.col);
+
+            if (coluna is null)
+            {
+                Debug.WriteLine("======================\n");
+                Debug.WriteLine(Operacao.col);
+                Debug.WriteLine("\n======================");
+            }
+
             int quantidadeLinhas = dataFrame.QuantidadeLinhas;
             var resultado = new List<Single?>();
             Single? valor;

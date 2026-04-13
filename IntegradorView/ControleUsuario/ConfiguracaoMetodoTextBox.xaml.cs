@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IntegradorViewModel.ControleUsuario;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -21,6 +22,15 @@ namespace IntegradorView.ControleUsuario
         public ConfiguracaoMetodoTextBox()
         {
             InitializeComponent();
+
+            Loaded += async (_, __) =>
+            {
+                if (DataContext is ConfiguracaoMetodoTextBoxViewModel mtb)
+                {
+                    await mtb.GuardaEstado();
+                    mtb.AtualizaTabela(mtb.CarregarDados());
+                }
+            };
         }
     }
 }

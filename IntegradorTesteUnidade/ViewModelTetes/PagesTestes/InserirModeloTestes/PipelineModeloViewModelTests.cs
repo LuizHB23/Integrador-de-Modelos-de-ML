@@ -45,18 +45,6 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
             );
         }
 
-        private Mock<ConfiguracaoMetodoTextBoxViewModel> CriarTextBoxMock()
-        {
-            var caminhoCsv = CriarCsvFake();
-
-            return new Mock<ConfiguracaoMetodoTextBoxViewModel>(
-                _dialogMock.Object,
-                new ArquivoDadosDTO(caminhoCsv, ',', "utf-8", '.', true),
-                It.IsAny<Action<DataView>>(),
-                new DataView()
-            );
-        }
-
         [Fact]
         public void AdicionaFuncao_NaoAdiciona_QuandoCodigoVazio()
         {
@@ -276,10 +264,10 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
 
             File.WriteAllLines(caminho, new[]
             {
-            "col1,col2",
-            "1,2",
-            "3,4"
-        });
+                "col1,col2",
+                "1,2",
+                "3,4"
+            });
 
             _arquivosTemporarios.Add(caminho);
 

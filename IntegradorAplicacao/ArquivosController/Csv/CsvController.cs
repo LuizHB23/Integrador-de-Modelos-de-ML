@@ -14,7 +14,7 @@ namespace IntegradorAplicacao.ArquivosController.Csv
         public string[] Cabecalho => _cabecalho;
         public List<string>[] Colunas => _colunas;
 
-        public void CarregarArquivo(string caminho)
+        public async Task CarregarArquivoAsync(string caminho)
         {
             var enumerador = LerArquivo(caminho).GetEnumerator();
 

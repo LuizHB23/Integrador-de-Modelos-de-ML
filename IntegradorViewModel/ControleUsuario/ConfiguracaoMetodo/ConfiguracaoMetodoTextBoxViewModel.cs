@@ -51,9 +51,6 @@ namespace IntegradorViewModel.ControleUsuario
             _parserAst = new();
             _estadoColuna = new List<string>[0];
             _estadoCabecalho = new string[0];
-
-            GuardaEstado();
-            AtualizaTabela(CarregarDados());
         }
 
         public Dictionary<string, List<string>>? MandaCodigoMetodo()
@@ -74,9 +71,9 @@ namespace IntegradorViewModel.ControleUsuario
 
         }
 
-        private void GuardaEstado()
+        public async Task GuardaEstado()
         {
-            _controllerCsv.CarregarArquivo(_arquivoDados.CaminhoArquivoDados);
+            await Task.Run(() => _controllerCsv.CarregarArquivoAsync(_arquivoDados.CaminhoArquivoDados));
 
             _estadoCabecalho = _controllerCsv.Cabecalho;
 
@@ -200,7 +197,7 @@ namespace IntegradorViewModel.ControleUsuario
             }
 
 
-            ScriptCodigo = ScriptCodigo.Insert(indeReturn, $"{codigo};\n\n");
+            ScriptCodigo = ScriptCodigo.Insert(indeReturn, $"{codigo}\n\n");
         }
 
         public void EsvaziaScript()

@@ -44,21 +44,29 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
 
             _inferencia = inferencia;
             _csvController = new CsvController();
+        }
 
+        [RelayCommand]
+        private void ExportarCsvResultado() => _csvController.EscreveArquivo(_resultados);
+
+        public async Task InicializarAsync()
+        {
             var caminhoModelo = _contextModelo.RecebeMensagem().CaminhoPasta;
             var caminhoPasta = Path.GetDirectoryName(caminhoModelo);
             var caminhoSchema = Path.Combine(caminhoPasta, "schema.json");
             var caminhoPipeline = Path.Combine(caminhoPasta, "pipeline.json");
             var caminhoTransformadores = Path.Combine(caminhoPasta, "transformador.json");
 
-
-            _resultados = _inferencia.RealizaInferencia(CarregarDataFrame(), caminhoModelo, caminhoSchema, caminhoPipeline, caminhoTransformadores);
+            _resultados = await _inferencia.RealizaInferenciaAsync(
+                await CarregarDataFrameAsync(),
+                caminhoModelo,
+                caminhoSchema,
+                caminhoPipeline,
+                caminhoTransformadores
+            );
 
             DataPreview = ResultadoParaDataTable(_resultados).DefaultView;
         }
-
-        [RelayCommand]
-        private void ExportarCsvResultado() => _csvController.EscreveArquivo(_resultados);
 
         private DataTable ResultadoParaDataTable(List<ResultadoInferencia> resultados)
         {
@@ -161,9 +169,9 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
             return tabela;
         }
 
-        private DataFrame CarregarDataFrame()
+        private async Task<DataFrame> CarregarDataFrameAsync()
         {
-            _csvController.CarregarArquivo(_arquivo.CaminhoArquivoDados);
+            await Task.Run(() => _csvController.CarregarArquivoAsync(_arquivo.CaminhoArquivoDados));
 
             var cabecalho = _csvController.Cabecalho;
             var colunas = _csvController.Colunas;

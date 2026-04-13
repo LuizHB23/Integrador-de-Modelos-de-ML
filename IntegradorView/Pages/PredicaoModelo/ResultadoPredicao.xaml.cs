@@ -11,6 +11,14 @@ namespace IntegradorView.Pages.PredicaoModelo
         public ResultadoPredicao()
         {
             InitializeComponent();
+
+            Loaded += async (_, __) =>
+            {
+                if (DataContext is ResultadoPredicaoViewModel vm)
+                {
+                    await vm.InicializarAsync();
+                }
+            };
         }
     }
 }

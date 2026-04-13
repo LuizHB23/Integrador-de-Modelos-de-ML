@@ -70,7 +70,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
         }
 
         [RelayCommand]
-        public void AdicionaFuncao()
+        public async Task AdicionaFuncao()
         {
             var modeloNomeCorpo = TextBox.MandaCodigoMetodo();
 
@@ -86,7 +86,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
 
             try
             {
-                ConstroiPipeline();
+                await ConstroiPipelineAsync();
                 TextBox.EsvaziaScript();
             }
             catch (Exception ex)
@@ -96,12 +96,13 @@ namespace IntegradorViewModel.Pages.InserirModelo
         }
 
         [RelayCommand]
-        public void CarregarSchema()
+        public async Task CarregarSchema()
         {
             _cardsManager.CarregarSchema(_dialogService, _converter, ConfigurarFuncao);
+            PreparaParaJson();
             try
             {
-                ConstroiPipeline();
+                await ConstroiPipelineAsync();
             }
             catch (Exception ex)
             {
@@ -109,14 +110,14 @@ namespace IntegradorViewModel.Pages.InserirModelo
             }
         }
 
-        private void RemoverColuna(ConfiguracaoCardFuncaoViewModel cardSchema)
+        private async void RemoverColuna(ConfiguracaoCardFuncaoViewModel cardSchema)
         {
             _cardsManager.RemoverColuna(cardSchema);
             PreparaParaJson();
 
             try
             {
-                ConstroiPipeline();
+               await ConstroiPipelineAsync();
             }
             catch (Exception ex)
             {
@@ -141,7 +142,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
         }
 
         [RelayCommand]
-        public void AtualizaFuncao()
+        public async Task AtualizaFuncao()
         {
             var modeloNomeCorpo = TextBox.MandaCodigoMetodo();
 
@@ -170,7 +171,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
 
                     try
                     {
-                        ConstroiPipeline();
+                        await Task.Run(() => ConstroiPipelineAsync());
                         TextBox.EsvaziaScript();
                     }
                     catch (Exception ex)
@@ -179,7 +180,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
 
                         dicionarioFuncoes[posicao] = funcaoReserva;
                         _converter.ConverteJson(dicionarioFuncoes);
-                        ConstroiPipeline();
+                        await Task.Run(() => ConstroiPipelineAsync());
                     }
 
                     return;
@@ -229,12 +230,12 @@ namespace IntegradorViewModel.Pages.InserirModelo
             Navigation.NavigateTo<HomeViewModel>();
         }
 
-        private void ConstroiPipeline()
+        private async Task ConstroiPipelineAsync()
         {
             var dataFrame = TextBox.CarregarDados();
             _executor = new(_converter);
-            _executor.ConstroiSequenciaMetodoPipeline(Path.Combine(_provider.GetCaminhoModelo(), "pipeline.json"));
-            dataFrame = _executor.ExecutarTudo(dataFrame);
+            await Task.Run(() => _executor.ConstroiSequenciaMetodoPipeline(Path.Combine(_provider.GetCaminhoModelo(), "pipeline.json")));
+            dataFrame = await Task.Run(() => _executor.ExecutarTudo(dataFrame));
             _executor = null;
             TextBox.AtualizaTabela(dataFrame);
         }

@@ -28,12 +28,12 @@ namespace IntegradorAplicacao.InferenciaAplicacao
         }
 
 
-        public List<ResultadoInferencia> RealizaInferencia(DataFrame dataFrame, string caminhoModelo, string caminhoSchema, string caminhoPipeline, string caminhoTransformadores)
+        public async Task<List<ResultadoInferencia>> RealizaInferenciaAsync(DataFrame dataFrame, string caminhoModelo, string caminhoSchema, string caminhoPipeline, string caminhoTransformadores)
         {
             _schemaDicionario = _conversorSchema.CarregarJson(caminhoSchema)
                 ?? throw new Exception("Schema não carregado.");
 
-            var dataFrameNovo = RealizaFeatureEngineering(dataFrame, caminhoPipeline);
+            var dataFrameNovo = await RealizaFeatureEngineeringAsync(dataFrame, caminhoPipeline);
 
             var transformadores = _conversorTransformadores.CarregarJson(caminhoTransformadores);
 
@@ -77,6 +77,8 @@ namespace IntegradorAplicacao.InferenciaAplicacao
 
                     resultados = session.Run(inputsAjustados);
 
+                    DebugSaida(resultados, $"Transformador {transformador.Key}");
+
                     inputs = ConverterParaInputs(resultados);
                 }
 
@@ -85,6 +87,8 @@ namespace IntegradorAplicacao.InferenciaAplicacao
                 var finalInputs = AjustarInputsParaModelo(inputs, finalSession);
 
                 var finalResultados = finalSession.Run(finalInputs);
+
+                DebugSaida(finalResultados, "Modelo Final");
 
                 return ReconstruirSaidaComId(finalResultados, ids);
             }
@@ -96,14 +100,16 @@ namespace IntegradorAplicacao.InferenciaAplicacao
 
                 var resultados = session.Run(inputs);
 
+                DebugSaida(resultados, "Modelo Final");
+
                 return ReconstruirSaidaComId(resultados, ids);
             }
         }
 
-        private DataFrame RealizaFeatureEngineering(DataFrame dataFrame, string caminhoPipeline)
+        private async Task<DataFrame> RealizaFeatureEngineeringAsync(DataFrame dataFrame, string caminhoPipeline)
         {
-            _executor.ConstroiSequenciaMetodoPipeline(caminhoPipeline);
-            return _executor.ExecutarTudo(dataFrame);
+            await Task.Run(() => _executor.ConstroiSequenciaMetodoPipeline(caminhoPipeline));
+            return await Task.Run(() => _executor.ExecutarTudo(dataFrame));
         }
 
         private List<NamedOnnxValue> CriarInputs(DataFrame df, InferenceSession session)
@@ -251,6 +257,32 @@ namespace IntegradorAplicacao.InferenciaAplicacao
             }
 
             return resultado;
+        }
+
+        private void DebugSaida(IDisposableReadOnlyCollection<DisposableNamedOnnxValue> resultados, string etapa) 
+        { 
+            Debug.WriteLine($"===== SAÍDA: {etapa} ====="); 
+            foreach (var r in resultados)
+            {
+                var nome = r.Name; var tipo = r.Value.GetType(); 
+                Debug.WriteLine($"Output: {nome}"); 
+                Debug.WriteLine($"Tipo: {tipo}"); 
+
+                if (r.Value is DenseTensor<float> tf)
+                {
+                    var valores = tf.ToArray();
+                    Debug.WriteLine($"Valores (float): {string.Join(", ", valores.Take(100))}"); 
+                } 
+                else if (r.Value is DenseTensor<long> tl)
+                { 
+                    var valores = tl.ToArray(); Debug.WriteLine($"Valores (long): {string.Join(", ", valores.Take(20))}"); 
+                } 
+                else
+                {
+                    Debug.WriteLine("Tipo não suportado para debug.");
+                }
+                Debug.WriteLine("----------------------------"); 
+            } 
         }
     }
 }
