@@ -30,7 +30,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
         private ConfiguracaoMetodoTextBoxViewModel _textBox;
 
         [ObservableProperty]
-        private DataView _dataPreview;
+        private DataView? _dataPreview;
 
         public ObservableCollection<int> OpcoesPosicao;
         public ObservableCollection<ConfiguracaoCardFuncaoViewModel> CardsFuncoes { get; }
@@ -136,6 +136,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
 
         public void AlterouTabela(DataView dataView)
         {
+            DataPreview = null;
             DataPreview = dataView;
         }
 

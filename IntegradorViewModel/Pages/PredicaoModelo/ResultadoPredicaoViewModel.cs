@@ -1,4 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using IntegradorAplicacao.ArquivosController.Csv;
+using IntegradorAplicacao.ArquivosController.Csv.ExportarCsv;
 using IntegradorAplicacao.CaminhoProvider;
 using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.InferenciaAplicacao;
@@ -23,7 +26,9 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
         private readonly IContext<ArquivoDadosDTO> _contextArquivo;
         private readonly IContext<ModeloDTO> _contextModelo;
 
+        private List<ResultadoInferencia> _resultados;
         private Inferencia _inferencia;
+        private CsvController _csvController;
 
         private ArquivoDadosDTO _arquivo { get; set; }
 
@@ -38,6 +43,7 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
             _arquivo = contextArquivo.RecebeMensagem();
 
             _inferencia = inferencia;
+            _csvController = new CsvController();
 
             var caminhoModelo = _contextModelo.RecebeMensagem().CaminhoPasta;
             var caminhoPasta = Path.GetDirectoryName(caminhoModelo);
@@ -46,12 +52,15 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
             var caminhoTransformadores = Path.Combine(caminhoPasta, "transformador.json");
 
 
-            var resultados = _inferencia.RealizaInferencia(CarregarDataFrame(), caminhoModelo, caminhoSchema, caminhoPipeline, caminhoTransformadores);
+            _resultados = _inferencia.RealizaInferencia(CarregarDataFrame(), caminhoModelo, caminhoSchema, caminhoPipeline, caminhoTransformadores);
 
-            DataPreview = ResultadoParaDataTable(resultados).DefaultView;
+            DataPreview = ResultadoParaDataTable(_resultados).DefaultView;
         }
 
-        private static DataTable ResultadoParaDataTable(List<ResultadoInferencia> resultados)
+        [RelayCommand]
+        private void ExportarCsvResultado() => _csvController.EscreveArquivo(_resultados);
+
+        private DataTable ResultadoParaDataTable(List<ResultadoInferencia> resultados)
         {
             var tabela = new DataTable();
 
@@ -154,67 +163,19 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
 
         private DataFrame CarregarDataFrame()
         {
-            var linhas = File.ReadAllLines(_arquivo.CaminhoArquivoDados);
-            var estadoCabecalho = ParseCsvLine(linhas[0]);
+            _csvController.CarregarArquivo(_arquivo.CaminhoArquivoDados);
 
-            var estadoColuna = estadoCabecalho.Select(_ => new List<string>()).ToArray();
-
-            for (int i = 1; i < linhas.Length; i++)
-            {
-                var partes = ParseCsvLine(linhas[i]);
-
-                for (int j = 0; j < estadoColuna.Length; j++)
-                {
-                    if (j < partes.Length)
-                        estadoColuna[j].Add(partes[j]);
-                    else
-                        estadoColuna[j].Add(string.Empty);
-                }
-            }
+            var cabecalho = _csvController.Cabecalho;
+            var colunas = _csvController.Colunas;
 
             var dataFrame = new DataFrame();
 
-            for (int i = 0; i < estadoCabecalho.Length; i++)
+            for (int i = 0; i < cabecalho.Length; i++)
             {
-                var dado = estadoColuna[i];
-                dataFrame.AdicionarColuna(estadoCabecalho[i], dado);
+                dataFrame.AdicionarColuna(cabecalho[i], colunas[i]);
             }
 
             return dataFrame;
         }
-
-        // Função simples para parsear CSV com aspas
-        private string[] ParseCsvLine(string linha)
-        {
-            var resultado = new List<string>();
-            bool dentroAspas = false;
-            var buffer = new StringBuilder();
-
-            foreach (char c in linha)
-            {
-                if (c == '"')
-                {
-                    dentroAspas = !dentroAspas; // alterna estado
-                    continue; // remove as aspas
-                }
-
-                if (c == ',' && !dentroAspas)
-                {
-                    resultado.Add(buffer.ToString());
-                    buffer.Clear();
-                }
-                else
-                {
-                    buffer.Append(c);
-                }
-            }
-
-            resultado.Add(buffer.ToString()); // adiciona último campo
-            return resultado.ToArray();
-        }
     }
 }
-
-
-
-

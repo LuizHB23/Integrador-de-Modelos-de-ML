@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using IntegradorAplicacao.ArquivosController.Csv;
 using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.PipelineAplicacao.ParserPipeline;
 using IntegradorDominio.DataFrameModel;
@@ -34,12 +35,15 @@ namespace IntegradorViewModel.ControleUsuario
 
         private readonly IDialogService _dialogService;
 
+        private CsvController _controllerCsv;
+
         public ConfiguracaoMetodoTextBoxViewModel(IDialogService dialogService, ArquivoDadosDTO arquivoDados, Action<DataView> onDadosAlterados, DataView dadosPreview)
         {
             ScriptCodigo = string.Empty;
             DadosPreview = dadosPreview;
             DataFrameMudou = false;
 
+            _controllerCsv = new CsvController();
             _dialogService = dialogService;
             _arquivoDados = arquivoDados;
             _onDadosAlterados = onDadosAlterados;
@@ -72,53 +76,16 @@ namespace IntegradorViewModel.ControleUsuario
 
         private void GuardaEstado()
         {
-            var linhas = File.ReadAllLines(_arquivoDados.CaminhoArquivoDados);
-            _estadoCabecalho = ParseCsvLine(linhas[0]);
+            _controllerCsv.CarregarArquivo(_arquivoDados.CaminhoArquivoDados);
 
-            _estadoColuna = _estadoCabecalho.Select(_ => new List<string>()).ToArray();
+            _estadoCabecalho = _controllerCsv.Cabecalho;
 
-            for (int i = 1; i < linhas.Length; i++)
+            _estadoColuna = new List<string>[_estadoCabecalho.Length];
+
+            for (int i = 0; i < _estadoCabecalho.Length; i++)
             {
-                var partes = ParseCsvLine(linhas[i]);
-
-                for (int j = 0; j < _estadoColuna.Length; j++)
-                {
-                    if (j < partes.Length)
-                        _estadoColuna[j].Add(partes[j]);
-                    else
-                        _estadoColuna[j].Add(string.Empty);
-                }
+                _estadoColuna[i] = new List<string>(_controllerCsv.Colunas[i]);
             }
-        }
-
-        // Função simples para parsear CSV com aspas
-        private string[] ParseCsvLine(string linha)
-        {
-            var resultado = new List<string>();
-            bool dentroAspas = false;
-            var buffer = new StringBuilder();
-
-            foreach (char c in linha)
-            {
-                if (c == '"')
-                {
-                    dentroAspas = !dentroAspas; // alterna estado
-                    continue; // remove as aspas
-                }
-
-                if (c == ',' && !dentroAspas)
-                {
-                    resultado.Add(buffer.ToString());
-                    buffer.Clear();
-                }
-                else
-                {
-                    buffer.Append(c);
-                }
-            }
-
-            resultado.Add(buffer.ToString()); // adiciona último campo
-            return resultado.ToArray();
         }
 
         public DataFrame CarregarDados()
@@ -130,8 +97,6 @@ namespace IntegradorViewModel.ControleUsuario
                 var dado = _estadoColuna[i];
                 dataFrame.AdicionarColuna(_estadoCabecalho[i], dado);
             }
-
-            AtualizaTabela(dataFrame);
 
             return dataFrame;
         }
