@@ -100,6 +100,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
         {
             _cardsManager.CarregarSchema(_dialogService, _converter, ConfigurarFuncao);
             PreparaParaJson();
+            await TextBox.GuardaEstado();
             try
             {
                 await ConstroiPipelineAsync();

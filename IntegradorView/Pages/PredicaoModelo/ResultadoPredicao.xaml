@@ -89,9 +89,8 @@
                                 VerticalAlignment="Center">
                         <TextBlock Text="Tempo de Processamento" 
                                    FontSize="12" />
-                        
-                        <TextBlock x:Name="TxtTimer" 
-                                   Text="00:00:42.15" 
+
+                        <TextBlock Text="{Binding TempoProcessamento}" 
                                    FontSize="24"/>
                     </StackPanel>
                 </StackPanel>

@@ -11,12 +11,18 @@ using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Shared.Context;
 using IntegradorViewModel.Shared.Interfaces;
 using System.Data;
+using System.Diagnostics;
+using System.IO;
 using System.Text;
+using System.Timers;
 
 namespace IntegradorViewModel.Pages.PredicaoModelo
 {
     public partial class ResultadoPredicaoViewModel : ObservableObject
     {
+        [ObservableProperty]
+        private string _tempoProcessamento = "00:00:00.00";
+
         [ObservableProperty]
         private DataView _dataPreview;
 
@@ -29,6 +35,8 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
         private List<ResultadoInferencia> _resultados;
         private Inferencia _inferencia;
         private CsvController _csvController;
+
+        public Stopwatch Stopwatch { get; set; }
 
         private ArquivoDadosDTO _arquivo { get; set; }
 
@@ -44,6 +52,8 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
 
             _inferencia = inferencia;
             _csvController = new CsvController();
+
+            Stopwatch = new Stopwatch();
         }
 
         [RelayCommand]
@@ -51,6 +61,20 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
 
         public async Task InicializarAsync()
         {
+            var stopwatch = Stopwatch.StartNew();
+            var cts = new CancellationTokenSource();
+
+            var token = cts.Token;
+
+            var timerTask = Task.Run(async () =>
+            {
+                while (!token.IsCancellationRequested)
+                {
+                    TempoProcessamento = stopwatch.Elapsed.ToString(@"hh\:mm\:ss\.ff");
+                    await Task.Delay(50, token);
+                }
+            }, token);
+
             var caminhoModelo = _contextModelo.RecebeMensagem().CaminhoPasta;
             var caminhoPasta = Path.GetDirectoryName(caminhoModelo);
             var caminhoSchema = Path.Combine(caminhoPasta, "schema.json");
@@ -64,6 +88,11 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
                 caminhoPipeline,
                 caminhoTransformadores
             );
+
+            stopwatch.Stop();
+            cts.Cancel();
+
+            TempoProcessamento = stopwatch.Elapsed.ToString(@"hh\:mm\:ss\.ff");
 
             DataPreview = ResultadoParaDataTable(_resultados).DefaultView;
         }

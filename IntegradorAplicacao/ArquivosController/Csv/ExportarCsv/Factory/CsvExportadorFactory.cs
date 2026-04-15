@@ -7,7 +7,7 @@ namespace IntegradorAplicacao.ArquivosController.Csv.ExportarCsv.Factory
         public static ICsvExportador<T> Criar<T>()
         {
             if (typeof(T) == typeof(List<ResultadoInferencia>))
-                return (ICsvExportador<T>)new ExportarCsvResultadoInferência();
+                return (ICsvExportador<T>)new ExportarCsvResultadoInferencia();
 
             throw new NotImplementedException($"Nenhum exportador para {typeof(T)}");
         }

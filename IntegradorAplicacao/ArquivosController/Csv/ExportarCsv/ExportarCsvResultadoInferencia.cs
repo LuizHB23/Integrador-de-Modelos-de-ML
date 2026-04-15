@@ -4,7 +4,7 @@ using System.Text;
 
 namespace IntegradorAplicacao.ArquivosController.Csv.ExportarCsv
 {
-    public class ExportarCsvResultadoInferência : ICsvExportador<List<ResultadoInferencia>>
+    public class ExportarCsvResultadoInferencia : ICsvExportador<List<ResultadoInferencia>>
     {
         public void ExportarCsv(List<ResultadoInferencia> resultados)
         {
