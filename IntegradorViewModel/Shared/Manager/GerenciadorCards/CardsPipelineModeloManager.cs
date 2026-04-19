@@ -32,7 +32,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
 
             if (string.IsNullOrWhiteSpace(_caminhoJson))
             {
-                return;
+                throw new Exception();
             }
 
             _cardsLista.Clear();

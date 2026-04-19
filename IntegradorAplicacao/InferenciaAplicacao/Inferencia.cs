@@ -17,6 +17,9 @@ namespace IntegradorAplicacao.InferenciaAplicacao
 
         private Dictionary<int, SchemaDTO>? _schemaDicionario;
         private readonly ExecutorFinal _executor;
+        private readonly ConfiguraInputsOutputs _configuracao;
+
+        public List<List<object?>> ListaErros { get; private set; }
 
         public Inferencia(IConverteJson<Dictionary<int, FuncaoDTO>> conversorPipeline, IConverteJson<Dictionary<int, SchemaDTO>> conversorSchema, IConverteJson<Dictionary<int, TransformadorDTO>> conversorTransformadores)
         {
@@ -24,9 +27,11 @@ namespace IntegradorAplicacao.InferenciaAplicacao
             _conversorPipeline = conversorPipeline;
             _conversorSchema = conversorSchema;
 
-            _executor = new ExecutorFinal(_conversorPipeline);
-        }
+            ListaErros = new();
 
+            _executor = new(_conversorPipeline);
+            _configuracao = new(_schemaDicionario, ListaErros);
+        }
 
         public async Task<List<ResultadoInferencia>> RealizaInferenciaAsync(DataFrame dataFrame, string caminhoModelo, string caminhoSchema, string caminhoPipeline, string caminhoTransformadores)
         {
@@ -37,6 +42,75 @@ namespace IntegradorAplicacao.InferenciaAplicacao
 
             var transformadores = _conversorTransformadores.CarregarJson(caminhoTransformadores);
 
+            var ids = PegaIds(dataFrameNovo);
+
+            List<NamedOnnxValue> inputs;
+
+            if (transformadores.Count > 0)
+            {
+                using (var primeiraSession = new InferenceSession(transformadores.First().Value.CaminhoTransformador))
+                {
+                    inputs = _configuracao.CriarInputs(dataFrameNovo, primeiraSession);
+                }
+
+                IDisposableReadOnlyCollection<DisposableNamedOnnxValue>? resultados = null;
+
+                foreach (var transformador in transformadores.OrderBy(t => t.Key))
+                {
+                    resultados = RealizaInferenciaOnnx(inputs, transformador.Value.CaminhoTransformador);
+
+                    DebugSaida(resultados, $"Transformador {transformador.Key}");
+
+                    inputs = _configuracao.ConverterParaInputs(resultados);
+                }
+
+                var finalResultados = RealizaInferenciaOnnx(inputs, caminhoModelo);
+
+                DebugSaida(finalResultados, "Modelo Final");
+
+                return _configuracao.ReconstruirSaidaComId(finalResultados, ids);
+            }
+            else
+            {
+                var resultados = RealizaInferenciaOnnx(dataFrameNovo, caminhoModelo);
+
+                DebugSaida(resultados, "Modelo Final");
+
+                return _configuracao.ReconstruirSaidaComId(resultados, ids);
+            }
+        }
+
+        private async Task<DataFrame> RealizaFeatureEngineeringAsync(DataFrame dataFrame, string caminhoPipeline)
+        {
+            await Task.Run(() => _executor.ConstroiSequenciaMetodoPipeline(caminhoPipeline));
+            return await Task.Run(() => _executor.ExecutarTudo(dataFrame));
+        }
+
+        private IDisposableReadOnlyCollection<DisposableNamedOnnxValue>? RealizaInferenciaOnnx(object inputs, string caminho)
+        {
+            using var session = new InferenceSession(caminho);
+
+            List<NamedOnnxValue>? inputsFinais = null;
+
+            if (inputs is DataFrame dataFrame)
+            {
+                inputsFinais = _configuracao.CriarInputs(dataFrame, session);
+            }
+            else if (inputs is List<NamedOnnxValue> listaInputs)
+            {
+                inputsFinais = _configuracao.AjustarInputsParaModelo(listaInputs, session);
+            }
+            else
+            {
+                throw new Exception("Erro ao ajustar onnx");
+            }
+
+
+            return session.Run(inputsFinais);
+        }
+
+        private string[] PegaIds(DataFrame dataFrame)
+        {
             var idSchema = _schemaDicionario.FirstOrDefault(s => s.Value.Finalidade == "ID");
 
             if (idSchema.Value is null)
@@ -44,7 +118,7 @@ namespace IntegradorAplicacao.InferenciaAplicacao
 
             var nomeColunaId = idSchema.Value.NomeColuna;
 
-            var colunaId = dataFrameNovo.PegarColunaBase(nomeColunaId);
+            var colunaId = dataFrame.PegarColunaBase(nomeColunaId);
 
             if (colunaId is null)
                 throw new Exception($"Coluna ID '{nomeColunaId}' não encontrada no DataFrame.");
@@ -58,205 +132,7 @@ namespace IntegradorAplicacao.InferenciaAplicacao
                 ids[i] = colunaId.PegarValor(i)?.ToString();
             }
 
-            List<NamedOnnxValue> inputs;
-
-            if (transformadores.Count > 0)
-            {
-                using (var primeiraSession = new InferenceSession(transformadores.First().Value.CaminhoTransformador))
-                {
-                    inputs = CriarInputs(dataFrameNovo, primeiraSession);
-                }
-
-                IDisposableReadOnlyCollection<DisposableNamedOnnxValue>? resultados = null;
-
-                foreach (var transformador in transformadores.OrderBy(t => t.Key))
-                {
-                    using var session = new InferenceSession(transformador.Value.CaminhoTransformador);
-
-                    var inputsAjustados = AjustarInputsParaModelo(inputs, session);
-
-                    resultados = session.Run(inputsAjustados);
-
-                    DebugSaida(resultados, $"Transformador {transformador.Key}");
-
-                    inputs = ConverterParaInputs(resultados);
-                }
-
-                using var finalSession = new InferenceSession(caminhoModelo);
-
-                var finalInputs = AjustarInputsParaModelo(inputs, finalSession);
-
-                var finalResultados = finalSession.Run(finalInputs);
-
-                DebugSaida(finalResultados, "Modelo Final");
-
-                return ReconstruirSaidaComId(finalResultados, ids);
-            }
-            else
-            {
-                using var session = new InferenceSession(caminhoModelo);
-
-                inputs = CriarInputs(dataFrameNovo, session);
-
-                var resultados = session.Run(inputs);
-
-                DebugSaida(resultados, "Modelo Final");
-
-                return ReconstruirSaidaComId(resultados, ids);
-            }
-        }
-
-        private async Task<DataFrame> RealizaFeatureEngineeringAsync(DataFrame dataFrame, string caminhoPipeline)
-        {
-            await Task.Run(() => _executor.ConstroiSequenciaMetodoPipeline(caminhoPipeline));
-            return await Task.Run(() => _executor.ExecutarTudo(dataFrame));
-        }
-
-        private List<NamedOnnxValue> CriarInputs(DataFrame df, InferenceSession session)
-        {
-            var inputs = new List<NamedOnnxValue>();
-
-            var inputName = session.InputMetadata.Keys.First();
-
-            var colunasFeature = df.Colunas
-                .Where(c => !DeveIgnorar(c.Nome))
-                .ToList();
-
-            int linhas = df.QuantidadeLinhas;
-            int features = colunasFeature.Count;
-
-            var dados = new float[linhas * features];
-
-            int index = 0;
-
-            for (int i = 0; i < linhas; i++)
-            {
-                foreach (var col in colunasFeature)
-                {
-                    dados[index++] = ConverterParaFloat(col.PegarValor(i));
-                }
-            }
-
-            var tensor = new DenseTensor<float>(dados, new[] { linhas, features });
-
-            inputs.Add(NamedOnnxValue.CreateFromTensor(inputName, tensor));
-
-            return inputs;
-        }
-
-        private List<NamedOnnxValue> AjustarInputsParaModelo(List<NamedOnnxValue> inputs, InferenceSession session)
-        {
-            var nomesEsperados = session.InputMetadata.Keys.ToList();
-
-            var novosInputs = new List<NamedOnnxValue>();
-
-            for (int i = 0; i < nomesEsperados.Count; i++)
-            {
-                var nomeEsperado = nomesEsperados[i];
-                var tensor = inputs[i].AsTensor<float>();
-
-                novosInputs.Add(NamedOnnxValue.CreateFromTensor(nomeEsperado, tensor));
-            }
-
-            return novosInputs;
-        }
-
-        private List<NamedOnnxValue> ConverterParaInputs(IDisposableReadOnlyCollection<DisposableNamedOnnxValue> resultados)
-        {
-            var inputs = new List<NamedOnnxValue>();
-
-            foreach (var r in resultados)
-            {
-                var tensor = r.AsTensor<float>();
-                inputs.Add(NamedOnnxValue.CreateFromTensor(r.Name, tensor));
-            }
-
-            return inputs;
-        }
-
-        private Dictionary<string, float[]> ConverterSaida(IDisposableReadOnlyCollection<DisposableNamedOnnxValue> resultados)
-        {
-            var output = new Dictionary<string, float[]>();
-
-            foreach (var r in resultados)
-            {
-                if (r.Value is DenseTensor<float> tf)
-                    output[r.Name] = tf.ToArray();
-
-                else if (r.Value is DenseTensor<long> tl)
-                    output[r.Name] = tl.Select(x => (float)x).ToArray();
-
-                else
-                    throw new Exception($"Tipo não suportado: {r.Value.GetType()}");
-            }
-
-            return output;
-        }
-
-        private bool DeveIgnorar(string nomeColuna)
-        {
-            var valor = _schemaDicionario
-                .FirstOrDefault(c => c.Value.NomeColuna == nomeColuna);
-
-            if (valor.Value is null)
-                throw new Exception($"Coluna não tratada: {nomeColuna}");
-
-            return valor.Value.Finalidade != "Feature";
-        }
-
-        private float ConverterParaFloat(object valor)
-        {
-            if (valor == null) return 0f;
-            if (valor is float f) return f;
-            if (valor is double d) return (float)d;
-            if (valor is int i) return i;
-
-            if (float.TryParse(valor.ToString(), out var result))
-                return result;
-
-            throw new Exception($"Valor inválido: {valor}");
-        }
-
-        private List<ResultadoInferencia> ReconstruirSaidaComId(IDisposableReadOnlyCollection<DisposableNamedOnnxValue> resultados, string[] ids)
-        {
-            var outputs = ConverterSaida(resultados);
-
-            var resultado = new List<ResultadoInferencia>();
-
-            int linhas = ids.Length;
-
-            foreach (var output in outputs)
-            {
-                var valores = output.Value;
-
-                int tamanhoPorLinha = valores.Length / linhas;
-
-                for (int i = 0; i < linhas; i++)
-                {
-                    if (resultado.Count <= i)
-                    {
-                        resultado.Add(new ResultadoInferencia
-                        {
-                            Id = ids[i],
-                            Outputs = new Dictionary<string, float[]>()
-                        });
-                    }
-
-                    var slice = new float[tamanhoPorLinha];
-
-                    Array.Copy(
-                        valores,
-                        i * tamanhoPorLinha,
-                        slice,
-                        0,
-                        tamanhoPorLinha
-                    );
-
-                    resultado[i].Outputs[output.Key] = slice;
-                }
-            }
-
-            return resultado;
+            return ids;
         }
 
         private void DebugSaida(IDisposableReadOnlyCollection<DisposableNamedOnnxValue> resultados, string etapa) 

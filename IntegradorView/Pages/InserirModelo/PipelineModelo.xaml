@@ -182,7 +182,8 @@
                 
                 <materialDesign:Card Grid.Row="1"
                                      UniformCornerRadius="10"
-                                     HorizontalAlignment="Stretch">
+                                     HorizontalAlignment="Stretch"
+                                     Width="578">
                     
                     <Grid HorizontalAlignment="Stretch">
                         <Grid.RowDefinitions>

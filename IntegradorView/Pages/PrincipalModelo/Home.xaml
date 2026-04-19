@@ -53,8 +53,13 @@
             <StackPanel Margin="30">
                 <TextBlock Text="Seus Modelos" FontSize="28" FontWeight="SemiBold" Foreground="#333" Margin="0,0,0,20"/>
 
-                <WrapPanel Orientation="Horizontal">
                     <ItemsControl ItemsSource="{Binding ListaModelos}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Button Style="{StaticResource ModelCardStyle}"
@@ -90,8 +95,6 @@
                             <TextBlock Text="Rede Neural" Padding="15,0,15,15" FontSize="24" Foreground="Gray"/>
                         </StackPanel>
                     </Button>-->
-
-                </WrapPanel>
             </StackPanel>
         </ScrollViewer>
     </Grid>

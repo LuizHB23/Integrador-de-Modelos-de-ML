@@ -77,9 +77,9 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
 
             var caminhoModelo = _contextModelo.RecebeMensagem().CaminhoPasta;
             var caminhoPasta = Path.GetDirectoryName(caminhoModelo);
-            var caminhoSchema = Path.Combine(caminhoPasta, "schema.json");
-            var caminhoPipeline = Path.Combine(caminhoPasta, "pipeline.json");
-            var caminhoTransformadores = Path.Combine(caminhoPasta, "transformador.json");
+            var caminhoSchema = Path.Combine(caminhoPasta!, "schema.json");
+            var caminhoPipeline = Path.Combine(caminhoPasta!, "pipeline.json");
+            var caminhoTransformadores = Path.Combine(caminhoPasta!, "transformador.json");
 
             _resultados = await _inferencia.RealizaInferenciaAsync(
                 await CarregarDataFrameAsync(),

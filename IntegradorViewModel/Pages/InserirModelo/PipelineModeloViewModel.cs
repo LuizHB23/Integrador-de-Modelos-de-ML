@@ -98,7 +98,15 @@ namespace IntegradorViewModel.Pages.InserirModelo
         [RelayCommand]
         public async Task CarregarSchema()
         {
-            _cardsManager.CarregarSchema(_dialogService, _converter, ConfigurarFuncao);
+            try
+            {
+                _cardsManager.CarregarSchema(_dialogService, _converter, ConfigurarFuncao);
+            }
+            catch (Exception ex)
+            {
+                return;
+            }
+
             PreparaParaJson();
             await TextBox.GuardaEstado();
             try
