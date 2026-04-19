@@ -9,6 +9,7 @@ using IntegradorViewModel.Pages.PrincipalModelo;
 using IntegradorViewModel.Shared.Context;
 using IntegradorViewModel.Shared.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+using System.Text;
 using System.Windows;
 
 namespace IntegradorView
@@ -55,6 +56,13 @@ namespace IntegradorView
             ServiceProvider = services.BuildServiceProvider();
         }
         public static T GetService<T>() where T : notnull => ((App)Current).ServiceProvider.GetRequiredService<T>();
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+            base.OnStartup(e);
+        }
 
     }
 }

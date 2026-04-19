@@ -4,8 +4,6 @@ using IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao;
 using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.Inferencia;
 using Microsoft.ML.OnnxRuntime;
-using Microsoft.ML.OnnxRuntime.Tensors;
-using System.Diagnostics;
 
 namespace IntegradorAplicacao.InferenciaAplicacao
 {
@@ -30,7 +28,7 @@ namespace IntegradorAplicacao.InferenciaAplicacao
             ListaErros = new();
 
             _executor = new(_conversorPipeline);
-            _configuracao = new(_schemaDicionario, ListaErros);
+            _configuracao = new(ListaErros);
         }
 
         public async Task<List<ResultadoInferencia>> RealizaInferenciaAsync(DataFrame dataFrame, string caminhoModelo, string caminhoSchema, string caminhoPipeline, string caminhoTransformadores)
@@ -50,7 +48,7 @@ namespace IntegradorAplicacao.InferenciaAplicacao
             {
                 using (var primeiraSession = new InferenceSession(transformadores.First().Value.CaminhoTransformador))
                 {
-                    inputs = _configuracao.CriarInputs(dataFrameNovo, primeiraSession);
+                    inputs = _configuracao.CriarInputs(dataFrameNovo, primeiraSession, _schemaDicionario);
                 }
 
                 IDisposableReadOnlyCollection<DisposableNamedOnnxValue>? resultados = null;
@@ -59,22 +57,16 @@ namespace IntegradorAplicacao.InferenciaAplicacao
                 {
                     resultados = RealizaInferenciaOnnx(inputs, transformador.Value.CaminhoTransformador);
 
-                    DebugSaida(resultados, $"Transformador {transformador.Key}");
-
                     inputs = _configuracao.ConverterParaInputs(resultados);
                 }
 
                 var finalResultados = RealizaInferenciaOnnx(inputs, caminhoModelo);
-
-                DebugSaida(finalResultados, "Modelo Final");
 
                 return _configuracao.ReconstruirSaidaComId(finalResultados, ids);
             }
             else
             {
                 var resultados = RealizaInferenciaOnnx(dataFrameNovo, caminhoModelo);
-
-                DebugSaida(resultados, "Modelo Final");
 
                 return _configuracao.ReconstruirSaidaComId(resultados, ids);
             }
@@ -94,7 +86,7 @@ namespace IntegradorAplicacao.InferenciaAplicacao
 
             if (inputs is DataFrame dataFrame)
             {
-                inputsFinais = _configuracao.CriarInputs(dataFrame, session);
+                inputsFinais = _configuracao.CriarInputs(dataFrame, session, _schemaDicionario);
             }
             else if (inputs is List<NamedOnnxValue> listaInputs)
             {
@@ -133,32 +125,6 @@ namespace IntegradorAplicacao.InferenciaAplicacao
             }
 
             return ids;
-        }
-
-        private void DebugSaida(IDisposableReadOnlyCollection<DisposableNamedOnnxValue> resultados, string etapa) 
-        { 
-            Debug.WriteLine($"===== SAÍDA: {etapa} ====="); 
-            foreach (var r in resultados)
-            {
-                var nome = r.Name; var tipo = r.Value.GetType(); 
-                Debug.WriteLine($"Output: {nome}"); 
-                Debug.WriteLine($"Tipo: {tipo}"); 
-
-                if (r.Value is DenseTensor<float> tf)
-                {
-                    var valores = tf.ToArray();
-                    Debug.WriteLine($"Valores (float): {string.Join(", ", valores.Take(100))}"); 
-                } 
-                else if (r.Value is DenseTensor<long> tl)
-                { 
-                    var valores = tl.ToArray(); Debug.WriteLine($"Valores (long): {string.Join(", ", valores.Take(20))}"); 
-                } 
-                else
-                {
-                    Debug.WriteLine("Tipo não suportado para debug.");
-                }
-                Debug.WriteLine("----------------------------"); 
-            } 
         }
     }
 }

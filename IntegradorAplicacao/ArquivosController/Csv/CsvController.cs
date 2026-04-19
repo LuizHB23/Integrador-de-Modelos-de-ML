@@ -8,11 +8,29 @@ namespace IntegradorAplicacao.ArquivosController.Csv
 {
     public class CsvController
     {
-        private string[] _cabecalho;
-        private List<string>[] _colunas;
+        private Encoding _encoding;
+        private char _pontuacaoDecimal;
+        private char _delimitador;
 
-        public string[] Cabecalho => _cabecalho;
-        public List<string>[] Colunas => _colunas;
+        private string[]? _cabecalho;
+        private List<string>[]? _colunas;
+
+        public string[]? Cabecalho => _cabecalho;
+        public List<string>[]? Colunas => _colunas;
+
+        public CsvController()
+        {
+           _delimitador = ',';
+           _pontuacaoDecimal = '.';
+           _encoding = Encoding.UTF8;
+        }
+
+        public CsvController(char delimitador, char pontuacaoDecimal, Encoding encoding)
+        {
+            _encoding = encoding;
+            _delimitador = delimitador;
+            _pontuacaoDecimal = pontuacaoDecimal;
+        }
 
         public async Task CarregarArquivoAsync(string caminho)
         {
@@ -36,6 +54,8 @@ namespace IntegradorAplicacao.ArquivosController.Csv
                         _colunas[i].Add(string.Empty);
                 }
             }
+
+            await Task.CompletedTask; // mantém assinatura async sem warning
         }
 
         public void EscreveArquivo<T>(T dados)
@@ -46,11 +66,13 @@ namespace IntegradorAplicacao.ArquivosController.Csv
 
         private IEnumerable<string[]> LerArquivo(string caminho)
         {
-            using var reader = new StreamReader(caminho);
+            using var reader = new StreamReader(caminho, _encoding, true);
 
             var campo = new StringBuilder();
             var linha = new List<string>();
+
             bool dentroAspas = false;
+            bool campoEntreAspas = false;
 
             while (!reader.EndOfStream)
             {
@@ -68,23 +90,27 @@ namespace IntegradorAplicacao.ArquivosController.Csv
                     else
                     {
                         dentroAspas = !dentroAspas;
+                        campoEntreAspas = true;
                     }
                 }
-                else if (c == ',' && !dentroAspas)
+                else if (c == _delimitador && !dentroAspas)
                 {
-                    linha.Add(campo.ToString());
+                    linha.Add(ProcessarCampo(campo.ToString(), campoEntreAspas));
                     campo.Clear();
+                    campoEntreAspas = false;
                 }
                 else if ((c == '\n' || c == '\r') && !dentroAspas)
                 {
                     if (c == '\r' && reader.Peek() == '\n')
                         reader.Read();
 
-                    linha.Add(campo.ToString());
+                    linha.Add(ProcessarCampo(campo.ToString(), campoEntreAspas));
                     campo.Clear();
 
                     yield return linha.ToArray();
                     linha.Clear();
+
+                    campoEntreAspas = false;
                 }
                 else
                 {
@@ -95,10 +121,31 @@ namespace IntegradorAplicacao.ArquivosController.Csv
             // última linha
             if (campo.Length > 0 || linha.Count > 0)
             {
-                linha.Add(campo.ToString());
+                linha.Add(ProcessarCampo(campo.ToString(), campoEntreAspas));
                 yield return linha.ToArray();
             }
         }
 
+        private string ProcessarCampo(string campo, bool estavaEntreAspas)
+        {
+            var valor = estavaEntreAspas ? campo : campo.Trim();
+
+            // normalização de número
+            if (!estavaEntreAspas && PodeSerNumero(valor))
+            {
+                if (_pontuacaoDecimal != '.')
+                    valor = valor.Replace(_pontuacaoDecimal, '.');
+            }
+
+            return valor;
+        }
+
+        private bool PodeSerNumero(string valor)
+        {
+            // heurística simples e performática
+            return valor.Any(char.IsDigit);
+        }
+
     }
+
 }

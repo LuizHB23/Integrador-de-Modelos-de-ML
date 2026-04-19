@@ -8,23 +8,21 @@ namespace IntegradorAplicacao.InferenciaAplicacao
 {
     public class ConfiguraInputsOutputs
     {
-        private Dictionary<int, SchemaDTO>? _schemaDicionario;
         public List<List<object?>> ListaErros { get; private set; }
 
-        public ConfiguraInputsOutputs(Dictionary<int, SchemaDTO>? schemaDicionario, List<List<object?>> listaErros)
+        public ConfiguraInputsOutputs(List<List<object?>> listaErros)
         {
-            _schemaDicionario = schemaDicionario;
             ListaErros = listaErros;
         }
 
-        public List<NamedOnnxValue> CriarInputs(DataFrame df, InferenceSession session)
+        public List<NamedOnnxValue> CriarInputs(DataFrame df, InferenceSession session, Dictionary<int, SchemaDTO>? schemaDicionario)
         {
             var inputs = new List<NamedOnnxValue>();
 
             var inputName = session.InputMetadata.Keys.First();
 
             var colunasFeature = df.Colunas
-                .Where(c => !DeveIgnorar(c.Nome))
+                .Where(c => !DeveIgnorar(schemaDicionario, c.Nome))
                 .ToList();
 
             int linhas = df.QuantidadeLinhas;
@@ -120,9 +118,9 @@ namespace IntegradorAplicacao.InferenciaAplicacao
             return output;
         }
 
-        private bool DeveIgnorar(string nomeColuna)
+        private bool DeveIgnorar(Dictionary<int, SchemaDTO>? schemaDicionario, string nomeColuna)
         {
-            var valor = _schemaDicionario.Values.FirstOrDefault(c => c.NomeColuna == nomeColuna);
+            var valor = schemaDicionario.Values.FirstOrDefault(c => c.NomeColuna == nomeColuna);
 
             if (valor is null)
                 throw new Exception($"Coluna não tratada: {nomeColuna}");

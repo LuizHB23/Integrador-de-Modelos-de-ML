@@ -66,11 +66,8 @@
 
                                 <ComboBox FontSize="15"
                                           Width="270"
-                                          SelectedItem="{Binding Delimitador}">
-                                    <ComboBoxItem Content="Vírgula (,)"/>
-                                    <ComboBoxItem Content="Ponto e Vírgula (;)"/>
-                                    <ComboBoxItem Content="Tabulação (Tab)"/>
-                                </ComboBox>
+                                          SelectedItem="{Binding Delimitador}"
+                                          ItemsSource="{Binding Delimitadores}"/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="1" Margin="15,0,0,0">
@@ -80,10 +77,8 @@
 
                                 <ComboBox FontSize="15"
                                           Width="270"
-                                          SelectedItem="{Binding Codificacao}">
-                                    <ComboBoxItem Content="UTF-8"/>
-                                    <ComboBoxItem Content="Windows-1252"/>
-                                </ComboBox>
+                                          SelectedItem="{Binding Codificacao}"
+                                          ItemsSource="{Binding Codificadores}"/>
                             </StackPanel>
                         </Grid>
 
@@ -100,11 +95,9 @@
 
                                 <ComboBox FontSize="15"
                                           Width="270"
-                                          SelectedItem="{Binding Decimal}"
-                                          Margin="0,0,15,0">
-                                    <ComboBoxItem Content="Ponto (.)"/>
-                                    <ComboBoxItem Content="Vírgula (,)"/>
-                                </ComboBox>
+                                          SelectedItem="{Binding PontuacaoDecimal}"
+                                          ItemsSource="{Binding PontuacoesDecimal}"
+                                          Margin="0,0,15,0"/>
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal" 

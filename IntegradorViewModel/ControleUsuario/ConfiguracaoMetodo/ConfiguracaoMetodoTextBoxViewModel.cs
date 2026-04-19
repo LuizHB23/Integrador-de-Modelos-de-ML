@@ -43,10 +43,10 @@ namespace IntegradorViewModel.ControleUsuario
             DadosPreview = dadosPreview;
             DataFrameMudou = false;
 
-            _controllerCsv = new CsvController();
-            _dialogService = dialogService;
             _arquivoDados = arquivoDados;
+            _dialogService = dialogService;
             _onDadosAlterados = onDadosAlterados;
+            _controllerCsv = new CsvController(_arquivoDados.Delimitador, _arquivoDados.Decimal, _arquivoDados.Codificacao);
 
             _parserAst = new();
             _estadoColuna = new List<string>[0];

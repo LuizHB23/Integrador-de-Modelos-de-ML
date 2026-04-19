@@ -46,7 +46,7 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
                 return;
             }
 
-            _context.EnviaMensagem(new ArquivoDadosDTO(CaminhoArquivoDados, ' ', "", ' ', true));
+            _context.EnviaMensagem(new ArquivoDadosDTO(CaminhoArquivoDados, ' ', Encoding.UTF8, ' ', true));
             Navigation.NavigateTo<ResultadoPredicaoViewModel>();
         }
     }
