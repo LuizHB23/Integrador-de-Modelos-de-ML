@@ -14,7 +14,7 @@ namespace IntegradorAplicacao.ArquivosController.Csv.ExportarCsv
         private void SalvarResultadoEmDownloads(List<ResultadoInferencia> resultados)
         {
             if (resultados == null || resultados.Count == 0)
-                throw new Exception("Nenhum resultado para exportar.");
+                return;
 
             var caminho = ObterCaminhoDownloads(GerarNomeArquivo());
 
@@ -108,7 +108,6 @@ namespace IntegradorAplicacao.ArquivosController.Csv.ExportarCsv
             }
 
             File.WriteAllLines(caminho, linhas, Encoding.UTF8);
-
         }
 
         private string ObterCaminhoDownloads(string nomeArquivo)

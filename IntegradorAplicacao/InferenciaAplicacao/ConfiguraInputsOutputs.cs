@@ -8,9 +8,9 @@ namespace IntegradorAplicacao.InferenciaAplicacao
 {
     public class ConfiguraInputsOutputs
     {
-        public List<List<object?>> ListaErros { get; private set; }
+        public List<ErrosInferencia> ListaErros { get; private set; }
 
-        public ConfiguraInputsOutputs(List<List<object?>> listaErros)
+        public ConfiguraInputsOutputs(List<ErrosInferencia> listaErros)
         {
             ListaErros = listaErros;
         }
@@ -48,11 +48,11 @@ namespace IntegradorAplicacao.InferenciaAplicacao
                 {
                     erro = true;
 
-                    List<object?> linha = new();
+                    ErrosInferencia linha = new() { Outputs = new() };
                     foreach (var col in colunasFeature)
-                        linha.Add(col.PegarValor(i));
+                        linha.Outputs.Add(col.Nome, col.PegarValor(i));
 
-                    linha.Add(ex.Message);
+                    linha.Erro = ex.Message;
                     ListaErros.Add(linha);
                 }
 

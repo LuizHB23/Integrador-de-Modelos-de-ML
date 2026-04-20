@@ -142,6 +142,7 @@
 
                         <Button Content="Exportar CSV" 
                                 Style="{StaticResource MaterialDesignRaisedButton}"
+                                Command="{Binding ExportarCsvErrosCommand}"
                                 Width="170"/>
                     </StackPanel>
                 </StackPanel>

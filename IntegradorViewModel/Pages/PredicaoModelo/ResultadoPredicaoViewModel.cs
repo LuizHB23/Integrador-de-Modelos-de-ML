@@ -32,7 +32,8 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
         private readonly IContext<ArquivoDadosDTO> _contextArquivo;
         private readonly IContext<ModeloDTO> _contextModelo;
 
-        private List<ResultadoInferencia> _resultados;
+        private List<ResultadoInferencia>? _resultados;
+        private List<ErrosInferencia>? _listaErros;
         private Inferencia _inferencia;
         private CsvController _csvController;
 
@@ -58,6 +59,9 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
 
         [RelayCommand]
         private void ExportarCsvResultado() => _csvController.EscreveArquivo(_resultados);
+
+        [RelayCommand]
+        private void ExportarCsvErros() => _csvController.EscreveArquivo(_listaErros);
 
         public async Task InicializarAsync()
         {
@@ -88,6 +92,8 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
                 caminhoPipeline,
                 caminhoTransformadores
             );
+
+            _listaErros = _inferencia.ListaErros;
 
             stopwatch.Stop();
             cts.Cancel();

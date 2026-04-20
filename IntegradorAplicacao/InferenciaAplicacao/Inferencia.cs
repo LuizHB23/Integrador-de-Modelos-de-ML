@@ -17,7 +17,7 @@ namespace IntegradorAplicacao.InferenciaAplicacao
         private readonly ExecutorFinal _executor;
         private readonly ConfiguraInputsOutputs _configuracao;
 
-        public List<List<object?>> ListaErros { get; private set; }
+        public List<ErrosInferencia> ListaErros { get; private set; }
 
         public Inferencia(IConverteJson<Dictionary<int, FuncaoDTO>> conversorPipeline, IConverteJson<Dictionary<int, SchemaDTO>> conversorSchema, IConverteJson<Dictionary<int, TransformadorDTO>> conversorTransformadores)
         {
