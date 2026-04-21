@@ -2,6 +2,7 @@
 using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.FeatureEngineering.ManipulacaoDados;
 using System.Collections;
+using System.Drawing;
 
 namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.ManipulacaoDados
 {
@@ -36,19 +37,25 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             }
 
             // Se não for DataFrame existente, usamos o valor fixo
-            if (valoresExistentes == null && Operacao.value != "")
+            if (valoresExistentes == null)
             {
                 switch (Operacao.type)
                 {
                     case "single":
                         tipoColuna = typeof(Single?);
-                        valor = Convert.ToSingle(Operacao.value);
+                        if (VerificaNulidade(Operacao.value))
+                            valor = null;
+                        else
+                            valor = Convert.ToSingle(Operacao.value);
                         break;
 
                     case "boolean":
                     case "bool":
                         tipoColuna = typeof(Boolean?);
-                        valor = Convert.ToBoolean(Operacao.value);
+                        if (VerificaNulidade(Operacao.value))
+                            valor = null;
+                        else
+                            valor = Convert.ToBoolean(Operacao.value);
                         break;
 
                     case "string":
@@ -59,14 +66,13 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
                     case "datetime":
                         tipoColuna = typeof(DateTime?);
-                        valor = Convert.ToDateTime(Operacao.value);
+                        if (VerificaNulidade(Operacao.value))
+                            valor = null;
+                        else
+                            valor = Convert.ToDateTime(Operacao.value);
                         break;
                 }
             }
-
-            // Se o valor for string vazia, tratamos como nulo
-            if (valor is string s && string.IsNullOrWhiteSpace(s))
-                valor = null;
 
             // Criar a lista do tipo correto
             Type listType = typeof(List<>).MakeGenericType(tipoColuna);
@@ -97,6 +103,15 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             metodoAdd.Invoke(dataFrame, new object[] { Operacao.name, listaNova });
 
             return dataFrame;
+
+        }
+
+        private bool VerificaNulidade(string valor)
+        {
+            if (valor is string s && string.IsNullOrWhiteSpace(s))
+                return true;
+
+            return false;
 
         }
     }

@@ -25,8 +25,8 @@ namespace IntegradorViewModel.ControleUsuario
         [ObservableProperty]
         private bool _dataFrameMudou;
 
+        private IReadOnlyList<string>[] _estadoColuna;
         private ParserAst _parserAst;
-        private List<string>[] _estadoColuna;
         private string[] _estadoCabecalho;
 
         private readonly Action<DataView> _onDadosAlterados;
@@ -73,15 +73,15 @@ namespace IntegradorViewModel.ControleUsuario
 
         public async Task GuardaEstado()
         {
-            await Task.Run(() => _controllerCsv.CarregarArquivoAsync(_arquivoDados.CaminhoArquivoDados));
+            await _controllerCsv.CarregarArquivoAsync(_arquivoDados.CaminhoArquivoDados);
 
             _estadoCabecalho = _controllerCsv.Cabecalho;
 
-            _estadoColuna = new List<string>[_estadoCabecalho.Length];
+            _estadoColuna = new IReadOnlyList<string>[_estadoCabecalho.Length];
 
             for (int i = 0; i < _estadoCabecalho.Length; i++)
             {
-                _estadoColuna[i] = new List<string>(_controllerCsv.Colunas[i]);
+                _estadoColuna[i] = _controllerCsv.Colunas[i].ToList().AsReadOnly();
             }
         }
 
@@ -92,7 +92,7 @@ namespace IntegradorViewModel.ControleUsuario
             for (int i = 0; i < _estadoCabecalho.Length; i++)
             {
                 var dado = _estadoColuna[i];
-                dataFrame.AdicionarColuna(_estadoCabecalho[i], dado);
+                dataFrame.AdicionarColuna(_estadoCabecalho[i], dado.ToList());
             }
 
             return dataFrame;

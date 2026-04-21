@@ -45,7 +45,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
             foreach (var card in transformador)
             {
                 var schemaItem = new TransformadorItemViewModel(card.Key, card.Value.NomeTransformador, card.Value.CaminhoTransformador);
-                var cardSchema = new ConfiguracaoCardTransformadorViewModel(schemaItem, RemoverColuna, OrganizaPosicao);
+                var cardSchema = new ConfiguracaoCardTransformadorViewModel(schemaItem, RemoverCard, OrganizaPosicao);
                 _cardsLista.Add(cardSchema);
                 _posicoesLista.Add(card.Key);
             }
@@ -70,6 +70,6 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
 
         public override void OrganizaPosicao(ConfiguracaoCardTransformadorViewModel card, int posicaoNova) => base.OrganizaPosicao(card, posicaoNova);
 
-        public override void RemoverColuna(ConfiguracaoCardTransformadorViewModel card) => base.RemoverColuna(card);
+        public override void RemoverCard(ConfiguracaoCardTransformadorViewModel card) => base.RemoverCard(card);
     }
 }

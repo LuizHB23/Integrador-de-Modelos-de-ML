@@ -15,7 +15,7 @@ namespace IntegradorAplicacao.InferenciaAplicacao
             ListaErros = listaErros;
         }
 
-        public List<NamedOnnxValue> CriarInputs(DataFrame df, InferenceSession session, Dictionary<int, SchemaDTO>? schemaDicionario)
+        public List<NamedOnnxValue> CriarInputs(DataFrame df, InferenceSession session, Dictionary<int, SchemaDTO>? schemaDicionario, string[]? ids)
         {
             var inputs = new List<NamedOnnxValue>();
 
@@ -48,11 +48,15 @@ namespace IntegradorAplicacao.InferenciaAplicacao
                 {
                     erro = true;
 
-                    ErrosInferencia linha = new() { Outputs = new() };
+                    ErrosInferencia linha = new() 
+                    {
+                        Id = ids[i],
+                        Erro = ex.Message,
+                        Outputs = new() 
+                    };
                     foreach (var col in colunasFeature)
                         linha.Outputs.Add(col.Nome, col.PegarValor(i));
 
-                    linha.Erro = ex.Message;
                     ListaErros.Add(linha);
                 }
 

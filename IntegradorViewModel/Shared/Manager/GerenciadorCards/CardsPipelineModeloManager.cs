@@ -13,7 +13,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
     {
         public CardsPipelineModeloManager(ObservableCollection<ConfiguracaoCardFuncaoViewModel> cardsLista, ObservableCollection<int> posicoesLista) : base(cardsLista, posicoesLista) { }
 
-        public void AdicinarColuna(FuncaoItemViewModel funcaoItem, Action<ConfiguracaoCardFuncaoViewModel> actionExcluir, Action<ConfiguracaoCardFuncaoViewModel, int> actionTrocarPosicao, Action<ConfiguracaoCardFuncaoViewModel> actionConfigurarFuncao)
+        public void AdicionarCard(FuncaoItemViewModel funcaoItem, Func<ConfiguracaoCardFuncaoViewModel, Task> actionExcluir, Action<ConfiguracaoCardFuncaoViewModel, int> actionTrocarPosicao, Action<ConfiguracaoCardFuncaoViewModel> actionConfigurarFuncao)
         {
             if (funcaoItem is null)
             {
@@ -26,7 +26,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
             AtualizaPosicoes();
         }
 
-        public void CarregarSchema(IDialogService _dialogService, IConverteJson<Dictionary<int, FuncaoDTO>> _converter, Action<ConfiguracaoCardFuncaoViewModel> actionConfigurarFuncao)
+        public void CarregarPipeline(IDialogService _dialogService, IConverteJson<Dictionary<int, FuncaoDTO>> _converter, Action<ConfiguracaoCardFuncaoViewModel> actionConfigurarFuncao, Func<ConfiguracaoCardFuncaoViewModel, Task> functionRemover)
         {
             var _caminhoJson = _dialogService.GetCaminhoArquivo();
 
@@ -43,7 +43,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
             foreach (var card in schema)
             {
                 var funcaoItem = new FuncaoItemViewModel(card.Key, card.Value.NomeFuncao, card.Value.Codigo);
-                var cardFuncao = new ConfiguracaoCardFuncaoViewModel(funcaoItem, RemoverColuna, OrganizaPosicao, actionConfigurarFuncao);
+                var cardFuncao = new ConfiguracaoCardFuncaoViewModel(funcaoItem, functionRemover, OrganizaPosicao, actionConfigurarFuncao);
                 _cardsLista.Add(cardFuncao);
                 _posicoesLista.Add(card.Key);
             }
@@ -68,6 +68,6 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
 
         public override void OrganizaPosicao(ConfiguracaoCardFuncaoViewModel card, int posicaoNova) => base.OrganizaPosicao(card, posicaoNova);
 
-        public override void RemoverColuna(ConfiguracaoCardFuncaoViewModel card) => base.RemoverColuna(card);
+        public override void RemoverCard(ConfiguracaoCardFuncaoViewModel card) => base.RemoverCard(card);
     }
 }

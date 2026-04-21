@@ -12,7 +12,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
         public override object Executar(DataFrame dataFrame)
         {
-            var colunas = TransformaStringColunasEmListaColunas(Operacao.on); // múltiplas colunas
+            var colunas = TransformaStringColunasEmListaColunas(Operacao.on);
             DataFrame dataFrameDireito = (DataFrame)Operacao.Contexto[Operacao.right]!;
 
             if (dataFrame == null) throw new ArgumentNullException(nameof(dataFrame));
@@ -50,20 +50,51 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                 mapaIndices[nomeDestino] = novoDataFrame.Colunas.Count - 1;
             }
 
-            // 🔹 Lookup múltiplas colunas (direito)
+            // 🔹 Lookup 1:1 (corrigido)
             var lookupDireito = new Dictionary<string, int>();
+
             for (int i = 0; i < dataFrameDireito.QuantidadeLinhas; i++)
             {
-                var chave = string.Join("|", colunas.Select(c => dataFrameDireito.PegarColunaBase(c).PegarValor(i)?.ToString() ?? "NULL"));
-                lookupDireito[chave] = i;
+                var chave = string.Join("|", colunas.Select(c =>
+                {
+                    var val = dataFrameDireito.PegarColunaBase(c).PegarValor(i);
+                    return val == null ? "<NULL>" : val.ToString();
+                }));
+
+                if (!lookupDireito.ContainsKey(chave))
+                {
+                    lookupDireito[chave] = i;
+                }
+                else
+                {
+                    int existente = lookupDireito[chave];
+
+                    bool atualTemNull = colunas.Any(c =>
+                        dataFrameDireito.PegarColunaBase(c).PegarValor(i) == null);
+
+                    bool existenteTemNull = colunas.Any(c =>
+                        dataFrameDireito.PegarColunaBase(c).PegarValor(existente) == null);
+
+                    // 🔥 Regra: prioriza linha com menos null
+                    if (existenteTemNull && !atualTemNull)
+                    {
+                        lookupDireito[chave] = i;
+                    }
+                }
             }
 
-            // 🔹 Loop principal
+            // 🔹 Loop principal (sem duplicação)
             for (int i = 0; i < dataFrame.QuantidadeLinhas; i++)
             {
-                var chave = string.Join("|", colunas.Select(c => dataFrame.PegarColunaBase(c).PegarValor(i)?.ToString() ?? "NULL"));
+                var chave = string.Join("|", colunas.Select(c =>
+                {
+                    var val = dataFrame.PegarColunaBase(c).PegarValor(i);
+                    return val == null ? "<NULL>" : val.ToString();
+                }));
 
-                int? linhaDireita = lookupDireito.ContainsKey(chave) ? lookupDireito[chave] : (int?)null;
+                int? linhaDireita = lookupDireito.ContainsKey(chave)
+                    ? lookupDireito[chave]
+                    : (int?)null;
 
                 // esquerdo
                 foreach (var col in dataFrame.Colunas)
@@ -80,12 +111,13 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                     string nomeDestino = mapaNomesDireito[colDireita.Nome];
                     int idxDestino = mapaIndices[nomeDestino];
 
-                    object? valor = linhaDireita != null ? colDireita.PegarValor(linhaDireita.Value) : null;
+                    object? valor = linhaDireita != null
+                        ? colDireita.PegarValor(linhaDireita.Value)
+                        : null;
+
                     novoDataFrame.Colunas[idxDestino].AdicionaValor(valor);
                 }
             }
-
-            return novoDataFrame;
 
             return novoDataFrame;
         }

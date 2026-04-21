@@ -173,7 +173,7 @@
                                     FontSize="14"
                                     FontWeight="Bold"
                                     Style="{StaticResource MaterialDesignRaisedButton}"
-                                    Command="{Binding CarregarSchemaCommand}"
+                                    Command="{Binding CarregarPipelineCommand}"
                                     Cursor="Hand"/>
 
                         </Grid>

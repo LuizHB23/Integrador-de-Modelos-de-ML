@@ -38,7 +38,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
             AtualizaPosicoes();
         }
 
-        public virtual void RemoverColuna(T card)
+        public virtual void RemoverCard(T card)
         {
             _cardsLista.Remove(card);
             _posicoesLista.Remove(_cardsLista.Count + 1);

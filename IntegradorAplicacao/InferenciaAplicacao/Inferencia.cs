@@ -48,25 +48,25 @@ namespace IntegradorAplicacao.InferenciaAplicacao
             {
                 using (var primeiraSession = new InferenceSession(transformadores.First().Value.CaminhoTransformador))
                 {
-                    inputs = _configuracao.CriarInputs(dataFrameNovo, primeiraSession, _schemaDicionario);
+                    inputs = _configuracao.CriarInputs(dataFrameNovo, primeiraSession, _schemaDicionario, ids);
                 }
 
                 IDisposableReadOnlyCollection<DisposableNamedOnnxValue>? resultados = null;
 
                 foreach (var transformador in transformadores.OrderBy(t => t.Key))
                 {
-                    resultados = RealizaInferenciaOnnx(inputs, transformador.Value.CaminhoTransformador);
+                    resultados = RealizaInferenciaOnnx(inputs, transformador.Value.CaminhoTransformador, ids);
 
                     inputs = _configuracao.ConverterParaInputs(resultados);
                 }
 
-                var finalResultados = RealizaInferenciaOnnx(inputs, caminhoModelo);
+                var finalResultados = RealizaInferenciaOnnx(inputs, caminhoModelo, ids);
 
                 return _configuracao.ReconstruirSaidaComId(finalResultados, ids);
             }
             else
             {
-                var resultados = RealizaInferenciaOnnx(dataFrameNovo, caminhoModelo);
+                var resultados = RealizaInferenciaOnnx(dataFrameNovo, caminhoModelo, ids);
 
                 return _configuracao.ReconstruirSaidaComId(resultados, ids);
             }
@@ -78,7 +78,7 @@ namespace IntegradorAplicacao.InferenciaAplicacao
             return await Task.Run(() => _executor.ExecutarTudo(dataFrame));
         }
 
-        private IDisposableReadOnlyCollection<DisposableNamedOnnxValue>? RealizaInferenciaOnnx(object inputs, string caminho)
+        private IDisposableReadOnlyCollection<DisposableNamedOnnxValue>? RealizaInferenciaOnnx(object inputs, string caminho, string[]?ids)
         {
             using var session = new InferenceSession(caminho);
 
@@ -86,7 +86,7 @@ namespace IntegradorAplicacao.InferenciaAplicacao
 
             if (inputs is DataFrame dataFrame)
             {
-                inputsFinais = _configuracao.CriarInputs(dataFrame, session, _schemaDicionario);
+                inputsFinais = _configuracao.CriarInputs(dataFrame, session, _schemaDicionario, ids);
             }
             else if (inputs is List<NamedOnnxValue> listaInputs)
             {

@@ -81,7 +81,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
 
             var modeloElementos = modeloNomeCorpo.First();
             var funcaoItem = new FuncaoItemViewModel(CardsFuncoes.Count + 1, modeloElementos.Key, modeloElementos.Value);
-            _cardsManager.AdicinarColuna(funcaoItem, RemoverColuna, OrganizaPosicao, ConfigurarFuncao);
+            _cardsManager.AdicionarCard(funcaoItem, RemoverFuncao, OrganizaPosicao, ConfigurarFuncao);
             PreparaParaJson();
 
             try
@@ -96,32 +96,38 @@ namespace IntegradorViewModel.Pages.InserirModelo
         }
 
         [RelayCommand]
-        public async Task CarregarSchema()
+        public async Task CarregarPipeline()
         {
+            CardsFuncoes.Clear();
+            OpcoesPosicao.Clear();
+
             try
             {
-                _cardsManager.CarregarSchema(_dialogService, _converter, ConfigurarFuncao);
+                _cardsManager.CarregarPipeline(_dialogService, _converter, ConfigurarFuncao, RemoverFuncao);
             }
             catch (Exception ex)
             {
                 return;
             }
 
-            PreparaParaJson();
             await TextBox.GuardaEstado();
+
             try
             {
                 await ConstroiPipelineAsync();
+                PreparaParaJson();
             }
             catch (Exception ex)
             {
+                CardsFuncoes.Clear();
+                OpcoesPosicao.Clear();
                 _dialogService.ShowMessage($"Erro no ao carregar Pipeline: {ex.Message}", "Erro de Comando");
             }
         }
 
-        private async void RemoverColuna(ConfiguracaoCardFuncaoViewModel cardSchema)
+        private async Task RemoverFuncao(ConfiguracaoCardFuncaoViewModel cardSchema)
         {
-            _cardsManager.RemoverColuna(cardSchema);
+            _cardsManager.RemoverCard(cardSchema);
             PreparaParaJson();
 
             try

@@ -82,7 +82,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
 
         private void RemoverColuna(ConfiguracaoCardTransformadorViewModel cardTransformador)
         {
-            _cardsManager.RemoverColuna(cardTransformador);
+            _cardsManager.RemoverCard(cardTransformador);
             PreparaParaJson();
         }
 

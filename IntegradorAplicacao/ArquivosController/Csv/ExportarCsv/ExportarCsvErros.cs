@@ -11,6 +11,12 @@ namespace IntegradorAplicacao.ArquivosController.Csv.ExportarCsv
         public void ExportarCsv(List<ErrosInferencia> erros)
         {
             SalvarResultadoEmDownloads(erros);
+        }
+
+        private void SalvarResultadoEmDownloads(List<ErrosInferencia> erros)
+        {
+            if (erros == null || erros.Count == 0)
+                return;
 
             var caminho = ObterCaminhoDownloads(GerarNomeArquivo());
 
@@ -31,6 +37,8 @@ namespace IntegradorAplicacao.ArquivosController.Csv.ExportarCsv
 
             var header = new List<string>();
 
+            header.Add("ID");
+
             foreach (var kv in outputMap)
                 header.Add(kv.Key);
 
@@ -42,6 +50,8 @@ namespace IntegradorAplicacao.ArquivosController.Csv.ExportarCsv
             {
                 var linha = new List<string>();
 
+                linha.Add(erro.Id);
+
                 foreach (var kv in outputMap)
                 {
                     var nome = kv.Key;
@@ -49,7 +59,7 @@ namespace IntegradorAplicacao.ArquivosController.Csv.ExportarCsv
 
                     if (erro.Outputs.TryGetValue(nome, out var valor))
                     {
-                        linha.Add(valor?.ToString() ?? "");
+                        linha.Add(valor is IFormattable f ? f.ToString(null, CultureInfo.InvariantCulture) : valor?.ToString() ?? ""); 
                     }
                     else
                     {
@@ -66,12 +76,6 @@ namespace IntegradorAplicacao.ArquivosController.Csv.ExportarCsv
             }
 
             File.WriteAllLines(caminho, linhas, Encoding.UTF8);
-        }
-
-        private void SalvarResultadoEmDownloads(List<ErrosInferencia> erros)
-        {
-            if (erros == null || erros.Count == 0)
-                return;
         }
 
         private string ObterCaminhoDownloads(string nomeArquivo)

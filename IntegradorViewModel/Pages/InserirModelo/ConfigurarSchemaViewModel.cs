@@ -87,7 +87,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
         public void CarregarSchema() => _cardsManager.CarregarSchema(_dialogService, _converter);
         private void RemoverColuna(ConfiguracaoCardSchemaViewModel cardSchema)
         {
-            _cardsManager.RemoverColuna(cardSchema);
+            _cardsManager.RemoverCard(cardSchema);
             PreparaParaJson();
         }
         private void OrganizaPosicao(ConfiguracaoCardSchemaViewModel cardSchema, int posicaoNova) => _cardsManager.OrganizaPosicao(cardSchema, posicaoNova);
