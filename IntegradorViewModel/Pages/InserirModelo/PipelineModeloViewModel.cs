@@ -7,6 +7,7 @@ using IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao;
 using IntegradorDominio.Attributes;
 using IntegradorDominio.InterfacesSteps;
 using IntegradorViewModel.ControleUsuario;
+using IntegradorViewModel.ControleUsuario.ConfiguracaoMetodo.EstadoDataFrame;
 using IntegradorViewModel.ItensViewModel;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.PrincipalModelo;
@@ -27,7 +28,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
         private INavigationService _navigation;
 
         [ObservableProperty]
-        private ConfiguracaoMetodoTextBoxViewModel _textBox;
+        private ConfiguracaoPipelineTextBoxViewModel _textBox;
 
         [ObservableProperty]
         private DataView? _dataPreview;
@@ -64,7 +65,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
             DataPreview = new();
             CardsFuncoes = new();
             OpcoesPosicao = new();
-            TextBox = new ConfiguracaoMetodoTextBoxViewModel(dialogService, _contextArquivo.RecebeMensagem(), AlterouTabela, DataPreview);
+            TextBox = new ConfiguracaoPipelineTextBoxViewModel(new ConfiguracaoTextBoxViewModel(dialogService, _contextArquivo.RecebeMensagem(), AlterouTabela), DataPreview, new EstadoDataFrameViewModel(_contextArquivo.RecebeMensagem()));
             _nomeModelo = _contextNomeModelo.RecebeMensagem().NomeModelo;
             _cardsManager = new(CardsFuncoes, OpcoesPosicao);
         }
@@ -98,23 +99,22 @@ namespace IntegradorViewModel.Pages.InserirModelo
         [RelayCommand]
         public async Task CarregarPipeline()
         {
-            CardsFuncoes.Clear();
-            OpcoesPosicao.Clear();
+            string? caminhoPipeline = null;
 
             try
             {
-                _cardsManager.CarregarPipeline(_dialogService, _converter, ConfigurarFuncao, RemoverFuncao);
+                caminhoPipeline = _cardsManager.CarregarPipeline(_dialogService, _converter, ConfigurarFuncao, RemoverFuncao);
             }
             catch (Exception ex)
             {
                 return;
             }
 
-            await TextBox.GuardaEstado();
+            await TextBox.GuardaEstadoArquivo();
 
             try
             {
-                await ConstroiPipelineAsync();
+                await ConstroiPipelineAsync(caminhoPipeline);
                 PreparaParaJson();
             }
             catch (Exception ex)
@@ -150,11 +150,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
 
         private void RecebeListaPropriedades(string featureName, List<string> listaPropriedades) => TextBox.EscreveScript(featureName, listaPropriedades);
 
-        public void AlterouTabela(DataView dataView)
-        {
-            DataPreview = null;
-            DataPreview = dataView;
-        }
+        public void AlterouTabela(DataView dataView) => DataPreview = dataView;
 
         [RelayCommand]
         public async Task AtualizaFuncao()
@@ -245,11 +241,14 @@ namespace IntegradorViewModel.Pages.InserirModelo
             Navigation.NavigateTo<HomeViewModel>();
         }
 
-        private async Task ConstroiPipelineAsync()
+        private async Task ConstroiPipelineAsync(string caminho) => await ExecutaPipeline(caminho);
+        private async Task ConstroiPipelineAsync() => await ExecutaPipeline(Path.Combine(_provider.GetCaminhoModelo(), "pipeline.json"));
+
+        private async Task ExecutaPipeline(string caminho)
         {
             var dataFrame = TextBox.CarregarDados();
             _executor = new(_converter);
-            await Task.Run(() => _executor.ConstroiSequenciaMetodoPipeline(Path.Combine(_provider.GetCaminhoModelo(), "pipeline.json")));
+            await Task.Run(() => _executor.ConstroiSequenciaMetodoPipeline(caminho));
             dataFrame = await Task.Run(() => _executor.ExecutarTudo(dataFrame));
             _executor = null;
             TextBox.AtualizaTabela(dataFrame);

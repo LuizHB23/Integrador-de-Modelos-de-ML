@@ -78,7 +78,11 @@
             <usercontrol:ConfiguracaoCardFuncao/>
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type vmsusercontrol:ConfiguracaoMetodoTextBoxViewModel}">
+        <DataTemplate DataType="{x:Type vmsusercontrol:ConfiguracaoPipelineTextBoxViewModel}">
+            <usercontrol:ConfiguracaoMetodoTextBox/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vmsusercontrol:ConfiguracaoResultadoTextBoxViewModel}">
             <usercontrol:ConfiguracaoMetodoTextBox/>
         </DataTemplate>
 

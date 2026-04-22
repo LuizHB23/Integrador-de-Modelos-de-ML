@@ -26,7 +26,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
             AtualizaPosicoes();
         }
 
-        public void CarregarPipeline(IDialogService _dialogService, IConverteJson<Dictionary<int, FuncaoDTO>> _converter, Action<ConfiguracaoCardFuncaoViewModel> actionConfigurarFuncao, Func<ConfiguracaoCardFuncaoViewModel, Task> functionRemover)
+        public string CarregarPipeline(IDialogService _dialogService, IConverteJson<Dictionary<int, FuncaoDTO>> _converter, Action<ConfiguracaoCardFuncaoViewModel> actionConfigurarFuncao, Func<ConfiguracaoCardFuncaoViewModel, Task> functionRemover)
         {
             var _caminhoJson = _dialogService.GetCaminhoArquivo();
 
@@ -40,7 +40,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
 
             var schema = _converter.CarregarJson(_caminhoJson);
 
-            foreach (var card in schema)
+            foreach (var card in schema.OrderBy(x => x.Key))
             {
                 var funcaoItem = new FuncaoItemViewModel(card.Key, card.Value.NomeFuncao, card.Value.Codigo);
                 var cardFuncao = new ConfiguracaoCardFuncaoViewModel(funcaoItem, functionRemover, OrganizaPosicao, actionConfigurarFuncao);
@@ -49,6 +49,8 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
             }
 
             AtualizaPosicoes();
+
+            return _caminhoJson;
         }
 
         public void PreparaParaJson(IConverteJson<Dictionary<int, FuncaoDTO>> _converter, string nomeModelo)

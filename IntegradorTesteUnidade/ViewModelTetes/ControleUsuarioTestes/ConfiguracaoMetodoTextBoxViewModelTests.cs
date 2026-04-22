@@ -14,11 +14,11 @@ namespace IntegradorTesteUnidade.ViewModelTetes.ControleUsuarioTestes
         private readonly Mock<IDialogService> _dialogMock = new();
         private readonly List<string> _arquivosTemp = new();
 
-        private ConfiguracaoMetodoTextBoxViewModel CriarVM(Action<DataView>? callback = null)
+        private ConfiguracaoTextBoxViewModel CriarVM(Action<DataView>? callback = null)
         {
             var caminho = CriarCsvFake();
 
-            return new ConfiguracaoMetodoTextBoxViewModel(
+            return new ConfiguracaoTextBoxViewModel(
                 _dialogMock.Object,
                 new ArquivoDadosDTO(caminho, ',', "utf-8", '.', true),
                 callback ?? (_ => { }),

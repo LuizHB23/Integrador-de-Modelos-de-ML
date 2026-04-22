@@ -31,7 +31,6 @@
                               Grid.Column="0"/>
 
                     <Rectangle Width="1"
-                       Grid.Column="1"
                        Fill="#D1D1D1" 
                        Height="Auto"
                        Margin="0,10"/>

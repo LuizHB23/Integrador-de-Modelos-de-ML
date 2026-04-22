@@ -7,9 +7,12 @@ using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.InferenciaAplicacao;
 using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.Inferencia;
+using IntegradorViewModel.ControleUsuario;
+using IntegradorViewModel.ControleUsuario.ConfiguracaoMetodo.EstadoDataFrame;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Shared.Context;
 using IntegradorViewModel.Shared.Interfaces;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Diagnostics;
 using System.IO;
@@ -24,10 +27,22 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
         private string _tempoProcessamento = "00:00:00.00";
 
         [ObservableProperty]
-        private DataView _dataPreview;
+        private int _linhasInferencia = 0;
+
+        [ObservableProperty]
+        private int _linhasErro = 0;
+
+        [ObservableProperty]
+        private DataView? _dataPreview;
+
+        [ObservableProperty]
+        private ConfiguracaoResultadoTextBoxViewModel _textBox;
 
         [ObservableProperty]
         private INavigationService _navigation;
+
+        public ObservableCollection<int> OpcoesPosicao;
+        public ObservableCollection<ConfiguracaoCardFuncaoViewModel> CardsFuncoes { get; }
 
         private readonly IContext<ArquivoDadosDTO> _contextArquivo;
         private readonly IContext<ModeloDTO> _contextModelo;
@@ -41,10 +56,12 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
 
         private ArquivoDadosDTO _arquivo { get; set; }
 
-        public ResultadoPredicaoViewModel(INavigationService navigation, IContext<ModeloDTO> contextModelo, IContext<ArquivoDadosDTO> contextArquivo, Inferencia inferencia)
+        public ResultadoPredicaoViewModel(INavigationService navigation, IDialogService dialogService, IContext<ModeloDTO> contextModelo, IContext<ArquivoDadosDTO> contextArquivo, Inferencia inferencia)
         {
             Navigation = navigation;
             DataPreview = new();
+            CardsFuncoes = new();
+            OpcoesPosicao = new();
 
             _contextArquivo = contextArquivo;
             _contextModelo = contextModelo;
@@ -53,6 +70,8 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
 
             _inferencia = inferencia;
             _csvController = new CsvController();
+
+            TextBox = new ConfiguracaoResultadoTextBoxViewModel(new ConfiguracaoTextBoxViewModel(dialogService, _contextArquivo.RecebeMensagem(), AlterouTabela), DataPreview, new EstadoDataFrameViewModel(_arquivo));
 
             Stopwatch = new Stopwatch();
         }
@@ -92,117 +111,21 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
                 caminhoPipeline,
                 caminhoTransformadores
             );
+            LinhasInferencia = _resultados.Count;
 
             _listaErros = _inferencia.ListaErros;
+            LinhasErro = _listaErros.Count;
 
             stopwatch.Stop();
             cts.Cancel();
 
             TempoProcessamento = stopwatch.Elapsed.ToString(@"hh\:mm\:ss\.ff");
 
-            DataPreview = ResultadoParaDataTable(_resultados).DefaultView;
+            await TextBox.GuardaEstadoResultado(_resultados);
+            TextBox.AtualizaTabela(TextBox.CarregarDados());
         }
 
-        private DataTable ResultadoParaDataTable(List<ResultadoInferencia> resultados)
-        {
-            var tabela = new DataTable();
-
-            if (resultados == null || resultados.Count == 0)
-                return tabela;
-
-            tabela.Columns.Add("ID", typeof(string));
-
-            // Mapeia: nomeOutput → tamanho vetor
-            var outputMap = new Dictionary<string, int>();
-
-            foreach (var r in resultados)
-            {
-                foreach (var kv in r.Outputs)
-                {
-                    if (kv.Value is float[] arr)
-                    {
-                        outputMap[kv.Key] = Math.Max(
-                            outputMap.ContainsKey(kv.Key) ? outputMap[kv.Key] : 0,
-                            arr.Length
-                        );
-                    }
-                    else
-                    {
-                        outputMap[kv.Key] = 1;
-                    }
-                }
-            }
-
-            foreach (var kv in outputMap)
-            {
-                var nome = kv.Key;
-                var tamanho = kv.Value;
-
-                if (tamanho == 1)
-                {
-                    tabela.Columns.Add(nome, typeof(float));
-                }
-                else
-                {
-                    for (int i = 0; i < tamanho; i++)
-                    {
-                        tabela.Columns.Add($"{nome}_{i}", typeof(float));
-                    }
-                }
-            }
-
-            foreach (var r in resultados)
-            {
-                var linha = tabela.NewRow();
-
-                linha["ID"] = r.Id;
-
-                foreach (var kv in outputMap)
-                {
-                    var nome = kv.Key;
-                    var tamanho = kv.Value;
-
-                    if (r.Outputs.TryGetValue(nome, out var valor))
-                    {
-                        if (valor is float[] arr)
-                        {
-                            for (int i = 0; i < tamanho; i++)
-                            {
-                                var colName = tamanho == 1 ? nome : $"{nome}_{i}";
-
-                                if (i < arr.Length)
-                                    linha[colName] = arr[i];
-                                else
-                                    linha[colName] = DBNull.Value;
-                            }
-                        }
-                        else
-                        {
-                            linha[nome] = valor;
-                        }
-                    }
-                    else
-                    {
-                        // Preenche vazio
-                        if (tamanho == 1)
-                        {
-                            linha[nome] = DBNull.Value;
-                        }
-                        else
-                        {
-                            for (int i = 0; i < tamanho; i++)
-                            {
-                                linha[$"{nome}_{i}"] = DBNull.Value;
-                            }
-                        }
-                    }
-                }
-
-                tabela.Rows.Add(linha);
-            }
-
-            return tabela;
-        }
+        public void AlterouTabela(DataView dataView) => DataPreview = dataView;
 
         private async Task<DataFrame> CarregarDataFrameAsync()
         {

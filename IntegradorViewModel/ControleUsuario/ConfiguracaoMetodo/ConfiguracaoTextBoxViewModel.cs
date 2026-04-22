@@ -1,65 +1,35 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using IntegradorAplicacao.ArquivosController.Csv;
-using IntegradorAplicacao.DTO;
+﻿using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.PipelineAplicacao.ParserPipeline;
 using IntegradorDominio.DataFrameModel;
-using IntegradorViewModel.Shared.Context;
+using IntegradorDominio.Inferencia;
 using IntegradorViewModel.Shared.Interfaces;
-using Microsoft.VisualBasic.FileIO;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
-using System.Text;
 
 namespace IntegradorViewModel.ControleUsuario
 {
-    public partial class ConfiguracaoMetodoTextBoxViewModel : ObservableObject
+    public partial class ConfiguracaoTextBoxViewModel
     {
-        [ObservableProperty]
-        private DataView _dadosPreview;
-
-        [ObservableProperty]
-        private string _scriptCodigo;
-
-        [ObservableProperty]
-        private bool _dataFrameMudou;
-
-        private IReadOnlyList<string>[] _estadoColuna;
         private ParserAst _parserAst;
-        private string[] _estadoCabecalho;
 
         private readonly Action<DataView> _onDadosAlterados;
 
-        private readonly ArquivoDadosDTO _arquivoDados;
-
         private readonly IDialogService _dialogService;
 
-        private CsvController _controllerCsv;
-
-        public ConfiguracaoMetodoTextBoxViewModel(IDialogService dialogService, ArquivoDadosDTO arquivoDados, Action<DataView> onDadosAlterados, DataView dadosPreview)
+        public ConfiguracaoTextBoxViewModel(IDialogService dialogService, ArquivoDadosDTO arquivoDados, Action<DataView> onDadosAlterados)
         {
-            ScriptCodigo = string.Empty;
-            DadosPreview = dadosPreview;
-            DataFrameMudou = false;
-
-            _arquivoDados = arquivoDados;
             _dialogService = dialogService;
             _onDadosAlterados = onDadosAlterados;
-            _controllerCsv = new CsvController(_arquivoDados.Delimitador, _arquivoDados.Decimal, _arquivoDados.Codificacao);
 
             _parserAst = new();
-            _estadoColuna = new List<string>[0];
-            _estadoCabecalho = new string[0];
         }
 
-        public Dictionary<string, List<string>>? MandaCodigoMetodo()
+        public Dictionary<string, List<string>>? MandaCodigoMetodo(string scriptCodigo)
         {
             try
             {
-                if (!string.IsNullOrWhiteSpace(ScriptCodigo))
+                if (!string.IsNullOrWhiteSpace(scriptCodigo))
                 {
-                    return _parserAst.ParserCorpo(ScriptCodigo);
+                    return _parserAst.ParserCorpo(scriptCodigo);
                 }
             }
             catch (Exception ex)
@@ -71,34 +41,7 @@ namespace IntegradorViewModel.ControleUsuario
 
         }
 
-        public async Task GuardaEstado()
-        {
-            await _controllerCsv.CarregarArquivoAsync(_arquivoDados.CaminhoArquivoDados);
-
-            _estadoCabecalho = _controllerCsv.Cabecalho;
-
-            _estadoColuna = new IReadOnlyList<string>[_estadoCabecalho.Length];
-
-            for (int i = 0; i < _estadoCabecalho.Length; i++)
-            {
-                _estadoColuna[i] = _controllerCsv.Colunas[i].ToList().AsReadOnly();
-            }
-        }
-
-        public DataFrame CarregarDados()
-        {
-            var dataFrame = new DataFrame();
-
-            for (int i = 0; i < _estadoCabecalho.Length; i++)
-            {
-                var dado = _estadoColuna[i];
-                dataFrame.AdicionarColuna(_estadoCabecalho[i], dado.ToList());
-            }
-
-            return dataFrame;
-        }
-
-        private static DataTable DataFrameParaDataTable(DataFrame dataFrame)
+        public DataTable DataFrameParaDataTable(DataFrame dataFrame)
         {
             var tabela = new DataTable();
             var colunas = dataFrame.Colunas;
@@ -154,14 +97,14 @@ namespace IntegradorViewModel.ControleUsuario
             _onDadosAlterados(dataTable.DefaultView);
         }
 
-        public void EscreveScript(string featureName, List<string> listaPropriedades)
+        public void EscreveScript(string featureName, List<string> listaPropriedades, string scriptCodigo)
         {
-            if(string.IsNullOrWhiteSpace(ScriptCodigo))
+            if(string.IsNullOrWhiteSpace(scriptCodigo))
             {
-                ScriptCodigo ="SuaFuncao()\n{\nreturn df\n}";
+                scriptCodigo ="SuaFuncao()\n{\nreturn df\n}";
             }
 
-            var indeReturn = ScriptCodigo.IndexOf("return");
+            var indeReturn = scriptCodigo.IndexOf("return");
 
             var codigo = $"df = df.{featureName}()";
             var indexParenteses = codigo.IndexOf("()");
@@ -197,12 +140,9 @@ namespace IntegradorViewModel.ControleUsuario
             }
 
 
-            ScriptCodigo = ScriptCodigo.Insert(indeReturn, $"{codigo}\n\n");
+            scriptCodigo = scriptCodigo.Insert(indeReturn, $"{codigo}\n\n");
         }
 
-        public void EsvaziaScript()
-        {
-            ScriptCodigo = string.Empty;
-        }
+        public void EsvaziaScript(string scriptCodigo) => scriptCodigo = string.Empty;
     }
 }

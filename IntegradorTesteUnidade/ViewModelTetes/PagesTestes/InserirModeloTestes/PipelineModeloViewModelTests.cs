@@ -228,11 +228,11 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
             Assert.Null(ex);
         }
 
-        private ConfiguracaoMetodoTextBoxViewModel CriarTextBoxReal()
+        private ConfiguracaoTextBoxViewModel CriarTextBoxReal()
         {
             var caminhoCsv = CriarCsvFake();
 
-            return new ConfiguracaoMetodoTextBoxViewModel(
+            return new ConfiguracaoTextBoxViewModel(
                 _dialogMock.Object,
                 new ArquivoDadosDTO(
                     caminhoCsv,

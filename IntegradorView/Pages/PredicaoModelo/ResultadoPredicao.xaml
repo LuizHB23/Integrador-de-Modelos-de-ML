@@ -4,149 +4,376 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:IntegradorView.Pages.PredicaoModelo"
+      xmlns:usercontrol="clr-namespace:IntegradorView.ControleUsuario"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Background="{DynamicResource MaterialDesignPaper}">
 
-    <Grid Margin="30"
-          Width="Auto"
-          Height="Auto">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+    <Grid>
+        <DockPanel>
+            <Grid DockPanel.Dock="Bottom">
+                <StackPanel Orientation="Horizontal"
+                            Margin="15"
+                            HorizontalAlignment="Right">
 
-        <TextBlock Text="Resultados do Processamento"
-                   HorizontalAlignment="Center"
-                   Style="{StaticResource MaterialDesignHeadline6TextBlock}"
-                   Margin="10"
-                   FontSize="28"/>
+                    <Button x:Name="BotaoCancelar" 
+                            Content="Cancelar"
+                            Style="{StaticResource MaterialDesignOutlinedButton}" 
+                            Width="120"
+                            Margin="10,0"
+                            Command="{Binding NavigateToHomeCommand}"
+                            Cursor="Hand"/>
+
+                    <Button x:Name="BotaoProximo"
+                            Content="Próximo" 
+                            Style="{StaticResource MaterialDesignRaisedButton}"
+                            Width="120"
+                            Margin="10,0"
+                            Command="{Binding NavigateToTransformersCommand}"
+                            Cursor="Hand"/>
+                </StackPanel>
+
+            </Grid>
+
+            <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                          VerticalScrollBarVisibility="Auto">
+                <Grid Width="Auto"
+                      Height="Auto">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Resultados do Processamento"
+                           HorizontalAlignment="Center"
+                           Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                           Margin="10"
+                           FontSize="28"/>
+
+                    <Grid Grid.Row="1"
+                          HorizontalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <materialDesign:Card Grid.Column="0"
+                                             UniformCornerRadius="10"
+                                             Margin="10,20"
+                                             HorizontalAlignment="Center">
+
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <StackPanel Grid.Row="0">
+                                    <TextBlock Text="Inferência Realizada"
+                                           HorizontalAlignment="Left"
+                                           Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                                           Margin="20,10"
+                                           FontSize="24"/>
+
+                                    <TextBlock Text="Linhas inferidas"
+                                           HorizontalAlignment="Left"
+                                           Style="{StaticResource MaterialDesignHeadline3TextBlock}"
+                                           Margin="20,10"
+                                           FontSize="20"/>
+
+                                    <Border Background="{DynamicResource MaterialDesignSelection}" 
+                                            BorderThickness="0.5"
+                                            Height="65"
+                                            Width="200"
+                                            Margin="30,10"
+                                            BorderBrush="Black"
+                                            CornerRadius="5">
+
+                                        <TextBlock Text="{Binding LinhasInferencia}"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   FontSize="24"/>
+
+                                    </Border>
+
+                                    <StackPanel Margin="20,10"
+                                                Orientation="Horizontal">
+
+                                        <materialDesign:PackIcon Kind="Printer"
+                                                                 Width="40" 
+                                                                 Height="40" 
+                                                                 VerticalAlignment="Center"/>
+                                        <StackPanel Margin="20,10">
+                                            <TextBlock Text="Exportar Resultados"
+                                                       Margin="5"
+                                                       FontSize="18"/>
+
+                                            <Button Content="Exportar CSV"
+                                                Style="{StaticResource MaterialDesignRaisedButton}"
+                                                Command="{Binding ExportarCsvResultadoCommand}"
+                                                Width="170"/>
+                                        </StackPanel>
+                                    </StackPanel>
+
+                                    <Rectangle Width="Auto"
+                                               Height="1"
+                                               Fill="#D1D1D1" 
+                                               Margin="20,10"/>
+                                </StackPanel>
 
 
-        <materialDesign:Card Grid.Row="1" 
-                             UniformCornerRadius="10"
-                             Margin="0,0,0,20"
-                             Width="800">
-            <GroupBox Header="Preview das Predições" 
-                      materialDesign:ColorZoneAssist.Mode="PrimaryMid"
-                      Margin="0">
-                <GroupBox.HeaderTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding}" 
-                                   HorizontalAlignment="Center" 
-                                   Width="{Binding RelativeSource={RelativeSource AncestorType=ContentPresenter}, Path=ActualWidth}"
-                                   TextAlignment="Center"
-                                   FontWeight="Bold"/>
-                    </DataTemplate>
-                </GroupBox.HeaderTemplate>
-                <DataGrid x:Name="GridPreview" 
-                          ItemsSource="{Binding DataPreview}"
-                          AutoGenerateColumns="True" 
-                          IsReadOnly="True"
-                          CanUserAddRows="False"
-                          VerticalScrollBarVisibility="Auto"
-                          Style="{StaticResource MaterialDesignDataGrid}">
+                                <StackPanel Grid.Row="1"
+                                            VerticalAlignment="Top">
+                                    <TextBlock Text="Erros Cometidos"
+                                               VerticalAlignment="Top"
+                                               HorizontalAlignment="Left"
+                                               Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                                               Margin="20,10"
+                                               FontSize="24"/>
 
-                    <DataGrid.ColumnHeaderStyle>
-                        <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
-                            <Setter Property="ContentTemplate">
-                                <Setter.Value>
+                                    <TextBlock Text="Quantidade de erros"
+                                               HorizontalAlignment="Left"
+                                               Style="{StaticResource MaterialDesignHeadline3TextBlock}"
+                                               Margin="20,10"
+                                               FontSize="18"/>
+
+                                    <Border Background="{DynamicResource MaterialDesignSelection}" 
+                                            BorderThickness="0.5"
+                                            Height="65"
+                                            Width="200"
+                                            Margin="30,10"
+                                            BorderBrush="Black"
+                                            CornerRadius="5">
+
+                                        <TextBlock Text="{Binding LinhasErro}"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   FontSize="24"/>
+
+                                    </Border>
+
+                                    <StackPanel Margin="20,10"
+                                                Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="Printer"
+                                                                 Width="40" 
+                                                                 Height="40" 
+                                                                 VerticalAlignment="Center"/>
+
+                                        <StackPanel Margin="20,10">
+                                            <TextBlock Text="Exportar Erros"
+                                                   Margin="5"
+                                                   FontSize="18"/>
+
+                                            <Button Content="Exportar CSV" 
+                                                Style="{StaticResource MaterialDesignRaisedButton}"
+                                                Command="{Binding ExportarCsvErrosCommand}"
+                                                Width="170"/>
+                                        </StackPanel>
+
+                                    </StackPanel>
+
+                                    <Rectangle Width="Auto"
+                                               Height="1"
+                                               Fill="#D1D1D1" 
+                                               Margin="20,10"/>
+                                </StackPanel>
+
+
+                                <StackPanel Grid.Row="2"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center">
+
+                                    <TextBlock Text="Tempo de Processamento"
+                                               VerticalAlignment="Top"
+                                               HorizontalAlignment="Left"
+                                               Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                                               Margin="20,10"
+                                               FontSize="24"/>
+
+                                    
+                                    <StackPanel Margin="20,10"
+                                                VerticalAlignment="Center"
+                                                Orientation="Horizontal">
+
+                                        <materialDesign:PackIcon Kind="Timer" 
+                                                                 Width="40" 
+                                                                 Height="40" 
+                                                                 VerticalAlignment="Center"/>
+
+                                        <Border Background="{DynamicResource MaterialDesignSelection}" 
+                                                BorderThickness="0.5"
+                                                Height="65"
+                                                Width="200"
+                                                Margin="20,10"
+                                                Padding="10"
+                                                BorderBrush="Black"
+                                                CornerRadius="5">
+
+                                            <TextBlock Text="{Binding TempoProcessamento}"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"
+                                                       FontSize="24"/>
+                                        </Border>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+                        </materialDesign:Card>
+
+                        <materialDesign:Card Grid.Column="1" 
+                                         UniformCornerRadius="10"
+                                         MinWidth="600"
+                                         Margin="10,20"
+                                         HorizontalAlignment="Center">
+                            <GroupBox Header="Preview das Predições" 
+                                      materialDesign:ColorZoneAssist.Mode="PrimaryMid"
+                                      MaxHeight="789"
+                                      Margin="0">
+                                <GroupBox.HeaderTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding}" TextWrapping="Wrap"/>
+                                        <TextBlock Text="{Binding}" 
+                                           HorizontalAlignment="Center" 
+                                           Width="{Binding RelativeSource={RelativeSource AncestorType=ContentPresenter}, Path=ActualWidth}"
+                                           TextAlignment="Center"
+                                           FontWeight="Bold"/>
                                     </DataTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </DataGrid.ColumnHeaderStyle>
-                </DataGrid>
-            </GroupBox>
-        </materialDesign:Card>
+                                </GroupBox.HeaderTemplate>
+                                <DataGrid x:Name="GridPreview" 
+                                            ItemsSource="{Binding DataPreview}"
+                                            AutoGenerateColumns="True" 
+                                            IsReadOnly="True"
+                                            CanUserAddRows="False"
+                                            VerticalScrollBarVisibility="Auto"
+                                            Style="{StaticResource MaterialDesignDataGrid}">
 
-        <Grid Grid.Row="2" 
-              Width="800">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+                                    <DataGrid.ColumnHeaderStyle>
+                                        <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+                                            <Setter Property="ContentTemplate">
+                                                <Setter.Value>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding}" TextWrapping="Wrap"/>
+                                                    </DataTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </DataGrid.ColumnHeaderStyle>
+                                </DataGrid>
+                            </GroupBox>
+                        </materialDesign:Card>
 
-            <materialDesign:Card Grid.Column="0" 
-                                 Margin="0,0,10,0" 
-                                 UniformCornerRadius="10"
-                                 Height="90">
-                
-                <StackPanel Orientation="Horizontal" 
-                            HorizontalAlignment="Center">
-                    
-                    <materialDesign:PackIcon Kind="Timer" 
-                                             Width="40" 
-                                             Height="40" 
-                                             VerticalAlignment="Center"/>
-                    
-                    <StackPanel Margin="20,0,0,0"
-                                VerticalAlignment="Center">
-                        <TextBlock Text="Tempo de Processamento" 
-                                   FontSize="12" />
+                        <materialDesign:Card Grid.Column="2"
+                                             UniformCornerRadius="10"
+                                             Margin="10,20"
+                                             MinWidth="450"
+                                             HorizontalAlignment="Center">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                
+                                <Grid Grid.Row="0"
+                                      HorizontalAlignment="Stretch">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
 
-                        <TextBlock Text="{Binding TempoProcessamento}" 
-                                   FontSize="24"/>
-                    </StackPanel>
-                </StackPanel>
-            </materialDesign:Card>
+                                    <materialDesign:ColorZone Mode="PrimaryMid" 
+                                                              CornerRadius="8,8,0,0"
+                                                              Grid.Row="0"
+                                                              HorizontalAlignment="Stretch"
+                                                              Width="Auto"
+                                                              Height="60">
+                                        <StackPanel Orientation="Horizontal"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center">
 
-            <materialDesign:Card Grid.Column="1"
-                                 Margin="10,0,0,0"
-                                 UniformCornerRadius="10"
-                                 Height="90">
-                
-                <StackPanel Orientation="Horizontal" 
-                            HorizontalAlignment="Center">
-                    
-                    <materialDesign:PackIcon Kind="Printer"
-                                             Width="40" 
-                                             Height="40" 
-                                             VerticalAlignment="Center"/>
+                                            <materialDesign:PackIcon Kind="Settings" Width="24" Height="24" 
+                                         VerticalAlignment="Center" Margin="0,0,16,0"/>
 
-                    <StackPanel Margin="10">
-                        <TextBlock Text="Exportar Resultados"
-                                   Margin="5"
-                                   FontSize="18"/>
-                        
-                        <Button Content="Exportar CSV"
-                                Style="{StaticResource MaterialDesignRaisedButton}"
-                                Command="{Binding ExportarCsvResultadoCommand}"
-                                Width="170"/>
-                    </StackPanel>
-                </StackPanel>
-            </materialDesign:Card>
+                                            <TextBlock Text="Configurar Saída"
+                                                       Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                                                       VerticalAlignment="Center"
+                                                       Margin="0,0,30,0"/>
 
-            <materialDesign:Card Grid.Column="2"
-                     Margin="10,0,0,0"
-                     UniformCornerRadius="10"
-                     Height="90">
+                                            <Button Content="Atualizar"
+                                                    Command="{Binding AtualizaFuncaoCommand}"
+                                                    Style="{StaticResource MaterialDesignOutlinedButton}"
+                                                    Foreground="White"
+                                                    BorderBrush="White"
+                                                    Grid.Row="3"
+                                                    HorizontalAlignment="Right"
+                                                    Height="40"
+                                                    Margin="30,10,10,10"
+                                                    FontSize="14"
+                                                    FontWeight="Bold"
+                                                    Cursor="Hand"/>
 
-                <StackPanel Orientation="Horizontal" 
-                HorizontalAlignment="Center">
+                                            <Button Content="Adicionar"
+                                                    Command="{Binding AdicionaFuncaoCommand}"
+                                                    Style="{StaticResource MaterialDesignOutlinedButton}"
+                                                    Foreground="White"
+                                                    BorderBrush="White"
+                                                    Grid.Row="3"
+                                                    HorizontalAlignment="Right"
+                                                    Height="40"
+                                                    Margin="30,10,10,10"
+                                                    FontSize="14"
+                                                    FontWeight="Bold"
+                                                    Cursor="Hand"/>
+                                        </StackPanel>
+                                    </materialDesign:ColorZone>
 
-                    <materialDesign:PackIcon Kind="Printer"
-                                 Width="40" 
-                                 Height="40" 
-                                 VerticalAlignment="Center"/>
+                                    <ScrollViewer Grid.Row="1" 
+                                                  VerticalScrollBarVisibility="Auto" 
+                                                  Padding="20">
+                                        <ContentControl Content="{Binding TextBox}"
+                                                        Margin="10"/>
+                                    </ScrollViewer>
 
-                    <StackPanel Margin="10">
-                        <TextBlock Text="Exportar Erros"
-                                   Margin="5"
-                                   FontSize="18"/>
+                                </Grid>
 
-                        <Button Content="Exportar CSV" 
-                                Style="{StaticResource MaterialDesignRaisedButton}"
-                                Command="{Binding ExportarCsvErrosCommand}"
-                                Width="170"/>
-                    </StackPanel>
-                </StackPanel>
-            </materialDesign:Card>
-        </Grid>
+                                <UniformGrid Grid.Row="1" Columns="2">
+                                    <TextBlock Text="Pipeline" 
+                                               Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                                               HorizontalAlignment="Left"
+                                               Width="Auto"
+                                               Margin="40,0"/>
+                                    
+                                    <TextBlock Text="Teste" 
+                                               Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                                               HorizontalAlignment="Right"
+                                               Width="Auto"
+                                               Margin="40,0"/>
+                                </UniformGrid>
+
+                                <Border Grid.Row="2"
+                                        BorderThickness="0.5"
+                                        Margin="20"
+                                        BorderBrush="Black"
+                                        CornerRadius="5">
+
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                        <ItemsControl ItemsSource="{Binding CardsFuncoes}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <usercontrol:ConfiguracaoCardFuncao/>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                </Border>
+                            </Grid>
+
+
+                        </materialDesign:Card>
+                    </Grid>
+                </Grid>
+            </ScrollViewer>
+        </DockPanel>
     </Grid>
 </UserControl>
