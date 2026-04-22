@@ -14,6 +14,7 @@ using IntegradorViewModel.Pages.PrincipalModelo;
 using IntegradorViewModel.Shared.Context;
 using IntegradorViewModel.Shared.Interfaces;
 using IntegradorViewModel.Shared.Manager.GerenciadorCards;
+using IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor;
 using System.Collections.ObjectModel;
 using System.Data;
 
@@ -38,26 +39,13 @@ namespace IntegradorViewModel.Pages.InserirModelo
         public ObservableCollection<FeatureEngineeringItemViewModel> ListaFeatureEngineering { get; }
         public ObservableCollection<TransformDataViewItemViewModel> ListaTransformDataView { get; }
 
-        private  ExecutorFinal? _executor;
-
         private readonly string _nomeModelo;
-        private readonly CardsPipelineModeloManager _cardsManager;
-
-        private readonly IConverteJson<Dictionary<int, FuncaoDTO>> _converter;
-        private readonly IDialogService _dialogService;
-        private readonly IContext<ArquivoDadosDTO> _contextArquivo;
-        private readonly IContext<ModeloDTO> _contextNomeModelo;
-        private readonly IPathProvider _provider;
+        private readonly CardsConfigurarFuncaoManager _cardsManager;
+        private readonly ScriptExecutorPipelineModeloManager _scriptManager;
 
         public PipelineModeloViewModel(INavigationService navigation, IDialogService dialogService, IConverteJson<Dictionary<int, FuncaoDTO>> converter, IContext<ModeloDTO> contextNomeModelo, IContext<ArquivoDadosDTO> contextArquivo, IPathProvider provider)
         {
-            _converter = converter;
-            _dialogService = dialogService;
-            _navigation = navigation;
-            _contextNomeModelo = contextNomeModelo;
-            _contextArquivo = contextArquivo;
-            _provider = provider;
-
+            Navigation = navigation;
             ListaFeatureEngineering = new();
             ListaTransformDataView = new();
             CarregarListas();
@@ -65,168 +53,27 @@ namespace IntegradorViewModel.Pages.InserirModelo
             DataPreview = new();
             CardsFuncoes = new();
             OpcoesPosicao = new();
-            TextBox = new ConfiguracaoPipelineTextBoxViewModel(new ConfiguracaoTextBoxViewModel(dialogService, AlterouTabela), DataPreview, new EstadoDataFrameViewModel(_contextArquivo.RecebeMensagem()));
-            _nomeModelo = _contextNomeModelo.RecebeMensagem().NomeModelo;
+            TextBox = new ConfiguracaoPipelineTextBoxViewModel(new ConfiguracaoTextBoxViewModel(dialogService, AlterouTabela), DataPreview, new EstadoDataFrameViewModel(contextArquivo.RecebeMensagem()));
+            _nomeModelo = contextNomeModelo.RecebeMensagem().NomeModelo;
             _cardsManager = new(CardsFuncoes, OpcoesPosicao);
+
+            _scriptManager = new(dialogService, converter, contextNomeModelo, contextArquivo, provider, CardsFuncoes, OpcoesPosicao, TextBox);
         }
 
         [RelayCommand]
-        public async Task AdicionaFuncao()
-        {
-            var modeloNomeCorpo = TextBox.MandaCodigoMetodo();
-
-            if ((modeloNomeCorpo is null) || (modeloNomeCorpo.Count == 0))
-            {
-                return;
-            }
-
-            var modeloElementos = modeloNomeCorpo.First();
-            var funcaoItem = new FuncaoItemViewModel(CardsFuncoes.Count + 1, modeloElementos.Key, modeloElementos.Value);
-            _cardsManager.AdicionarCard(funcaoItem, RemoverFuncao, OrganizaPosicao, ConfigurarFuncao);
-            PreparaParaJson();
-
-            try
-            {
-                await ConstroiPipelineAsync();
-                TextBox.EsvaziaScript();
-            }
-            catch (Exception ex)
-            {
-                _dialogService.ShowMessage($"Houve um erro no comando: {ex.Message}", "Erro de Comando");
-            }
-        }
+        public async Task AdicionaFuncao() => await _scriptManager.AdicionaFuncao();
 
         [RelayCommand]
-        public async Task CarregarPipeline()
-        {
-            string? caminhoPipeline = null;
+        public async Task CarregarPipeline() => await _scriptManager.CarregarPipeline();
 
-            try
-            {
-                caminhoPipeline = _cardsManager.CarregarPipeline(_dialogService, _converter, ConfigurarFuncao, RemoverFuncao);
-            }
-            catch (Exception ex)
-            {
-                return;
-            }
-
-            await TextBox.GuardaEstadoArquivo();
-
-            try
-            {
-                await ConstroiPipelineAsync(caminhoPipeline);
-                PreparaParaJson();
-            }
-            catch (Exception ex)
-            {
-                CardsFuncoes.Clear();
-                OpcoesPosicao.Clear();
-                _dialogService.ShowMessage($"Erro no ao carregar Pipeline: {ex.Message}", "Erro de Comando");
-            }
-        }
-
-        private async Task RemoverFuncao(ConfiguracaoCardFuncaoViewModel cardSchema)
-        {
-            _cardsManager.RemoverCard(cardSchema);
-            PreparaParaJson();
-
-            try
-            {
-               await ConstroiPipelineAsync();
-            }
-            catch (Exception ex)
-            {
-                _dialogService.ShowMessage($"Houve um erro no comando {ex.Message}", "Erro de Comando");
-            }
-        }
-
-        private void OrganizaPosicao(ConfiguracaoCardFuncaoViewModel cardSchema, int posicaoNova)
-        {
-            _cardsManager.OrganizaPosicao(cardSchema, posicaoNova);
-            PreparaParaJson();
-        }
-
-        private void PreparaParaJson() => _cardsManager.PreparaParaJson(_converter, _nomeModelo);
+        [RelayCommand]
+        public async Task AtualizaFuncao() => await _scriptManager.AtualizaFuncao();
 
         private void RecebeListaPropriedades(string featureName, List<string> listaPropriedades) => TextBox.EscreveScript(featureName, listaPropriedades);
 
         public void AlterouTabela(DataView dataView) => DataPreview = dataView;
 
-        [RelayCommand]
-        public async Task AtualizaFuncao()
-        {
-            var modeloNomeCorpo = TextBox.MandaCodigoMetodo();
-
-            if (modeloNomeCorpo is null)
-            {
-                return;
-            }
-
-            var caminhoPasta = _provider.GetCaminhoModelo();
-            caminhoPasta = Path.Combine(caminhoPasta, _nomeModelo, "pipeline.json");
-
-            var dicionarioFuncoes = _converter.CarregarJson(caminhoPasta);
-
-            foreach (var elemento in dicionarioFuncoes)
-            {
-                if (elemento.Value.NomeFuncao == modeloNomeCorpo.First().Key)
-                {
-                    int posicao = elemento.Key;
-                    var listaCodigo = modeloNomeCorpo.First().Value;
-
-                    var funcaoDto = new FuncaoDTO(elemento.Value.NomeFuncao, listaCodigo, elemento.Value.NomeModelo);
-
-                    var funcaoReserva = dicionarioFuncoes[posicao];
-                    dicionarioFuncoes[posicao] = funcaoDto;
-                    _converter.ConverteJson(dicionarioFuncoes);
-
-                    try
-                    {
-                        await Task.Run(() => ConstroiPipelineAsync());
-                        TextBox.EsvaziaScript();
-                    }
-                    catch (Exception ex)
-                    {
-                        _dialogService.ShowMessage($"Houve um erro no comando: {ex.Message}", "Erro de Comando");
-
-                        dicionarioFuncoes[posicao] = funcaoReserva;
-                        _converter.ConverteJson(dicionarioFuncoes);
-                        await Task.Run(() => ConstroiPipelineAsync());
-                    }
-
-                    return;
-                }
-            }
-
-            _dialogService.ShowMessage("Não há método para sobrevescrever");
-        }
-
-
-        public void ConfigurarFuncao(ConfiguracaoCardFuncaoViewModel cardSchema)
-        {
-            var caminhoPasta = _provider.GetCaminhoModelo();
-            caminhoPasta = Path.Combine(caminhoPasta, _nomeModelo, "pipeline.json");
-
-            var dicionarioFuncoes = _converter.CarregarJson(caminhoPasta);
-            var codigo = string.Empty;
-
-            foreach (var elemento in dicionarioFuncoes)
-            {
-                if (elemento.Value.NomeFuncao == cardSchema.NomeMetodo)
-                {
-                    codigo = $"{cardSchema.NomeMetodo}()" + "\n{";
-
-                    foreach (var linha in elemento.Value.Codigo)
-                    {
-
-                        codigo += $"\n{linha}\n";
-                    }
-                    codigo += "}";
-                }
-            }
-
-            TextBox.ScriptCodigo = codigo;
-        }
+        public void ConfigurarFuncao(ConfiguracaoCardFuncaoViewModel cardSchema) => _scriptManager.ConfigurarFuncao(cardSchema);
 
         [RelayCommand]
         public void NavigateToTransformers()
@@ -239,19 +86,6 @@ namespace IntegradorViewModel.Pages.InserirModelo
         {
             Navigation.EndFlow();
             Navigation.NavigateTo<HomeViewModel>();
-        }
-
-        private async Task ConstroiPipelineAsync(string caminho) => await ExecutaPipeline(caminho);
-        private async Task ConstroiPipelineAsync() => await ExecutaPipeline(Path.Combine(_provider.GetCaminhoModelo(), "pipeline.json"));
-
-        private async Task ExecutaPipeline(string caminho)
-        {
-            var dataFrame = TextBox.CarregarDados();
-            _executor = new(_converter);
-            await Task.Run(() => _executor.ConstroiSequenciaMetodoPipeline(caminho));
-            dataFrame = await Task.Run(() => _executor.ExecutarTudo(dataFrame));
-            _executor = null;
-            TextBox.AtualizaTabela(dataFrame);
         }
 
         private void CarregarListas()

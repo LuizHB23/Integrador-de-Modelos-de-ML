@@ -9,9 +9,9 @@ using System.Diagnostics;
 
 namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
 {
-    public class CardsPipelineModeloManager : CardsManager<ConfiguracaoCardFuncaoViewModel>
+    public class CardsConfigurarFuncaoManager : CardsManager<ConfiguracaoCardFuncaoViewModel>
     {
-        public CardsPipelineModeloManager(ObservableCollection<ConfiguracaoCardFuncaoViewModel> cardsLista, ObservableCollection<int> posicoesLista) : base(cardsLista, posicoesLista) { }
+        public CardsConfigurarFuncaoManager(ObservableCollection<ConfiguracaoCardFuncaoViewModel> cardsLista, ObservableCollection<int> posicoesLista) : base(cardsLista, posicoesLista) { }
 
         public void AdicionarCard(FuncaoItemViewModel funcaoItem, Func<ConfiguracaoCardFuncaoViewModel, Task> actionExcluir, Action<ConfiguracaoCardFuncaoViewModel, int> actionTrocarPosicao, Action<ConfiguracaoCardFuncaoViewModel> actionConfigurarFuncao)
         {

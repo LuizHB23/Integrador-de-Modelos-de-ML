@@ -1,11 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using IntegradorViewModel.ControleUsuario.ConfiguracaoMetodo.EstadoDataFrame;
 using IntegradorDominio.DataFrameModel;
+using IntegradorDominio.Inferencia;
+using IntegradorViewModel.ControleUsuario.ConfiguracaoMetodo.EstadoDataFrame;
+using IntegradorViewModel.ControleUsuario.ConfiguracaoTextBox;
 using System.Data;
 
 namespace IntegradorViewModel.ControleUsuario
 {
-    public partial class ConfiguracaoPipelineTextBoxViewModel : ObservableObject
+    public partial class ConfiguracaoResultadoTextBoxViewModel : ObservableObject, IConfiguracaoTextBox
     {
         [ObservableProperty]
         private DataView _dadosPreview;
@@ -19,7 +21,7 @@ namespace IntegradorViewModel.ControleUsuario
         private EstadoDataFrameViewModel _estadoDataFrame;
         private ConfiguracaoTextBoxViewModel _textBox;
 
-        public ConfiguracaoPipelineTextBoxViewModel(ConfiguracaoTextBoxViewModel textBox, DataView dadosPreview, EstadoDataFrameViewModel estadoDataFrame)
+        public ConfiguracaoResultadoTextBoxViewModel(ConfiguracaoTextBoxViewModel textBox, DataView dadosPreview, EstadoDataFrameViewModel estadoDataFrame)
         {
             ScriptCodigo = string.Empty;
             DadosPreview = dadosPreview;
@@ -35,7 +37,13 @@ namespace IntegradorViewModel.ControleUsuario
         public void EscreveScript(string featureName, List<string> listaPropriedades) => _textBox.EscreveScript(featureName, listaPropriedades, ScriptCodigo);
         public void EsvaziaScript() => ScriptCodigo = _textBox.EsvaziaScript();
 
+
         public DataFrame CarregarDados() => _estadoDataFrame.CarregarDados();
-        public async Task GuardaEstadoArquivo() => await _estadoDataFrame.GuardaEstadoArquivo();
+        public async Task GuardaEstado(List<ResultadoInferencia> resultados) => await _estadoDataFrame.GuardaEstadoResultado(resultados);
+
+        public Task GuardaEstado()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

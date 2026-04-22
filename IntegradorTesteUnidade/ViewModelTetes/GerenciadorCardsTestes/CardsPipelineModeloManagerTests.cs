@@ -17,14 +17,14 @@ namespace IntegradorTesteUnidade.ViewModelTetes.GerenciadorCardsTestes
         private readonly Mock<IDialogService> _dialogMock = new();
         private readonly Mock<IConverteJson<Dictionary<int, FuncaoDTO>>> _converterMock = new();
 
-        private CardsPipelineModeloManager CriarManager(
+        private CardsConfigurarFuncaoManager CriarManager(
             out ObservableCollection<ConfiguracaoCardFuncaoViewModel> cards,
             out ObservableCollection<int> posicoes)
         {
             cards = new ObservableCollection<ConfiguracaoCardFuncaoViewModel>();
             posicoes = new ObservableCollection<int>();
 
-            return new CardsPipelineModeloManager(cards, posicoes);
+            return new CardsConfigurarFuncaoManager(cards, posicoes);
         }
 
         // =========================

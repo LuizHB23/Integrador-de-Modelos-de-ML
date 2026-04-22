@@ -42,6 +42,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                 switch (Operacao.type)
                 {
                     case "single":
+                    case "float":
                         tipoColuna = typeof(Single?);
                         if (VerificaNulidade(Operacao.value))
                             valor = null;
@@ -106,12 +107,20 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
         }
 
-        private bool VerificaNulidade(object valor)
+        private bool VerificaNulidade(string valor)
         {
-            if (valor is string s && (string.IsNullOrWhiteSpace(s) || string.Equals(s.ToLower(), "na") || string.Equals(s.ToLower(), "na") || string.Equals(s.ToLower(), "null")))
-                return true;
-
-            return false;
+            return string.IsNullOrWhiteSpace(valor)
+                || ValoresNulos.Contains(valor.Trim().ToLower());
         }
+
+        private static readonly HashSet<string> ValoresNulos = new(StringComparer.OrdinalIgnoreCase)
+        {
+            "na",
+            "n/a",
+            "nan",
+            "null",
+            "none",
+            ""
+        };
     }
 }

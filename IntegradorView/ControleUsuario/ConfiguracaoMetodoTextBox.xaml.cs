@@ -27,7 +27,7 @@ namespace IntegradorView.ControleUsuario
             {
                 if (DataContext is ConfiguracaoPipelineTextBoxViewModel mtb)
                 {
-                    await Task.Run(() => mtb.GuardaEstadoArquivo());
+                    await Task.Run(() => mtb.GuardaEstado());
                     mtb.AtualizaTabela(mtb.CarregarDados());
                 }
             };
