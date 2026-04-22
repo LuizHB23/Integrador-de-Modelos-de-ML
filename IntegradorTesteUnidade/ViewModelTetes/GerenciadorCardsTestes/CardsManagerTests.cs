@@ -101,7 +101,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.GerenciadorCardsTestes
 
             var item = lista[1];
 
-            manager.RemoverColuna(item);
+            manager.RemoverCard(item);
 
             Assert.DoesNotContain(item, lista);
             Assert.Equal(2, lista.Count);
@@ -112,7 +112,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.GerenciadorCardsTestes
         {
             var manager = CriarManagerCom3Itens(out var lista);
 
-            manager.RemoverColuna(lista[0]);
+            manager.RemoverCard(lista[0]);
 
             Assert.Equal(1, lista[0].Posicao);
             Assert.Equal(2, lista[1].Posicao);
@@ -132,7 +132,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.GerenciadorCardsTestes
 
             var manager = new TestManager(lista, posicoes);
 
-            manager.RemoverColuna(lista[0]);
+            manager.RemoverCard(lista[0]);
 
             Assert.DoesNotContain(3, posicoes);
         }

@@ -71,7 +71,7 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
             _inferencia = inferencia;
             _csvController = new CsvController();
 
-            TextBox = new ConfiguracaoResultadoTextBoxViewModel(new ConfiguracaoTextBoxViewModel(dialogService, _contextArquivo.RecebeMensagem(), AlterouTabela), DataPreview, new EstadoDataFrameViewModel(_arquivo));
+            TextBox = new ConfiguracaoResultadoTextBoxViewModel(new ConfiguracaoTextBoxViewModel(dialogService, AlterouTabela), DataPreview, new EstadoDataFrameViewModel(_arquivo));
 
             Stopwatch = new Stopwatch();
         }

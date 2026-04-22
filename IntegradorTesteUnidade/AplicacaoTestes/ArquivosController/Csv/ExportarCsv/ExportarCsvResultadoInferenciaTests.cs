@@ -32,13 +32,13 @@ namespace IntegradorTesteUnidade.AplicacaoTestes.ArquivosController.Csv.Exportar
         }
 
         [Fact]
-        public void ExportarCsv_DeveLancarException_QuandoListaVazia()
+        public void ExportarCsv_DeveFazerNada_QuandoListaVazia()
         {
             var exportador = CriarExportador();
 
-            Assert.Throws<Exception>(() =>
-                exportador.ExportarCsv(new List<ResultadoInferencia>())
-            );
+            var ex = Record.Exception(() => exportador.ExportarCsv(new List<ResultadoInferencia>()));
+
+            Assert.Null(ex);
         }
 
         [Fact]

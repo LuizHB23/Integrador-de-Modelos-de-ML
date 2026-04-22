@@ -93,16 +93,34 @@ namespace IntegradorTesteUnidade.AplicacaoTestes.PipelineAplicacaoTestes.Executo
             var df = new DataFrame();
             df.AdicionarColuna<int?>("Id", new List<int?> { 1 });
 
+            var operacao = new CriarColuna { name = "Nova", type = "single", value = "" };
+            var executor = new CriarColunaExecutor(operacao);
+
+            var resultado = (DataFrame)executor.Executar(df);
+
+            var col = resultado.PegarColuna<float?>("Nova");
+
+            Assert.NotNull(col);
+            Assert.Single(col.Dados);
+            Assert.Null(col.PegarValor(0));
+        }
+
+        [Fact]
+        public void DeveTratarStringVaziaComoStringVazia()
+        {
+            var df = new DataFrame();
+            df.AdicionarColuna<int?>("Id", new List<int?> { 1 });
+
             var operacao = new CriarColuna { name = "Nova", type = "string", value = "" };
             var executor = new CriarColunaExecutor(operacao);
 
             var resultado = (DataFrame)executor.Executar(df);
 
-            var col = resultado.PegarColuna<object?>("Nova");
+            var col = resultado.PegarColuna<string?>("Nova");
 
             Assert.NotNull(col);
             Assert.Single(col.Dados);
-            Assert.Null(col.PegarValor(0));
+            Assert.NotNull(col.PegarValor(0));
         }
     }
 }

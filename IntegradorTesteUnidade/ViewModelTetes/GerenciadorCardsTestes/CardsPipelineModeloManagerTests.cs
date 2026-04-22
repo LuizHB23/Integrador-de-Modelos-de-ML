@@ -34,10 +34,13 @@ namespace IntegradorTesteUnidade.ViewModelTetes.GerenciadorCardsTestes
         [Fact]
         public void AdicionarColuna_NaoFazNada_QuandoItemNull()
         {
+            //Arrange
             var manager = CriarManager(out var cards, out var posicoes);
 
-            manager.AdicinarColuna(null, _ => { }, (_, __) => { }, _ => { });
+            //Act
+            manager.AdicionarCard(null, _ => Task.CompletedTask, (_, __) => { }, _ => { });
 
+            //Assert
             Assert.Empty(cards);
             Assert.Empty(posicoes);
         }
@@ -45,12 +48,15 @@ namespace IntegradorTesteUnidade.ViewModelTetes.GerenciadorCardsTestes
         [Fact]
         public void AdicionarColuna_AdicionaCardEPosicao()
         {
+            //Arrange
             var manager = CriarManager(out var cards, out var posicoes);
 
             var item = new FuncaoItemViewModel(1, "Metodo", new List<string> { "linha" });
 
-            manager.AdicinarColuna(item, _ => { }, (_, __) => { }, _ => { });
+            //Act
+            manager.AdicionarCard(item, _ => Task.CompletedTask, (_, __) => { }, _ => { });
 
+            //Assert
             Assert.Single(cards);
             Assert.Single(posicoes);
             Assert.Equal(1, posicoes[0]);
@@ -61,14 +67,15 @@ namespace IntegradorTesteUnidade.ViewModelTetes.GerenciadorCardsTestes
         // =========================
 
         [Fact]
-        public void CarregarSchema_NaoFazNada_QuandoCaminhoVazio()
+        public void CarregarSchema_JogaExecao_QuandoCaminhoVazio()
         {
+            //Arrange
             var manager = CriarManager(out var cards, out var posicoes);
 
             _dialogMock.Setup(x => x.GetCaminhoArquivo()).Returns("");
 
-            manager.CarregarSchema(_dialogMock.Object, _converterMock.Object, _ => { });
-
+            //Act +Assert
+            Assert.Throws<Exception>(() => manager.CarregarPipeline(_dialogMock.Object, _converterMock.Object, _ => { }, _ => Task.CompletedTask));
             Assert.Empty(cards);
             Assert.Empty(posicoes);
         }
@@ -76,6 +83,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.GerenciadorCardsTestes
         [Fact]
         public void CarregarSchema_CarregaCardsCorretamente()
         {
+            //Arrange
             var manager = CriarManager(out var cards, out var posicoes);
 
             _dialogMock.Setup(x => x.GetCaminhoArquivo()).Returns("caminho.json");
@@ -87,8 +95,10 @@ namespace IntegradorTesteUnidade.ViewModelTetes.GerenciadorCardsTestes
                     { 2, new FuncaoDTO("Metodo2", new List<string>{ "b" }, "modelo") }
                 });
 
-            manager.CarregarSchema(_dialogMock.Object, _converterMock.Object, _ => { });
+            //Act
+            manager.CarregarPipeline(_dialogMock.Object, _converterMock.Object, _ => { }, _ => Task.CompletedTask);
 
+            //Assert
             Assert.Equal(2, cards.Count);
             Assert.Equal(2, posicoes.Count);
             Assert.Equal(1, posicoes[0]);
@@ -102,16 +112,19 @@ namespace IntegradorTesteUnidade.ViewModelTetes.GerenciadorCardsTestes
         [Fact]
         public void PreparaParaJson_DeveChamarConverterComDadosCorretos()
         {
+            //Arrange
             var manager = CriarManager(out var cards, out var posicoes);
 
             var item1 = new FuncaoItemViewModel(1, "Metodo1", new List<string> { "a" });
             var item2 = new FuncaoItemViewModel(2, "Metodo2", new List<string> { "b" });
 
-            manager.AdicinarColuna(item1, _ => { }, (_, __) => { }, _ => { });
-            manager.AdicinarColuna(item2, _ => { }, (_, __) => { }, _ => { });
+            manager.AdicionarCard(item1, _ => Task.CompletedTask, (_, __) => { }, _ => { });
+            manager.AdicionarCard(item2, _ => Task.CompletedTask, (_, __) => { }, _ => { });
 
+            //Act
             manager.PreparaParaJson(_converterMock.Object, "modelo");
 
+            //Assert
             _converterMock.Verify(x =>
                 x.ConverteJson(It.Is<Dictionary<int, FuncaoDTO>>(d =>
                     d.Count == 2 &&
@@ -128,16 +141,19 @@ namespace IntegradorTesteUnidade.ViewModelTetes.GerenciadorCardsTestes
         [Fact]
         public void RemoverColuna_RemoveCard()
         {
+            //Arrange
             var manager = CriarManager(out var cards, out var posicoes);
 
             var item = new FuncaoItemViewModel(1, "Metodo", new List<string>());
 
-            manager.AdicinarColuna(item, _ => { }, (_, __) => { }, _ => { });
+            manager.AdicionarCard(item, _ => Task.CompletedTask, (_, __) => { }, _ => { });
 
             var card = cards[0];
 
-            manager.RemoverColuna(card);
+            //Act
+            manager.RemoverCard(card);
 
+            //Assert
             Assert.Empty(cards);
         }
 
@@ -148,15 +164,18 @@ namespace IntegradorTesteUnidade.ViewModelTetes.GerenciadorCardsTestes
         [Fact]
         public void OrganizaPosicao_ReordenaCorretamente()
         {
+            //Arrange
             var manager = CriarManager(out var cards, out var posicoes);
 
-            manager.AdicinarColuna(new FuncaoItemViewModel(1, "A", new()), _ => { }, (_, __) => { }, _ => { });
-            manager.AdicinarColuna(new FuncaoItemViewModel(2, "B", new()), _ => { }, (_, __) => { }, _ => { });
+            manager.AdicionarCard(new FuncaoItemViewModel(1, "A", new()), _ => Task.CompletedTask, (_, __) => { }, _ => { });
+            manager.AdicionarCard(new FuncaoItemViewModel(2, "B", new()), _ => Task.CompletedTask, (_, __) => { }, _ => { });
 
             var primeiro = cards[0];
 
+            //Act
             manager.OrganizaPosicao(primeiro, 1);
 
+            //Assert
             Assert.Equal(primeiro, cards[1]);
         }
     }

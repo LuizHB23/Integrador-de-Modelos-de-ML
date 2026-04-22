@@ -136,7 +136,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.GerenciadorCardsTestes
 
             var card = cards[0];
 
-            manager.RemoverColuna(card);
+            manager.RemoverCard(card);
 
             Assert.Empty(cards);
         }

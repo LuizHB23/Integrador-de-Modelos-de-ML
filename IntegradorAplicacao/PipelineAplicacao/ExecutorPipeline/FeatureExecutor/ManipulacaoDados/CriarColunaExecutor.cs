@@ -106,13 +106,12 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
         }
 
-        private bool VerificaNulidade(string valor)
+        private bool VerificaNulidade(object valor)
         {
-            if (valor is string s && string.IsNullOrWhiteSpace(s))
+            if (valor is string s && (string.IsNullOrWhiteSpace(s) || string.Equals(s.ToLower(), "na") || string.Equals(s.ToLower(), "na") || string.Equals(s.ToLower(), "null")))
                 return true;
 
             return false;
-
         }
     }
 }

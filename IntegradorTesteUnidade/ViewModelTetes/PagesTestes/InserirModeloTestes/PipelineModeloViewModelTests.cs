@@ -2,15 +2,17 @@
 using IntegradorAplicacao.ConversorJson;
 using IntegradorAplicacao.DTO;
 using IntegradorViewModel.ControleUsuario;
+using IntegradorViewModel.ControleUsuario.ConfiguracaoMetodo.EstadoDataFrame;
 using IntegradorViewModel.ItensViewModel;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.InserirModelo;
 using IntegradorViewModel.Pages.PrincipalModelo;
 using IntegradorViewModel.Shared.Context;
 using IntegradorViewModel.Shared.Interfaces;
+using Moq;
 using System.Data;
 using System.Reflection;
-using Moq;
+using System.Text;
 
 namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
 {
@@ -33,7 +35,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
                 .Returns(new ModeloDTO("modelo_teste", "", ""));
 
             _contextArquivoMock.Setup(x => x.RecebeMensagem())
-                .Returns(new ArquivoDadosDTO(caminhoCsv, ',', "utf-8", '.', true));
+                .Returns(new ArquivoDadosDTO(caminhoCsv, ',', Encoding.UTF8, '.', true));
 
             return new PipelineModeloViewModel(
                 _navigationMock.Object,
@@ -45,89 +47,99 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
             );
         }
 
+        // =========================
+        // 🧪 AdicionaFuncao
+        // =========================
+
         [Fact]
-        public void AdicionaFuncao_NaoAdiciona_QuandoCodigoVazio()
+        public async Task AdicionaFuncao_NaoAdiciona_QuandoCodigoVazio()
         {
             var vm = CriarViewModel();
 
-            var textBox = CriarTextBoxReal();
-            textBox.ScriptCodigo = "";
+            vm.TextBox = CriarTextBoxMock(null);
 
-            vm.TextBox = textBox;
-
-            vm.AdicionaFuncao();
+            await vm.AdicionaFuncao();
 
             Assert.Empty(vm.CardsFuncoes);
         }
 
         [Fact]
-        public void AdicionaFuncao_AdicionaCard_QuandoValido()
+        public async Task AdicionaFuncao_AdicionaCard_QuandoValido()
         {
             var vm = CriarViewModel();
 
             _pathProviderMock.Setup(x => x.GetCaminhoModelo())
                 .Returns(Path.GetTempPath());
 
-            var textBox = CriarTextBoxReal();
+            var retorno = new Dictionary<string, List<string>>
+            {
+                { "MetodoTeste", new List<string> { "linha1" } }
+            };
 
-            // script válido simples (parser aceita)
-            textBox.ScriptCodigo = "MetodoTeste()\n{\nreturn df\n}";
+            vm.TextBox = CriarTextBoxMock(retorno);
 
-            vm.TextBox = textBox;
-
-            vm.AdicionaFuncao();
+            await vm.AdicionaFuncao();
 
             Assert.Single(vm.CardsFuncoes);
         }
 
         [Fact]
-        public void AdicionaFuncao_MostraErro_QuandoPipelineFalha()
+        public async Task AdicionaFuncao_MostraErro_QuandoPipelineFalha()
         {
             var vm = CriarViewModel();
 
             _pathProviderMock.Setup(x => x.GetCaminhoModelo())
                 .Returns(Path.GetTempPath());
 
-            // força erro no pipeline (não no parser)
+            var retorno = new Dictionary<string, List<string>>
+            {
+                { "MetodoTeste", new List<string> { "linha1" } }
+            };
+
+            vm.TextBox = CriarTextBoxMock(retorno);
+
             _converterMock.Setup(x => x.CarregarJson(It.IsAny<string>()))
                 .Throws(new Exception("erro pipeline"));
 
-            var textBox = CriarTextBoxReal();
-
-            // ✅ código válido
-            textBox.ScriptCodigo = "MetodoTeste()\n{\nreturn df\n}";
-
-            vm.TextBox = textBox;
-
-            vm.AdicionaFuncao();
+            await vm.AdicionaFuncao();
 
             _dialogMock.Verify(x =>
                 x.ShowMessage(It.Is<string>(s => s.Contains("erro pipeline")), "Erro de Comando"),
                 Times.Once);
         }
 
+        // =========================
+        // 🧪 AtualizaFuncao
+        // =========================
+
         [Fact]
-        public void AtualizaFuncao_MostraMensagem_QuandoNaoExisteMetodo()
+        public async Task AtualizaFuncao_MostraMensagem_QuandoNaoExisteMetodo()
         {
             var vm = CriarViewModel();
 
             _pathProviderMock.Setup(x => x.GetCaminhoModelo())
-                .Returns(Path.GetTempPath()); // ✅ CORREÇÃO
+                .Returns(Path.GetTempPath());
 
-            var textBox = CriarTextBoxReal();
-            textBox.ScriptCodigo = "MetodoInexistente()\n{\nreturn df\n}";
+            var retorno = new Dictionary<string, List<string>>
+            {
+                { "MetodoTeste", new List<string> { "linha1" } }
+            };
 
-            vm.TextBox = textBox;
+            vm.TextBox = CriarTextBoxMock(retorno);
 
             _converterMock.Setup(x => x.CarregarJson(It.IsAny<string>()))
                 .Returns(new Dictionary<int, FuncaoDTO>());
 
-            vm.AtualizaFuncao();
+            await vm.AtualizaFuncao();
 
             _dialogMock.Verify(x =>
                 x.ShowMessage("Não há método para sobrevescrever"),
                 Times.Once);
         }
+
+        // =========================
+        // 🧪 Navegação
+        // =========================
 
         [Fact]
         public void NavigateToHome_ChamaNavegacaoCorreta()
@@ -150,6 +162,10 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
             _navigationMock.Verify(x => x.NavigateTo<TransformadoresModeloViewModel>(), Times.Once);
         }
 
+        // =========================
+        // 🧪 DataPreview
+        // =========================
+
         [Fact]
         public void AlterouTabela_AtualizaDataPreview()
         {
@@ -166,6 +182,10 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
             Assert.Equal(dataView, vm.DataPreview);
         }
 
+        // =========================
+        // 🧪 ConfigurarFuncao
+        // =========================
+
         [Fact]
         public void ConfigurarFuncao_PreencheScriptCorretamente()
         {
@@ -179,10 +199,10 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
             _converterMock.Setup(x => x.CarregarJson(It.IsAny<string>()))
                 .Returns(new Dictionary<int, FuncaoDTO>
                 {
-            {
-                1,
-                new FuncaoDTO("MetodoTeste", new List<string> { "linha1", "linha2" }, "modelo")
-            }
+                    {
+                        1,
+                        new FuncaoDTO("MetodoTeste", new List<string> { "linha1", "linha2" }, "modelo")
+                    }
                 });
 
             vm.ConfigurarFuncao(card);
@@ -192,8 +212,12 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
             Assert.Contains("linha2", vm.TextBox.ScriptCodigo);
         }
 
+        // =========================
+        // 🧪 Remover / Ordem
+        // =========================
+
         [Fact]
-        public void RemoverColuna_RemoveCard()
+        public void RemoverFuncao_RemoveCard()
         {
             var vm = CriarViewModel();
 
@@ -202,7 +226,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
             vm.CardsFuncoes.Add(card);
 
             var metodo = typeof(PipelineModeloViewModel)
-                .GetMethod("RemoverColuna", BindingFlags.NonPublic | BindingFlags.Instance);
+                .GetMethod("RemoverFuncao", BindingFlags.NonPublic | BindingFlags.Instance);
 
             metodo.Invoke(vm, new object[] { card });
 
@@ -219,7 +243,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
             vm.CardsFuncoes.Add(card);
 
             var metodo = typeof(PipelineModeloViewModel)
-            .GetMethod("OrganizaPosicao", BindingFlags.NonPublic | BindingFlags.Instance);
+                .GetMethod("OrganizaPosicao", BindingFlags.NonPublic | BindingFlags.Instance);
 
             var ex = Record.Exception(() =>
                 metodo.Invoke(vm, new object[] { card, 0 })
@@ -228,22 +252,23 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
             Assert.Null(ex);
         }
 
-        private ConfiguracaoTextBoxViewModel CriarTextBoxReal()
-        {
-            var caminhoCsv = CriarCsvFake();
+        // =========================
+        // 🧪 Helpers
+        // =========================
 
-            return new ConfiguracaoTextBoxViewModel(
-                _dialogMock.Object,
-                new ArquivoDadosDTO(
-                    caminhoCsv,
-                    ',',
-                    "utf-8",
-                    '.',
-                    true
-                ),
-                _ => { },
-                new DataView()
+        private ConfiguracaoPipelineTextBoxViewModel CriarTextBoxMock(Dictionary<string, List<string>> retorno)
+        {
+            var mock = new Mock<ConfiguracaoPipelineTextBoxViewModel>(
+                MockBehavior.Loose,
+                null, null, null
             );
+
+            mock.Setup(x => x.MandaCodigoMetodo())
+                .Returns(retorno);
+
+            mock.Setup(x => x.EsvaziaScript());
+
+            return mock.Object;
         }
 
         private ConfiguracaoCardFuncaoViewModel CriarCardFake(int posicao = 1, string nome = "MetodoTeste")
@@ -252,9 +277,9 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
 
             return new ConfiguracaoCardFuncaoViewModel(
                 funcaoItem,
-                _ => { }, // ação remover
-                (_, __) => { }, // ação trocar posição
-                _ => { } // ação configurar
+                _ => Task.CompletedTask,
+                (_, __) => { },
+                _ => { }
             );
         }
 
@@ -283,10 +308,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
                     if (File.Exists(arquivo))
                         File.Delete(arquivo);
                 }
-                catch
-                {
-                    // evita falha no teste por lock de arquivo
-                }
+                catch { }
             }
         }
     }

@@ -15,7 +15,7 @@ namespace IntegradorViewModel.ControleUsuario
 
         private readonly IDialogService _dialogService;
 
-        public ConfiguracaoTextBoxViewModel(IDialogService dialogService, ArquivoDadosDTO arquivoDados, Action<DataView> onDadosAlterados)
+        public ConfiguracaoTextBoxViewModel(IDialogService dialogService, Action<DataView> onDadosAlterados)
         {
             _dialogService = dialogService;
             _onDadosAlterados = onDadosAlterados;
@@ -143,6 +143,6 @@ namespace IntegradorViewModel.ControleUsuario
             scriptCodigo = scriptCodigo.Insert(indeReturn, $"{codigo}\n\n");
         }
 
-        public void EsvaziaScript(string scriptCodigo) => scriptCodigo = string.Empty;
+        public string EsvaziaScript() => string.Empty;
     }
 }

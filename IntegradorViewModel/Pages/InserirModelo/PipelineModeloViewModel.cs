@@ -65,7 +65,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
             DataPreview = new();
             CardsFuncoes = new();
             OpcoesPosicao = new();
-            TextBox = new ConfiguracaoPipelineTextBoxViewModel(new ConfiguracaoTextBoxViewModel(dialogService, _contextArquivo.RecebeMensagem(), AlterouTabela), DataPreview, new EstadoDataFrameViewModel(_contextArquivo.RecebeMensagem()));
+            TextBox = new ConfiguracaoPipelineTextBoxViewModel(new ConfiguracaoTextBoxViewModel(dialogService, AlterouTabela), DataPreview, new EstadoDataFrameViewModel(_contextArquivo.RecebeMensagem()));
             _nomeModelo = _contextNomeModelo.RecebeMensagem().NomeModelo;
             _cardsManager = new(CardsFuncoes, OpcoesPosicao);
         }
