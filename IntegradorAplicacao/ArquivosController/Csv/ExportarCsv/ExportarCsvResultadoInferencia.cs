@@ -1,106 +1,81 @@
-﻿using IntegradorDominio.Inferencia;
+﻿using IntegradorDominio.DataFrameModel;
+using IntegradorDominio.Inferencia;
 using System.Globalization;
 using System.Text;
 
 namespace IntegradorAplicacao.ArquivosController.Csv.ExportarCsv
 {
-    public class ExportarCsvResultadoInferencia : ICsvExportador<List<ResultadoInferencia>>
+    public class ExportarCsvResultadoInferencia : ICsvExportador<DataFrame>
     {
-        public void ExportarCsv(List<ResultadoInferencia> resultados)
+        public void ExportarCsv(DataFrame resultados)
         {
             SalvarResultadoEmDownloads(resultados);
         }
 
-        private void SalvarResultadoEmDownloads(List<ResultadoInferencia> resultados)
+        private void SalvarResultadoEmDownloads(DataFrame resultados)
         {
-            if (resultados == null || resultados.Count == 0)
+            if (resultados == null || resultados.QuantidadeLinhas == 0)
                 return;
 
             var caminho = ObterCaminhoDownloads(GerarNomeArquivo());
 
             var linhas = new List<string>();
 
-            var outputMap = new Dictionary<string, int>();
+            var header = new List<string>();
+            var colunasExpandidas = new Dictionary<string, int>();
 
-            foreach (var r in resultados)
+            // 📌 HEADER
+            foreach (var coluna in resultados.Colunas)
             {
-                foreach (var kv in r.Outputs)
+                if (typeof(Array).IsAssignableFrom(coluna.TipoDado))
                 {
-                    if (kv.Value is float[] arr)
+                    int maxSize = 0;
+
+                    for (int i = 0; i < resultados.QuantidadeLinhas; i++)
                     {
-                        if (!outputMap.ContainsKey(kv.Key))
-                            outputMap[kv.Key] = arr.Length;
-                        else
-                            outputMap[kv.Key] = Math.Max(outputMap[kv.Key], arr.Length);
+                        if (coluna.PegarValor(i) is Array arr)
+                            maxSize = Math.Max(maxSize, arr.Length);
                     }
-                    else
+
+                    colunasExpandidas[coluna.Nome] = maxSize;
+
+                    for (int i = 0; i < maxSize; i++)
                     {
-                        outputMap[kv.Key] = 1;
+                        header.Add($"{coluna.Nome}_{i}");
                     }
-                }
-            }
-
-            var header = new List<string> { "ID" };
-
-            foreach (var kv in outputMap)
-            {
-                var nome = kv.Key;
-                var tamanho = kv.Value;
-
-                if (tamanho == 1)
-                {
-                    header.Add(nome);
                 }
                 else
                 {
-                    for (int i = 0; i < tamanho; i++)
-                    {
-                        header.Add($"{nome}_{i}");
-                    }
+                    colunasExpandidas[coluna.Nome] = 1;
+                    header.Add(coluna.Nome);
                 }
             }
 
             linhas.Add(string.Join(",", header));
 
-            foreach (var r in resultados)
+            // 📌 LINHAS
+            for (int i = 0; i < resultados.QuantidadeLinhas; i++)
             {
-                var linha = new List<string>
-                {
-                    EscaparCsv(r.Id) // garante segurança
-                };
+                var linha = new List<string>();
 
-                foreach (var kv in outputMap)
+                foreach (var coluna in resultados.Colunas)
                 {
-                    var nome = kv.Key;
-                    var tamanho = kv.Value;
+                    var valor = coluna.PegarValor(i);
+                    int tamanho = colunasExpandidas[coluna.Nome];
 
-                    if (r.Outputs.TryGetValue(nome, out var valor))
+                    if (valor is Array arr)
                     {
-                        if (valor is float[] arr)
+                        for (int j = 0; j < tamanho; j++)
                         {
-                            for (int i = 0; i < tamanho; i++)
-                            {
-                                if (i < arr.Length)
-                                {
-                                    linha.Add(arr[i].ToString(CultureInfo.InvariantCulture));
-                                }
-                                else
-                                {
-                                    linha.Add("");
-                                }
-                            }
-                        }
-                        else
-                        {
-                            linha.Add(valor.ToString());
+                            if (j < arr.Length)
+                                linha.Add(EscaparCsv(arr.GetValue(j)));
+                            else
+                                linha.Add("");
                         }
                     }
                     else
                     {
-                        for (int i = 0; i < tamanho; i++)
-                        {
-                            linha.Add("");
-                        }
+                        linha.Add(EscaparCsv(valor));
                     }
                 }
 
@@ -125,18 +100,20 @@ namespace IntegradorAplicacao.ArquivosController.Csv.ExportarCsv
             return $"resultado_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
         }
 
-        private string EscaparCsv(string valor)
+        private string EscaparCsv(object? valor)
         {
-            if (string.IsNullOrEmpty(valor))
+            if (valor == null)
                 return "";
 
-            if (valor.Contains(",") || valor.Contains("\"") || valor.Contains("\n"))
+            var texto = Convert.ToString(valor, CultureInfo.InvariantCulture) ?? "";
+
+            if (texto.Contains(",") || texto.Contains("\"") || texto.Contains("\n"))
             {
-                valor = valor.Replace("\"", "\"\"");
-                return $"\"{valor}\"";
+                texto = texto.Replace("\"", "\"\"");
+                texto = $"\"{texto}\"";
             }
 
-            return valor;
+            return texto;
         }
     }
 }

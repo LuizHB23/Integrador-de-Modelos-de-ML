@@ -40,7 +40,6 @@ namespace IntegradorViewModel.Pages.InserirModelo
         public ObservableCollection<TransformDataViewItemViewModel> ListaTransformDataView { get; }
 
         private readonly ScriptExecutorPipelineModeloManager _scriptManager;
-        private readonly string _nomeModelo;
 
         public PipelineModeloViewModel(INavigationService navigation, IDialogService dialogService, IConverteJson<Dictionary<int, FuncaoDTO>> converter, IContext<ModeloDTO> contextModelo, IContext<ArquivoDadosDTO> contextArquivo, IPathProvider provider)
         {
@@ -53,7 +52,6 @@ namespace IntegradorViewModel.Pages.InserirModelo
             CardsFuncoes = new();
             OpcoesPosicao = new();
             TextBox = new ConfiguracaoPipelineTextBoxViewModel(new ConfiguracaoTextBoxViewModel(dialogService, AlterouTabela), DataPreview, new EstadoDataFrameViewModel(contextArquivo.RecebeMensagem()));
-            _nomeModelo = contextModelo.RecebeMensagem().NomeModelo;
 
             _scriptManager = new(dialogService, converter, contextModelo, contextArquivo, provider, CardsFuncoes, OpcoesPosicao, TextBox);
         }
@@ -67,11 +65,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
         [RelayCommand]
         public async Task AtualizaFuncao() => await _scriptManager.AtualizaFuncao();
 
-        private void RecebeListaPropriedades(string featureName, List<string> listaPropriedades) => TextBox.EscreveScript(featureName, listaPropriedades);
-
         public void AlterouTabela(DataView dataView) => DataPreview = dataView;
-
-        public void ConfigurarFuncao(ConfiguracaoCardFuncaoViewModel cardSchema) => _scriptManager.ConfigurarFuncao(cardSchema);
 
         [RelayCommand]
         public void NavigateToTransformers()
@@ -125,5 +119,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
                 ListaFeatureEngineering.Add(featureItem);
             }
         }
+
+        private void RecebeListaPropriedades(string featureName, List<string> listaPropriedades) => TextBox.EscreveScript(featureName, listaPropriedades);
     }
 }

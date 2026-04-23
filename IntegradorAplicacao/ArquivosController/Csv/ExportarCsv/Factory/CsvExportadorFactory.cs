@@ -1,4 +1,5 @@
-﻿using IntegradorDominio.Inferencia;
+﻿using IntegradorDominio.DataFrameModel;
+using IntegradorDominio.Inferencia;
 
 namespace IntegradorAplicacao.ArquivosController.Csv.ExportarCsv.Factory
 {
@@ -6,7 +7,7 @@ namespace IntegradorAplicacao.ArquivosController.Csv.ExportarCsv.Factory
     {
         public static ICsvExportador<T> Criar<T>()
         {
-            if (typeof(T) == typeof(List<ResultadoInferencia>))
+            if (typeof(T) == typeof(DataFrame))
                 return (ICsvExportador<T>) new ExportarCsvResultadoInferencia();
 
             if (typeof(T) == typeof(List<ErrosInferencia>))

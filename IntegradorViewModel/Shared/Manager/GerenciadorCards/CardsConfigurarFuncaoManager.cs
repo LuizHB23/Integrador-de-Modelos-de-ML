@@ -25,19 +25,13 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
             AtualizaPosicoes();
         }
 
-        public string CarregarPipeline(IDialogService _dialogService, IConverteJson<Dictionary<int, T>> _converter, Action<ConfiguracaoCardFuncaoViewModel> actionConfigurarFuncao, Func<ConfiguracaoCardFuncaoViewModel, Task> functionRemover)
+        public void CarregarPipeline(IConverteJson<Dictionary<int, T>> _converter, Action<ConfiguracaoCardFuncaoViewModel> actionConfigurarFuncao, Func<ConfiguracaoCardFuncaoViewModel, Task> functionRemover,
+            string caminhoJson)
         {
-            var _caminhoJson = _dialogService.GetCaminhoArquivo();
-
-            if (string.IsNullOrWhiteSpace(_caminhoJson))
-            {
-                throw new Exception();
-            }
-
             _cardsLista.Clear();
             _posicoesLista.Clear();
 
-            var schema = _converter.CarregarJson(_caminhoJson);
+            var schema = _converter.CarregarJson(caminhoJson);
 
             foreach (var card in schema.OrderBy(x => x.Key))
             {
@@ -48,8 +42,6 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
             }
 
             AtualizaPosicoes();
-
-            return _caminhoJson;
         }
 
         public void PreparaParaJson<F>(IConverteJson<Dictionary<int, T>> _converter, string nomeModelo) where F : IPipelineExecutorFactory<T>
@@ -65,10 +57,20 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
             _converter.ConverteJson(pipelineNovo);
         }
 
+        public override void RemoverCard(ConfiguracaoCardFuncaoViewModel card)
+        {
+            if(card.Posicao == _posicoesLista.Count)
+            {
+                base.RemoverCard(card);
+            }
+            else
+            {
+                throw new Exception("Não é possível remover funções do meio do pipeline");
+            }
+        }
+
         public override void AtualizaPosicoes() => base.AtualizaPosicoes();
 
         public override void OrganizaPosicao(ConfiguracaoCardFuncaoViewModel card, int posicaoNova) => base.OrganizaPosicao(card, posicaoNova);
-
-        public override void RemoverCard(ConfiguracaoCardFuncaoViewModel card) => base.RemoverCard(card);
     }
 }

@@ -47,17 +47,14 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
         public ObservableCollection<int> OpcoesPosicao;
         public ObservableCollection<ConfiguracaoCardFuncaoViewModel> CardsFuncoes { get; }
 
-        private readonly IContext<ModeloDTO> _contextModelo;
-        private readonly IPathProvider _provider;
-
         private readonly ScriptExecutorResultadoManager _scriptManager;
-        private readonly CardsConfigurarFuncaoManager<SaidaDTO> _cardsManager;
-        private readonly string _nomeModelo;
+        private readonly IContext<ModeloDTO> _contextModelo;
+        private readonly IDialogService _dialogService;
 
-        private List<ResultadoInferencia>? _resultados;
         private List<ErrosInferencia>? _listaErros;
-        private CsvController _csvController;
+        private DataFrame? _resultadosDataFrame;
         private Inferencia<SaidaDTO> _inferencia;
+        private CsvController _csvController;
 
         public Stopwatch Stopwatch { get; set; }
 
@@ -70,14 +67,12 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
             CardsFuncoes = new();
             OpcoesPosicao = new();
 
-            _contextModelo = contextModelo;
             _arquivo = contextArquivo.RecebeMensagem();
+            _contextModelo = contextModelo;
+            _dialogService = dialogService;
 
-            _nomeModelo = _contextModelo.RecebeMensagem().NomeModelo;
-            _cardsManager = new(CardsFuncoes, OpcoesPosicao);
-
-            _inferencia = inferencia;
             _csvController = new CsvController();
+            _inferencia = inferencia;
 
             TextBox = new ConfiguracaoResultadoTextBoxViewModel(new ConfiguracaoTextBoxViewModel(dialogService, AlterouTabela), DataPreview, new EstadoDataFrameViewModel(_arquivo));
 
@@ -87,7 +82,7 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
         }
 
         [RelayCommand]
-        private void ExportarCsvResultado() => _csvController.EscreveArquivo(_resultados);
+        private void ExportarCsvResultado() => _csvController.EscreveArquivo(_resultadosDataFrame);
 
         [RelayCommand]
         private void ExportarCsvErros() => _csvController.EscreveArquivo(_listaErros);
@@ -110,18 +105,18 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
 
             var caminhoModelo = _contextModelo.RecebeMensagem().CaminhoPasta;
             var caminhoPasta = Path.GetDirectoryName(caminhoModelo);
-            var caminhoSchema = Path.Combine(caminhoPasta, "schema.json");
-            var caminhoPipeline = Path.Combine(caminhoPasta, "pipeline.json");
-            var caminhoTransformador = Path.Combine(caminhoPasta, "transformador.json");
+            var caminhoSchema = Path.Combine(caminhoPasta!, "schema.json");
+            var caminhoPipeline = Path.Combine(caminhoPasta!, "pipeline.json");
+            var caminhoTransformador = Path.Combine(caminhoPasta!, "transformador.json");
 
-            _resultados = await _inferencia.RealizaInferenciaAsync(
+            var resultados = await _inferencia.RealizaInferenciaAsync(
                 await CarregarDataFrameAsync(),
                 caminhoModelo,
                 caminhoSchema!,
                 caminhoPipeline!,
                 caminhoTransformador!
             );
-            LinhasInferencia = _resultados.Count;
+            LinhasInferencia = resultados.Count;
 
             _listaErros = _inferencia.ListaErros;
             LinhasErro = _listaErros.Count;
@@ -131,8 +126,18 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
 
             TempoProcessamento = stopwatch.Elapsed.ToString(@"hh\:mm\:ss\.ff");
 
-            await TextBox.GuardaEstado(_resultados);
-            TextBox.AtualizaTabela(TextBox.CarregarDados());
+            await TextBox.GuardaEstado(resultados);
+
+            try
+            {
+                _resultadosDataFrame = await _scriptManager.CarregarPipeline();
+            }
+            catch(Exception)
+            {
+                _resultadosDataFrame = TextBox.CarregarDados();
+            }
+
+            TextBox.AtualizaTabela(_resultadosDataFrame);
         }
 
         [RelayCommand]
@@ -142,8 +147,6 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
         public async Task AtualizaFuncao() => await _scriptManager.AtualizaFuncao();
 
         public void AlterouTabela(DataView dataView) => DataPreview = dataView;
-
-        public void ConfigurarFuncao(ConfiguracaoCardFuncaoViewModel cardSchema) => _scriptManager.ConfigurarFuncao(cardSchema);
 
         private async Task<DataFrame> CarregarDataFrameAsync()
         {

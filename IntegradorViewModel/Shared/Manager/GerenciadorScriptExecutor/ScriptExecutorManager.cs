@@ -5,6 +5,7 @@ using IntegradorAplicacao.ConversorJson;
 using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.DTO.Interfaces;
 using IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao;
+using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.FeatureEngineering.ManipulacaoDados;
 using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.ControleUsuario.ConfiguracaoTextBox;
@@ -68,6 +69,16 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor
             }
 
             var modeloElementos = modeloNomeCorpo.First();
+
+            foreach(var funcao in CardsFuncoes)
+            {
+                if(modeloElementos.Key == funcao.NomeMetodo)
+                {
+                    _dialogService.ShowMessage($"Não é possível atribuir um nome de funçao já existente");
+                    return;
+                } 
+            }
+
             var funcaoItem = new FuncaoItemViewModel(CardsFuncoes.Count + 1, modeloElementos.Key, modeloElementos.Value);
             _cardsManager.AdicionarCard(funcaoItem, RemoverFuncao, OrganizaPosicao, ConfigurarFuncao);
             AoAlterarPipeline();
@@ -81,6 +92,24 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor
             {
                 _dialogService.ShowMessage($"Houve um erro no comando: {ex.Message}", "Erro de Comando");
             }
+        }
+
+        protected async Task<DataFrame?> CarregarPipeline<F>(Func<string, Task<DataFrame>> funcConstroiPipeline, string caminhoPipeline) where F: IPipelineExecutorFactory<T>
+        {
+            DataFrame? dataFrame = null;
+            try
+            {
+                dataFrame = await funcConstroiPipeline(caminhoPipeline);
+                PreparaParaJson<F>();
+            }
+            catch (Exception ex)
+            {
+                CardsFuncoes.Clear();
+                OpcoesPosicao.Clear();
+                _dialogService.ShowMessage($"Erro no ao carregar Pipeline: {ex.Message}", "Erro de Comando");
+            }
+
+            return dataFrame;
         }
 
         protected async Task RemoverFuncao(ConfiguracaoCardFuncaoViewModel cardSchema)
@@ -106,7 +135,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor
 
         protected void PreparaParaJson<F>() where F : IPipelineExecutorFactory<T> => _cardsManager.PreparaParaJson<F>(_converter, _nomeModelo);
 
-        protected async Task ExecutaPipeline(string caminho)
+        protected async Task<DataFrame> ExecutaPipeline(string caminho)
         {
             var dataFrame = _textBox.CarregarDados();
             _executor = new(_converter);
@@ -114,6 +143,8 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor
             dataFrame = await Task.Run(() => _executor.ExecutarTudo(dataFrame));
             _executor = null;
             _textBox.AtualizaTabela(dataFrame);
+
+            return dataFrame;
         }
 
 

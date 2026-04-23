@@ -17,14 +17,14 @@ namespace IntegradorTesteUnidade.ViewModelTetes.GerenciadorCardsTestes
         private readonly Mock<IDialogService> _dialogMock = new();
         private readonly Mock<IConverteJson<Dictionary<int, FuncaoDTO>>> _converterMock = new();
 
-        private CardsConfigurarFuncaoManager CriarManager(
+        private CardsConfigurarFuncaoManager<FuncaoDTO> CriarManager(
             out ObservableCollection<ConfiguracaoCardFuncaoViewModel> cards,
             out ObservableCollection<int> posicoes)
         {
             cards = new ObservableCollection<ConfiguracaoCardFuncaoViewModel>();
             posicoes = new ObservableCollection<int>();
 
-            return new CardsConfigurarFuncaoManager(cards, posicoes);
+            return new CardsConfigurarFuncaoManager<FuncaoDTO>(cards, posicoes);
         }
 
         // =========================
@@ -91,8 +91,8 @@ namespace IntegradorTesteUnidade.ViewModelTetes.GerenciadorCardsTestes
             _converterMock.Setup(x => x.CarregarJson(It.IsAny<string>()))
                 .Returns(new Dictionary<int, FuncaoDTO>
                 {
-                    { 1, new FuncaoDTO("Metodo1", new List<string>{ "a" }, "modelo") },
-                    { 2, new FuncaoDTO("Metodo2", new List<string>{ "b" }, "modelo") }
+                    { 1, new FuncaoDTO(){ NomeFuncao = "Metodo1", Codigo = new List<string>{ "a" }, NomeModelo = "modelo" } },
+                    { 2, new FuncaoDTO(){ NomeFuncao = "Metodo2", Codigo = new List<string>{ "b" }, NomeModelo = "modelo" }  }
                 });
 
             //Act

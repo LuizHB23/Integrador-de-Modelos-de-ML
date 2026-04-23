@@ -3,6 +3,7 @@ using IntegradorAplicacao.CaminhoProvider;
 using IntegradorAplicacao.ConversorJson;
 using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.DTO.Interfaces;
+using IntegradorDominio.DataFrameModel;
 using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.ControleUsuario.ConfiguracaoTextBox;
 using IntegradorViewModel.Shared.Context;
@@ -24,7 +25,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor
             _json = "pipeline.json";
         }
 
-        private async Task ConstroiPipelineAsync(string caminho) => await ExecutaPipeline(caminho);
+        private async Task<DataFrame> ConstroiPipelineAsync(string caminho) => await ExecutaPipeline(caminho);
         private async Task ConstroiPipelineAsync() => await ExecutaPipeline(Path.Combine(_provider.GetCaminhoModelo(), _nomeModelo, _json));
 
         public async Task CarregarPipeline()
@@ -33,29 +34,24 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor
 
             try
             {
-                caminhoPipeline = _cardsManager.CarregarPipeline(_dialogService, _converter, ConfigurarFuncao, RemoverFuncao);
+                caminhoPipeline = _dialogService.GetCaminhoArquivo();
+
+                if (string.IsNullOrWhiteSpace(caminhoPipeline))
+                {
+                    throw new Exception();
+                }
+
+                _cardsManager.CarregarPipeline(_converter, ConfigurarFuncao, RemoverFuncao, caminhoPipeline);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return;
             }
 
-            await _textBox.GuardaEstado();
-
-            try
-            {
-                await ConstroiPipelineAsync(caminhoPipeline);
-                PreparaParaJson<FuncaoDTOFactory>();
-            }
-            catch (Exception ex)
-            {
-                CardsFuncoes.Clear();
-                OpcoesPosicao.Clear();
-                _dialogService.ShowMessage($"Erro no ao carregar Pipeline: {ex.Message}", "Erro de Comando");
-            }
+            await CarregarPipeline<FuncaoDTOFactory>(ConstroiPipelineAsync, caminhoPipeline);
         }
 
-        public async Task AtualizaFuncao() => await base.AtualizaFuncao<FuncaoDTOFactory>();
+        public async Task AtualizaFuncao() => await AtualizaFuncao<FuncaoDTOFactory>();
 
         protected override void AoAlterarPipeline()
         {
