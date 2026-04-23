@@ -29,11 +29,11 @@ namespace IntegradorViewModel.ControleUsuario
         public bool EstouReposicionando { get; set; }
         public FuncaoItemViewModel FuncaoItem { get => _funcaoItem; }
 
-        public ConfiguracaoCardFuncaoViewModel(FuncaoItemViewModel funcaoItem, Func<ConfiguracaoCardFuncaoViewModel, Task> actionExcluir, Action<ConfiguracaoCardFuncaoViewModel, int> actionTrocarPosicao, Action<ConfiguracaoCardFuncaoViewModel> actionConfigurarFuncao)
+        public ConfiguracaoCardFuncaoViewModel(FuncaoItemViewModel funcaoItem, Func<ConfiguracaoCardFuncaoViewModel, Task> funcExcluir, Action<ConfiguracaoCardFuncaoViewModel, int> actionTrocarPosicao, Action<ConfiguracaoCardFuncaoViewModel> actionConfigurarFuncao)
         {
             _onConfigurarFuncao = actionConfigurarFuncao;
             _onTrocarPosicao = actionTrocarPosicao;
-            _onExcluir = actionExcluir;
+            _onExcluir = funcExcluir;
             _funcaoItem = funcaoItem;
 
             OpcoesPosicao = new();

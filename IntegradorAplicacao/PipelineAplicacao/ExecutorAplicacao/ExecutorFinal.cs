@@ -1,19 +1,20 @@
 ﻿using IntegradorAplicacao.ConversorJson;
 using IntegradorAplicacao.DTO;
+using IntegradorAplicacao.DTO.Interfaces;
 using IntegradorAplicacao.PipelineAplicacao.ParserPipeline;
 using IntegradorDominio.AST;
 using IntegradorDominio.DataFrameModel;
 
 namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
 {
-    public class ExecutorFinal
+    public class ExecutorFinal<T> where T : IPipelineExecutor
     {
-        private readonly IConverteJson<Dictionary<int, FuncaoDTO>> _conversor;
+        private readonly IConverteJson<Dictionary<int, T>> _conversor;
         private Dictionary<string, object?> _objetosUtilizados;
         private readonly List<BuilderExecutor> _executors;
         private readonly ParserAst _parser;
 
-        public ExecutorFinal(IConverteJson<Dictionary<int, FuncaoDTO>> conversor)
+        public ExecutorFinal(IConverteJson<Dictionary<int, T>> conversor)
         {
             _objetosUtilizados = new();
             _executors = new List<BuilderExecutor>();

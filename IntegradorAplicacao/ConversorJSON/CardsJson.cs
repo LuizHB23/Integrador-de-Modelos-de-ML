@@ -1,5 +1,6 @@
 ﻿using IntegradorAplicacao.CaminhoProvider;
 using IntegradorAplicacao.DTO;
+using IntegradorAplicacao.DTO.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,34 +8,35 @@ using System.Text.Json;
 
 namespace IntegradorAplicacao.ConversorJson
 {
-    public class PipelineJson : IConverteJson<Dictionary<int, FuncaoDTO>>
+    public class CardsJson<T> : IConverteJson<Dictionary<int, T>> where T : IItemNomeModelo
     {
         private readonly IPathProvider _provider;
         private string _caminhoJson;
+        protected string _json;
 
-        public PipelineJson(IPathProvider provider)
+        public CardsJson(IPathProvider provider)
         {
             _provider = provider;
             _caminhoJson = string.Empty;
         }
 
-        public void ConverteJson(Dictionary<int, FuncaoDTO> pipelineNovo)
+        public void ConverteJson(Dictionary<int, T> objeto)
         {
             string texto = string.Empty;
 
-            if (pipelineNovo.Count != 0)
+            if (objeto.Count != 0)
             {
-                var card = pipelineNovo.First();
+                var card = objeto.First();
 
-                _caminhoJson = Path.Combine(_provider.GetCaminhoModelo(), card.Value.NomeModelo, "pipeline.json");
+                _caminhoJson = Path.Combine(_provider.GetCaminhoModelo(), card.Value.NomeModelo, _json);
 
-                texto = JsonSerializer.Serialize(pipelineNovo);
+                texto = JsonSerializer.Serialize(objeto);
             }
 
             File.WriteAllText(_caminhoJson, texto);
         }
 
-        public Dictionary<int, FuncaoDTO> CarregarJson(string caminho)
+        public Dictionary<int, T> CarregarJson(string caminho)
         {
             if (File.Exists(caminho))
             {
@@ -42,12 +44,12 @@ namespace IntegradorAplicacao.ConversorJson
 
                 if (!string.IsNullOrWhiteSpace(texto))
                 {
-                    return JsonSerializer.Deserialize<Dictionary<int, FuncaoDTO>>(texto)
-                   ?? new Dictionary<int, FuncaoDTO>();
+                    return JsonSerializer.Deserialize<Dictionary<int, T>>(texto)
+                   ?? new Dictionary<int, T>();
                 }
             }
 
-            return new Dictionary<int, FuncaoDTO>();
+            return new Dictionary<int, T>();
         }
     }
 }

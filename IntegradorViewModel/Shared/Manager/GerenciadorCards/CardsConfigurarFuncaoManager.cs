@@ -1,15 +1,14 @@
-﻿
-using IntegradorAplicacao.ConversorJson;
-using IntegradorAplicacao.DTO;
+﻿using IntegradorAplicacao.ConversorJson;
+using IntegradorAplicacao.DTO.Interfaces;
 using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.ItensViewModel;
+using IntegradorViewModel.Shared.Factory;
 using IntegradorViewModel.Shared.Interfaces;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 
 namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
 {
-    public class CardsConfigurarFuncaoManager : CardsManager<ConfiguracaoCardFuncaoViewModel>
+    public class CardsConfigurarFuncaoManager<T> : CardsManager<ConfiguracaoCardFuncaoViewModel> where T : IPipelineExecutor
     {
         public CardsConfigurarFuncaoManager(ObservableCollection<ConfiguracaoCardFuncaoViewModel> cardsLista, ObservableCollection<int> posicoesLista) : base(cardsLista, posicoesLista) { }
 
@@ -26,7 +25,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
             AtualizaPosicoes();
         }
 
-        public string CarregarPipeline(IDialogService _dialogService, IConverteJson<Dictionary<int, FuncaoDTO>> _converter, Action<ConfiguracaoCardFuncaoViewModel> actionConfigurarFuncao, Func<ConfiguracaoCardFuncaoViewModel, Task> functionRemover)
+        public string CarregarPipeline(IDialogService _dialogService, IConverteJson<Dictionary<int, T>> _converter, Action<ConfiguracaoCardFuncaoViewModel> actionConfigurarFuncao, Func<ConfiguracaoCardFuncaoViewModel, Task> functionRemover)
         {
             var _caminhoJson = _dialogService.GetCaminhoArquivo();
 
@@ -53,14 +52,14 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
             return _caminhoJson;
         }
 
-        public void PreparaParaJson(IConverteJson<Dictionary<int, FuncaoDTO>> _converter, string nomeModelo)
+        public void PreparaParaJson<F>(IConverteJson<Dictionary<int, T>> _converter, string nomeModelo) where F : IPipelineExecutorFactory<T>
         {
-            var pipelineNovo = new Dictionary<int, FuncaoDTO>();
+            var pipelineNovo = new Dictionary<int, T>();
 
             foreach (var card in _cardsLista)
             {
-                var funcao = new FuncaoDTO(card.FuncaoItem.NomeFuncao, card.FuncaoItem.Codigo, nomeModelo);
-                pipelineNovo.Add(card.Posicao, funcao);
+                var pipeline = F.Criar(card.FuncaoItem.NomeFuncao, card.FuncaoItem.Codigo, nomeModelo);
+                pipelineNovo.Add(card.Posicao, pipeline);
             }
 
             _converter.ConverteJson(pipelineNovo);

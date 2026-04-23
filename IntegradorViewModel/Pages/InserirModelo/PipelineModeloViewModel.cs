@@ -39,11 +39,10 @@ namespace IntegradorViewModel.Pages.InserirModelo
         public ObservableCollection<FeatureEngineeringItemViewModel> ListaFeatureEngineering { get; }
         public ObservableCollection<TransformDataViewItemViewModel> ListaTransformDataView { get; }
 
-        private readonly string _nomeModelo;
-        private readonly CardsConfigurarFuncaoManager _cardsManager;
         private readonly ScriptExecutorPipelineModeloManager _scriptManager;
+        private readonly string _nomeModelo;
 
-        public PipelineModeloViewModel(INavigationService navigation, IDialogService dialogService, IConverteJson<Dictionary<int, FuncaoDTO>> converter, IContext<ModeloDTO> contextNomeModelo, IContext<ArquivoDadosDTO> contextArquivo, IPathProvider provider)
+        public PipelineModeloViewModel(INavigationService navigation, IDialogService dialogService, IConverteJson<Dictionary<int, FuncaoDTO>> converter, IContext<ModeloDTO> contextModelo, IContext<ArquivoDadosDTO> contextArquivo, IPathProvider provider)
         {
             Navigation = navigation;
             ListaFeatureEngineering = new();
@@ -54,10 +53,9 @@ namespace IntegradorViewModel.Pages.InserirModelo
             CardsFuncoes = new();
             OpcoesPosicao = new();
             TextBox = new ConfiguracaoPipelineTextBoxViewModel(new ConfiguracaoTextBoxViewModel(dialogService, AlterouTabela), DataPreview, new EstadoDataFrameViewModel(contextArquivo.RecebeMensagem()));
-            _nomeModelo = contextNomeModelo.RecebeMensagem().NomeModelo;
-            _cardsManager = new(CardsFuncoes, OpcoesPosicao);
+            _nomeModelo = contextModelo.RecebeMensagem().NomeModelo;
 
-            _scriptManager = new(dialogService, converter, contextNomeModelo, contextArquivo, provider, CardsFuncoes, OpcoesPosicao, TextBox);
+            _scriptManager = new(dialogService, converter, contextModelo, contextArquivo, provider, CardsFuncoes, OpcoesPosicao, TextBox);
         }
 
         [RelayCommand]

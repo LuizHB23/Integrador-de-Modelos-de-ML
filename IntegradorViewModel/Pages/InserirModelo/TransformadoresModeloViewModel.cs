@@ -68,7 +68,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
                 return;
             }
 
-            var novoCaminho = _gerenciador.Salvar(new TransformadorDTO(NomeTransformador, _caminhoProvisorio, _nomeModelo));
+            var novoCaminho = _gerenciador.Salvar(new TransformadorDTO(NomeTransformador, _caminhoProvisorio) { NomeModelo = _nomeModelo });
 
             var transformadorItem = new TransformadorItemViewModel(CardsTransformador.Count + 1, NomeTransformador, novoCaminho);
 

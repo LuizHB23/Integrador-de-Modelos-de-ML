@@ -3,12 +3,14 @@ using CommunityToolkit.Mvvm.Input;
 using IntegradorAplicacao.CaminhoProvider;
 using IntegradorAplicacao.ConversorJson;
 using IntegradorAplicacao.DTO;
+using IntegradorAplicacao.DTO.Interfaces;
 using IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao;
 using IntegradorDominio.FeatureEngineering.ManipulacaoDados;
 using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.ControleUsuario.ConfiguracaoTextBox;
 using IntegradorViewModel.ItensViewModel;
 using IntegradorViewModel.Shared.Context;
+using IntegradorViewModel.Shared.Factory;
 using IntegradorViewModel.Shared.Interfaces;
 using IntegradorViewModel.Shared.Manager.GerenciadorCards;
 using System;
@@ -20,10 +22,10 @@ using System.Text;
 
 namespace IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor
 {
-    public partial class ScriptExecutorManager : ObservableObject 
+    public partial class ScriptExecutorManager<T> : ObservableObject where T : IPipelineExecutor
     {
         protected readonly IConfiguracaoTextBox _textBox;
-        protected readonly IConverteJson<Dictionary<int, FuncaoDTO>> _converter;
+        protected readonly IConverteJson<Dictionary<int, T>> _converter;
         protected readonly IDialogService _dialogService;
         protected readonly IContext<ArquivoDadosDTO> _contextArquivo;
         protected readonly IContext<ModeloDTO> _contextNomeModelo;
@@ -32,13 +34,14 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor
         public ObservableCollection<int> OpcoesPosicao;
         public ObservableCollection<ConfiguracaoCardFuncaoViewModel> CardsFuncoes { get; }
 
-        protected readonly CardsConfigurarFuncaoManager _cardsManager;
+        protected readonly CardsConfigurarFuncaoManager<T> _cardsManager;
         protected readonly string _nomeModelo;
-        protected ExecutorFinal? _executor;
 
+        protected ExecutorFinal<T>? _executor;
         protected Func<Task>? onConstroiPipelineAsync;
+        protected string _json;
 
-        public ScriptExecutorManager(IDialogService dialogService, IConverteJson<Dictionary<int, FuncaoDTO>> converter, IContext<ModeloDTO> contextNomeModelo, IContext<ArquivoDadosDTO> contextArquivo, IPathProvider provider, ObservableCollection<ConfiguracaoCardFuncaoViewModel> cardsFuncoes, ObservableCollection<int> opcoesPosicao, IConfiguracaoTextBox textBox)
+        public ScriptExecutorManager(IDialogService dialogService, IConverteJson<Dictionary<int, T>> converter, IContext<ModeloDTO> contextNomeModelo, IContext<ArquivoDadosDTO> contextArquivo, IPathProvider provider, ObservableCollection<ConfiguracaoCardFuncaoViewModel> cardsFuncoes, ObservableCollection<int> opcoesPosicao, IConfiguracaoTextBox textBox)
         {
             OpcoesPosicao = opcoesPosicao;
             CardsFuncoes = cardsFuncoes;
@@ -67,7 +70,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor
             var modeloElementos = modeloNomeCorpo.First();
             var funcaoItem = new FuncaoItemViewModel(CardsFuncoes.Count + 1, modeloElementos.Key, modeloElementos.Value);
             _cardsManager.AdicionarCard(funcaoItem, RemoverFuncao, OrganizaPosicao, ConfigurarFuncao);
-            PreparaParaJson();
+            AoAlterarPipeline();
 
             try
             {
@@ -83,7 +86,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor
         protected async Task RemoverFuncao(ConfiguracaoCardFuncaoViewModel cardSchema)
         {
             _cardsManager.RemoverCard(cardSchema);
-            PreparaParaJson();
+            AoAlterarPipeline();
 
             try
             {
@@ -98,25 +101,75 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor
         protected void OrganizaPosicao(ConfiguracaoCardFuncaoViewModel cardSchema, int posicaoNova)
         {
             _cardsManager.OrganizaPosicao(cardSchema, posicaoNova);
-            PreparaParaJson();
+            AoAlterarPipeline();
         }
 
-        protected void PreparaParaJson() => _cardsManager.PreparaParaJson(_converter, _nomeModelo);
+        protected void PreparaParaJson<F>() where F : IPipelineExecutorFactory<T> => _cardsManager.PreparaParaJson<F>(_converter, _nomeModelo);
 
         protected async Task ExecutaPipeline(string caminho)
         {
             var dataFrame = _textBox.CarregarDados();
             _executor = new(_converter);
-            await Task.Run(() => _executor.ConstroiSequenciaMetodoPipeline(caminho));
+            _executor.ConstroiSequenciaMetodoPipeline(caminho);
             dataFrame = await Task.Run(() => _executor.ExecutarTudo(dataFrame));
             _executor = null;
             _textBox.AtualizaTabela(dataFrame);
         }
 
+
+        public async Task AtualizaFuncao<F>() where F : IPipelineExecutorFactory<T>
+        {
+            var modeloNomeCorpo = _textBox.MandaCodigoMetodo();
+
+            if (modeloNomeCorpo is null)
+            {
+                return;
+            }
+
+            var caminhoPasta = _provider.GetCaminhoModelo();
+            caminhoPasta = Path.Combine(caminhoPasta, _nomeModelo, _json);
+
+            var dicionarioFuncoes = _converter.CarregarJson(caminhoPasta);
+
+            foreach (var elemento in dicionarioFuncoes)
+            {
+                if (elemento.Value.NomeFuncao == modeloNomeCorpo.First().Key)
+                {
+                    int posicao = elemento.Key;
+                    var listaCodigo = modeloNomeCorpo.First().Value;
+
+                    var pipelineDto = F.Criar(elemento.Value.NomeFuncao, listaCodigo, elemento.Value.NomeModelo);
+
+                    var funcaoReserva = dicionarioFuncoes[posicao];
+                    dicionarioFuncoes[posicao] = pipelineDto;
+                    _converter.ConverteJson(dicionarioFuncoes);
+
+                    try
+                    {
+                        await Task.Run(() => onConstroiPipelineAsync!());
+                        _textBox.EsvaziaScript();
+                    }
+                    catch (Exception ex)
+                    {
+                        _dialogService.ShowMessage($"Houve um erro no comando: {ex.Message}", "Erro de Comando");
+
+                        dicionarioFuncoes[posicao] = funcaoReserva;
+                        _converter.ConverteJson(dicionarioFuncoes);
+                        await Task.Run(() => onConstroiPipelineAsync!());
+                    }
+
+                    return;
+                }
+            }
+
+            _dialogService.ShowMessage("Não há método para sobrevescrever");
+        }
+
+
         public void ConfigurarFuncao(ConfiguracaoCardFuncaoViewModel cardSchema)
         {
             var caminhoPasta = _provider.GetCaminhoModelo();
-            caminhoPasta = Path.Combine(caminhoPasta, _nomeModelo, "pipeline.json");
+            caminhoPasta = Path.Combine(caminhoPasta, _nomeModelo, _json);
 
             var dicionarioFuncoes = _converter.CarregarJson(caminhoPasta);
             var codigo = string.Empty;
@@ -138,5 +191,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor
 
             _textBox.ScriptCodigo = codigo;
         }
+
+        protected virtual void AoAlterarPipeline() { }
     }
 }

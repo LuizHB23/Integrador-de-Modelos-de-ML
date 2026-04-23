@@ -5,8 +5,10 @@ using System.Text;
 
 namespace IntegradorAplicacao.DTO
 {
-    public record SchemaDTO(string NomeColuna, string Finalidade, string Tipo, bool Categorico) : IItemNomeModelo
+    public record SaidaDTO() : IItemNomeModelo, IPipelineExecutor
     {
+        public string NomeFuncao { get; set; }
+        public List<string> Codigo { get; set; }
         public string NomeModelo { get; set; }
     }
 }

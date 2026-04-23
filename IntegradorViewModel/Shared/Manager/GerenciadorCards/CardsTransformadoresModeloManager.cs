@@ -59,7 +59,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
 
             foreach (var card in _cardsLista)
             {
-                var transformador = new TransformadorDTO(card.NomeTransformador, card.CaminhoProvisorio, nomeModelo);
+                var transformador = new TransformadorDTO(card.NomeTransformador, card.CaminhoProvisorio) { NomeModelo = nomeModelo };
                 transformadorNovo.Add(card.Posicao, transformador);
             }
 

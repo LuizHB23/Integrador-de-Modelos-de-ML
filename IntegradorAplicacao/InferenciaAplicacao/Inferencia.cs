@@ -1,5 +1,6 @@
 ﻿using IntegradorAplicacao.ConversorJson;
 using IntegradorAplicacao.DTO;
+using IntegradorAplicacao.DTO.Interfaces;
 using IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao;
 using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.Inferencia;
@@ -7,19 +8,19 @@ using Microsoft.ML.OnnxRuntime;
 
 namespace IntegradorAplicacao.InferenciaAplicacao
 {
-    public class Inferencia
+    public class Inferencia<T> where T : IPipelineExecutor
     {
         private readonly IConverteJson<Dictionary<int, TransformadorDTO>> _conversorTransformadores;
-        private readonly IConverteJson<Dictionary<int, FuncaoDTO>> _conversorPipeline;
+        private readonly IConverteJson<Dictionary<int, T>> _conversorPipeline;
         private readonly IConverteJson<Dictionary<int, SchemaDTO>> _conversorSchema;
 
         private Dictionary<int, SchemaDTO>? _schemaDicionario;
-        private readonly ExecutorFinal _executor;
+        private readonly ExecutorFinal<T> _executor;
         private readonly ConfiguraInputsOutputs _configuracao;
 
         public List<ErrosInferencia> ListaErros { get; private set; }
 
-        public Inferencia(IConverteJson<Dictionary<int, FuncaoDTO>> conversorPipeline, IConverteJson<Dictionary<int, SchemaDTO>> conversorSchema, IConverteJson<Dictionary<int, TransformadorDTO>> conversorTransformadores)
+        public Inferencia(IConverteJson<Dictionary<int, T>> conversorPipeline, IConverteJson<Dictionary<int, SchemaDTO>> conversorSchema, IConverteJson<Dictionary<int, TransformadorDTO>> conversorTransformadores)
         {
             _conversorTransformadores = conversorTransformadores;
             _conversorPipeline = conversorPipeline;
@@ -31,14 +32,14 @@ namespace IntegradorAplicacao.InferenciaAplicacao
             _configuracao = new(ListaErros);
         }
 
-        public async Task<List<ResultadoInferencia>> RealizaInferenciaAsync(DataFrame dataFrame, string caminhoModelo, string caminhoSchema, string caminhoPipeline, string caminhoTransformadores)
+        public async Task<List<ResultadoInferencia>> RealizaInferenciaAsync(DataFrame dataFrame, string caminhoModelo, string caminhoSchema, string caminhoPipeline, string caminhoTransformador)
         {
             _schemaDicionario = _conversorSchema.CarregarJson(caminhoSchema)
                 ?? throw new Exception("Schema não carregado.");
 
             var dataFrameNovo = await RealizaFeatureEngineeringAsync(dataFrame, caminhoPipeline);
 
-            var transformadores = _conversorTransformadores.CarregarJson(caminhoTransformadores);
+            var transformadores = _conversorTransformadores.CarregarJson(caminhoTransformador);
 
             var ids = PegaIds(dataFrameNovo);
 

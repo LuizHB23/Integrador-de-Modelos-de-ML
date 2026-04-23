@@ -58,7 +58,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
 
             foreach (var card in _cardsLista)
             {
-                var schema = new SchemaDTO(card.NomeColuna, card.Finalidade, card.Tipo, card.Categorico, nomeModelo);
+                var schema = new SchemaDTO(card.NomeColuna, card.Finalidade, card.Tipo, card.Categorico) { NomeModelo = nomeModelo };
                 schemaNovo.Add(card.Posicao, schema);
             }
 
