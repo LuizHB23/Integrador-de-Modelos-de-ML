@@ -15,8 +15,8 @@ namespace IntegradorAplicacao.InferenciaAplicacao
         private readonly IConverteJson<Dictionary<int, SchemaDTO>> _conversorSchema;
 
         private Dictionary<int, SchemaDTO>? _schemaDicionario;
-        private readonly ExecutorFinal<T> _executor;
         private readonly ConfiguraInputsOutputs _configuracao;
+        private ExecutorFinal<T>? _executor;
 
         public List<ErrosInferencia> ListaErros { get; private set; }
 
@@ -38,6 +38,7 @@ namespace IntegradorAplicacao.InferenciaAplicacao
                 ?? throw new Exception("Schema não carregado.");
 
             var dataFrameNovo = await RealizaFeatureEngineeringAsync(dataFrame, caminhoPipeline);
+            _executor = null;
 
             var transformadores = _conversorTransformadores.CarregarJson(caminhoTransformador);
 

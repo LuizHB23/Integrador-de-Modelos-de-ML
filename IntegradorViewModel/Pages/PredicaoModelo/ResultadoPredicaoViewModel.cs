@@ -81,15 +81,22 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
         [RelayCommand]
         private void ExportarCsvResultado()
         {
-            var caminhoArquivo = _csvController.EscreveArquivo(_resultadosDataFrame);
-            LancarNotificao(caminhoArquivo);
+            if(_resultadosDataFrame.QuantidadeLinhas != 0)
+            {
+                var caminhoArquivo = _csvController.EscreveArquivo(_resultadosDataFrame);
+                LancarNotificao(caminhoArquivo);
+            }
+
         }
 
         [RelayCommand]
         private void ExportarCsvErros()
         {
-            var caminhoArquivo = _csvController.EscreveArquivo(_listaErros);
-            LancarNotificao(caminhoArquivo);
+            if(_listaErros!.Count != 0)
+            {
+                var caminhoArquivo = _csvController.EscreveArquivo(_listaErros);
+                LancarNotificao(caminhoArquivo);
+            }
         }
 
         private void LancarNotificao(string caminhoArquivo)
@@ -99,7 +106,7 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
                 "Abrir",
                 () =>
                 {
-                    Process.Start("explorer.exe", caminhoArquivo);
+                    Process.Start("explorer.exe", Path.GetDirectoryName(caminhoArquivo)!);
                 });
         }
 
@@ -162,7 +169,8 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
             }
             else
             {
-                TextBox.AtualizaTabela(TextBox.CarregarDados());
+                _resultadosDataFrame = TextBox.CarregarDados();
+                TextBox.AtualizaTabela(_resultadosDataFrame);
             }
         }
 

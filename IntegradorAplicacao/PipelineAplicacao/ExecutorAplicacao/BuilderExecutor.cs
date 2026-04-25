@@ -11,7 +11,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
     {
         private Dictionary<string, object?> _objetosUtilizados;
         private List<ComandoMetodoPipeline> _listaComandos;
-        private List<EtapaExecucao> _etapasExecutor;
+        private Queue<EtapaExecucao> _etapasExecutor;
         private string _dataFrameRetorno;
 
         public BuilderExecutor(Dictionary<string, object?> objetosUtilizados)
@@ -26,8 +26,10 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
         {
             DataFrame? dataFrameOrigem;
 
-            foreach (var etapas in _etapasExecutor)
+            while (_etapasExecutor.Count > 0)
             {
+                var etapas = _etapasExecutor.Dequeue();
+
                 dataFrameOrigem = (DataFrame)_objetosUtilizados[etapas.DataFrameOrigem]!;
 
                 var dataFrameDestino = etapas.Executor!.Executar(dataFrameOrigem!);
@@ -38,11 +40,11 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
                 }
 
                 _objetosUtilizados[etapas.DataFrameDestino] = dataFrameDestino;
+                etapas = null;
             }
 
             var dataFrameRetorno = (DataFrame)_objetosUtilizados[_dataFrameRetorno]!;
 
-            _etapasExecutor.Clear();
             _listaComandos.Clear();
 
             return dataFrameRetorno!;
@@ -91,7 +93,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
 
             var expressaoExecutor = new EtapaExecucao(atribuicao.Variavel, atribuicao.ChamadaMetodo.ObjetoInicial, featureExecutor);
 
-            _etapasExecutor.Add(expressaoExecutor);
+            _etapasExecutor.Enqueue(expressaoExecutor);
         }
     }
 }

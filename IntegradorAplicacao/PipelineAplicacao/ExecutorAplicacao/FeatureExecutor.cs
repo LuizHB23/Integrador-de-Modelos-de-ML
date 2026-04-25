@@ -11,7 +11,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
 {
     public class FeatureExecutor
     {
-        private readonly List<IExecutorBase> _executores = new();
+        private readonly Queue<IExecutorBase> _executores = new();
         Dictionary<string, object?>? _objetosUtilizados;
 
         private static readonly Lazy<Dictionary<string, Type>> _cacheExecutores =
@@ -46,7 +46,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
 
         public void AdicionarExecutor(IExecutorBase executor)
         {
-            _executores.Add(executor);
+            _executores.Enqueue(executor);
         }
 
         public object Executar(DataFrame dataFrame)
@@ -54,8 +54,10 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
             object? objetoNovo = dataFrame;
             var dataFrameAuxiliar = dataFrame;
 
-            foreach (var executorObjeto in _executores)
+            while (_executores.Count > 0)
             {
+                var executorObjeto = _executores.Dequeue();
+
                 if (objetoNovo is DataFrame)
                 {
                     dataFrameAuxiliar = (DataFrame)objetoNovo;
@@ -79,6 +81,8 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
 
                     objetoNovo = executor.Executar(dataFrameAuxiliar);
                 }
+
+                executorObjeto = null;
             }
 
             return objetoNovo!;
@@ -125,7 +129,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
             // Criar executor passando a operação
             var executor = (IExecutorBase)Activator.CreateInstance(executorType, operacao)!;
 
-            _executores.Add(executor);
+            _executores.Enqueue(executor);
         }
 
         private Type EncontrarClassePorNome(string nomeFuncao)

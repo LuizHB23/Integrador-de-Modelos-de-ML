@@ -11,13 +11,13 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
     {
         private readonly IConverteJson<Dictionary<int, T>> _conversor;
         private Dictionary<string, object?> _objetosUtilizados;
-        private readonly List<BuilderExecutor> _executors;
-        private readonly ParserAst _parser;
+        private readonly Queue<BuilderExecutor> _executors;
+        private ParserAst? _parser;
 
         public ExecutorFinal(IConverteJson<Dictionary<int, T>> conversor)
         {
             _objetosUtilizados = new();
-            _executors = new List<BuilderExecutor>();
+            _executors = new Queue<BuilderExecutor>();
             _parser = new ParserAst();
             _conversor = conversor;
         }
@@ -26,11 +26,13 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
         {
             _objetosUtilizados["df"] = dataFrame;
 
-            foreach (var executor in _executors) 
+            while (_executors.Count > 0) 
             {
+                var executor = _executors.Dequeue();
                 dataFrame = executor.ExecutarMetodo(dataFrame);
+                executor = null;
             }
-            _executors.Clear();
+            _objetosUtilizados.Clear();
 
             return dataFrame;
         }
@@ -44,8 +46,10 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao
             {
                 var builderExecutor = new BuilderExecutor(_objetosUtilizados);
                 builderExecutor.ConstroiMetodo(metodoPipeline);
-                _executors.Add(builderExecutor);
+                _executors.Enqueue(builderExecutor);
             }
+
+            _parser = null;
         }
 
         private List<MetodoPipeline> RecuperaMetodoPipeline(string caminhoFuncao)
