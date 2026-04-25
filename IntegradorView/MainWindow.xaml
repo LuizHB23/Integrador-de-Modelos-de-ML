@@ -70,14 +70,6 @@
 
         <!--Fim Fluxo de Páginas do GraficoModelo-->
 
-        <DataTemplate DataType="{x:Type vmsusercontrol:ConfiguracaoCardSchemaViewModel}">
-            <usercontrol:ConfiguracaoCardSchema/>
-        </DataTemplate>
-
-        <DataTemplate DataType="{x:Type vmsusercontrol:ConfiguracaoCardFuncaoViewModel}">
-            <usercontrol:ConfiguracaoCardFuncao/>
-        </DataTemplate>
-
         <DataTemplate DataType="{x:Type vmsusercontrol:ConfiguracaoPipelineTextBoxViewModel}">
             <usercontrol:ConfiguracaoMetodoTextBox/>
         </DataTemplate>

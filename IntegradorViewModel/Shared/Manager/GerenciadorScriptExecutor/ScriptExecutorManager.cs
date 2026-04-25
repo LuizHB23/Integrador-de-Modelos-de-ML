@@ -94,7 +94,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor
             }
         }
 
-        protected async Task<DataFrame?> CarregarPipeline<F>(Func<string, Task<DataFrame>> funcConstroiPipeline, string caminhoPipeline) where F: IPipelineExecutorFactory<T>
+        protected async Task<DataFrame> CarregarPipeline<F>(Func<string, Task<DataFrame>> funcConstroiPipeline, string caminhoPipeline) where F: IPipelineExecutorFactory<T>
         {
             DataFrame? dataFrame = null;
             try

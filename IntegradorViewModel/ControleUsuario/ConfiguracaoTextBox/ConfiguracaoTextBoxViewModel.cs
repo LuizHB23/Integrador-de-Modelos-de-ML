@@ -7,7 +7,7 @@ using System.Data;
 
 namespace IntegradorViewModel.ControleUsuario
 {
-    public partial class ConfiguracaoTextBoxViewModel
+    public class ConfiguracaoTextBoxViewModel
     {
         private ParserAst _parserAst;
 
@@ -97,7 +97,7 @@ namespace IntegradorViewModel.ControleUsuario
             _onDadosAlterados(dataTable.DefaultView);
         }
 
-        public void EscreveScript(string featureName, List<string> listaPropriedades, string scriptCodigo)
+        public string EscreveScript(string featureName, List<string> listaPropriedades, string scriptCodigo)
         {
             if(string.IsNullOrWhiteSpace(scriptCodigo))
             {
@@ -140,7 +140,7 @@ namespace IntegradorViewModel.ControleUsuario
             }
 
 
-            scriptCodigo = scriptCodigo.Insert(indeReturn, $"{codigo}\n\n");
+            return scriptCodigo.Insert(indeReturn, $"{codigo}\n\n");
         }
 
         public string EsvaziaScript() => string.Empty;

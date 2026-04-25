@@ -8,17 +8,17 @@ namespace IntegradorAplicacao.ArquivosController.Csv.ExportarCsv
 {
     public class ExportarCsvErros : ICsvExportador<List<ErrosInferencia>>
     {
-        public void ExportarCsv(List<ErrosInferencia> erros)
+        public string ExportarCsv(List<ErrosInferencia> erros)
         {
-            SalvarResultadoEmDownloads(erros);
+            var caminhoArquivo = ObterCaminhoDownloads(GerarNomeArquivo());
+            SalvarResultadoEmDownloads(erros, caminhoArquivo);
+            return caminhoArquivo;
         }
 
-        private void SalvarResultadoEmDownloads(List<ErrosInferencia> erros)
+        private void SalvarResultadoEmDownloads(List<ErrosInferencia> erros, string caminhoArquivo)
         {
             if (erros == null || erros.Count == 0)
                 return;
-
-            var caminho = ObterCaminhoDownloads(GerarNomeArquivo());
 
             var linhas = new List<string>();
 
@@ -75,7 +75,7 @@ namespace IntegradorAplicacao.ArquivosController.Csv.ExportarCsv
                 linhas.Add(string.Join(",", linha));
             }
 
-            File.WriteAllLines(caminho, linhas, Encoding.UTF8);
+            File.WriteAllLines(caminhoArquivo, linhas, Encoding.UTF8);
         }
 
         private string ObterCaminhoDownloads(string nomeArquivo)

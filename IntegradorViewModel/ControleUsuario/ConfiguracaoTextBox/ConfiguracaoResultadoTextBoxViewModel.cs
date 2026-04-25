@@ -37,7 +37,7 @@ namespace IntegradorViewModel.ControleUsuario
 
         public void AtualizaTabela(DataFrame dataFrame) => _textBox.AtualizaTabela(dataFrame);
 
-        public void EscreveScript(string featureName, List<string> listaPropriedades) => _textBox.EscreveScript(featureName, listaPropriedades, ScriptCodigo);
+        public void EscreveScript(string featureName, List<string> listaPropriedades) => ScriptCodigo = _textBox.EscreveScript(featureName, listaPropriedades, ScriptCodigo);
 
         public void EsvaziaScript() => ScriptCodigo = _textBox.EsvaziaScript();
 

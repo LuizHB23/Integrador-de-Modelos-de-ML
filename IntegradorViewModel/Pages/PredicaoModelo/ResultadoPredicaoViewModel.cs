@@ -5,19 +5,14 @@ using IntegradorAplicacao.CaminhoProvider;
 using IntegradorAplicacao.ConversorJson;
 using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.InferenciaAplicacao;
-using IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao;
 using IntegradorDominio.DataFrameModel;
-using IntegradorDominio.FeatureEngineering.ManipulacaoDados;
 using IntegradorDominio.Inferencia;
 using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.ControleUsuario.ConfiguracaoMetodo.EstadoDataFrame;
-using IntegradorViewModel.ItensViewModel;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Shared.Context;
 using IntegradorViewModel.Shared.Interfaces;
-using IntegradorViewModel.Shared.Manager.GerenciadorCards;
 using IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor;
-using System.CodeDom.Compiler;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Diagnostics;
@@ -48,6 +43,7 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
         public ObservableCollection<ConfiguracaoCardFuncaoViewModel> CardsFuncoes { get; }
 
         private readonly ScriptExecutorResultadoManager _scriptManager;
+        private readonly INotificationService _notificationService;
         private readonly IContext<ModeloDTO> _contextModelo;
         private readonly IDialogService _dialogService;
 
@@ -60,7 +56,7 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
 
         private ArquivoDadosDTO _arquivo { get; set; }
 
-        public ResultadoPredicaoViewModel(INavigationService navigation, IDialogService dialogService, IContext<ModeloDTO> contextModelo, IContext<ArquivoDadosDTO> contextArquivo, IConverteJson<Dictionary<int, SaidaDTO>> converter, IPathProvider provider, Inferencia<SaidaDTO> inferencia)
+        public ResultadoPredicaoViewModel(INavigationService navigation, IDialogService dialogService, IContext<ModeloDTO> contextModelo, IContext<ArquivoDadosDTO> contextArquivo, IConverteJson<Dictionary<int, SaidaDTO>> converter, IPathProvider provider, INotificationService notificationService,Inferencia<SaidaDTO> inferencia)
         {
             Navigation = navigation;
             DataPreview = new();
@@ -68,6 +64,7 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
             OpcoesPosicao = new();
 
             _arquivo = contextArquivo.RecebeMensagem();
+            _notificationService = notificationService;
             _contextModelo = contextModelo;
             _dialogService = dialogService;
 
@@ -82,10 +79,29 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
         }
 
         [RelayCommand]
-        private void ExportarCsvResultado() => _csvController.EscreveArquivo(_resultadosDataFrame);
+        private void ExportarCsvResultado()
+        {
+            var caminhoArquivo = _csvController.EscreveArquivo(_resultadosDataFrame);
+            LancarNotificao(caminhoArquivo);
+        }
 
         [RelayCommand]
-        private void ExportarCsvErros() => _csvController.EscreveArquivo(_listaErros);
+        private void ExportarCsvErros()
+        {
+            var caminhoArquivo = _csvController.EscreveArquivo(_listaErros);
+            LancarNotificao(caminhoArquivo);
+        }
+
+        private void LancarNotificao(string caminhoArquivo)
+        {
+            _notificationService.Notify(
+                "Arquivo salvo em Downloads",
+                "Abrir",
+                () =>
+                {
+                    Process.Start("explorer.exe", caminhoArquivo);
+                });
+        }
 
         public async Task InicializarAsync()
         {
@@ -102,6 +118,17 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
                     await Task.Delay(50, token);
                 }
             }, token);
+
+            bool erroCarregarPipeline = false;
+            try
+            {
+                await _scriptManager.CarregarPipeline();
+
+            }
+            catch (Exception)
+            {
+                erroCarregarPipeline = true;
+            }
 
             var caminhoModelo = _contextModelo.RecebeMensagem().CaminhoPasta;
             var caminhoPasta = Path.GetDirectoryName(caminhoModelo);
@@ -128,16 +155,15 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
 
             await TextBox.GuardaEstado(resultados);
 
-            try
+            if(!erroCarregarPipeline)
             {
-                _resultadosDataFrame = await _scriptManager.CarregarPipeline();
+                var caminhoSaida = Path.Combine(caminhoPasta!, "saida.json");
+                _resultadosDataFrame = await _scriptManager.CarregarPipeline(caminhoSaida);
             }
-            catch(Exception)
+            else
             {
-                _resultadosDataFrame = TextBox.CarregarDados();
+                TextBox.AtualizaTabela(TextBox.CarregarDados());
             }
-
-            TextBox.AtualizaTabela(_resultadosDataFrame);
         }
 
         [RelayCommand]

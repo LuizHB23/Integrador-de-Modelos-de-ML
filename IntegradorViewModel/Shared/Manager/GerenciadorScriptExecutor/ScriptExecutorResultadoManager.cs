@@ -29,28 +29,21 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor
 
         public async Task AtualizaFuncao() => await AtualizaFuncao<SaidaDTOFactory>();
 
-        public async Task<DataFrame> CarregarPipeline()
+        public async Task CarregarPipeline()
         {
             string caminhoPipeline = Path.Combine(_provider.GetCaminhoModelo(), _nomeModelo, _json);
 
             if(File.Exists(caminhoPipeline))
             {
                 _cardsManager.CarregarPipeline(_converter, ConfigurarFuncao, RemoverFuncao, caminhoPipeline);
-
-                var dataFrame = await CarregarPipeline<SaidaDTOFactory>(ConstroiPipelineAsync, caminhoPipeline);
-
-                if(dataFrame is null)
-                {
-                    throw new Exception("");
-                }
-
-                return dataFrame;
             }
             else
             {
                 throw new Exception("");
             }
         }
+
+        public async Task<DataFrame> CarregarPipeline(string caminhoPipeline) => await CarregarPipeline<SaidaDTOFactory>(ConstroiPipelineAsync, caminhoPipeline);
 
         protected override void AoAlterarPipeline()
         {

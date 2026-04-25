@@ -1,5 +1,6 @@
 ﻿using IntegradorAplicacao;
 using IntegradorAplicacao.DTO;
+using IntegradorView.InteracoesUI.Notification;
 using IntegradorView.InteracoesUI.OpenFileDialog;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.GraficoModelo;
@@ -8,6 +9,7 @@ using IntegradorViewModel.Pages.PredicaoModelo;
 using IntegradorViewModel.Pages.PrincipalModelo;
 using IntegradorViewModel.Shared.Context;
 using IntegradorViewModel.Shared.Interfaces;
+using MaterialDesignThemes.Wpf;
 using Microsoft.Extensions.DependencyInjection;
 using System.Text;
 using System.Windows;
@@ -46,6 +48,9 @@ namespace IntegradorView
 
             //services.AddTransient<ConfiguracaoCardSchemaViewModel>();
             //Fim Services ViewModels
+
+            services.AddScoped<SnackbarMessageQueue>();
+            services.AddTransient<INotificationService, NotificationService>();
 
             services.AddSingleton<IDialogService, DialogService>();
             services.AddSingleton<INavigationService, NavigationService>();

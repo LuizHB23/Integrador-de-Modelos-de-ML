@@ -375,5 +375,8 @@
                 </Grid>
             </ScrollViewer>
         </DockPanel>
+
+        <usercontrol:CaixaDeDownload DataContext="{Binding}" 
+                                     Panel.ZIndex="999"/>
     </Grid>
 </UserControl>

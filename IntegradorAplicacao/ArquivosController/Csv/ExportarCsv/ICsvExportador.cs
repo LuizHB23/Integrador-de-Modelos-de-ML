@@ -6,6 +6,6 @@ namespace IntegradorAplicacao.ArquivosController.Csv.ExportarCsv
 {
     public interface ICsvExportador<T>
     {
-        void ExportarCsv(T dados);
+        string ExportarCsv(T dados);
     }
 }

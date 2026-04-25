@@ -58,10 +58,10 @@ namespace IntegradorAplicacao.ArquivosController.Csv
             await Task.CompletedTask; // mantém assinatura async sem warning
         }
 
-        public void EscreveArquivo<T>(T dados)
+        public string EscreveArquivo<T>(T dados)
         {
             var exportador = CsvExportadorFactory.Criar<T>();
-            exportador.ExportarCsv(dados);
+            return exportador.ExportarCsv(dados);
         }
 
         private IEnumerable<string[]> LerArquivo(string caminho)
