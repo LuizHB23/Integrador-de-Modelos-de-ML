@@ -19,27 +19,35 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             TipoDado = tipoDado;
         }
 
-        public override Expression ParaExpression(Dictionary<string, ParameterExpression> variaveis,
-            Dictionary<string, object> contexto, ParameterExpression indexVar)
+        public override Expression ParaExpression(Dictionary<string, ParameterExpression> variaveis, Dictionary<string, object> contexto, ParameterExpression indexVar)
         {
             if (!contexto.TryGetValue(NomeDataFrame, out var dfObj) || dfObj is not DataFrame df)
                 throw new Exception($"DataFrame '{NomeDataFrame}' não encontrado no contexto");
 
-            var dfParam = Expression.Constant(dfObj, dfObj.GetType());
+            var dfParam = Expression.Constant(dfObj);
 
-            var pegarColuna = Expression.Call(
+            var metodoPegarColuna = typeof(DataFrame)
+                .GetMethod("PegarColuna")!
+                .MakeGenericMethod(TipoDado);
+
+            var colunaExpr = Expression.Call(
                 dfParam,
-                df.GetType().GetMethod("PegarColuna")!.MakeGenericMethod(TipoDado),
+                metodoPegarColuna,
                 Expression.Constant(NomeColuna)
             );
 
             var valorExpr = Valor.ParaExpression(variaveis, contexto, indexVar);
 
-            // converte para object apenas para InjetarValor
-            var valorConvertido = Expression.Convert(valorExpr, typeof(object));
+            var metodoInjetar = typeof(Coluna<>)
+                .MakeGenericType(TipoDado)
+                .GetMethod("InjetarValor")!;
 
-            var metodoInjetar = typeof(Coluna<>).MakeGenericType(TipoDado).GetMethod("InjetarValor")!;
-            return Expression.Call(pegarColuna, metodoInjetar, indexVar, valorConvertido);
+            return Expression.Call(
+                colunaExpr,
+                metodoInjetar,
+                indexVar,
+                Expression.Convert(valorExpr, typeof(object))
+            );
         }
     }
 }

@@ -25,25 +25,30 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             if (!contexto.TryGetValue(NomeDataFrame, out var dfObj) || dfObj is not DataFrame df)
                 throw new Exception($"DataFrame '{NomeDataFrame}' não encontrado no contexto");
 
-            var dfParam = Expression.Constant(dfObj, dfObj.GetType());
+            var dfParam = Expression.Constant(dfObj);
 
-            var pegarColuna = Expression.Call(
+            // cache idealmente (static readonly)
+            var metodoPegarColuna = typeof(DataFrame)
+                .GetMethod("PegarColuna")!
+                .MakeGenericMethod(TipoDado);
+
+            var colunaExpr = Expression.Call(
                 dfParam,
-                df.GetType().GetMethod("PegarColuna")!.MakeGenericMethod(TipoDado),
+                metodoPegarColuna,
                 Expression.Constant(NomeColuna)
             );
 
-            var pegarValor = Expression.Call(
-                pegarColuna,
-                typeof(Coluna<>).MakeGenericType(TipoDado).GetMethod("Get")!,
-                indexVar
-            );
+            // chama Get(index)
+            var metodoGet = typeof(Coluna<>)
+                .MakeGenericType(TipoDado)
+                .GetMethod("Get")!;
 
-            // se for value type não-nullable, converte para Nullable
+            var valorExpr = Expression.Call(colunaExpr, metodoGet, indexVar);
+
             if (TipoDado.IsValueType && Nullable.GetUnderlyingType(TipoDado) == null)
-                return Expression.Convert(pegarValor, typeof(Nullable<>).MakeGenericType(TipoDado));
+                return Expression.Convert(valorExpr, typeof(Nullable<>).MakeGenericType(TipoDado));
 
-            return pegarValor;
+            return valorExpr;
         }
     }
 }

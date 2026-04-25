@@ -10,23 +10,58 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
         public override DataFrame Executar(DataFrame dataFrame)
         {
-            var n = dataFrame.QuantidadeLinhas;
+            int n = dataFrame.QuantidadeLinhas;
 
-            var resultado = new List<Single?>();
+            var resultado = new float?[n];
 
-            for (int i = 0; i < n; i++)
+            Coluna<float?>? colLeft = null;
+            Coluna<float?>? colRight = null;
+
+            if (Operacao.left is not null)
+                colLeft = dataFrame.PegarColuna<float?>(Operacao.left);
+
+            if (Operacao.right is not null)
+                colRight = dataFrame.PegarColuna<float?>(Operacao.right);
+
+            var spanLeft = colLeft.PegarColunaSpan();
+            var spanRight = colRight.PegarColunaSpan();
+
+            float valorConstante = Operacao.value != null
+                ? Convert.ToSingle(Operacao.value)
+                : 0f;
+
+            if (spanLeft != null && spanRight != null)
             {
-                if (Operacao.left is not null && Operacao.right is not null)
+                for (int i = 0; i < n; i++)
                 {
-                    resultado.Add(dataFrame.PegarColuna<Single?>(Operacao.left).Dados[i] + dataFrame.PegarColuna<Single?>(Operacao.right).Dados[i]);
+                    var a = spanLeft[i];
+                    var b = spanRight[i];
+
+                    resultado[i] = (a.HasValue && b.HasValue)
+                        ? a.Value + b.Value
+                        : null;
                 }
-                else if (Operacao.left is not null && Operacao.right is null)
+            }
+            else if (spanLeft != null)
+            {
+                for (int i = 0; i < n; i++)
                 {
-                    resultado.Add(dataFrame.PegarColuna<Single?>(Operacao.left).Dados[i] + Convert.ToSingle(Operacao.value));
+                    var a = spanLeft[i];
+
+                    resultado[i] = a.HasValue
+                        ? a.Value + valorConstante
+                        : null;
                 }
-                else
+            }
+            else if (spanRight != null)
+            {
+                for (int i = 0; i < n; i++)
                 {
-                    resultado.Add(Convert.ToSingle(Operacao.value) + dataFrame.PegarColuna<Single?>(Operacao.right).Dados[i]);
+                    var b = spanRight[i];
+
+                    resultado[i] = b.HasValue
+                        ? valorConstante + b.Value
+                        : null;
                 }
             }
 

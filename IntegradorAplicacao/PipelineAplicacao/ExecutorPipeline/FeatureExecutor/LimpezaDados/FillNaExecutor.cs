@@ -1,7 +1,6 @@
 ﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.Executors;
 using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.FeatureEngineering.LimpezaDados;
-using System.Diagnostics;
 
 namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.LimpezaDados
 {
@@ -12,69 +11,56 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
         public override object Executar(DataFrame dataFrame)
         {
             if (!dataFrame.ColunaIndex.TryGetValue(Operacao.col, out int index))
-            {
                 throw new Exception($"Coluna '{Operacao.col}' não encontrada");
-            }
 
-            object? valorOperacao;
-
-            if (Operacao.Contexto!.ContainsKey(Operacao.value))
-            {
-                valorOperacao = Operacao.Contexto[Operacao.value];
-            }
-            else
-            {
-                valorOperacao = Operacao.value;
-            }
+            object? valorOperacao = Operacao.Contexto!.ContainsKey(Operacao.value)
+                ? Operacao.Contexto[Operacao.value]
+                : Operacao.value;
 
             var coluna = dataFrame.Colunas[index];
 
             if (coluna is Coluna<Single?> colunaFloat)
             {
                 float valor = Convert.ToSingle(valorOperacao);
+                var span = colunaFloat.PegarColunaSpan();
 
-                for (int i = 0; i < colunaFloat.Dados.Count; i++)
+                for (int i = 0; i < span.Length; i++)
                 {
-                    if (colunaFloat.Dados[i] is null)
-                    {
-                        colunaFloat.Dados[i] = valor;
-                    }
+                    if (!span[i].HasValue)
+                        span[i] = valor;
                 }
             }
             else if (coluna is Coluna<Boolean?> colunaBool)
             {
                 bool valor = Convert.ToBoolean(valorOperacao);
+                var span = colunaBool.PegarColunaSpan();
 
-                for (int i = 0; i < colunaBool.Dados.Count; i++)
+                for (int i = 0; i < span.Length; i++)
                 {
-                    if (colunaBool.Dados[i] == null)
-                    {
-                        colunaBool.Dados[i] = valor;
-                    }
+                    if (!span[i].HasValue)
+                        span[i] = valor;
                 }
             }
             else if (coluna is Coluna<DateTime?> colunaDate)
             {
                 DateTime valor = Convert.ToDateTime(valorOperacao);
+                var span = colunaDate.PegarColunaSpan();
 
-                for (int i = 0; i < colunaDate.Dados.Count; i++)
+                for (int i = 0; i < span.Length; i++)
                 {
-                    if (colunaDate.Dados[i] == null)
-                    {
-                        colunaDate.Dados[i] = valor;
-                    }
+                    if (!span[i].HasValue)
+                        span[i] = valor;
                 }
             }
             else if (coluna is Coluna<string?> colunaString)
             {
                 string valor = (string)valorOperacao!;
+                var span = colunaString.PegarColunaSpan();
 
-                for (int i = 0; i < colunaString.Dados.Count; i++)
+                for (int i = 0; i < span.Length; i++)
                 {
-                    if (colunaString.Dados[i] == null)
-                    {
-                        colunaString.Dados[i] = valor;
-                    }
+                    if (span[i] == null)
+                        span[i] = valor;
                 }
             }
             else

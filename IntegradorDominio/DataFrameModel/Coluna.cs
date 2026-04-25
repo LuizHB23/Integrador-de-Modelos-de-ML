@@ -14,7 +14,7 @@ namespace IntegradorDominio.DataFrameModel
             _count = _dados.Length;
         }
 
-        private Coluna(string nome, T?[] dados) : base(nome, typeof(T))
+        public Coluna(string nome, T?[] dados) : base(nome, typeof(T))
         {
             _dados = dados;
             _count = dados.Length;
@@ -31,35 +31,57 @@ namespace IntegradorDominio.DataFrameModel
             _dados[_count++] = (T?)valor;
         }
 
-        public override void SubstituirDados(object novos)
-        {
-            var dadosNovos = (List<T?>)novos;
-
-            if (dadosNovos.Count <= _dados.Length)
-            {
-                for (int i = 0; i < dadosNovos.Count; i++)
-                    _dados[i] = dadosNovos[i];
-
-                _count = dadosNovos.Count;
-                return;
-            }
-
-            _dados = dadosNovos.ToArray();
-            _count = _dados.Length;
-        }
-
         public override void InjetarValor(int index, object? valor)
         {
             _dados[index] = (T?)valor;
         }
 
-        public T? Get(int index) => _dados[index];
+        public override void SubstituirDados(object novos)
+        {
+            if (novos is List<T?> lista)
+            {
+                if (lista.Count <= _dados.Length)
+                {
+                    for (int i = 0; i < lista.Count; i++)
+                        _dados[i] = lista[i];
+
+                    _count = lista.Count;
+                    return;
+                }
+
+                _dados = lista.ToArray();
+                _count = _dados.Length;
+            }
+            else if (novos is T?[] array)
+            {
+                _dados = array;
+                _count = array.Length;
+            }
+            else
+            {
+                throw new InvalidCastException($"Tipo inválido para SubstituirDados: {novos.GetType()}");
+            }
+        }
 
         public override ColunaBase Clonar()
         {
             var copy = new T?[_count];
             Array.Copy(_dados, copy, _count);
             return new Coluna<T>(Nome, copy);
+        }
+
+        public T? Get(int index) => _dados[index];
+
+        public Span<T?> PegarColunaSpan()
+        {
+            return _dados.AsSpan(0, _count);
+        }
+
+        public T?[] PegarColuna()
+        {
+            var copy = new T?[_count];
+            Array.Copy(_dados, copy, _count);
+            return copy;
         }
 
         private void EnsureCapacity()

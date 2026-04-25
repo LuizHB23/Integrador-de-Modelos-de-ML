@@ -10,14 +10,23 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
         public override DataFrame Executar(DataFrame dataFrame)
         {
-            var n = dataFrame.QuantidadeLinhas;
-            var divisor = Convert.ToInt32(Operacao.value);
+            int n = dataFrame.QuantidadeLinhas;
 
-            var resultado = new List<Single?>();
+            var coluna = dataFrame.PegarColuna<float?>(Operacao.col)
+                ?? throw new Exception($"Coluna '{Operacao.col}' inválida.");
+
+            var span = coluna.PegarColunaSpan();
+
+            float divisor = Convert.ToSingle(Operacao.value);
+
+            var resultado = new float?[n];
 
             for (int i = 0; i < n; i++)
             {
-                resultado.Add(dataFrame.PegarColuna<Single?>(Operacao.col).Dados[i] % divisor);
+                var v = span[i];
+
+                if (v.HasValue)
+                    resultado[i] = v.Value % divisor;
             }
 
             dataFrame.AlterarColuna(Operacao.exit, resultado);

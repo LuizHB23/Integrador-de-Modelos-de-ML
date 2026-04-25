@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace IntegradorDominio.DataFrameModel
-{
+﻿namespace IntegradorDominio.DataFrameModel
+{ 
     public class DataFrame
     {
         private readonly List<ColunaBase> _colunas = new();
@@ -16,7 +13,6 @@ namespace IntegradorDominio.DataFrameModel
 
         public Dictionary<string, int> ColunaIndex => _colunaIndex;
 
-        // 🔥 evita realloc de List<T> quando possível
         public void AdicionarColuna<T>(string nome, List<T?> dados)
         {
             if (_colunas.Count > 0 && dados.Count != QuantidadeLinhas)
@@ -53,15 +49,20 @@ namespace IntegradorDominio.DataFrameModel
                 : null;
         }
 
-        // 🔥 NÃO recria coluna inteira (grande ganho)
         public void AlterarColuna<T>(string nome, List<T?> valor)
         {
             if (_colunaIndex.TryGetValue(nome, out int index))
             {
-                var col = (Coluna<T?>)_colunas[index];
+                var colunaAtual = _colunas[index];
 
-                // reutiliza memória se possível
-                col.SubstituirDados(valor);
+                if (colunaAtual is Coluna<T?> col)
+                {
+                    col.SubstituirDados(valor);
+                }
+                else
+                {
+                    _colunas[index] = new Coluna<T?>(nome, valor);
+                }
             }
             else
             {
@@ -69,28 +70,64 @@ namespace IntegradorDominio.DataFrameModel
             }
         }
 
-        public void AlterarColuna<T>(string nome, List<T?> valor, Type tipo)
+        public void AlterarColuna<T>(string nome, T?[] valor)
         {
             if (_colunaIndex.TryGetValue(nome, out int index))
             {
-                var nova = new Coluna<T?>(nome, valor);
-                _colunas[index] = nova;
-                return;
-            }
+                var colunaAtual = _colunas[index];
 
+                if (colunaAtual is Coluna<T?> col)
+                {
+                    col.SubstituirDados(valor); // 🔥 zero cópia
+                }
+                else
+                {
+                    _colunas[index] = new Coluna<T?>(nome, valor);
+                }
+            }
+            else
+            {
+                var col = new Coluna<T?>(nome, valor);
+                _colunaIndex[nome] = _colunas.Count;
+                _colunas.Add(col);
+            }
+        }
+
+        public void AlterarColuna<T>(string nome, List<T?> valor, Type tipo)
+        {
+            var novaColuna = CriarColunaComTipo(nome, valor, tipo);
+
+            if (_colunaIndex.TryGetValue(nome, out int index))
+            {
+                _colunas[index] = novaColuna;
+            }
+            else
+            {
+                _colunas.Add(novaColuna);
+                _colunaIndex[nome] = _colunas.Count - 1;
+            }
+        }
+
+        private ColunaBase CriarColunaComTipo<T>(string nome, List<T?> valor, Type tipo)
+        {
             var tipoLista = typeof(List<>).MakeGenericType(tipo);
             var listaConvertida = (System.Collections.IList)Activator.CreateInstance(tipoLista)!;
 
             foreach (var v in valor)
             {
-                listaConvertida.Add(v == null ? null : Convert.ChangeType(v, tipo));
+                if (v == null)
+                {
+                    listaConvertida.Add(null);
+                }
+                else
+                {
+                    var tipoBase = Nullable.GetUnderlyingType(tipo) ?? tipo;
+                    listaConvertida.Add(Convert.ChangeType(v, tipoBase));
+                }
             }
 
             var tipoColuna = typeof(Coluna<>).MakeGenericType(tipo);
-            var novaColuna = (ColunaBase)Activator.CreateInstance(tipoColuna, nome, listaConvertida)!;
-
-            _colunas.Add(novaColuna);
-            _colunaIndex[nome] = _colunas.Count - 1;
+            return (ColunaBase)Activator.CreateInstance(tipoColuna, nome, listaConvertida)!;
         }
     }
 }

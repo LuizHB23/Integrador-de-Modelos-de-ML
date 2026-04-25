@@ -23,125 +23,185 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             switch (tipoDestino.ToLower())
             {
                 case "single":
-                    List<float?> dadosFloat = ConverterParaSingle(colunaBase, n);
+                    if (colunaBase is Coluna<float?>)
+                        break;
+
+                    float?[] dadosFloat = ConverterParaSingle(colunaBase, n);
                     dataFrame.AlterarColuna(Operacao.col, dadosFloat);
                     break;
 
                 case "boolean":
                 case "bool":
-                    List<bool?> dadosBoolean = ConverterParaBool(colunaBase, n);
+                    if (colunaBase is Coluna<bool?>)
+                        break;
+
+                    bool?[] dadosBoolean = ConverterParaBool(colunaBase, n);
                     dataFrame.AlterarColuna(Operacao.col, dadosBoolean);
                     break;
 
                 case "string":
                 case "str":
-                    List<string?> dadosString = ConverterParaString(colunaBase, n);
+                    if (colunaBase is Coluna<string?>)
+                        break;
+
+                    string?[] dadosString = ConverterParaString(colunaBase, n);
                     dataFrame.AlterarColuna(Operacao.col, dadosString);
                     break;
 
                 case "datetime":
-                    List<DateTime?> dadosdatetime = ConverterParaDateTime(colunaBase, n);
+                    if (colunaBase is Coluna<DateTime?>)
+                        break;
+
+                    DateTime?[] dadosdatetime = ConverterParaDateTime(colunaBase, n);
                     dataFrame.AlterarColuna(Operacao.col, dadosdatetime);
                     break;
             }
 
             return dataFrame;
         }
-        private List<float?> ConverterParaSingle(ColunaBase coluna, int n)
+        private float?[] ConverterParaSingle(ColunaBase colunaBase, int n)
         {
-            List<float?> resultado = new List<float?>();
+            var resultado = new float?[n];
+
+            if (colunaBase is Coluna<string?> colunaString)
+            {
+                var span = colunaString.PegarColunaSpan();
+
+                for (int i = 0; i < n; i++)
+                {
+                    var texto = span[i];
+
+                    if (string.IsNullOrWhiteSpace(texto))
+                        continue;
+
+                    if (float.TryParse(texto.Replace(',', '.'),
+                        CultureInfo.InvariantCulture, out float valor))
+                        resultado[i] = valor;
+                }
+
+                return resultado;
+            }
 
             for (int i = 0; i < n; i++)
             {
-                var valorOriginal = coluna.PegarValor(i);
+                var valorOriginal = colunaBase.PegarValor(i);
 
                 if (valorOriginal == null)
-                {
-                    resultado.Add(null);
                     continue;
-                }
-                else if (valorOriginal is string texto && string.IsNullOrWhiteSpace(texto.Trim()))
-                {
-                    resultado.Add(null);
-                    continue;
-                }
-                else if (float.TryParse(valorOriginal.ToString().Replace(',', '.'), CultureInfo.InvariantCulture, out float valor))
-                {
-                    resultado.Add(valor);
-                }
-                else
-                {
-                    resultado.Add(null);
-                }
+
+                if (float.TryParse(valorOriginal.ToString(), out float valor))
+                    resultado[i] = valor;
             }
 
             return resultado;
         }
 
-        private List<bool?> ConverterParaBool(ColunaBase coluna, int n)
+        private bool?[] ConverterParaBool(ColunaBase coluna, int n)
         {
-            List<bool?> resultado = new List<bool?>();
+            var resultado = new bool?[n];
+
+            if (coluna is Coluna<string?> colStr)
+            {
+                var span = colStr.PegarColunaSpan();
+
+                for (int i = 0; i < n; i++)
+                {
+                    var valor = span[i]?.Trim();
+
+                    if (string.IsNullOrEmpty(valor))
+                        continue;
+                    else if (valor == "1")
+                        resultado[i] = true;
+                    else if (valor == "0")
+                        resultado[i] = false;
+                    else if (bool.TryParse(valor, out bool convertido))
+                        resultado[i] = convertido;
+                }
+
+                return resultado;
+            }
 
             for (int i = 0; i < n; i++)
             {
                 var valor = coluna.PegarValor(i)?.ToString()?.Trim();
 
                 if (string.IsNullOrEmpty(valor))
-                {
-                    resultado.Add(null);
-                }
+                    continue;
                 else if (valor == "1")
-                {
-                    resultado.Add(true);
-                }
+                    resultado[i] = true;
                 else if (valor == "0")
-                {
-                    resultado.Add(false);
-                }
+                    resultado[i] = false;
                 else if (bool.TryParse(valor, out bool convertido))
-                {
-                    resultado.Add(convertido);
-                }
-                else
-                {
-                    resultado.Add(null);
-                }
+                    resultado[i] = convertido;
             }
 
             return resultado;
         }
 
-        private List<string?> ConverterParaString(ColunaBase coluna, int n)
+        private string?[] ConverterParaString(ColunaBase coluna, int n)
         {
-            List<string?> resultado = new List<string?>();
+            var resultado = new string?[n];
+
+            if (coluna is Coluna<string?> colStr)
+            {
+                var span = colStr.PegarColunaSpan();
+
+                for (int i = 0; i < n; i++)
+                    resultado[i] = span[i];
+
+                return resultado;
+            }
 
             for (int i = 0; i < n; i++)
             {
                 var valor = coluna.PegarValor(i);
-                resultado.Add(valor?.ToString());
+                resultado[i] = valor?.ToString();
             }
 
             return resultado;
         }
 
-        private List<DateTime?> ConverterParaDateTime(ColunaBase coluna, int n)
+        private DateTime?[] ConverterParaDateTime(ColunaBase coluna, int n)
         {
-            List<DateTime?> resultado = new List<DateTime?>();
+            var resultado = new DateTime?[n];
+
+            if (coluna is Coluna<string?> colStr)
+            {
+                var span = colStr.PegarColunaSpan();
+
+                for (int i = 0; i < n; i++)
+                {
+                    var valor = span[i];
+
+                    if (string.IsNullOrWhiteSpace(valor))
+                        continue;
+
+                    if (DateTime.TryParse(valor,
+                        new CultureInfo("en-US"),
+                        DateTimeStyles.AllowWhiteSpaces,
+                        out DateTime convertido))
+                    {
+                        resultado[i] = convertido;
+                    }
+                }
+
+                return resultado;
+            }
 
             for (int i = 0; i < n; i++)
             {
                 var valor = coluna.PegarValor(i);
 
                 if (valor == null)
-                {
-                    resultado.Add(null);
                     continue;
-                }
 
-                if (DateTime.TryParse(valor.ToString(), new CultureInfo("en-US"),DateTimeStyles.AllowWhiteSpaces, out DateTime convertido))
-                    resultado.Add(convertido);
-                else
-                    resultado.Add(null);
+                if (DateTime.TryParse(valor.ToString(),
+                    new CultureInfo("en-US"),
+                    DateTimeStyles.AllowWhiteSpaces,
+                    out DateTime convertido))
+                {
+                    resultado[i] = convertido;
+                }
             }
 
             return resultado;

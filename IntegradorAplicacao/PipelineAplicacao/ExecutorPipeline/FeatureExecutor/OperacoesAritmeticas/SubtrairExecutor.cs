@@ -1,9 +1,6 @@
 ﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.Executors;
 using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.FeatureEngineering.OperacoesAritmeticas;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.OperacoesAritmeticas
 {
@@ -18,52 +15,86 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             bool hasLeft = Operacao.left != null;
             bool hasRight = Operacao.right != null;
 
-            var resultado = new List<object?>();
+            // 🔥 detectar tipo
+            var tipoLeft = hasLeft ? dataFrame.PegarColunaBase(Operacao.left!).TipoDado : Operacao.value?.GetType();
+            var tipoRight = hasRight ? dataFrame.PegarColunaBase(Operacao.right!).TipoDado : Operacao.value?.GetType();
 
-            // 🔥 resolve tipos
-            var tipoLeft = hasLeft ? dataFrame.PegarColunaBase(Operacao.left).TipoDado : Operacao.value?.GetType();
-            var tipoRight = hasRight ? dataFrame.PegarColunaBase(Operacao.right).TipoDado : Operacao.value?.GetType();
+            bool isDateTime =
+                tipoLeft == typeof(DateTime) || tipoLeft == typeof(DateTime?) ||
+                tipoRight == typeof(DateTime) || tipoRight == typeof(DateTime?);
 
-            bool isDateTime = (tipoLeft == typeof(DateTime) || tipoRight == typeof(DateTime)) || (tipoLeft == typeof(DateTime?) || tipoRight == typeof(DateTime?));
+            var resultado = new float?[n];
 
-            // 🔥 colunas (se existirem)
-            var colLeftNum = hasLeft ? dataFrame.PegarColuna<Single?>(Operacao.left) : null;
-            var colRightNum = hasRight ? dataFrame.PegarColuna<Single?>(Operacao.right) : null;
+            // 🔥 spans numéricos
+            Span<float?> spanLeftNum = default;
+            Span<float?> spanRightNum = default;
 
-            var colLeftDate = hasLeft ? dataFrame.PegarColuna<DateTime?>(Operacao.left) : null;
-            var colRightDate = hasRight ? dataFrame.PegarColuna<DateTime?>(Operacao.right) : null;
+            // 🔥 spans datetime
+            Span<DateTime?> spanLeftDate = default;
+            Span<DateTime?> spanRightDate = default;
 
+            if (hasLeft)
+            {
+                if (isDateTime)
+                    spanLeftDate = dataFrame.PegarColuna<DateTime?>(Operacao.left!).PegarColunaSpan();
+                else
+                    spanLeftNum = dataFrame.PegarColuna<float?>(Operacao.left!).PegarColunaSpan();
+            }
+
+            if (hasRight)
+            {
+                if (isDateTime)
+                    spanRightDate = dataFrame.PegarColuna<DateTime?>(Operacao.right!).PegarColunaSpan();
+                else
+                    spanRightNum = dataFrame.PegarColuna<float?>(Operacao.right!).PegarColunaSpan();
+            }
+
+            // 🔥 constantes
+            float valorConstNum = 0f;
+            DateTime valorConstDate = default;
+
+            if (!hasLeft || !hasRight)
+            {
+                if (isDateTime)
+                    valorConstDate = Convert.ToDateTime(Operacao.value);
+                else
+                    valorConstNum = Convert.ToSingle(Operacao.value);
+            }
+
+            // 🔥 loop
             for (int i = 0; i < n; i++)
             {
-                object? left = hasLeft
-                    ? (isDateTime ? colLeftDate!.Dados[i] : colLeftNum!.Dados[i])
-                    : (isDateTime ? Convert.ToDateTime(Operacao.value) : Convert.ToSingle(Operacao.value));
-
-                object? right = hasRight
-                    ? (isDateTime ? colRightDate!.Dados[i] : colRightNum!.Dados[i])
-                    : (isDateTime ? Convert.ToDateTime(Operacao.value) : Convert.ToSingle(Operacao.value));
-
-                if (left == null || right == null)
-                {
-                    resultado.Add(null);
-                    continue;
-                }
-
                 if (isDateTime)
                 {
-                    var diff = ((DateTime)left - (DateTime)right).TotalDays;
-                    resultado.Add((Single?)diff);
+                    DateTime? left = hasLeft ? spanLeftDate[i] : valorConstDate;
+                    DateTime? right = hasRight ? spanRightDate[i] : valorConstDate;
+
+                    if (!left.HasValue || !right.HasValue)
+                    {
+                        resultado[i] = null;
+                        continue;
+                    }
+
+                    var diff = (left.Value - right.Value).TotalDays;
+                    resultado[i] = (float)diff;
                 }
                 else
                 {
-                    resultado.Add((Single?)left - (Single?)right);
+                    float? left = hasLeft ? spanLeftNum[i] : valorConstNum;
+                    float? right = hasRight ? spanRightNum[i] : valorConstNum;
+
+                    if (!left.HasValue || !right.HasValue)
+                    {
+                        resultado[i] = null;
+                        continue;
+                    }
+
+                    resultado[i] = left.Value - right.Value;
                 }
             }
 
-            // 🔥 define tipo final
-            var tipoFinal = isDateTime ? typeof(Single?) : typeof(Single?);
-
-            dataFrame.AlterarColuna(Operacao.exit, resultado, tipoFinal);
+            // 🔥 sempre float? (inclusive datetime vira dias)
+            dataFrame.AlterarColuna(Operacao.exit, resultado);
 
             return dataFrame;
         }
