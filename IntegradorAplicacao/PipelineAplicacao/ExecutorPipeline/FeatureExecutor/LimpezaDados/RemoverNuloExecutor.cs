@@ -13,57 +13,75 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             if (dataFrame == null || dataFrame.QuantidadeLinhas == 0)
                 return dataFrame;
 
-            int quantidadeLinhas = dataFrame.QuantidadeLinhas;
-            int quantidadeColunas = dataFrame.Colunas.Count;
+            int rows = dataFrame.QuantidadeLinhas;
+            int cols = dataFrame.Colunas.Count;
 
-            var novoDataFrame = new DataFrame();
+            var colunas = dataFrame.Colunas;
 
-            // Cria colunas vazias do mesmo tipo que o DataFrame original
-            foreach (var col in dataFrame.Colunas)
+            var novo = new DataFrame();
+
+            // pré-cria colunas (evita re-reflection no loop de linhas)
+            for (int c = 0; c < cols; c++)
             {
+                var col = colunas[c];
+
                 var tipoLista = typeof(List<>).MakeGenericType(col.TipoDado);
-                var listaVazia = (System.Collections.IList)Activator.CreateInstance(tipoLista)!;
-                novoDataFrame.AdicionarColuna(col.Nome, listaVazia as dynamic);
+                var lista = (System.Collections.IList)Activator.CreateInstance(tipoLista)!;
+
+                novo.AdicionarColuna(col.Nome, lista as dynamic);
             }
 
-            // Percorre as linhas
-            for (int i = 0; i < quantidadeLinhas; i++)
+            // buffer de chave reutilizável (evita StringBuilder por linha)
+            Span<char> buffer = stackalloc char[1024]; // suficiente para chaves comuns
+            var seen = new HashSet<string>(rows);
+
+            for (int i = 0; i < rows; i++)
             {
-                bool linhaValida = true;
+                int pos = 0;
+                bool hasNull = false;
 
-                for (int j = 0; j < quantidadeColunas; j++)
+                for (int j = 0; j < cols; j++)
                 {
-                    var valor = dataFrame.Colunas[j].PegarValor(i);
-                    if (valor is string)
+                    var v = colunas[j].PegarValor(i);
+
+                    if (v == null)
                     {
-                        var texto = (string)valor;
-                        if (texto.Trim() == "")
-                        {
-                            linhaValida = false;
-                            break;
-                        }
+                        hasNull = true;
+                        break;
                     }
-                    else
+
+                    var s = v.ToString();
+                    if (string.IsNullOrEmpty(s))
+                        s = "NULL";
+
+                    // escreve no span (rápido, sem StringBuilder)
+                    foreach (var ch in s)
                     {
-                        if (valor == null)
-                        {
-                            linhaValida = false;
-                            break;
-                        }
+                        if (pos < buffer.Length)
+                            buffer[pos++] = ch;
                     }
+
+                    if (pos < buffer.Length)
+                        buffer[pos++] = '|';
                 }
 
-                if (linhaValida)
+                if (hasNull)
+                    continue;
+
+                string key = new string(buffer.Slice(0, pos));
+
+                if (!seen.Add(key))
+                    continue;
+
+                // adiciona linha
+                for (int j = 0; j < cols; j++)
                 {
-                    for (int j = 0; j < quantidadeColunas; j++)
-                    {
-                        var valor = dataFrame.Colunas[j].PegarValor(i);
-                        novoDataFrame.Colunas[j].AdicionaValor(valor);
-                    }
+                    var v = colunas[j].PegarValor(i);
+                    novo.Colunas[j].AdicionaValor(v);
                 }
             }
 
-            return novoDataFrame;
+            return novo;
         }
     }
 }

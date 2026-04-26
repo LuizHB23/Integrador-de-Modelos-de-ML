@@ -19,22 +19,65 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
             foreach (var coluna in dataFrame.Colunas)
             {
-                Type tipo = coluna.TipoDado;
+                var nome = coluna.Nome;
+                var tipo = coluna.TipoDado;
 
-                Type listTipo = typeof(List<>).MakeGenericType(tipo);
-                var listaNova = (IList)Activator.CreateInstance(listTipo)!;
-
-                for (int i = 0; i < coluna.Quantidade; i++)
+                if (coluna is Coluna<float?> cf)
                 {
-                    listaNova.Add(coluna.PegarValor(i));
+                    var origem = cf.PegarColunaSpan();
+                    var lista = new List<float?>(origem.Length);
+
+                    for (int i = 0; i < origem.Length; i++)
+                        lista.Add(origem[i]);
+
+                    novoDataFrame.AdicionarColuna<float?>(nome, lista);
                 }
+                else if (coluna is Coluna<string?> cs)
+                {
+                    var origem = cs.PegarColunaSpan();
+                    var lista = new List<string?>(origem.Length);
 
-                Type colunaTipo = typeof(Coluna<>).MakeGenericType(tipo);
-                var construtorColuna = colunaTipo.GetConstructor(new Type[] { typeof(string), listTipo })!;
-                var novaColuna = construtorColuna.Invoke(new object[] { coluna.Nome, listaNova });
+                    for (int i = 0; i < origem.Length; i++)
+                        lista.Add(origem[i]);
 
-                var metodoAdd = typeof(DataFrame).GetMethod("AdicionarColuna")!.MakeGenericMethod(tipo);
-                metodoAdd.Invoke(novoDataFrame, new object[] { coluna.Nome, listaNova });
+                    novoDataFrame.AdicionarColuna<string?>(nome, lista);
+                }
+                else if (coluna is Coluna<bool?> cb)
+                {
+                    var origem = cb.PegarColunaSpan();
+                    var lista = new List<bool?>(origem.Length);
+
+                    for (int i = 0; i < origem.Length; i++)
+                        lista.Add(origem[i]);
+
+                    novoDataFrame.AdicionarColuna<bool?>(nome, lista);
+                }
+                else if (coluna is Coluna<DateTime?> cd)
+                {
+                    var origem = cd.PegarColunaSpan();
+                    var lista = new List<DateTime?>(origem.Length);
+
+                    for (int i = 0; i < origem.Length; i++)
+                        lista.Add(origem[i]);
+
+                    novoDataFrame.AdicionarColuna<DateTime?>(nome, lista);
+                }
+                else
+                {
+                    // fallback genérico (evita reflection)
+                    var listType = typeof(List<>).MakeGenericType(tipo);
+                    var lista = (IList)Activator.CreateInstance(listType)!;
+
+                    for (int i = 0; i < coluna.Quantidade; i++)
+                        lista.Add(coluna.PegarValor(i));
+
+                    // aqui ainda precisa reflection se DataFrame não tiver overload não genérico
+                    var metodo = typeof(DataFrame)
+                        .GetMethod("AdicionarColuna")!
+                        .MakeGenericMethod(tipo);
+
+                    metodo.Invoke(novoDataFrame, new object[] { nome, lista });
+                }
             }
 
             return novoDataFrame;

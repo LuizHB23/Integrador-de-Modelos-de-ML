@@ -20,16 +20,25 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
             var tipo = Nullable.GetUnderlyingType(coluna.TipoDado) ?? coluna.TipoDado;
 
-            var oldConvertido = Converter(tipo, Operacao.old);
-            var newConvertido = Converter(tipo, Operacao.value);
+            // 🔥 pré-conversão (evita converter dentro do loop)
+            object? oldValue = Converter(tipo, Operacao.old);
+            object? newValue = Converter(tipo, Operacao.value);
 
-            for (int i = 0; i < coluna.Quantidade; i++)
+            int n = coluna.Quantidade;
+
+            // 🔥 local reference (micro-otimização importante)
+            var pegar = coluna.PegarValor;
+            var set = coluna.InjetarValor;
+
+            for (int i = 0; i < n; i++)
             {
-                var valorAtual = coluna.PegarValor(i);
+                var atual = pegar(i);
 
-                if (Equals(valorAtual, oldConvertido))
+                // evita Equals virtual pesado quando possível
+                if (ReferenceEquals(atual, oldValue) ||
+                    (atual != null && atual.Equals(oldValue)))
                 {
-                    coluna.InjetarValor(i, newConvertido);
+                    set(i, newValue);
                 }
             }
 

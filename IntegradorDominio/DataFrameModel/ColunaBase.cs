@@ -13,6 +13,7 @@
         }
 
         public abstract ColunaBase Clonar();
+        public abstract void Reordenar(int[] indices);
         public abstract object? PegarValor(int index);
         public abstract void AdicionaValor(object? valor);
         public abstract void SubstituirDados(object novos);

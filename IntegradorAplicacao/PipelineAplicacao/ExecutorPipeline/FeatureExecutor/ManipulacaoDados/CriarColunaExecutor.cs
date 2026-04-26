@@ -12,99 +12,120 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
         public override object Executar(DataFrame dataFrame)
         {
-            Type tipoColuna = typeof(object);
-            object? valor = null;
-            List<object?>? valoresExistentes = null;
+            string nome = Operacao.name;
 
-            // Verifica se value é o nome de um DataFrame existente
-            if (!string.IsNullOrWhiteSpace(Operacao.value) && Operacao.Contexto != null && Operacao.Contexto.ContainsKey(Operacao.value))
+            if (!string.IsNullOrWhiteSpace(Operacao.value) && Operacao.Contexto != null && Operacao.Contexto.TryGetValue(Operacao.value, out var ctx) && ctx is DataFrame dfExistente && dfExistente.Colunas.Count > 0)
             {
-                if (Operacao.Contexto[Operacao.value] is DataFrame dfExistente)
-                {
-                    // Pegamos a primeira coluna do DataFrame existente (ou você pode parametrizar qual coluna)
-                    var colunaBase = dfExistente.Colunas.Count > 0 ? dfExistente.Colunas[0] : null;
+                var col = dfExistente.Colunas[0];
 
-                    if (colunaBase != null)
+                int n = col.Quantidade;
+
+                if (col is Coluna<float?> cf)
+                {
+                    var span = cf.PegarColunaSpan();
+                    var arr = new float?[n];
+
+                    for (int i = 0; i < n; i++)
+                        arr[i] = span[i];
+
+                    dataFrame.AdicionarColuna<float?>(nome, arr.ToList());
+                    return dataFrame;
+                }
+
+                if (col is Coluna<bool?> cb)
+                {
+                    var span = cb.PegarColunaSpan();
+                    var arr = new bool?[n];
+
+                    for (int i = 0; i < n; i++)
+                        arr[i] = span[i];
+
+                    dataFrame.AdicionarColuna<bool?>(nome, arr.ToList());
+                    return dataFrame;
+                }
+
+                if (col is Coluna<DateTime?> cd)
+                {
+                    var span = cd.PegarColunaSpan();
+                    var arr = new DateTime?[n];
+
+                    for (int i = 0; i < n; i++)
+                        arr[i] = span[i];
+
+                    dataFrame.AdicionarColuna<DateTime?>(nome, arr.ToList());
+                    return dataFrame;
+                }
+
+                var objArr = new object?[n];
+                for (int i = 0; i < n; i++)
+                    objArr[i] = col.PegarValor(i);
+
+                dataFrame.AdicionarColuna<object?>(nome, objArr.ToList());
+                return dataFrame;
+            }
+
+            int rows = dataFrame.QuantidadeLinhas;
+
+            switch (Operacao.type?.ToLower())
+            {
+                case "single":
+                case "float":
                     {
-                        tipoColuna = colunaBase.TipoDado;
-                        valoresExistentes = new List<object?>();
-                        for (int i = 0; i < colunaBase.Quantidade; i++)
-                        {
-                            valoresExistentes.Add(colunaBase.PegarValor(i));
-                        }
+                        float? value = VerificaNulidade(Operacao.value) ? null : Convert.ToSingle(Operacao.value);
+
+                        var arr = new float?[rows];
+
+                        for (int i = 0; i < rows; i++)
+                            arr[i] = value;
+
+                        dataFrame.AdicionarColuna<float?>(nome, arr.ToList());
+                        break;
                     }
-                }
-            }
 
-            // Se não for DataFrame existente, usamos o valor fixo
-            if (valoresExistentes == null)
-            {
-                switch (Operacao.type)
-                {
-                    case "single":
-                    case "float":
-                        tipoColuna = typeof(Single?);
-                        if (VerificaNulidade(Operacao.value))
-                            valor = null;
-                        else
-                            valor = Convert.ToSingle(Operacao.value);
+                case "boolean":
+                case "bool":
+                    {
+                        bool? value = VerificaNulidade(Operacao.value) ? null : Convert.ToBoolean(Operacao.value);
+
+                        var arr = new bool?[rows];
+
+                        for (int i = 0; i < rows; i++)
+                            arr[i] = value;
+
+                        dataFrame.AdicionarColuna<bool?>(nome, arr.ToList());
                         break;
+                    }
 
-                    case "boolean":
-                    case "bool":
-                        tipoColuna = typeof(Boolean?);
-                        if (VerificaNulidade(Operacao.value))
-                            valor = null;
-                        else
-                            valor = Convert.ToBoolean(Operacao.value);
+                case "datetime":
+                    {
+                        DateTime? value = VerificaNulidade(Operacao.value) ? null : Convert.ToDateTime(Operacao.value);
+
+                        var arr = new DateTime?[rows];
+
+                        for (int i = 0; i < rows; i++)
+                            arr[i] = value;
+
+                        dataFrame.AdicionarColuna<DateTime?>(nome, arr.ToList());
                         break;
+                    }
 
-                    case "string":
-                    case "str":
-                        tipoColuna = typeof(String);
-                        valor = Convert.ToString(Operacao.value);
+                case "string":
+                case "str":
+                default:
+                    {
+                        string? value = Operacao.value;
+
+                        var arr = new string?[rows];
+
+                        for (int i = 0; i < rows; i++)
+                            arr[i] = value;
+
+                        dataFrame.AdicionarColuna<string?>(nome, arr.ToList());
                         break;
-
-                    case "datetime":
-                        tipoColuna = typeof(DateTime?);
-                        if (VerificaNulidade(Operacao.value))
-                            valor = null;
-                        else
-                            valor = Convert.ToDateTime(Operacao.value);
-                        break;
-                }
+                    }
             }
-
-            // Criar a lista do tipo correto
-            Type listType = typeof(List<>).MakeGenericType(tipoColuna);
-            var listaNova = (System.Collections.IList)Activator.CreateInstance(listType)!;
-
-            int quantidadeLinhas = dataFrame.Colunas.Count > 0 ? dataFrame.QuantidadeLinhas : 1;
-
-            if (valoresExistentes != null)
-            {
-                // Preenche a nova coluna com os valores do DataFrame existente
-                foreach (var v in valoresExistentes)
-                    listaNova.Add(v);
-            }
-            else
-            {
-                // Preencher a lista com o valor (ou nulo) repetido para todas as linhas
-                for (int i = 0; i < quantidadeLinhas; i++)
-                    listaNova.Add(valor);
-            }
-
-            // Criar a coluna dinamicamente
-            Type colunaTipo = typeof(Coluna<>).MakeGenericType(tipoColuna);
-            var construtorColuna = colunaTipo.GetConstructor(new Type[] { typeof(string), listType })!;
-            var novaColuna = construtorColuna.Invoke(new object[] { Operacao.name, listaNova });
-
-            // Adicionar ao DataFrame
-            var metodoAdd = typeof(DataFrame).GetMethod("AdicionarColuna")!.MakeGenericMethod(tipoColuna);
-            metodoAdd.Invoke(dataFrame, new object[] { Operacao.name, listaNova });
 
             return dataFrame;
-
         }
 
         private bool VerificaNulidade(string valor)

@@ -1,9 +1,8 @@
 ﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.Executors;
 using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.FeatureEngineering.AgrupamentoDados;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Collections;
+using System.Text;
 
 namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.AgrupamentoDados
 {
@@ -14,50 +13,26 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
         public override object Executar(DataFrame dataFrame)
         {
             var colunasChave = TransformaStringColunasEmListaColunas(Operacao.col);
-            var agregacao = Operacao.agg?.ToLower();
+            var agg = Operacao.agg?.ToLower();
 
-            if (colunasChave == null || colunasChave.Count == 0)
-                throw new InvalidCastException("É necessário informar pelo menos uma coluna-chave para o groupby.");
+            if (colunasChave.Count == 0)
+                throw new Exception("groupby requer colunas");
 
-            bool ehDiff = agregacao == "diff";
-
-            // 🔥 CASO ESPECIAL: diff como janela (igual GroupWindow)
-            if (ehDiff)
-            {
+            if (agg == "diff")
                 return ExecutarDiffComoJanela(dataFrame, colunasChave);
-            }
 
-            // 🔹 Criar grupos
-            var grupos = new Dictionary<string, List<int>>();
+            var keys = BuildKeys(dataFrame, colunasChave);
 
-            for (int i = 0; i < dataFrame.QuantidadeLinhas; i++)
-            {
-                var chave = string.Join("|", colunasChave.Select(c =>
-                {
-                    var valor = dataFrame.PegarColunaBase(c)?.PegarValor(i);
-                    return valor?.ToString() ?? "NULL";
-                }));
+            var indices = Enumerable.Range(0, dataFrame.QuantidadeLinhas)
+                                    .OrderBy(i => keys[i])
+                                    .ToArray();
 
-                if (!grupos.TryGetValue(chave, out var lista))
-                {
-                    lista = new List<int>();
-                    grupos[chave] = lista;
-                }
 
-                lista.Add(i);
-            }
+            var result = new Dictionary<string, List<object?>>();
+            foreach (var c in dataFrame.Colunas)
+                result[c.Nome] = new List<object?>();
 
-            // 🔹 Preparar novo DataFrame
-            var novoDataFrame = new DataFrame();
-            var colunasResultado = new Dictionary<string, List<object?>>();
-
-            foreach (var col in dataFrame.Colunas)
-            {
-                colunasResultado[col.Nome] = new List<object?>();
-            }
-
-            // 🔹 Função de agregação
-            Func<ColunaBase, List<int>, object?> functionAgregacao = agregacao switch
+            Func<ColunaBase, int[], object?> aggFunc = agg switch
             {
                 "sum" => AgregacaoSoma,
                 "count" => AgregacaoCount,
@@ -65,295 +40,320 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                 "std" => AgregacaoDesvioPadrao,
                 "min" => AgregacaoMinimo,
                 "max" => AgregacaoMaximo,
-                _ => throw new Exception($"Operação {agregacao} não suportada")
+                _ => throw new Exception("agg não suportado")
             };
 
-            // 🔹 Processar cada grupo
-            foreach (var grupo in grupos)
+            // 🔥 3. SCAN GROUPS (CORE OPTIMIZATION)
+            int start = 0;
+
+            while (start < indices.Length)
             {
-                var indices = grupo.Value;
+                int end = start + 1;
+
+                while (end < indices.Length &&
+                       keys[indices[end]] == keys[indices[start]])
+                    end++;
+
+                var slice = new int[end - start];
+                Array.Copy(indices, start, slice, 0, slice.Length);
 
                 foreach (var col in dataFrame.Colunas)
                 {
                     if (colunasChave.Contains(col.Nome))
                     {
-                        colunasResultado[col.Nome].Add(col.PegarValor(indices[0]));
+                        result[col.Nome].Add(col.PegarValor(slice[0]));
                     }
                     else
                     {
-                        var resultado = functionAgregacao(col, indices);
-                        colunasResultado[col.Nome].Add(resultado);
+                        result[col.Nome].Add(aggFunc(col, slice));
                     }
                 }
+
+                start = end;
             }
 
-            var ordemFinal = new List<string>();
-            ordemFinal.AddRange(colunasChave);
-            ordemFinal.AddRange(
-                dataFrame.Colunas
-                    .Select(c => c.Nome)
-                    .Where(nome => !colunasChave.Contains(nome))
-            );
+            // 🔥 4. BUILD DF
+            var novo = new DataFrame();
 
-            // 🔹 Adicionar colunas
-            foreach (var nomeColuna in ordemFinal)
+            foreach (var col in dataFrame.Colunas)
             {
-                var colOriginal = dataFrame.Colunas.First(c => c.Nome == nomeColuna);
-
                 AdicionarColunaTipadaDynamic(
-                    novoDataFrame,
-                    nomeColuna,
-                    colunasResultado[nomeColuna],
-                    colOriginal.TipoDado,
+                    novo,
+                    col.Nome,
+                    result[col.Nome],
+                    col.TipoDado,
                     false
                 );
             }
 
-            return novoDataFrame;
+            return novo;
         }
 
-        // 🔥 NOVO: diff estilo janela
-        private DataFrame ExecutarDiffComoJanela(DataFrame dataFrame, List<string> colunasChave)
+        private string[] BuildKeys(DataFrame df, List<string> cols)
         {
-            var grupos = new Dictionary<string, List<int>>();
+            var keys = new string[df.QuantidadeLinhas];
+            var sb = new StringBuilder(64);
 
-            // Criar grupos com base nas colunas-chave
-            for (int i = 0; i < dataFrame.QuantidadeLinhas; i++)
+            for (int i = 0; i < df.QuantidadeLinhas; i++)
             {
-                var chave = string.Join("|", colunasChave.Select(c =>
-                {
-                    var valor = dataFrame.PegarColunaBase(c)?.PegarValor(i);
-                    return valor?.ToString() ?? "NULL";
-                }));
+                sb.Clear();
 
-                if (!grupos.TryGetValue(chave, out var lista))
+                foreach (var c in cols)
                 {
-                    lista = new List<int>();
-                    grupos[chave] = lista;
+                    var v = df.PegarColunaBase(c)?.PegarValor(i);
+                    sb.Append(v ?? "NULL").Append('|');
                 }
 
-                lista.Add(i);
+                keys[i] = sb.ToString();
             }
 
-            var novoDataFrame = new DataFrame();
+            return keys;
+        }
 
-            foreach (var col in dataFrame.Colunas)
+        private object? AgregacaoSoma(ColunaBase col, int[] idx)
+        {
+            if (col is Coluna<float?> c)
             {
-                var valores = new List<object?>();
+                var span = c.PegarColunaSpan();
+                float sum = 0;
 
-                if (colunasChave.Contains(col.Nome))
+                for (int i = 0; i < idx.Length; i++)
                 {
-                    // Coluna-chave: mantemos o tipo original
-                    for (int i = 0; i < dataFrame.QuantidadeLinhas; i++)
-                        valores.Add(col.PegarValor(i));
-
-                    AdicionarColunaTipadaDynamic(
-                        novoDataFrame,
-                        col.Nome,
-                        valores,
-                        col.TipoDado, // mantém o tipo original da coluna
-                        false
-                    );
+                    var v = span[idx[i]];
+                    if (v.HasValue) sum += v.Value;
                 }
-                else
-                {
-                    // Coluna de valores: calculamos diff
-                    var resultados = new object?[dataFrame.QuantidadeLinhas];
 
-                    foreach (var grupo in grupos.Values)
+                return sum;
+            }
+
+            float s = 0;
+            foreach (var i in idx)
+            {
+                var v = (float?)col.PegarValor(i);
+                if (v.HasValue) s += v.Value;
+            }
+
+            return s;
+        }
+
+        private object? AgregacaoCount(ColunaBase col, int[] idx)
+        {
+            int c = 0;
+
+            foreach (var i in idx)
+                if (col.PegarValor(i) != null)
+                    c++;
+
+            return c;
+        }
+
+        private object? AgregacaoMedia(ColunaBase col, int[] idx)
+        {
+            if (col is Coluna<float?> c)
+            {
+                var span = c.PegarColunaSpan();
+
+                float sum = 0;
+                int count = 0;
+
+                for (int i = 0; i < idx.Length; i++)
+                {
+                    var v = span[idx[i]];
+                    if (v.HasValue)
                     {
-                        for (int j = 0; j < grupo.Count; j++)
-                        {
-                            if (j == 0)
-                            {
-                                resultados[grupo[j]] = null;
-                                continue;
-                            }
-
-                            var atual = col.PegarValor(grupo[j]);
-                            var anterior = col.PegarValor(grupo[j - 1]);
-
-                            if (atual is Single sAtual && anterior is Single sAnterior)
-                                resultados[grupo[j]] = sAtual - sAnterior;
-                            else
-                                resultados[grupo[j]] = null;
-                        }
+                        sum += v.Value;
+                        count++;
                     }
-
-                    valores.AddRange(resultados);
-
-                    AdicionarColunaTipadaDynamic(
-                        novoDataFrame,
-                        col.Nome,
-                        valores,
-                        col.TipoDado, // agora respeita o tipo original também
-                        true         // continua sendo diff
-                    );
                 }
+
+                return count == 0 ? null : sum / count;
             }
 
-            return novoDataFrame;
-        }
+            float s = 0;
+            int n = 0;
 
-        private object? AgregacaoSoma(ColunaBase coluna, List<int> indices)
-        {
-            Single? soma = 0;
-
-            foreach (var i in indices)
+            foreach (var i in idx)
             {
-                var valor = (Single?)coluna.PegarValor(i);
-                if (valor != null)
-                    soma += valor;
-            }
-
-            return soma;
-        }
-
-        private object? AgregacaoCount(ColunaBase coluna, List<int> indices)
-        {
-            int count = 0;
-
-            foreach (var i in indices)
-            {
-                if (coluna.PegarValor(i) != null)
-                    count++;
-            }
-
-            return count;
-        }
-
-        private object? AgregacaoMedia(ColunaBase coluna, List<int> indices)
-        {
-            Single total = 0;
-            int contar = 0;
-
-            foreach (var i in indices)
-            {
-                var valor = (Single?)coluna.PegarValor(i);
-                if (valor != null)
+                var v = (float?)col.PegarValor(i);
+                if (v.HasValue)
                 {
-                    total += valor.Value;
-                    contar++;
+                    s += v.Value;
+                    n++;
                 }
             }
 
-            return contar == 0 ? null : total / contar;
+            return n == 0 ? null : s / n;
         }
 
-        private object? AgregacaoDesvioPadrao(ColunaBase coluna, List<int> indices)
+        private object? AgregacaoMinimo(ColunaBase col, int[] idx)
         {
-            var valores = new List<double>();
+            float? min = null;
 
-            foreach (var i in indices)
+            if (col is Coluna<float?> c)
             {
-                var valor = coluna.PegarValor(i);
-                if (valor is Single s)
-                    valores.Add(s);
-                else if (valor is double d)
-                    valores.Add(d);
-                else if (valor != null)
-                    valores.Add(Convert.ToDouble(valor));
+                var span = c.PegarColunaSpan();
+
+                for (int i = 0; i < idx.Length; i++)
+                {
+                    var v = span[idx[i]];
+                    if (!v.HasValue) continue;
+
+                    if (min == null || v.Value < min)
+                        min = v;
+                }
+
+                return min;
             }
 
-            if (valores.Count <= 1)
-                return null; // Pandas retorna NaN se só tiver 1 valor
-
-            var media = valores.Sum() / valores.Count;
-
-            // Variância amostral (divide por N-1)
-            var variancia = valores.Sum(v => (v - media) * (v - media)) / (valores.Count - 1);
-
-            return (Single)Math.Sqrt(variancia);
-        }
-
-        private object? AgregacaoMinimo(ColunaBase coluna, List<int> indices)
-        {
-            Single? min = null;
-
-            foreach (var i in indices)
+            foreach (var i in idx)
             {
-                var valor = (Single?)coluna.PegarValor(i);
-                if (valor == null) continue;
+                var v = (float?)col.PegarValor(i);
+                if (!v.HasValue) continue;
 
-                if (min == null || valor < min)
-                    min = valor;
+                if (min == null || v < min)
+                    min = v;
             }
 
             return min;
         }
 
-        private object? AgregacaoMaximo(ColunaBase coluna, List<int> indices)
+        private object? AgregacaoMaximo(ColunaBase col, int[] idx)
         {
-            Single? max = null;
+            float? max = null;
 
-            foreach (var i in indices)
+            if (col is Coluna<float?> c)
             {
-                var valor = (Single?)coluna.PegarValor(i);
-                if (valor == null) continue;
+                var span = c.PegarColunaSpan();
 
-                if (max == null || valor > max)
-                    max = valor;
+                for (int i = 0; i < idx.Length; i++)
+                {
+                    var v = span[idx[i]];
+                    if (!v.HasValue) continue;
+
+                    if (max == null || v.Value > max)
+                        max = v;
+                }
+
+                return max;
+            }
+
+            foreach (var i in idx)
+            {
+                var v = (float?)col.PegarValor(i);
+                if (!v.HasValue) continue;
+
+                if (max == null || v > max)
+                    max = v;
             }
 
             return max;
         }
 
+        private object? AgregacaoDesvioPadrao(ColunaBase col, int[] idx)
+        {
+            var vals = new List<double>(idx.Length);
+
+            foreach (var i in idx)
+            {
+                var v = col.PegarValor(i);
+                if (v != null)
+                    vals.Add(Convert.ToDouble(v));
+            }
+
+            if (vals.Count <= 1) return null;
+
+            double mean = vals.Sum() / vals.Count;
+            double var = vals.Sum(x => (x - mean) * (x - mean)) / (vals.Count - 1);
+
+            return (float)Math.Sqrt(var);
+        }
+
+        private object ExecutarDiffComoJanela(DataFrame df, List<string> cols)
+        {
+            var keys = BuildKeys(df, cols);
+
+            var indices = Enumerable.Range(0, df.QuantidadeLinhas)
+                .OrderBy(i => keys[i])
+                .ToArray();
+
+            var novo = new DataFrame();
+
+            foreach (var col in df.Colunas)
+            {
+                var values = new object?[df.QuantidadeLinhas];
+
+                if (cols.Contains(col.Nome))
+                {
+                    for (int i = 0; i < df.QuantidadeLinhas; i++)
+                        values[i] = col.PegarValor(i);
+
+                    AdicionarColunaTipadaDynamic(novo, col.Nome, values.ToList(), col.TipoDado, false);
+                    continue;
+                }
+
+                if (col is Coluna<float?> c)
+                {
+                    var span = c.PegarColunaSpan();
+
+                    string lastKey = null;
+                    float? lastVal = null;
+
+                    for (int i = 0; i < indices.Length; i++)
+                    {
+                        int idx = indices[i];
+                        var key = keys[idx];
+
+                        var v = span[idx];
+
+                        if (key != lastKey)
+                        {
+                            values[idx] = null;
+                            lastKey = key;
+                            lastVal = v;
+                            continue;
+                        }
+
+                        values[idx] = (v.HasValue && lastVal.HasValue)
+                            ? v.Value - lastVal.Value
+                            : null;
+
+                        lastVal = v;
+                    }
+                }
+
+                AdicionarColunaTipadaDynamic(novo, col.Nome, values.ToList(), col.TipoDado, true);
+            }
+
+            return novo;
+        }
+
         private void AdicionarColunaTipadaDynamic(
             DataFrame df,
-            string nomeColuna,
+            string nome,
             List<object?> valores,
             Type tipoOriginal,
             bool ehDiff = false)
         {
-            Type tipoFinal = ehDiff ? typeof(Single?) : tipoOriginal;
+            Type tipoFinal = ehDiff ? typeof(float?) : tipoOriginal;
 
-            var listaTipada = (System.Collections.IList)
-                Activator.CreateInstance(typeof(List<>).MakeGenericType(tipoFinal))!;
+            var lista = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(tipoFinal))!;
 
             foreach (var v in valores)
-            {
-                if (v == null)
-                {
-                    listaTipada.Add(null);
-                }
-                else
-                {
-                    object valorConvertido;
+                lista.Add(v == null ? null : Convert.ChangeType(v, Nullable.GetUnderlyingType(tipoFinal) ?? tipoFinal));
 
-                    if (ehDiff)
-                    {
-                        valorConvertido = Convert.ToSingle(v);
-                    }
-                    else
-                    {
-                        valorConvertido = Convert.ChangeType(
-                            v,
-                            Nullable.GetUnderlyingType(tipoFinal) ?? tipoFinal
-                        );
-                    }
-
-                    listaTipada.Add(valorConvertido);
-                }
-            }
-
-            var metodoAdicionar = typeof(DataFrame)
+            var metodo = typeof(DataFrame)
                 .GetMethod("AdicionarColuna")!
                 .MakeGenericMethod(tipoFinal);
 
-            metodoAdicionar.Invoke(df, new object[] { nomeColuna, listaTipada });
+            metodo.Invoke(df, new object[] { nome, lista });
         }
 
         private List<string> TransformaStringColunasEmListaColunas(string colunas)
         {
-            var texto = colunas.Trim('[', ']').Split(',');
-            var lista = new List<string>();
-
-            foreach (var coluna in texto)
-            {
-                lista.Add(coluna.Trim().Trim('"'));
-            }
-
-            return lista;
+            return colunas.Trim('[', ']')
+                .Split(',')
+                .Select(c => c.Trim().Trim('"'))
+                .ToList();
         }
     }
 }

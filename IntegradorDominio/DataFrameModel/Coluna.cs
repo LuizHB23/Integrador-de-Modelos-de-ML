@@ -83,6 +83,15 @@ namespace IntegradorDominio.DataFrameModel
             Array.Copy(_dados, copy, _count);
             return copy;
         }
+        public override void Reordenar(int[] indices)
+        {
+            var novo = new T[_dados.Length];
+
+            for (int i = 0; i < indices.Length; i++)
+                novo[i] = _dados[indices[i]];
+
+            _dados = novo;
+        }
 
         private void EnsureCapacity()
         {

@@ -13,34 +13,75 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
         public override object Executar(DataFrame dataFrame)
         {
-            var colunasParaRemover = TransformaStringColunasEmListaColunas(Operacao.col);
+            var remover = new HashSet<string>(
+                TransformaStringColunasEmListaColunas(Operacao.col)
+            );
+
             var novoDataFrame = new DataFrame();
+            int n = dataFrame.QuantidadeLinhas;
 
             foreach (var coluna in dataFrame.Colunas)
             {
-                if (!colunasParaRemover.Contains(coluna.Nome))
+                if (remover.Contains(coluna.Nome))
+                    continue;
+
+                var nome = coluna.Nome;
+
+                // 🔥 caminho otimizado por tipo
+                if (coluna is Coluna<float?> cf)
                 {
-                    // Tipo da coluna original
-                    var tipoElemento = coluna.TipoDado;
+                    var span = cf.PegarColunaSpan();
+                    var arr = new float?[n];
 
-                    // Cria List<tipoElemento> dinamicamente
-                    var tipoLista = typeof(List<>).MakeGenericType(tipoElemento);
-                    var lista = (System.Collections.IList)Activator.CreateInstance(tipoLista)!;
+                    for (int i = 0; i < n; i++)
+                        arr[i] = span[i];
 
-                    // Preenche a lista com os valores existentes da coluna
-                    for (int i = 0; i < coluna.Quantidade; i++)
-                    {
-                        var valor = coluna.PegarValor(i);
-                        lista.Add(valor);
-                    }
-
-                    // Chama AdicionarColuna<T> dinamicamente
-                    var metodoAdicionar = typeof(DataFrame)
-                        .GetMethod("AdicionarColuna")!
-                        .MakeGenericMethod(tipoElemento);
-
-                    metodoAdicionar.Invoke(novoDataFrame, new object[] { coluna.Nome, lista });
+                    novoDataFrame.AdicionarColuna<float?>(nome, arr.ToList());
+                    continue;
                 }
+
+                if (coluna is Coluna<bool?> cb)
+                {
+                    var span = cb.PegarColunaSpan();
+                    var arr = new bool?[n];
+
+                    for (int i = 0; i < n; i++)
+                        arr[i] = span[i];
+
+                    novoDataFrame.AdicionarColuna<bool?>(nome, arr.ToList());
+                    continue;
+                }
+
+                if (coluna is Coluna<DateTime?> cd)
+                {
+                    var span = cd.PegarColunaSpan();
+                    var arr = new DateTime?[n];
+
+                    for (int i = 0; i < n; i++)
+                        arr[i] = span[i];
+
+                    novoDataFrame.AdicionarColuna<DateTime?>(nome, arr.ToList());
+                    continue;
+                }
+
+                if (coluna is Coluna<string?> cs)
+                {
+                    var span = cs.PegarColunaSpan();
+                    var arr = new string?[n];
+
+                    for (int i = 0; i < n; i++)
+                        arr[i] = span[i];
+
+                    novoDataFrame.AdicionarColuna<string?>(nome, arr.ToList());
+                    continue;
+                }
+
+                // 🔥 fallback genérico (sem reflection)
+                var objArr = new object?[n];
+                for (int i = 0; i < n; i++)
+                    objArr[i] = coluna.PegarValor(i);
+
+                novoDataFrame.AdicionarColuna<object?>(nome, objArr.ToList());
             }
 
             return novoDataFrame;
@@ -49,14 +90,12 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
         private List<string> TransformaStringColunasEmListaColunas(string colunas)
         {
             var texto = colunas.Trim('[', ']').Split(',');
-            List<string> colunasParaRemover = new();
+            var list = new List<string>(texto.Length);
 
-            foreach (var coluna in texto)
-            {
-                colunasParaRemover.Add(coluna.Trim().Trim('"'));
-            }
+            foreach (var c in texto)
+                list.Add(c.Trim().Trim('"'));
 
-            return colunasParaRemover;
+            return list;
         }
     }
 }
