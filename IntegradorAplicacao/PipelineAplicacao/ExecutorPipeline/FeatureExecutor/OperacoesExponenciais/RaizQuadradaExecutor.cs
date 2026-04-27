@@ -11,25 +11,17 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
         public override object Executar(DataFrame dataFrame)
         {
             var coluna = dataFrame.PegarColuna<Single?>(Operacao.col);
-            int quantidadeLinhas = dataFrame.QuantidadeLinhas;
-            var resultado = new List<Single?>();
-            Single? valor;
-            double valorDouble;
+            var span = coluna.Dados.AsSpan(0, coluna.Quantidade);
 
-            for (int i = 0; i < quantidadeLinhas; i++)
+            for (int i = 0; i < span.Length; i++)
             {
-                valor = (Single?)coluna.PegarValor(i);
+                ref var valor = ref span[i];
 
                 if (valor is not null && valor >= 0)
                 {
-                    valorDouble = Convert.ToDouble(valor);
-                    valor = Convert.ToSingle(Math.Sqrt(valorDouble));
+                    valor = (Single)MathF.Sqrt(valor.Value);
                 }
-
-                resultado.Add(valor);
             }
-
-            dataFrame.AlterarColuna(Operacao.col, resultado);
 
             return dataFrame;
         }

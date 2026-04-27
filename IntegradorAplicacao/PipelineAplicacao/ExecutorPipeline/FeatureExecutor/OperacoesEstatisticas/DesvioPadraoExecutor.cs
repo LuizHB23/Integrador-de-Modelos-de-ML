@@ -11,52 +11,41 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
         public override object Executar(DataFrame dataFrame)
         {
             var coluna = dataFrame.PegarColuna<Single?>(Operacao.col);
-            int quantidadeLinhas = dataFrame.QuantidadeLinhas;
-            var resultado = new List<Single?>();
-            var valoresValidos = new List<float>();
+            var span = coluna.PegarColunaSpan();
 
-            for (int i = 0; i < quantidadeLinhas; i++)
+            double soma = 0;
+            int count = 0;
+
+            // 1ª passada: média
+            for (int i = 0; i < span.Length; i++)
             {
-                var valor = coluna.PegarValor(i);
+                var v = span[i];
+                if (v is null) continue;
 
-                if (valor is not null)
-                {
-                    valoresValidos.Add((Single)valor);
-                }
+                soma += v.Value;
+                count++;
             }
 
-            Single media = 0;
+            if (count == 0)
+                return 0f;
 
-            if (valoresValidos.Count > 0)
+            double media = soma / count;
+
+            // 2ª passada: variância
+            double somaQuadrada = 0;
+
+            for (int i = 0; i < span.Length; i++)
             {
-                float soma = 0;
+                var v = span[i];
+                if (v is null) continue;
 
-                foreach (var valor in valoresValidos)
-                {
-                    soma += valor;
-                }
-
-                media = soma / valoresValidos.Count;
+                double diff = v.Value - media;
+                somaQuadrada += diff * diff;
             }
 
-            Single variancia = 0;
+            double variancia = somaQuadrada / count;
 
-            if (valoresValidos.Count > 1)
-            {
-                float somaQuadrada = 0;
-
-                foreach (var valor in valoresValidos)
-                {
-                    somaQuadrada += (valor - media) * (valor - media);
-                }
-
-                variancia = somaQuadrada / (valoresValidos.Count);
-            }
-
-            var valorDouble = Convert.ToDouble(variancia);
-            Single desvioPadrao = Convert.ToSingle(Math.Sqrt(valorDouble));
-
-            return desvioPadrao;
+            return (float)Math.Sqrt(variancia);
         }
     }
 }

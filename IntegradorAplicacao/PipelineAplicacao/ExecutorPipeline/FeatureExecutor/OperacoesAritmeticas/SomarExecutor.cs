@@ -16,19 +16,26 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
             Coluna<float?>? colLeft = null;
             Coluna<float?>? colRight = null;
+            Span<float?> spanLeft = null;
+            Span<float?> spanRight = null;
 
             if (Operacao.left is not null)
+            {
                 colLeft = dataFrame.PegarColuna<float?>(Operacao.left);
+                spanLeft = colLeft.PegarColunaSpan();
+
+            }
 
             if (Operacao.right is not null)
+            {
                 colRight = dataFrame.PegarColuna<float?>(Operacao.right);
+                spanRight = colRight.PegarColunaSpan();
+            }
 
-            var spanLeft = colLeft.PegarColunaSpan();
-            var spanRight = colRight.PegarColunaSpan();
 
-            float valorConstante = Operacao.value != null
+            float valorConstante = Operacao.value != ""
                 ? Convert.ToSingle(Operacao.value)
-                : 0f;
+                : throw new Exception("Value precisa ter um valor numérico");
 
             if (spanLeft != null && spanRight != null)
             {
@@ -42,7 +49,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                         : null;
                 }
             }
-            else if (spanLeft != null)
+            else if (spanLeft != null && Operacao.value is not null)
             {
                 for (int i = 0; i < n; i++)
                 {
@@ -53,7 +60,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                         : null;
                 }
             }
-            else if (spanRight != null)
+            else if (spanRight != null && Operacao.value is not null)
             {
                 for (int i = 0; i < n; i++)
                 {
@@ -63,6 +70,10 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                         ? valorConstante + b.Value
                         : null;
                 }
+            }
+            else
+            {
+                throw new Exception("Precisa especificar ao menos uma coluna e/ou valor");
             }
 
             dataFrame.AlterarColuna(Operacao.exit, resultado);

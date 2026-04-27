@@ -11,34 +11,42 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
         public override object Executar(DataFrame dataFrame)
         {
             var coluna = dataFrame.PegarColuna<Single?>(Operacao.col);
-            int quantidadeLinhas = dataFrame.QuantidadeLinhas;
-            var resultado = new List<Single?>();
-            var valoresValidos = new List<float>();
 
-            for (int i = 0; i < quantidadeLinhas; i++)
+            if (coluna == null)
+                throw new Exception($"Coluna '{Operacao.col}' não encontrada.");
+
+            Span<Single?> span = coluna.PegarColunaSpan();
+
+            int n = span.Length;
+
+            // buffer direto (sem List intermediária)
+            float[] buffer = new float[n];
+            int count = 0;
+
+            for (int i = 0; i < n; i++)
             {
-                var valor = coluna.PegarValor(i);
-
-                if (valor is not null)
-                {
-                    valoresValidos.Add((Single)valor);
-                }
+                var v = span[i];
+                if (v.HasValue)
+                    buffer[count++] = v.Value;
             }
 
-            Single mediana = 0;
-            if (valoresValidos.Count > 0)
-            {
-                valoresValidos.Sort();
-                int meio = valoresValidos.Count / 2;
+            if (count == 0)
+                return 0f;
 
-                if (valoresValidos.Count % 2 == 0)
-                {
-                    mediana = (valoresValidos[meio - 1] + valoresValidos[meio]) / 2;
-                }
-                else
-                {
-                    mediana = valoresValidos[meio];
-                }
+            // ordena só o que importa
+            Array.Sort(buffer, 0, count);
+
+            int mid = count / 2;
+
+            float mediana;
+
+            if (count % 2 == 0)
+            {
+                mediana = (buffer[mid - 1] + buffer[mid]) / 2f;
+            }
+            else
+            {
+                mediana = buffer[mid];
             }
 
             return mediana;

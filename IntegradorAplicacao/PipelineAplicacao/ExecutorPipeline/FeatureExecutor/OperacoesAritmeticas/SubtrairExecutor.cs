@@ -33,33 +33,54 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             Span<DateTime?> spanLeftDate = default;
             Span<DateTime?> spanRightDate = default;
 
-            if (hasLeft)
-            {
-                if (isDateTime)
-                    spanLeftDate = dataFrame.PegarColuna<DateTime?>(Operacao.left!).PegarColunaSpan();
-                else
-                    spanLeftNum = dataFrame.PegarColuna<float?>(Operacao.left!).PegarColunaSpan();
-            }
-
-            if (hasRight)
-            {
-                if (isDateTime)
-                    spanRightDate = dataFrame.PegarColuna<DateTime?>(Operacao.right!).PegarColunaSpan();
-                else
-                    spanRightNum = dataFrame.PegarColuna<float?>(Operacao.right!).PegarColunaSpan();
-            }
-
             // 🔥 constantes
             float valorConstNum = 0f;
             DateTime valorConstDate = default;
 
-            if (!hasLeft || !hasRight)
+            if (hasLeft && hasRight)
             {
                 if (isDateTime)
-                    valorConstDate = Convert.ToDateTime(Operacao.value);
+                {
+                    spanLeftDate = dataFrame.PegarColuna<DateTime?>(Operacao.left!).PegarColunaSpan();
+                    spanRightDate = dataFrame.PegarColuna<DateTime?>(Operacao.right!).PegarColunaSpan();
+                }
                 else
-                    valorConstNum = Convert.ToSingle(Operacao.value);
+                {
+                    spanLeftNum = dataFrame.PegarColuna<float?>(Operacao.left!).PegarColunaSpan();
+                    spanRightNum = dataFrame.PegarColuna<float?>(Operacao.right!).PegarColunaSpan();
+                }
             }
+            else if (hasLeft && Operacao.value != "")
+            {
+                if (isDateTime)
+                {
+                    spanLeftDate = dataFrame.PegarColuna<DateTime?>(Operacao.left!).PegarColunaSpan();
+                    valorConstDate = Convert.ToDateTime(Operacao.value);
+                }
+                else
+                {
+                    spanLeftNum = dataFrame.PegarColuna<float?>(Operacao.left!).PegarColunaSpan();
+                    valorConstNum = Convert.ToSingle(Operacao.value);
+
+                }
+            }
+            else if (hasRight && Operacao.value != "")
+            {
+                if (isDateTime)
+                {
+                    spanRightDate = dataFrame.PegarColuna<DateTime?>(Operacao.right!).PegarColunaSpan();
+                    valorConstDate = Convert.ToDateTime(Operacao.value);
+                }
+                else
+                {
+                    spanRightNum = dataFrame.PegarColuna<float?>(Operacao.right!).PegarColunaSpan();
+                    valorConstNum = Convert.ToSingle(Operacao.value);
+                }
+            }
+            else
+            {
+                throw new Exception("Precisa especificar ao menos uma coluna e/ou valor");
+            }  
 
             // 🔥 loop
             for (int i = 0; i < n; i++)

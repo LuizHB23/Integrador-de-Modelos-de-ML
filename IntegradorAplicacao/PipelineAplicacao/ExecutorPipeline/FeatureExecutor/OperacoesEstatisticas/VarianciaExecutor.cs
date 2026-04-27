@@ -11,49 +11,47 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
         public override object Executar(DataFrame dataFrame)
         {
             var coluna = dataFrame.PegarColuna<Single?>(Operacao.col);
-            int quantidadeLinhas = dataFrame.QuantidadeLinhas;
-            var resultado = new List<Single?>();
-            var valoresValidos = new List<float>();
 
-            for (int i = 0; i < quantidadeLinhas; i++)
+            if (coluna == null)
+                throw new Exception($"Coluna '{Operacao.col}' não encontrada.");
+
+            Span<Single?> span = coluna.PegarColunaSpan();
+
+            int n = span.Length;
+
+            float soma = 0;
+            int count = 0;
+
+            // 🔥 primeira passagem: média
+            for (int i = 0; i < n; i++)
             {
-                var valor = coluna.PegarValor(i);
-
-                if (valor is not null)
+                var v = span[i];
+                if (v.HasValue)
                 {
-                    valoresValidos.Add((Single)valor);
+                    soma += v.Value;
+                    count++;
                 }
             }
 
-            Single media = 0;
+            if (count == 0)
+                return 0f;
 
-            if (valoresValidos.Count > 0)
+            float media = soma / count;
+
+            // 🔥 segunda passagem: variância
+            float somaQuadrada = 0;
+
+            for (int i = 0; i < n; i++)
             {
-                float soma = 0;
+                var v = span[i];
+                if (!v.HasValue)
+                    continue;
 
-                foreach (var valor in valoresValidos)
-                {
-                    soma += valor;
-                }
-
-                media = soma / valoresValidos.Count;
+                float diff = v.Value - media;
+                somaQuadrada += diff * diff;
             }
 
-            Single variancia = 0;
-
-            if (valoresValidos.Count > 1)
-            {
-                float somaQuadrada = 0;
-
-                foreach (var valor in valoresValidos)
-                {
-                   somaQuadrada += (valor - media) * (valor - media);
-                }
-
-                variancia = somaQuadrada / (valoresValidos.Count);
-            }
-
-            return variancia;
+            return somaQuadrada / count;
         }
     }
 }

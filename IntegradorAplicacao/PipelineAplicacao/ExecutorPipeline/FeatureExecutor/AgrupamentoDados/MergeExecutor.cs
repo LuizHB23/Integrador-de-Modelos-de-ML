@@ -13,113 +13,132 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
         public override object Executar(DataFrame dataFrame)
         {
             var colunas = TransformaStringColunasEmListaColunas(Operacao.on);
-            DataFrame dataFrameDireito = (DataFrame)Operacao.Contexto[Operacao.right]!;
+            var dfDir = (DataFrame)Operacao.Contexto[Operacao.right]!;
 
-            if (dataFrame == null) throw new ArgumentNullException(nameof(dataFrame));
-            if (dataFrameDireito == null) throw new ArgumentNullException(nameof(dataFrameDireito));
-            if (colunas == null || colunas.Count == 0) throw new ArgumentNullException(nameof(Operacao.on));
+            if (colunas.Count == 0)
+                throw new Exception("Colunas de merge inválidas");
 
-            var novoDataFrame = new DataFrame();
+            var colunasSet = new HashSet<string>(colunas);
+
+            // 🔥 cache colunas chave (evita lookup por nome)
+            var colsEsq = colunas.Select(c => dataFrame.PegarColunaBase(c)).ToArray();
+            var colsDir = colunas.Select(c => dfDir.PegarColunaBase(c)).ToArray();
+
+            var novo = new DataFrame();
             var mapaIndices = new Dictionary<string, int>();
-            var mapaNomesDireito = new Dictionary<string, string>();
+            var mapaDireito = new Dictionary<string, string>();
 
-            // 🔹 Colunas do esquerdo
-            foreach (var coluna in dataFrame.Colunas)
+            // =========================
+            // COLUNAS ESQUERDO
+            // =========================
+            foreach (var col in dataFrame.Colunas)
             {
-                var tipoLista = typeof(List<>).MakeGenericType(coluna.TipoDado);
-                var listaVazia = Activator.CreateInstance(tipoLista);
-                novoDataFrame.AdicionarColuna(coluna.Nome, (dynamic)listaVazia);
-                mapaIndices[coluna.Nome] = novoDataFrame.Colunas.Count - 1;
+                var list = (System.Collections.IList)
+                    Activator.CreateInstance(typeof(List<>).MakeGenericType(col.TipoDado))!;
+
+                novo.AdicionarColuna(col.Nome, (dynamic)list);
+                mapaIndices[col.Nome] = novo.Colunas.Count - 1;
             }
 
-            // 🔹 Colunas do direito
-            foreach (var coluna in dataFrameDireito.Colunas)
+            // =========================
+            // COLUNAS DIREITO
+            // =========================
+            foreach (var col in dfDir.Colunas)
             {
-                if (colunas.Contains(coluna.Nome))
-                    continue;
+                if (colunasSet.Contains(col.Nome)) continue;
 
-                string nomeDestino = coluna.Nome;
-                if (mapaIndices.ContainsKey(nomeDestino))
-                    nomeDestino = $"{nomeDestino}_{Operacao.right}";
+                string nome = col.Nome;
 
-                mapaNomesDireito[coluna.Nome] = nomeDestino;
+                if (mapaIndices.ContainsKey(nome))
+                    nome = $"{nome}_{Operacao.right}";
 
-                var tipoLista = typeof(List<>).MakeGenericType(coluna.TipoDado);
-                var listaVazia = Activator.CreateInstance(tipoLista);
-                novoDataFrame.AdicionarColuna(nomeDestino, (dynamic)listaVazia);
-                mapaIndices[nomeDestino] = novoDataFrame.Colunas.Count - 1;
+                mapaDireito[col.Nome] = nome;
+
+                var list = (System.Collections.IList)
+                    Activator.CreateInstance(typeof(List<>).MakeGenericType(col.TipoDado))!;
+
+                novo.AdicionarColuna(nome, (dynamic)list);
+                mapaIndices[nome] = novo.Colunas.Count - 1;
             }
 
-            // 🔹 Lookup 1:1 (corrigido)
-            var lookupDireito = new Dictionary<string, int>();
+            // =========================
+            // LOOKUP DIREITO (OTIMIZADO)
+            // =========================
+            var lookup = new Dictionary<StructKey, int>();
 
-            for (int i = 0; i < dataFrameDireito.QuantidadeLinhas; i++)
+            for (int i = 0; i < dfDir.QuantidadeLinhas; i++)
             {
-                var chave = string.Join("|", colunas.Select(c =>
-                {
-                    var val = dataFrameDireito.PegarColunaBase(c).PegarValor(i);
-                    return val == null ? "<NULL>" : val.ToString();
-                }));
+                var key = BuildKey(colsDir, i);
 
-                if (!lookupDireito.ContainsKey(chave))
+                if (!lookup.TryGetValue(key, out int existente))
                 {
-                    lookupDireito[chave] = i;
+                    lookup[key] = i;
                 }
                 else
                 {
-                    int existente = lookupDireito[chave];
-
-                    bool atualTemNull = colunas.Any(c =>
-                        dataFrameDireito.PegarColunaBase(c).PegarValor(i) == null);
-
-                    bool existenteTemNull = colunas.Any(c =>
-                        dataFrameDireito.PegarColunaBase(c).PegarValor(existente) == null);
-
-                    // 🔥 Regra: prioriza linha com menos null
-                    if (existenteTemNull && !atualTemNull)
-                    {
-                        lookupDireito[chave] = i;
-                    }
+                    // prioriza menos null
+                    if (TemMenosNull(colsDir, i, existente))
+                        lookup[key] = i;
                 }
             }
 
-            // 🔹 Loop principal (sem duplicação)
+            // =========================
+            // LOOP PRINCIPAL
+            // =========================
             for (int i = 0; i < dataFrame.QuantidadeLinhas; i++)
             {
-                var chave = string.Join("|", colunas.Select(c =>
-                {
-                    var val = dataFrame.PegarColunaBase(c).PegarValor(i);
-                    return val == null ? "<NULL>" : val.ToString();
-                }));
+                var key = BuildKey(colsEsq, i);
 
-                int? linhaDireita = lookupDireito.ContainsKey(chave)
-                    ? lookupDireito[chave]
-                    : (int?)null;
+                lookup.TryGetValue(key, out int linhaDir);
 
-                // esquerdo
+                // ESQUERDO
                 foreach (var col in dataFrame.Colunas)
                 {
-                    int idxDestino = mapaIndices[col.Nome];
-                    novoDataFrame.Colunas[idxDestino].AdicionaValor(col.PegarValor(i));
+                    novo.Colunas[mapaIndices[col.Nome]]
+                        .AdicionaValor(col.PegarValor(i));
                 }
 
-                // direito
-                foreach (var colDireita in dataFrameDireito.Colunas)
+                // DIREITO
+                foreach (var col in dfDir.Colunas)
                 {
-                    if (colunas.Contains(colDireita.Nome)) continue;
+                    if (colunasSet.Contains(col.Nome)) continue;
 
-                    string nomeDestino = mapaNomesDireito[colDireita.Nome];
-                    int idxDestino = mapaIndices[nomeDestino];
+                    var nome = mapaDireito[col.Nome];
 
-                    object? valor = linhaDireita != null
-                        ? colDireita.PegarValor(linhaDireita.Value)
+                    object? v = linhaDir != 0 || lookup.ContainsKey(key)
+                        ? col.PegarValor(linhaDir)
                         : null;
 
-                    novoDataFrame.Colunas[idxDestino].AdicionaValor(valor);
+                    novo.Colunas[mapaIndices[nome]]
+                        .AdicionaValor(v);
                 }
             }
 
-            return novoDataFrame;
+            return novo;
+        }
+
+        private StructKey BuildKey(ColunaBase[] cols, int row)
+        {
+            var values = new object?[cols.Length];
+
+            for (int i = 0; i < cols.Length; i++)
+                values[i] = cols[i].PegarValor(row);
+
+            return new StructKey(values);
+        }
+
+        private bool TemMenosNull(ColunaBase[] cols, int atual, int existente)
+        {
+            int nullAtual = 0;
+            int nullExistente = 0;
+
+            for (int i = 0; i < cols.Length; i++)
+            {
+                if (cols[i].PegarValor(atual) == null) nullAtual++;
+                if (cols[i].PegarValor(existente) == null) nullExistente++;
+            }
+
+            return nullAtual < nullExistente;
         }
 
         private List<string> TransformaStringColunasEmListaColunas(string colunas)
@@ -133,6 +152,39 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             }
 
             return colunasParaRemover;
+        }
+
+        private struct StructKey : IEquatable<StructKey>
+        {
+            private readonly object?[] values;
+
+            public StructKey(object?[] values)
+            {
+                this.values = values;
+            }
+
+            public bool Equals(StructKey other)
+            {
+                if (values.Length != other.values.Length) return false;
+
+                for (int i = 0; i < values.Length; i++)
+                {
+                    if (!Equals(values[i], other.values[i]))
+                        return false;
+                }
+
+                return true;
+            }
+
+            public override int GetHashCode()
+            {
+                var hash = new HashCode();
+
+                foreach (var v in values)
+                    hash.Add(v);
+
+                return hash.ToHashCode();
+            }
         }
     }
 }

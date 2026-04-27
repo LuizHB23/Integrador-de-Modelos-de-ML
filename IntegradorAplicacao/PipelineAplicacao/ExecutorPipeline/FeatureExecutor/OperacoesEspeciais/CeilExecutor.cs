@@ -11,25 +11,19 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
         public override object Executar(DataFrame dataFrame)
         {
             var coluna = dataFrame.PegarColuna<Single?>(Operacao.col);
-            int quantidadeLinhas = dataFrame.QuantidadeLinhas;
-            var resultado = new List<Single?>();
-            Single? valor;
-            decimal valorDecimal;
 
-            for (int i = 0; i < quantidadeLinhas; i++)
+            if (coluna == null)
+                throw new Exception($"Coluna '{Operacao.col}' não encontrada.");
+
+            Span<Single?> span = coluna.PegarColunaSpan();
+
+            for (int i = 0; i < span.Length; i++)
             {
-                valor = (Single?)coluna.PegarValor(i);
+                var valor = span[i];
 
-                if (valor is not null)
-                {
-                    valorDecimal = Convert.ToDecimal(valor);
-                    valor = Convert.ToSingle(Math.Ceiling(valorDecimal));
-                }
-
-                resultado.Add(valor);
+                if (valor.HasValue)
+                    span[i] = (Single)MathF.Ceiling(valor.Value);
             }
-
-            dataFrame.AlterarColuna(Operacao.col, resultado);
 
             return dataFrame;
         }

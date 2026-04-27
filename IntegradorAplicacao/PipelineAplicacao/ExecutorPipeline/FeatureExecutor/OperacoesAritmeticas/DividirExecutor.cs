@@ -26,7 +26,9 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             if (hasRight)
                 spanRight = dataFrame.PegarColuna<float?>(Operacao.right!).PegarColunaSpan();
 
-            float valorConst = Convert.ToSingle(Operacao.value);
+            float valorConstante = Operacao.value != ""
+                ? Convert.ToSingle(Operacao.value)
+                : throw new Exception("Value precisa ter um valor numérico");
 
             for (int i = 0; i < n; i++)
             {
@@ -39,21 +41,25 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                         ? a.Value / b.Value
                         : null;
                 }
-                else if (hasLeft)
+                else if (hasLeft && Operacao.value != "")
                 {
                     var a = spanLeft[i];
 
-                    resultado[i] = (a.HasValue && valorConst != 0f)
-                        ? a.Value / valorConst
+                    resultado[i] = (a.HasValue && valorConstante != 0f)
+                        ? a.Value / valorConstante
                         : null;
                 }
-                else
+                else if (hasRight && Operacao.value != "")
                 {
                     var b = spanRight[i];
 
                     resultado[i] = (b.HasValue && b.Value != 0f)
-                        ? valorConst / b.Value
+                        ? valorConstante / b.Value
                         : null;
+                }
+                else
+                {
+                    throw new Exception("Precisa especificar ao menos uma coluna e/ou valor");
                 }
             }
 

@@ -13,36 +13,75 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
 
         public override object Executar(DataFrame dataFrame)
         {
-            var coluna = dataFrame.PegarColunaBase(Operacao.col);
+            var colunaBase = dataFrame.PegarColunaBase(Operacao.col);
 
-            if (coluna == null)
+            if (colunaBase == null)
                 throw new Exception($"Coluna '{Operacao.col}' não encontrada.");
 
-            var tipo = Nullable.GetUnderlyingType(coluna.TipoDado) ?? coluna.TipoDado;
+            var tipo = Nullable.GetUnderlyingType(colunaBase.TipoDado) ?? colunaBase.TipoDado;
 
-            // 🔥 pré-conversão (evita converter dentro do loop)
             object? oldValue = Converter(tipo, Operacao.old);
             object? newValue = Converter(tipo, Operacao.value);
 
-            int n = coluna.Quantidade;
-
-            // 🔥 local reference (micro-otimização importante)
-            var pegar = coluna.PegarValor;
-            var set = coluna.InjetarValor;
-
-            for (int i = 0; i < n; i++)
+            if (colunaBase is Coluna<Single?> colFloat)
             {
-                var atual = pegar(i);
+                var span = colFloat.PegarColunaSpan();
 
-                // evita Equals virtual pesado quando possível
-                if (ReferenceEquals(atual, oldValue) ||
-                    (atual != null && atual.Equals(oldValue)))
+                float? oldV = (float?)oldValue;
+                float? newV = (float?)newValue;
+
+                for (int i = 0; i < span.Length; i++)
                 {
-                    set(i, newValue);
+                    if (span[i] == oldV)
+                        span[i] = newV;
                 }
+
+                return dataFrame;
             }
 
-            return dataFrame;
+            if (colunaBase is Coluna<string> colString)
+            {
+                var span = colString.PegarColunaSpan();
+
+                for (int i = 0; i < span.Length; i++)
+                {
+                    if (span[i] == (string?)oldValue)
+                        span[i] = (string?)newValue;
+                }
+
+                return dataFrame;
+            }
+
+            if (colunaBase is Coluna<DateTime?> colDate)
+            {
+                var span = colDate.PegarColunaSpan();
+
+                for (int i = 0; i < span.Length; i++)
+                {
+                    if (span[i] == (DateTime?)oldValue)
+                        span[i] = (DateTime?)newValue;
+                }
+
+                return dataFrame;
+            }
+
+            if (colunaBase is Coluna<bool?> colBool)
+            {
+                var span = colBool.PegarColunaSpan();
+
+                bool? oldV = (bool?)oldValue;
+                bool? newV = (bool?)newValue;
+
+                for (int i = 0; i < span.Length; i++)
+                {
+                    if (span[i] == oldV)
+                        span[i] = newV;
+                }
+
+                return dataFrame;
+            }
+
+            throw new Exception("Tipo não suportado para Replace");
         }
 
         private object? Converter(Type tipo, string? valor)

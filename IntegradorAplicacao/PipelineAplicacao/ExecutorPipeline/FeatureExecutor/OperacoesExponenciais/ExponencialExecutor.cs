@@ -13,32 +13,18 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
         {
             var coluna = dataFrame.PegarColuna<Single?>(Operacao.col);
 
-            if (coluna is null)
+            var span = coluna.PegarColunaSpan();
+            int n = span.Length;
+
+            for (int i = 0; i < n; i++)
             {
-                Debug.WriteLine("======================\n");
-                Debug.WriteLine(Operacao.col);
-                Debug.WriteLine("\n======================");
+                var v = span[i];
+
+                if (v.HasValue)
+                    span[i] = (float)Math.Exp(v.Value);
+                else
+                    span[i] = null;
             }
-
-            int quantidadeLinhas = dataFrame.QuantidadeLinhas;
-            var resultado = new List<Single?>();
-            Single? valor;
-            double valorDouble;
-
-            for (int i = 0; i < quantidadeLinhas; i++)
-            {
-                valor = (Single?)coluna.PegarValor(i);
-
-                if (valor is not null)
-                {
-                    valorDouble = Convert.ToDouble(valor);
-                    valor = Convert.ToSingle(Math.Exp(valorDouble));
-                }
-
-                resultado.Add(valor);
-            }
-
-            dataFrame.AlterarColuna(Operacao.col, resultado);
 
             return dataFrame;
         }

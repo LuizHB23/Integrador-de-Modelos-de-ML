@@ -1,6 +1,7 @@
 ﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.Executors;
 using IntegradorDominio.FeatureEngineering.LimpezaDados;
 using IntegradorDominio.DataFrameModel;
+using System.Linq.Expressions;
 
 namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.LimpezaDados
 {
@@ -8,103 +9,252 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
     {
         public FiltrarExecutor(Filtrar operacao) : base(operacao) { }
 
-        public override object Executar(DataFrame dataFrame)
+        public override object Executar(DataFrame df)
         {
             if (string.IsNullOrWhiteSpace(Operacao.condition))
-                throw new Exception("Condição inválida");
+                throw new Exception("É necessário informar uma condição.");
 
-            var plan = Parse(Operacao.condition, dataFrame);
+            var predicate = CriarPredicate(Operacao.condition, df);
 
-            var mask = new bool[dataFrame.QuantidadeLinhas];
+            int n = df.QuantidadeLinhas;
+            var mask = new bool[n];
 
-            var col = plan.Column != null
-                ? dataFrame.PegarColunaBase(plan.Column)
-                : null;
+            for (int i = 0; i < n; i++)
+                mask[i] = predicate(i);
 
-            for (int i = 0; i < dataFrame.QuantidadeLinhas; i++)
-            {
-                mask[i] = Evaluate(plan, col, i);
-            }
-
-            // materializa novo DataFrame
             var novo = new DataFrame();
 
-            foreach (var c in dataFrame.Colunas)
+            foreach (var col in df.Colunas)
             {
-                var tipo = c.TipoDado;
-                var listType = typeof(List<>).MakeGenericType(tipo);
-                var list = (System.Collections.IList)Activator.CreateInstance(listType)!;
+                var tipo = col.TipoDado;
 
-                for (int i = 0; i < mask.Length; i++)
-                {
-                    if (!mask[i]) continue;
-                    list.Add(c.PegarValor(i));
-                }
+                var lista = (System.Collections.IList)
+                    Activator.CreateInstance(typeof(List<>).MakeGenericType(tipo))!;
 
-                var method = typeof(DataFrame)
+                for (int i = 0; i < n; i++)
+                    if (mask[i])
+                        lista.Add(col.PegarValor(i));
+
+                var metodo = typeof(DataFrame)
                     .GetMethod("AdicionarColuna")!
                     .MakeGenericMethod(tipo);
 
-                method.Invoke(novo, new object[] { c.Nome, list });
+                metodo.Invoke(novo, new object[] { col.Nome, lista });
             }
 
             return novo;
         }
 
-        // ============================
-        // PARSER SIMPLES (IN / NOT IN)
-        // ============================
-        private FilterPlan Parse(string condition, DataFrame df)
+        // =========================
+        // PREDICATE
+        // =========================
+        private Func<int, bool> CriarPredicate(string condition, DataFrame df)
+        {
+            var iParam = Expression.Parameter(typeof(int), "i");
+
+            var expr = ParseExpression(condition, iParam, df);
+
+            return Expression.Lambda<Func<int, bool>>(expr, iParam).Compile();
+        }
+
+        // =========================
+        // PARSER
+        // =========================
+        private Expression ParseExpression(string condition, ParameterExpression iParam, DataFrame df)
         {
             condition = condition.Trim();
 
-            bool isNotIn = condition.Contains("!=");
-
-            var parts = condition.Split(isNotIn ? "!=" : "==");
-
-            var column = parts[0].Trim();
-
-            var rawList = parts[1]
-                .Trim()
-                .Trim('[', ']');
-
-            // split seguro
-            var values = rawList
-                .Split(',', StringSplitOptions.RemoveEmptyEntries)
-                .Select(x => x.Trim().Trim('\'', '"'))
-                .ToHashSet(StringComparer.Ordinal);
-
-            return new FilterPlan
+            // remove parênteses externos
+            while (condition.StartsWith("(") && condition.EndsWith(")") &&
+                   ParentesesBalanceados(condition[1..^1]))
             {
-                Column = column,
-                Set = values,
-                IsNotIn = isNotIn
-            };
+                condition = condition[1..^1].Trim();
+            }
+
+            // OR
+            int idx = EncontrarOperadorExterno(condition, "||");
+            if (idx >= 0)
+            {
+                var left = condition[..idx];
+                var right = condition[(idx + 2)..];
+
+                return Expression.OrElse(
+                    ParseExpression(left, iParam, df),
+                    ParseExpression(right, iParam, df)
+                );
+            }
+
+            // AND
+            idx = EncontrarOperadorExterno(condition, "&&");
+            if (idx >= 0)
+            {
+                var left = condition[..idx];
+                var right = condition[(idx + 2)..];
+
+                return Expression.AndAlso(
+                    ParseExpression(left, iParam, df),
+                    ParseExpression(right, iParam, df)
+                );
+            }
+
+            // IN / NOT IN
+            if (condition.Contains("[") && condition.Contains("]"))
+                return ParseInExpression(condition, iParam, df);
+
+            // comparação simples
+            return ParseComparison(condition, iParam, df);
         }
 
-        // ============================
-        // EXECUTOR O(1) POR LINHA
-        // ============================
-        private bool Evaluate(FilterPlan plan, ColunaBase col, int row)
+        // =========================
+        // IN / NOT IN
+        // =========================
+        private Expression ParseInExpression(string condition, ParameterExpression iParam, DataFrame df)
         {
-            var value = col.PegarValor(row)?.ToString();
+            bool notIn = condition.Contains("!=");
+            var op = notIn ? "!=" : "==";
 
-            if (value == null)
-                return false;
+            var parts = condition.Split(op);
 
-            bool contains = plan.Set.Contains(value);
+            if (parts.Length != 2)
+                throw new Exception($"Expressão IN inválida: {condition}");
 
-            return plan.IsNotIn ? !contains : contains;
+            var left = parts[0].Trim();
+            var right = parts[1].Trim();
+
+            // remove [ ]
+            right = right.Trim().TrimStart('[').TrimEnd(']');
+
+            var valores = right
+                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(v => v.Trim().Trim('\'', '"'))
+                .ToArray();
+
+            var colunaExpr = CriarOperando(left, iParam, df);
+
+            // HashSet (O(1))
+            var hashSet = new HashSet<string>(valores, StringComparer.Ordinal);
+
+            var containsMethod = typeof(HashSet<string>).GetMethod("Contains")!;
+
+            var containsCall = Expression.Call(
+                Expression.Constant(hashSet),
+                containsMethod,
+                Expression.Convert(colunaExpr, typeof(string))
+            );
+
+            return notIn
+                ? Expression.Not(containsCall)
+                : containsCall;
         }
 
-        // ============================
-        // STRUCT (zero GC extra)
-        // ============================
-        private struct FilterPlan
+        // =========================
+        // COMPARAÇÃO
+        // =========================
+        private Expression ParseComparison(string condition, ParameterExpression iParam, DataFrame df)
         {
-            public string Column;
-            public HashSet<string> Set;
-            public bool IsNotIn;
+            string[] ops = new[] { ">=", "<=", "==", "!=", ">", "<" };
+
+            foreach (var op in ops)
+            {
+                int idx = condition.IndexOf(op);
+                if (idx < 0) continue;
+
+                var left = condition[..idx].Trim();
+                var right = condition[(idx + op.Length)..].Trim();
+
+                var leftExpr = CriarOperando(left, iParam, df);
+                var rightExpr = CriarOperando(right, iParam, df);
+
+                return op switch
+                {
+                    ">" => Expression.GreaterThan(leftExpr, rightExpr),
+                    "<" => Expression.LessThan(leftExpr, rightExpr),
+                    ">=" => Expression.GreaterThanOrEqual(leftExpr, rightExpr),
+                    "<=" => Expression.LessThanOrEqual(leftExpr, rightExpr),
+                    "==" => Expression.Equal(leftExpr, rightExpr),
+                    "!=" => Expression.NotEqual(leftExpr, rightExpr),
+                    _ => throw new Exception($"Operador inválido: {op}")
+                };
+            }
+
+            throw new Exception($"Condição inválida: {condition}");
+        }
+
+        // =========================
+        // OPERANDO
+        // =========================
+        private Expression CriarOperando(string token, ParameterExpression iParam, DataFrame df)
+        {
+            token = token.Trim();
+
+            // STRING
+            if (token.StartsWith("'") && token.EndsWith("'"))
+            {
+                var val = token[1..^1];
+                return Expression.Constant(val, typeof(string));
+            }
+
+            // COLUNA
+            if (df.ColunaIndex.ContainsKey(token))
+            {
+                var coluna = df.PegarColunaBase(token)!;
+
+                var metodo = coluna.GetType().GetMethod("PegarValor")!;
+
+                var call = Expression.Call(
+                    Expression.Constant(coluna),
+                    metodo,
+                    iParam
+                );
+
+                var tipo = Nullable.GetUnderlyingType(coluna.TipoDado) ?? coluna.TipoDado;
+
+                return Expression.Convert(call, tipo);
+            }
+
+            // NUMERO
+            if (float.TryParse(token, out var num))
+                return Expression.Constant(num, typeof(float));
+
+            // BOOL
+            if (bool.TryParse(token, out var b))
+                return Expression.Constant(b, typeof(bool));
+
+            throw new Exception($"Token inválido: {token}");
+        }
+
+        // =========================
+        // HELPERS
+        // =========================
+        private bool ParentesesBalanceados(string s)
+        {
+            int count = 0;
+
+            foreach (var c in s)
+            {
+                if (c == '(') count++;
+                else if (c == ')') count--;
+
+                if (count < 0) return false;
+            }
+
+            return count == 0;
+        }
+
+        private int EncontrarOperadorExterno(string cond, string op)
+        {
+            int depth = 0;
+
+            for (int i = 0; i <= cond.Length - op.Length; i++)
+            {
+                if (cond[i] == '(') depth++;
+                else if (cond[i] == ')') depth--;
+
+                if (depth == 0 && cond.Substring(i, op.Length) == op)
+                    return i;
+            }
+
+            return -1;
         }
     }
 }

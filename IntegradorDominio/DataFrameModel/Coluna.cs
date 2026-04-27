@@ -7,6 +7,7 @@ namespace IntegradorDominio.DataFrameModel
         private int _count;
 
         public override int Quantidade => _count;
+        public T?[] Dados => _dados;
 
         public Coluna(string nome, List<T?> dados) : base(nome, typeof(T))
         {

@@ -11,32 +11,41 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
         public override object Executar(DataFrame dataFrame)
         {
             var coluna = dataFrame.PegarColuna<Single?>(Operacao.col);
-            int quantidadeLinhas = dataFrame.QuantidadeLinhas;
-            var resultado = new List<Single?>();
+
+            if (coluna == null)
+                throw new Exception($"Coluna '{Operacao.col}' não encontrada.");
+
+            Span<Single?> span = coluna.PegarColunaSpan();
+
+            int n = span.Length;
+
+            // 🔥 mantém Dictionary (não tem jeito aqui sem mudar modelo)
             var frequencias = new Dictionary<Single, int>();
 
-            for (int i = 0; i < quantidadeLinhas; i++)
+            for (int i = 0; i < n; i++)
             {
-                var valor = coluna.PegarValor(i);
-                if (valor is not null)
-                {
-                    Single v = (Single)valor;
-                    if (frequencias.ContainsKey(v))
-                        frequencias[v]++;
-                    else
-                        frequencias[v] = 1;
-                }
+                var v = span[i];
+
+                if (!v.HasValue)
+                    continue;
+
+                float value = v.Value;
+
+                if (frequencias.TryGetValue(value, out int count))
+                    frequencias[value] = count + 1;
+                else
+                    frequencias[value] = 1;
             }
 
-            Single? moda = null;
-            int frequenciaMaxima = 0;
+            float? moda = null;
+            int maxFreq = 0;
 
-            foreach (var valor in frequencias)
+            foreach (var kv in frequencias)
             {
-                if (valor.Value > frequenciaMaxima)
+                if (kv.Value > maxFreq)
                 {
-                    frequenciaMaxima = valor.Value;
-                    moda = valor.Key;
+                    maxFreq = kv.Value;
+                    moda = kv.Key;
                 }
             }
 
