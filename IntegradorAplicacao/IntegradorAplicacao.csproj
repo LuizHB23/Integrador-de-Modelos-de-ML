@@ -16,8 +16,4 @@
     <ProjectReference Include="..\IntegradorDominio\IntegradorDominio.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="PipelineAplicacao\ExecutorPipeline\TransformExecutor\" />
-  </ItemGroup>
-
 </Project>

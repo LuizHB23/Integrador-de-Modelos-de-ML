@@ -50,6 +50,7 @@ namespace IntegradorAplicacao.InferenciaAplicacao
 
                     ErrosInferencia linha = new() 
                     {
+                        IndexLinha = i,
                         Id = ids[i],
                         Erro = ex.Message,
                         Outputs = new() 
@@ -62,7 +63,14 @@ namespace IntegradorAplicacao.InferenciaAplicacao
 
                 if (erro)
                 {
-                    index = startIndex;
+                    // Preenche a linha inteira para não deixar "buraco" no tensor
+                    for (int j = 0; j < features; j++)
+                    {
+                        dados[startIndex + j] = 0f;
+                    }
+
+                    // Avança o index corretamente para a próxima linha
+                    index = startIndex + features;
                 }
             }
 
@@ -166,28 +174,41 @@ namespace IntegradorAplicacao.InferenciaAplicacao
 
         public List<ResultadoInferencia> ReconstruirSaidaComId(IDisposableReadOnlyCollection<DisposableNamedOnnxValue> resultados, string[] ids)
         {
-            var outputs = ConverterSaida(resultados);
-
             var resultado = new List<ResultadoInferencia>();
 
-            int linhas = ids.Length;
+            var indicesComErro = new HashSet<int>(ListaErros.Select(e => e.IndexLinha));
 
-            foreach (var output in outputs)
+            // 🔥 mapa fixo de índices válidos
+            var indicesValidos = new List<int>();
+
+            for (int i = 0; i < ids.Length; i++)
             {
-                var valores = output.Value;
-
-                int tamanhoPorLinha = valores.Length / linhas;
-
-                for (int i = 0; i < linhas; i++)
+                if (!indicesComErro.Contains(i))
                 {
-                    if (resultado.Count <= i)
+                    indicesValidos.Add(i);
+
+                    resultado.Add(new ResultadoInferencia
                     {
-                        resultado.Add(new ResultadoInferencia
-                        {
-                            Id = ids[i],
-                            Outputs = new Dictionary<string, float[]>()
-                        });
-                    }
+                        Id = ids[i],
+                        Outputs = new Dictionary<string, float[]>()
+                    });
+                }
+            }
+
+            foreach (var r in resultados)
+            {
+                var tensor = r.AsTensor<float>();
+                var dims = tensor.Dimensions.ToArray();
+
+                int tamanhoPorLinha = dims.Length == 1
+                    ? 1
+                    : dims.Skip(1).Aggregate(1, (a, b) => a * b);
+
+                var valores = tensor.ToArray();
+
+                for (int j = 0; j < indicesValidos.Count; j++)
+                {
+                    int i = indicesValidos[j];
 
                     var slice = new float[tamanhoPorLinha];
 
@@ -199,7 +220,7 @@ namespace IntegradorAplicacao.InferenciaAplicacao
                         tamanhoPorLinha
                     );
 
-                    resultado[i].Outputs[output.Key] = slice;
+                    resultado[j].Outputs[r.Name] = slice;
                 }
             }
 
