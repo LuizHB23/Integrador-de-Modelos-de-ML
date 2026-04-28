@@ -127,6 +127,7 @@
                                     <Button Content="Configuração do Modelo"
                                             HorizontalAlignment="Left"
                                             Style="{StaticResource MaterialDesignOutlinedDarkButton}"
+                                            Command="{Binding DataContext.NavigateToTemplateConfiguracaoCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                             Grid.Row="1"
                                             Margin="10,5"
                                             Height="40"

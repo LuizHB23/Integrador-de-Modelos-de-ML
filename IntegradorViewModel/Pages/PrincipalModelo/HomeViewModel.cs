@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using IntegradorAplicacao.ConversorJson;
 using IntegradorAplicacao.DTO;
 using IntegradorViewModel.JanelaModelo;
+using IntegradorViewModel.Pages.ConfiguracaoModelo;
 using IntegradorViewModel.Pages.PredicaoModelo;
 using IntegradorViewModel.Shared.Context;
 using IntegradorViewModel.Shared.Interfaces;
@@ -69,6 +70,13 @@ namespace IntegradorViewModel.Pages.PrincipalModelo
         {
             _context.EnviaMensagem(modelo);
             Navigation.NavigateTo<PreparacaoModeloViewModel>();
+        }
+
+        [RelayCommand]
+        public void NavigateToTemplateConfiguracao(ModeloDTO modelo)
+        {
+            _context.EnviaMensagem(modelo);
+            Navigation.NavigateTo<TemplateConfiguracaoViewModel>();
         }
     }
 }

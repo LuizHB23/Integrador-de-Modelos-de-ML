@@ -4,9 +4,69 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:IntegradorView.Pages.ConfigucaoModelo"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             Background="{DynamicResource MaterialDesignPaper}">
     <Grid>
-            
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="30" MaxWidth="1000" HorizontalAlignment="Center">
+                <Grid Margin="0,0,0,30">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <materialDesign:Card Grid.Column="0" Margin="0,0,10,0" Padding="20">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                                <materialDesign:PackIcon Kind="VectorSquare" Foreground="#1976D2" VerticalAlignment="Center"/>
+                                <TextBlock Text="Artefato do Modelo (.onnx)" FontWeight="Bold" Margin="10,0"/>
+                            </StackPanel>
+
+                            <ComboBox ItemsSource="{Binding ListaVersoesModelo}" 
+                                              SelectedItem="{Binding VersaoSelecionada}"
+                                              materialDesign:HintAssist.Hint="Versão Atual (ex: v1.2)"
+                                              Style="{StaticResource MaterialDesignOutlinedComboBox}"/>
+
+                            <Button Content="ATUALIZAR MODELO" 
+                                            Command="{Binding AtualizarModeloCommand}"
+                                            Style="{StaticResource MaterialDesignRaisedButton}"
+                                            Margin="0,15,0,0" Background="#1976D2"/>
+                            <TextBlock Text="Caminho: models/regressao_v1.2.onnx" FontSize="11" Foreground="Gray" Margin="0,10,0,0" TextTrimming="CharacterEllipsis"/>
+                        </StackPanel>
+                    </materialDesign:Card>
+
+                    <materialDesign:Card Grid.Column="1" Margin="10,0,0,0" Padding="20">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                                <materialDesign:PackIcon Kind="Pipe" Foreground="#388E3C" VerticalAlignment="Center"/>
+                                <TextBlock Text="Pipeline de Dados (DSL/C#)" FontWeight="Bold" Margin="10,0"/>
+                            </StackPanel>
+
+                            <ComboBox ItemsSource="{Binding ListaVersoesPipeline}" 
+                                              SelectedItem="{Binding PipelineSelecionado}"
+                                              materialDesign:HintAssist.Hint="Versão do Pipeline (ex: v2.0)"
+                                              Style="{StaticResource MaterialDesignOutlinedComboBox}"/>
+
+                            <Button Content="ATUALIZAR PIPELINE" 
+                                            Command="{Binding AtualizarPipelineCommand}"
+                                            Style="{StaticResource MaterialDesignRaisedButton}"
+                                            Margin="0,15,0,0" Background="#388E3C" BorderBrush="#388E3C"/>
+                            <TextBlock Text="Script: pipelines/preprocess_v2.json" FontSize="11" Foreground="Gray" Margin="0,10,0,0"/>
+                        </StackPanel>
+                    </materialDesign:Card>
+                </Grid>
+
+                <Grid Margin="0,40,0,20">
+                    <Button Content="EXCLUIR MODELO" Foreground="Red" Style="{StaticResource MaterialDesignFlatButton}" HorizontalAlignment="Left"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="CANCELAR" Margin="0,0,10,0" Style="{StaticResource MaterialDesignOutlinedButton}"/>
+                        <Button Content="APLICAR ALTERAÇÕES EM PRODUÇÃO" Width="300" Height="45" Background="#0D47A1"/>
+                    </StackPanel>
+                </Grid>
+
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </UserControl>

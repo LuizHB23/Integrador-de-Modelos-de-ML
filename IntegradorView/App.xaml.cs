@@ -3,6 +3,7 @@ using IntegradorAplicacao.DTO;
 using IntegradorView.InteracoesUI.Notification;
 using IntegradorView.InteracoesUI.OpenFileDialog;
 using IntegradorViewModel.JanelaModelo;
+using IntegradorViewModel.Pages.ConfiguracaoModelo;
 using IntegradorViewModel.Pages.GraficoModelo;
 using IntegradorViewModel.Pages.InserirModelo;
 using IntegradorViewModel.Pages.PredicaoModelo;
@@ -45,6 +46,11 @@ namespace IntegradorView
             services.AddTransient<CarregarDadosViewModel>();
 
             services.AddTransient<GraficoModeloViewModel>();
+
+            services.AddTransient<TemplateConfiguracaoViewModel>();
+            services.AddTransient<ConfiguracaoModeloViewModel>();
+            services.AddTransient<MetricasModeloViewModel>();
+            services.AddTransient<HistoricoPredicoesViewModel>();
 
             //services.AddTransient<ConfiguracaoCardSchemaViewModel>();
             //Fim Services ViewModels

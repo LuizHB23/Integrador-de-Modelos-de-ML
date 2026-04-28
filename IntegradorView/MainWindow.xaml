@@ -6,12 +6,14 @@
         xmlns:vmsinserir="clr-namespace:IntegradorViewModel.Pages.InserirModelo;assembly=IntegradorViewModel"
         xmlns:vmspredicao="clr-namespace:IntegradorViewModel.Pages.PredicaoModelo;assembly=IntegradorViewModel"
         xmlns:vmsgraficos="clr-namespace:IntegradorViewModel.Pages.GraficoModelo;assembly=IntegradorViewModel"
+        xmlns:vmsconfiguracao="clr-namespace:IntegradorViewModel.Pages.ConfiguracaoModelo;assembly=IntegradorViewModel"
         xmlns:vmsusercontrol="clr-namespace:IntegradorViewModel.ControleUsuario;assembly=IntegradorViewModel"
 
         xmlns:home="clr-namespace:IntegradorView.Pages.PrincipalModelo"
         xmlns:inserir="clr-namespace:IntegradorView.Pages.InserirModelo"
         xmlns:predicao="clr-namespace:IntegradorView.Pages.PredicaoModelo"
         xmlns:graficos="clr-namespace:IntegradorView.Pages.GraficoModelo"
+        xmlns:configuracao="clr-namespace:IntegradorView.Pages.ConfigucaoModelo"
 
         xmlns:usercontrol="clr-namespace:IntegradorView.ControleUsuario"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -69,6 +71,14 @@
         </DataTemplate>
 
         <!--Fim Fluxo de Páginas do GraficoModelo-->
+
+        <!--Inicio Fluxo de Páginas do ConfiguracaoModelo-->
+
+        <DataTemplate DataType="{x:Type vmsconfiguracao:TemplateConfiguracaoViewModel}">
+            <configuracao:TemplateConfiguracao/>
+        </DataTemplate>
+
+        <!--Fim Fluxo de Páginas do ConfiguracaoModelo-->
 
         <DataTemplate DataType="{x:Type vmsusercontrol:ConfiguracaoPipelineTextBoxViewModel}">
             <usercontrol:ConfiguracaoMetodoTextBox/>
