@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:IntegradorView.Pages.PrincipalModelo"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Background="{DynamicResource MaterialDesignPaper}">
@@ -50,75 +51,88 @@
 
     <Grid>
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <StackPanel Margin="30">
+            <StackPanel Margin="30,20">
                 <TextBlock Text="Seus Modelos" FontSize="28" FontWeight="SemiBold" Foreground="#333" Margin="0,0,0,20"/>
 
                 <ItemsControl ItemsSource="{Binding ListaModelos}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <WrapPanel Orientation="Horizontal" Margin="0,20"/>
+                            <WrapPanel Orientation="Horizontal" Margin="0"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                         
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel>
-                                <Button Style="{StaticResource ModelCardStyle}"
-                                        Command="{Binding DataContext.NavigateToPreparacaoModeloCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                        CommandParameter="{Binding}"
-                                        Cursor="Hand"
-                                        Width="345"
-                                        Height="300">
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="180"/>
-                                            <RowDefinition Height="*"/>
-                                        </Grid.RowDefinitions>
+                            <materialDesign:Card Margin="20,10"
+                                                 Padding="5">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Button Style="{StaticResource ModelCardStyle}"
+                                            Command="{Binding DataContext.NavigateToPreparacaoModeloCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                            CommandParameter="{Binding}"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Cursor="Hand"
+                                            Margin="10"
+                                            Grid.Row="0"
+                                            Width="345"
+                                            Height="300">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="180"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
 
-                                        <Border Grid.Row="0" x:Name="BotaoModelo" Background="#E0E0E0" CornerRadius="8,8,0,0">
-                                            <TextBlock Text="📊" FontSize="40" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        </Border>
+                                            <Border Grid.Row="0" x:Name="BotaoModelo" Background="#E3F2FD" CornerRadius="8,8,0,0">
+                                                <TextBlock Text="📊" FontSize="40" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
 
-                                        <StackPanel Grid.Row="1" VerticalAlignment="Top">
-                                            <Grid Margin="10,10,10,0">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
+                                            <StackPanel Grid.Row="1" 
+                                                        VerticalAlignment="Top">
+                                                <Grid Margin="10,10,10,0">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
 
-                                                <TextBlock Text="{Binding NomeModelo}" 
-                                                            FontWeight="Bold" 
-                                                            FontSize="26" 
-                                                            TextTrimming="CharacterEllipsis"/>
+                                                    <TextBlock Text="{Binding NomeModelo}" 
+                                                                FontWeight="Bold" 
+                                                                FontSize="26" 
+                                                                TextTrimming="CharacterEllipsis"/>
 
-                                                <Border Grid.Column="1" 
-                                                        Background="#ECEFF1" 
-                                                        CornerRadius="10" 
-                                                        Padding="8,2" 
-                                                        VerticalAlignment="Center"
-                                                        Margin="5,0,0,0">
-                                                    <TextBlock Text="Testando"
-                                                                FontSize="16" 
-                                                                FontWeight="SemiBold" 
-                                                                Foreground="#546E7A"/>
-                                                </Border>
-                                            </Grid>
+                                                    <Border Grid.Column="1" 
+                                                            Background="Azure" 
+                                                            CornerRadius="10" 
+                                                            Padding="8,2" 
+                                                            VerticalAlignment="Center"
+                                                            Margin="5,0,0,0">
+                                                        <TextBlock Text="Testando"
+                                                                    FontSize="16" 
+                                                                    FontWeight="SemiBold" 
+                                                                    Foreground="#546E7A"/>
+                                                    </Border>
+                                                </Grid>
 
-                                            <TextBlock Text="{Binding Tipo}" 
-                                                        Padding="20,5" 
-                                                        FontSize="20" 
-                                                        Foreground="Gray"/>
-                                        </StackPanel>
-                                    </Grid>
-                                </Button>
+                                                <TextBlock Text="{Binding Tipo}" 
+                                                            Padding="20,5" 
+                                                            FontSize="20" 
+                                                            Foreground="Gray"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Button>
 
-                                <Button Content="Configuração do Modelo"
-                                        HorizontalAlignment="Left"
-                                        Style="{StaticResource MaterialDesignOutlinedDarkButton}"
-                                        Margin="0,0,0,40"
-                                        Height="40"
-                                        Width="345"/>
-                        </StackPanel>
+                                    <Button Content="Configuração do Modelo"
+                                            HorizontalAlignment="Left"
+                                            Style="{StaticResource MaterialDesignOutlinedDarkButton}"
+                                            Grid.Row="1"
+                                            Margin="10,5"
+                                            Height="40"
+                                            Width="345"/>
+                                </Grid>
+                            </materialDesign:Card>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
