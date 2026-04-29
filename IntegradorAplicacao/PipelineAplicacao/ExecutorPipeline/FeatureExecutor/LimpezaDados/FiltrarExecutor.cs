@@ -165,16 +165,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                 var leftExpr = CriarOperando(left, iParam, df);
                 var rightExpr = CriarOperando(right, iParam, df);
 
-                return op switch
-                {
-                    ">" => Expression.GreaterThan(leftExpr, rightExpr),
-                    "<" => Expression.LessThan(leftExpr, rightExpr),
-                    ">=" => Expression.GreaterThanOrEqual(leftExpr, rightExpr),
-                    "<=" => Expression.LessThanOrEqual(leftExpr, rightExpr),
-                    "==" => Expression.Equal(leftExpr, rightExpr),
-                    "!=" => Expression.NotEqual(leftExpr, rightExpr),
-                    _ => throw new Exception($"Operador inválido: {op}")
-                };
+                return BuildComparison(leftExpr, rightExpr, op);
             }
 
             throw new Exception($"Condição inválida: {condition}");
@@ -207,9 +198,7 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                     iParam
                 );
 
-                var tipo = Nullable.GetUnderlyingType(coluna.TipoDado) ?? coluna.TipoDado;
-
-                return Expression.Convert(call, tipo);
+                return Expression.Convert(call, coluna.TipoDado);
             }
 
             // NUMERO
@@ -255,6 +244,83 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
             }
 
             return -1;
+        }
+
+        private Expression BuildComparison(Expression left, Expression right, string op)
+        {
+            var leftUnderlying = Nullable.GetUnderlyingType(left.Type);
+            var rightUnderlying = Nullable.GetUnderlyingType(right.Type);
+
+            bool leftNullable = leftUnderlying != null;
+            bool rightNullable = rightUnderlying != null;
+
+            // =========================
+            // CASO: ambos nullable
+            // =========================
+            if (leftNullable && rightNullable)
+            {
+                var lVal = Expression.Property(left, "Value");
+                var rVal = Expression.Property(right, "Value");
+
+                var lHas = Expression.Property(left, "HasValue");
+                var rHas = Expression.Property(right, "HasValue");
+
+                var comparison = BuildNonNullableComparison(lVal, rVal, op);
+
+                return Expression.AndAlso(
+                    Expression.AndAlso(lHas, rHas),
+                    comparison
+                );
+            }
+
+            // =========================
+            // CASO: left nullable
+            // =========================
+            if (leftNullable)
+            {
+                var lVal = Expression.Property(left, "Value");
+                var lHas = Expression.Property(left, "HasValue");
+
+                var rightConverted = Expression.Convert(right, lVal.Type);
+
+                var comparison = BuildNonNullableComparison(lVal, rightConverted, op);
+
+                return Expression.AndAlso(lHas, comparison);
+            }
+
+            // =========================
+            // CASO: right nullable
+            // =========================
+            if (rightNullable)
+            {
+                var rVal = Expression.Property(right, "Value");
+                var rHas = Expression.Property(right, "HasValue");
+
+                var leftConverted = Expression.Convert(left, rVal.Type);
+
+                var comparison = BuildNonNullableComparison(leftConverted, rVal, op);
+
+                return Expression.AndAlso(rHas, comparison);
+            }
+
+            // =========================
+            // CASO: nenhum nullable
+            // =========================
+            return BuildNonNullableComparison(left, right, op);
+        }
+
+        private Expression BuildNonNullableComparison(Expression left, Expression right, string op)
+        {
+            return op switch
+            {
+                ">" => Expression.GreaterThan(left, right),
+                "<" => Expression.LessThan(left, right),
+                ">=" => Expression.GreaterThanOrEqual(left, right),
+                "<=" => Expression.LessThanOrEqual(left, right),
+                "==" => Expression.Equal(left, right),
+                "!=" => Expression.NotEqual(left, right),
+                _ => throw new Exception($"Operador inválido: {op}")
+            };
         }
     }
 }

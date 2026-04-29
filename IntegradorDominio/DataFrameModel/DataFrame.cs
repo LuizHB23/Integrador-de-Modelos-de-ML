@@ -43,6 +43,7 @@
         }
 
         public ColunaBase? PegarColunaBase(string nome)
+        
         {
             return _colunaIndex.TryGetValue(nome, out int index)
                 ? _colunas[index]

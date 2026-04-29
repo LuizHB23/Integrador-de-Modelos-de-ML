@@ -198,7 +198,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
             bool categorico = true;
 
             var schema = new Dictionary<int, SchemaDTO>();
-            schema.Add(1, new SchemaDTO(nomeColuna, finalidade, tipo, categorico, "Modelo Qualquer"));
+            schema.Add(1, new SchemaDTO(nomeColuna, finalidade, tipo, categorico) { NomeModelo = "Modelo Qualquer" });
             _mockConversor.Setup(f => f.CarregarJson(caminho)).Returns(schema);
 
             //Act

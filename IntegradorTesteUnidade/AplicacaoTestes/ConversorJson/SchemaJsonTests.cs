@@ -28,7 +28,7 @@ namespace IntegradorTesteUnidade.AplicacaoTestes.ConversorJson
             //Arrange
             var schemaNovo = new Dictionary<int, SchemaDTO>
             {
-                {1, new SchemaDTO("Nome Coluna Qualquer", "Finalidade Qualquer", "Tipo Qualquer", true, "Nome Modelo Qualquer")}
+                {1, new SchemaDTO("Nome Coluna Qualquer", "Finalidade Qualquer", "Tipo Qualquer", true) { NomeModelo = "Nome Modelo Qualquer"} }
             };
 
             _pathProviderMock.Setup(p => p.GetCaminhoModelo()).Returns(_tempPath);
@@ -63,7 +63,7 @@ namespace IntegradorTesteUnidade.AplicacaoTestes.ConversorJson
             //Arrange
             var dados = new Dictionary<int, SchemaDTO>
             {
-                {10, new SchemaDTO("Nome Coluna Qualquer", "Finalidade Qualquer", "Tipo Qualquer", true, "Nome Modelo Qualquer")}
+                {10, new SchemaDTO("Nome Coluna Qualquer", "Finalidade Qualquer", "Tipo Qualquer", true) { NomeModelo = "Nome Modelo Qualquer"} }
             };
             string json = JsonSerializer.Serialize(dados);
             string caminho = Path.Combine(_tempPath, "teste_carregar.json");

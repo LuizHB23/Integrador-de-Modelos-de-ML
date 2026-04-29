@@ -4,9 +4,6 @@ using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.PipelineAplicacao.ParserPipeline;
 using IntegradorDominio.AST;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace IntegradorTesteUnidade.AplicacaoTestes.PipelineAplicacaoTestes.ParserPipelineTestes
 {
@@ -19,7 +16,12 @@ namespace IntegradorTesteUnidade.AplicacaoTestes.PipelineAplicacaoTestes.ParserP
             var mockConversor = new Mock<IConverteJson<Dictionary<int, FuncaoDTO>>>();
             var mockProvider = new Mock<IPathProvider>();
 
-            var funcaoDto = new FuncaoDTO("TesteFuncao", new List<string> { "x = y", "return x" }, "");
+            var funcaoDto = new FuncaoDTO
+            {
+                NomeFuncao = "TesteFuncao", 
+                Codigo = new List<string> { "x = y", "return x" }, 
+                NomeModelo = ""
+            };
 
             mockConversor.Setup(c => c.CarregarJson(It.IsAny<string>()))
                          .Returns(new Dictionary<int, FuncaoDTO> { { 1, funcaoDto } });
@@ -44,9 +46,19 @@ namespace IntegradorTesteUnidade.AplicacaoTestes.PipelineAplicacaoTestes.ParserP
             var mockConversor = new Mock<IConverteJson<Dictionary<int, FuncaoDTO>>>();
             var mockProvider = new Mock<IPathProvider>();
 
-            var funcaoDto1 = new FuncaoDTO("Funcao1", new List<string> { "return 1" }, "");
+            var funcaoDto1 = new FuncaoDTO
+            {
+                NomeFuncao = "Funcao1",
+                Codigo = new List<string> { "return 1" },
+                NomeModelo = ""
+            };
 
-            var funcaoDto2 = new FuncaoDTO("Funcao2", new List<string> { "x = 2", "return x" }, "");
+            var funcaoDto2 = new FuncaoDTO
+            {
+                NomeFuncao = "Funcao2",
+                Codigo = new List<string> { "x = 2", "return x" },
+                NomeModelo = ""
+            };
 
             mockConversor.Setup(c => c.CarregarJson(It.IsAny<string>()))
                          .Returns(new Dictionary<int, FuncaoDTO>

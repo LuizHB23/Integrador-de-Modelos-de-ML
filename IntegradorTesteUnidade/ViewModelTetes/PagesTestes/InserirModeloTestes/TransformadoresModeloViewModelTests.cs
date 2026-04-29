@@ -48,7 +48,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
             vm.NomeTransformador = "Teste";
             vm.CaminhoTransformador = "arquivo.onnx";
 
-            SetCampoPrivado(vm, "caminhoProvisorio", "caminho_completo.onnx");
+            SetCampoPrivado(vm, "_caminhoProvisorio", "caminho_completo.onnx");
 
             vm.AdicionaTransformadorCommand.Execute(null);
 
@@ -69,7 +69,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
             vm.NomeTransformador = "Teste";
             vm.CaminhoTransformador = "arquivo.onnx";
 
-            SetCampoPrivado(vm, "caminhoProvisorio", "caminho_completo.onnx");
+            SetCampoPrivado(vm, "_caminhoProvisorio", "caminho_completo.onnx");
 
             vm.AdicionaTransformadorCommand.Execute(null);
 

@@ -1,4 +1,5 @@
 ﻿using IntegradorAplicacao.ArquivosController.Csv.ExportarCsv;
+using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.Inferencia;
 
 namespace IntegradorTesteUnidade.AplicacaoTestes.ArquivosController.Csv.ExportarCsv
@@ -7,109 +8,146 @@ namespace IntegradorTesteUnidade.AplicacaoTestes.ArquivosController.Csv.Exportar
     {
         private readonly List<string> _arquivosGerados = new();
 
-        public void Dispose()
+        [Fact]
+        public void DeveGerarHeaderSimples()
         {
-            // limpa arquivos gerados no Downloads
-            var pastaUsuario = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            var downloads = Path.Combine(pastaUsuario, "Downloads");
+            var exporter = new ExportarCsvResultadoInferencia();
 
-            foreach (var file in Directory.GetFiles(downloads, "resultado_*.csv"))
+            var df = CriarDataFrameSimples();
+
+            var caminho = exporter.ExportarCsv(df);
+            _arquivosGerados.Add(caminho);
+
+            var linhas = File.ReadAllLines(caminho);
+
+            Assert.Equal("A,B", linhas[0]);
+        }
+
+        [Fact]
+        public void DeveExpandirArraysNoHeader()
+        {
+            var exporter = new ExportarCsvResultadoInferencia();
+
+            var df = CriarDataFrameArray();
+
+            var caminho = exporter.ExportarCsv(df);
+            _arquivosGerados.Add(caminho);
+
+            var linhas = File.ReadAllLines(caminho);
+
+            Assert.Contains("Valores_0", linhas[0]);
+            Assert.Contains("Valores_1", linhas[0]);
+        }
+
+        [Fact]
+        public void DevePreencherArrayComValoresFaltantes()
+        {
+            var exporter = new ExportarCsvResultadoInferencia();
+
+            var df = new DataFrame();
+            df.AdicionarColuna("Valores", new List<int[]?>
             {
-                try
-                {
-                    File.Delete(file);
-                }
-                catch
-                {
-                    // ignora erro de cleanup
-                }
+                new int[] { 1, 2 },
+                new int[] { 3 }
+            });
+
+            var caminho = exporter.ExportarCsv(df);
+            _arquivosGerados.Add(caminho);
+
+            var linhas = File.ReadAllLines(caminho);
+
+            // linha 2 deve ter valor vazio no segundo slot
+            Assert.Equal("3,", linhas[2]);
+        }
+
+        [Fact]
+        public void DeveEscaparTextoComVirgula()
+        {
+            var exporter = new ExportarCsvResultadoInferencia();
+
+            var df = new DataFrame();
+            df.AdicionarColuna("Texto", new List<string?>
+            {
+                "a,b"
+            });
+
+            var caminho = exporter.ExportarCsv(df);
+            _arquivosGerados.Add(caminho);
+
+            var linhas = File.ReadAllLines(caminho);
+
+            Assert.Equal("\"a,b\"", linhas[1]);
+        }
+
+        [Fact]
+        public void DeveEscaparAspas()
+        {
+            var exporter = new ExportarCsvResultadoInferencia();
+
+            var df = new DataFrame();
+            df.AdicionarColuna("Texto", new List<string?>
+            {
+                "a\"b"
+            });
+
+            var caminho = exporter.ExportarCsv(df);
+            _arquivosGerados.Add(caminho);
+
+            var linhas = File.ReadAllLines(caminho);
+
+            Assert.Equal("\"a\"\"b\"", linhas[1]);
+        }
+
+        [Fact]
+        public void DataFrameVazio_NaoDeveGerarConteudo()
+        {
+            var exporter = new ExportarCsvResultadoInferencia();
+
+            var df = new DataFrame();
+
+            var caminho = exporter.ExportarCsv(df);
+
+            // arquivo pode nem existir ou estar vazio
+            if (File.Exists(caminho))
+            {
+                var linhas = File.ReadAllLines(caminho);
+                Assert.Empty(linhas);
             }
         }
 
-        private ExportarCsvResultadoInferencia CriarExportador()
+        // =========================
+        // HELPERS
+        // =========================
+
+        private DataFrame CriarDataFrameSimples()
         {
-            return new ExportarCsvResultadoInferencia();
+            var df = new DataFrame();
+            df.AdicionarColuna("A", new List<int?> { 1 });
+            df.AdicionarColuna("B", new List<int?> { 2 });
+            return df;
         }
 
-        [Fact]
-        public void ExportarCsv_DeveFazerNada_QuandoListaVazia()
+        private DataFrame CriarDataFrameArray()
         {
-            var exportador = CriarExportador();
-
-            var ex = Record.Exception(() => exportador.ExportarCsv(new List<ResultadoInferencia>()));
-
-            Assert.Null(ex);
-        }
-
-        [Fact]
-        public void ExportarCsv_DeveCriarArquivoComSucesso()
-        {
-            // Arrange
-            var exportador = CriarExportador();
-
-            var resultados = new List<ResultadoInferencia>
+            var df = new DataFrame();
+            df.AdicionarColuna("Valores", new List<int[]?>
             {
-                new ResultadoInferencia
-                {
-                    Id = "1",
-                    Outputs = new Dictionary<string, float[]>
-                    {
-                        { "score", new float[] { 0.1f, 0.9f } }
-                    }
-                }
-            };
-
-            var pastaUsuario = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            var downloads = Path.Combine(pastaUsuario, "Downloads");
-
-            var arquivosAntes = Directory.GetFiles(downloads, "resultado_*.csv").Length;
-
-            // Act
-            exportador.ExportarCsv(resultados);
-
-            // Assert
-            var arquivosDepois = Directory.GetFiles(downloads, "resultado_*.csv");
-
-            Assert.True(arquivosDepois.Length > arquivosAntes);
-
-            var ultimoArquivo = arquivosDepois
-                .OrderByDescending(f => File.GetCreationTime(f))
-                .First();
-
-            var conteudo = File.ReadAllText(ultimoArquivo);
-
-            Assert.Contains("ID", conteudo);
-            Assert.Contains("score_0", conteudo);
-            Assert.Contains("0.1", conteudo);
-            Assert.Contains("0.9", conteudo);
+                new int[] { 1, 2 }
+            });
+            return df;
         }
 
-        [Fact]
-        public void ExportarCsv_DeveEscaparCsvCorretamente()
+        public void Dispose()
         {
-            var exportador = CriarExportador();
-
-            var resultados = new List<ResultadoInferencia>
+            foreach (var arquivo in _arquivosGerados)
             {
-                new ResultadoInferencia
+                try
                 {
-                    Id = "id,com,virgula",
-                    Outputs = new Dictionary<string, float[]>()
+                    if (File.Exists(arquivo))
+                        File.Delete(arquivo);
                 }
-            };
-
-            exportador.ExportarCsv(resultados);
-
-            var pastaUsuario = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            var downloads = Path.Combine(pastaUsuario, "Downloads");
-
-            var arquivo = Directory.GetFiles(downloads, "resultado_*.csv")
-                .OrderByDescending(f => File.GetCreationTime(f))
-                .First();
-
-            var conteudo = File.ReadAllText(arquivo);
-
-            Assert.Contains("\"id,com,virgula\"", conteudo);
+                catch { }
+            }
         }
     }
 }

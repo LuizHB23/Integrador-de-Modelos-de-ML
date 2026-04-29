@@ -2,6 +2,7 @@
 using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.FeatureEngineering.AgrupamentoDados;
 using System.Data;
+using System.Diagnostics;
 
 
 namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.AgrupamentoDados

@@ -3,6 +3,7 @@ using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.FeatureEngineering.OperacoesExponenciais;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace IntegradorTesteUnidade.AplicacaoTestes.PipelineAplicacaoTestes.ExecutorPipelineTestes.FeatureExecutorTestes.OperacoesExponenciaisTestes
@@ -21,7 +22,7 @@ namespace IntegradorTesteUnidade.AplicacaoTestes.PipelineAplicacaoTestes.Executo
 
             // Act
             executor.Executar(df);
-            var resultado = df.PegarColuna<Single?>("Valores");
+            var resultado = df.PegarColunaBase("Valores");
 
             // Assert
             Assert.True(Math.Abs((Single)resultado.PegarValor(0)! - 2f) < 0.0001f);
@@ -39,7 +40,7 @@ namespace IntegradorTesteUnidade.AplicacaoTestes.PipelineAplicacaoTestes.Executo
             var executor = new RaizQuadradaExecutor(operacao);
 
             executor.Executar(df);
-            var resultado = df.PegarColuna<Single?>("Valores");
+            var resultado = df.PegarColunaBase("Valores");
 
             Assert.Null(resultado.PegarValor(0));
             Assert.True(Math.Abs((Single)resultado.PegarValor(1)! - 3f) < 0.0001f);
@@ -56,7 +57,7 @@ namespace IntegradorTesteUnidade.AplicacaoTestes.PipelineAplicacaoTestes.Executo
             var executor = new RaizQuadradaExecutor(operacao);
 
             executor.Executar(df);
-            var resultado = df.PegarColuna<Single?>("Valores");
+            var resultado = df.PegarColunaBase("Valores");
 
             Assert.Equal(0f, resultado.PegarValor(0)); // zero não é alterado
             Assert.True(Math.Abs((Single)resultado.PegarValor(1)! - 2f) < 0.0001f);

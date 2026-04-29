@@ -7,7 +7,15 @@ namespace IntegradorDominio.DataFrameModel
         private int _count;
 
         public override int Quantidade => _count;
-        public T?[] Dados => _dados;
+        public T?[] Dados
+        {
+            get
+            {
+                var copy = new T?[_count];
+                Array.Copy(_dados, copy, _count);
+                return copy;
+            }
+        }
 
         public Coluna(string nome, List<T?> dados) : base(nome, typeof(T))
         {

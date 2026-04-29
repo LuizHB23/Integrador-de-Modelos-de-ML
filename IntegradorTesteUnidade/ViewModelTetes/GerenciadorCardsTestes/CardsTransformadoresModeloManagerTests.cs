@@ -83,8 +83,8 @@ namespace IntegradorTesteUnidade.ViewModelTetes.GerenciadorCardsTestes
             _converterMock.Setup(x => x.CarregarJson(It.IsAny<string>()))
                 .Returns(new Dictionary<int, TransformadorDTO>
                 {
-                    { 1, new TransformadorDTO("T1", "path1", "modelo") },
-                    { 2, new TransformadorDTO("T2", "path2", "modelo") }
+                    { 1, new TransformadorDTO("T1", "path1") { NomeModelo = "modelo" } },
+                    { 2, new TransformadorDTO("T2", "path2") { NomeModelo = "modelo" } }
                 });
 
             manager.CarregarTransformador(_dialogMock.Object, _converterMock.Object);

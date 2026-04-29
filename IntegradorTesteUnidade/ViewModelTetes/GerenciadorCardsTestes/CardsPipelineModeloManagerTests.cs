@@ -2,6 +2,7 @@
 using IntegradorAplicacao.DTO;
 using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.ItensViewModel;
+using IntegradorViewModel.Shared.Factory;
 using IntegradorViewModel.Shared.Interfaces;
 using IntegradorViewModel.Shared.Manager.GerenciadorCards;
 using Moq;
@@ -75,7 +76,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.GerenciadorCardsTestes
             _dialogMock.Setup(x => x.GetCaminhoArquivo()).Returns("");
 
             //Act +Assert
-            Assert.Throws<Exception>(() => manager.CarregarPipeline(_dialogMock.Object, _converterMock.Object, _ => { }, _ => Task.CompletedTask));
+            Assert.Throws<ArgumentNullException>(() => manager.CarregarPipeline(_converterMock.Object, _ => { }, _ => Task.CompletedTask, ""));
             Assert.Empty(cards);
             Assert.Empty(posicoes);
         }
@@ -96,7 +97,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.GerenciadorCardsTestes
                 });
 
             //Act
-            manager.CarregarPipeline(_dialogMock.Object, _converterMock.Object, _ => { }, _ => Task.CompletedTask);
+            manager.CarregarPipeline(_converterMock.Object, _ => { }, _ => Task.CompletedTask, "");
 
             //Assert
             Assert.Equal(2, cards.Count);
@@ -122,7 +123,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.GerenciadorCardsTestes
             manager.AdicionarCard(item2, _ => Task.CompletedTask, (_, __) => { }, _ => { });
 
             //Act
-            manager.PreparaParaJson(_converterMock.Object, "modelo");
+            manager.PreparaParaJson<FuncaoDTOFactory>(_converterMock.Object, "modelo");
 
             //Assert
             _converterMock.Verify(x =>

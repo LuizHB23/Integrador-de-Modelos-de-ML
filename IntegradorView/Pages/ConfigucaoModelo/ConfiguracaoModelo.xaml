@@ -9,14 +9,30 @@
              d:DesignHeight="450" d:DesignWidth="800"
              Background="{DynamicResource MaterialDesignPaper}">
     <Grid>
-        <ScrollViewer VerticalScrollBarVisibility="Auto">
-            <StackPanel Margin="30" MaxWidth="1000" HorizontalAlignment="Center">
-                <Grid Margin="0,0,0,30">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+        <DockPanel>
+            <Grid DockPanel.Dock="Bottom">
+                <materialDesign:Card Grid.Column="1" Margin="0" Padding="20">
+                    <Grid Margin="0">
+                        <Button Content="EXCLUIR MODELO" 
+                                Foreground="Red" 
+                                Style="{StaticResource MaterialDesignFlatButton}" 
+                                HorizontalAlignment="Left"/>
 
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Content="CANCELAR" 
+                                    Margin="0,0,10,0" 
+                                    Style="{StaticResource MaterialDesignOutlinedButton}"/>
+                            <Button Content="APLICAR ALTERAÇÕES" 
+                                    Width="Auto" 
+                                    Style="{StaticResource MaterialDesignRaisedButton}"
+                                    Background="#0D47A1"/>
+                        </StackPanel>
+                    </Grid>
+                </materialDesign:Card>
+            </Grid>
+
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <Grid Margin="0,0,0,30">
                     <materialDesign:Card Grid.Column="0" Margin="0,0,10,0" Padding="20">
                         <StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
@@ -25,9 +41,9 @@
                             </StackPanel>
 
                             <ComboBox ItemsSource="{Binding ListaVersoesModelo}" 
-                                              SelectedItem="{Binding VersaoSelecionada}"
-                                              materialDesign:HintAssist.Hint="Versão Atual (ex: v1.2)"
-                                              Style="{StaticResource MaterialDesignOutlinedComboBox}"/>
+                                                SelectedItem="{Binding VersaoSelecionada}"
+                                                materialDesign:HintAssist.Hint="Versão Atual (ex: v1.2)"
+                                                Style="{StaticResource MaterialDesignOutlinedComboBox}"/>
 
                             <Button Content="ATUALIZAR MODELO" 
                                             Command="{Binding AtualizarModeloCommand}"
@@ -37,7 +53,7 @@
                         </StackPanel>
                     </materialDesign:Card>
 
-                    <materialDesign:Card Grid.Column="1" Margin="10,0,0,0" Padding="20">
+                    <materialDesign:Card>
                         <StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
                                 <materialDesign:PackIcon Kind="Pipe" Foreground="#388E3C" VerticalAlignment="Center"/>
@@ -45,28 +61,21 @@
                             </StackPanel>
 
                             <ComboBox ItemsSource="{Binding ListaVersoesPipeline}" 
-                                              SelectedItem="{Binding PipelineSelecionado}"
-                                              materialDesign:HintAssist.Hint="Versão do Pipeline (ex: v2.0)"
-                                              Style="{StaticResource MaterialDesignOutlinedComboBox}"/>
+                                      SelectedItem="{Binding PipelineSelecionado}"
+                                      materialDesign:HintAssist.Hint="Versão do Pipeline (ex: v2.0)"
+                                      Style="{StaticResource MaterialDesignOutlinedComboBox}"/>
 
                             <Button Content="ATUALIZAR PIPELINE" 
-                                            Command="{Binding AtualizarPipelineCommand}"
-                                            Style="{StaticResource MaterialDesignRaisedButton}"
-                                            Margin="0,15,0,0" Background="#388E3C" BorderBrush="#388E3C"/>
+                                    Command="{Binding AtualizarPipelineCommand}"
+                                    Style="{StaticResource MaterialDesignRaisedButton}"
+                                    Margin="0,15,0,0" Background="#388E3C" BorderBrush="#388E3C"/>
                             <TextBlock Text="Script: pipelines/preprocess_v2.json" FontSize="11" Foreground="Gray" Margin="0,10,0,0"/>
                         </StackPanel>
                     </materialDesign:Card>
-                </Grid>
 
-                <Grid Margin="0,40,0,20">
-                    <Button Content="EXCLUIR MODELO" Foreground="Red" Style="{StaticResource MaterialDesignFlatButton}" HorizontalAlignment="Left"/>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button Content="CANCELAR" Margin="0,0,10,0" Style="{StaticResource MaterialDesignOutlinedButton}"/>
-                        <Button Content="APLICAR ALTERAÇÕES EM PRODUÇÃO" Width="300" Height="45" Background="#0D47A1"/>
-                    </StackPanel>
-                </Grid>
 
-            </StackPanel>
-        </ScrollViewer>
+                </Grid>
+            </ScrollViewer>
+        </DockPanel>
     </Grid>
 </UserControl>

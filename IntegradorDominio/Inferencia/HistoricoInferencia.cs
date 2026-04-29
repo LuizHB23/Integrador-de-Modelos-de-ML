@@ -6,6 +6,8 @@
 
         public string NomeModelo { get; set; }
 
+        public string VersaoModelo { get; set; }
+
         public int TotalLinhas { get; set; }
 
         public int LinhasComErro { get; set; }

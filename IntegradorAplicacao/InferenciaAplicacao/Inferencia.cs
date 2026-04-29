@@ -19,6 +19,7 @@ namespace IntegradorAplicacao.InferenciaAplicacao
         private ExecutorFinal<T>? _executor;
 
         public List<ErrosInferencia> ListaErros { get; private set; }
+        public HistoricoInferencia Historico { get; private set; }
 
         public Inferencia(IConverteJson<Dictionary<int, T>> conversorPipeline, IConverteJson<Dictionary<int, SchemaDTO>> conversorSchema, IConverteJson<Dictionary<int, TransformadorDTO>> conversorTransformadores)
         {
@@ -27,6 +28,7 @@ namespace IntegradorAplicacao.InferenciaAplicacao
             _conversorSchema = conversorSchema;
 
             ListaErros = new();
+            Historico = new();
 
             _executor = new(_conversorPipeline);
             _configuracao = new(ListaErros);
@@ -64,11 +66,15 @@ namespace IntegradorAplicacao.InferenciaAplicacao
 
                 var finalResultados = RealizaInferenciaOnnx(inputs, caminhoModelo, ids);
 
+                GeraHistorico(finalResultados);
+
                 return _configuracao.ReconstruirSaidaComId(finalResultados, ids);
             }
             else
             {
                 var resultados = RealizaInferenciaOnnx(dataFrameNovo, caminhoModelo, ids);
+
+                GeraHistorico(resultados);
 
                 return _configuracao.ReconstruirSaidaComId(resultados, ids);
             }
@@ -127,6 +133,21 @@ namespace IntegradorAplicacao.InferenciaAplicacao
             }
 
             return ids;
+        }
+
+        private void GeraHistorico(IDisposableReadOnlyCollection<DisposableNamedOnnxValue> resultados)
+        {
+            Historico.TotalLinhas =  resultados.Count + ListaErros.Count;
+            Historico.LinhasComErro = ListaErros.Count;
+
+            if (ListaErros.Count > 0)
+            {
+                Historico.Status = "Parcial";
+            }
+            else
+            {
+                Historico.Status = "Sucesso";
+            }
         }
     }
 }

@@ -50,9 +50,13 @@ namespace IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor
                         break;
                     }
 
+                    if (v is string str && string.IsNullOrEmpty(str))
+                    {
+                        hasNull = true;
+                        break;
+                    }
+
                     var s = v.ToString();
-                    if (string.IsNullOrEmpty(s))
-                        s = "NULL";
 
                     // escreve no span (rápido, sem StringBuilder)
                     foreach (var ch in s)

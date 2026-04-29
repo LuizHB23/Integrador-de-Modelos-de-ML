@@ -23,7 +23,7 @@ namespace IntegradorTesteUnidade.AplicacaoTestes.PipelineAplicacaoTestes.Executo
             var col = resultado.PegarColuna<float?>("Nova");
 
             Assert.NotNull(col);
-            Assert.Equal(3, col.Dados.Count);
+            Assert.Equal(3, col.Quantidade);
             Assert.All(col.Dados, v => Assert.Equal(10f, v));
         }
 
@@ -40,7 +40,7 @@ namespace IntegradorTesteUnidade.AplicacaoTestes.PipelineAplicacaoTestes.Executo
 
             var col = resultado.PegarColuna<bool?>("Flag");
             Assert.NotNull(col);
-            Assert.Equal(2, col.Dados.Count);
+            Assert.Equal(2, col.Quantidade);
             Assert.All(col.Dados, v => Assert.True(v.Value));
         }
 
@@ -57,7 +57,7 @@ namespace IntegradorTesteUnidade.AplicacaoTestes.PipelineAplicacaoTestes.Executo
 
             var col = resultado.PegarColuna<string>("Nome");
             Assert.NotNull(col);
-            Assert.Equal(3, col.Dados.Count);
+            Assert.Equal(3, col.Quantidade);
             Assert.All(col.Dados, v => Assert.Equal("Teste", v));
         }
 
@@ -66,11 +66,11 @@ namespace IntegradorTesteUnidade.AplicacaoTestes.PipelineAplicacaoTestes.Executo
         {
             // DataFrame base
             var dfBase = new DataFrame();
-            dfBase.AdicionarColuna<int?>("X", new List<int?> { 1, 2, 3 });
+            dfBase.AdicionarColuna<float?>("X", new List<float?> { 1, 2, 3 });
 
             // DataFrame principal
             var df = new DataFrame();
-            df.AdicionarColuna<int?>("Id", new List<int?> { 10, 20, 30 });
+            df.AdicionarColuna<float?>("Id", new List<float?> { 10, 20, 30 });
 
             var contexto = new Dictionary<string, object?> { { "dfBase", dfBase } };
 
@@ -79,12 +79,12 @@ namespace IntegradorTesteUnidade.AplicacaoTestes.PipelineAplicacaoTestes.Executo
 
             var resultado = (DataFrame)executor.Executar(df);
 
-            var col = resultado.PegarColuna<int?>("Copiada");
+            var col = resultado.PegarColuna<float?>("Copiada");
             Assert.NotNull(col);
-            Assert.Equal(3, col.Dados.Count);
-            Assert.Equal(1, col.PegarValor(0));
-            Assert.Equal(2, col.PegarValor(1));
-            Assert.Equal(3, col.PegarValor(2));
+            Assert.Equal(3, col.Quantidade);
+            Assert.Equal(1, (float)col.PegarValor(0));
+            Assert.Equal(2, (float)col.PegarValor(1));
+            Assert.Equal(3, (float)col.PegarValor(2));
         }
 
         [Fact]

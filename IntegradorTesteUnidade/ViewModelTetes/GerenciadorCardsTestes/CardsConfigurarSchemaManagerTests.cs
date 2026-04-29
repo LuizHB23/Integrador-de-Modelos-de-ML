@@ -64,7 +64,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.GerenciadorCardsTestes
             converterMock.Setup(x => x.CarregarJson(It.IsAny<string>()))
                 .Returns(new Dictionary<int, SchemaDTO>
                 {
-                    { 1, new SchemaDTO("col1","target","float",false,"modelo") }
+                    { 1, new SchemaDTO("col1","target","float",false) { NomeModelo = "modelo"} }
                 });
 
             manager.CarregarSchema(dialogMock.Object, converterMock.Object);
