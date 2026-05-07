@@ -6,7 +6,6 @@ using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.DTO.Interfaces;
 using IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao;
 using IntegradorDominio.DataFrameModel;
-using IntegradorDominio.FeatureEngineering.ManipulacaoDados;
 using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.ControleUsuario.ConfiguracaoTextBox;
 using IntegradorViewModel.ItensViewModel;
@@ -14,12 +13,7 @@ using IntegradorViewModel.Shared.Context;
 using IntegradorViewModel.Shared.Factory;
 using IntegradorViewModel.Shared.Interfaces;
 using IntegradorViewModel.Shared.Manager.GerenciadorCards;
-using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data;
-using System.Text;
 
 namespace IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor
 {

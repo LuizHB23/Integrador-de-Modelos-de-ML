@@ -377,6 +377,6 @@
         </DockPanel>
 
         <usercontrol:CaixaDeDownload DataContext="{Binding}" 
-                                     Panel.ZIndex="999"/>
+                                     Panel.ZIndex="999" Margin="0,414,685,0"/>
     </Grid>
 </UserControl>

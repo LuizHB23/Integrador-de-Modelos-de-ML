@@ -1,18 +1,5 @@
-﻿using IntegradorView.InteracoesUI.Notification;
-using IntegradorViewModel.Pages.PredicaoModelo;
-using MaterialDesignThemes.Wpf;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
+﻿using MaterialDesignThemes.Wpf;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace IntegradorView.ControleUsuario
 {
@@ -25,8 +12,11 @@ namespace IntegradorView.ControleUsuario
         {
             InitializeComponent();
 
-            var queue = App.GetService<SnackbarMessageQueue>();
-            MeuSnackbar.MessageQueue = queue;
+            if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
+            {
+                var queue = App.GetService<SnackbarMessageQueue>();
+                MeuSnackbar.MessageQueue = queue;
+            }
         }
     }
 }

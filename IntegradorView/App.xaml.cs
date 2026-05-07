@@ -52,7 +52,6 @@ namespace IntegradorView
             services.AddTransient<MetricasModeloViewModel>();
             services.AddTransient<HistoricoPredicoesViewModel>();
 
-            //services.AddTransient<ConfiguracaoCardSchemaViewModel>();
             //Fim Services ViewModels
 
             services.AddScoped<SnackbarMessageQueue>();

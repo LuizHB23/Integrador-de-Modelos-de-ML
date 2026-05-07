@@ -3,6 +3,7 @@ using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.Inferencia;
 using Microsoft.ML.OnnxRuntime;
 using Microsoft.ML.OnnxRuntime.Tensors;
+using System.Diagnostics;
 
 namespace IntegradorAplicacao.InferenciaAplicacao
 {
@@ -15,7 +16,11 @@ namespace IntegradorAplicacao.InferenciaAplicacao
             ListaErros = listaErros;
         }
 
-        public List<NamedOnnxValue> CriarInputs(DataFrame df, InferenceSession session, Dictionary<int, SchemaDTO>? schemaDicionario, string[]? ids)
+        public List<NamedOnnxValue> CriarInputs(
+            DataFrame df,
+            InferenceSession session,
+            Dictionary<int, SchemaDTO>? schemaDicionario,
+            string[]? ids)
         {
             var inputs = new List<NamedOnnxValue>();
 
@@ -48,13 +53,14 @@ namespace IntegradorAplicacao.InferenciaAplicacao
                 {
                     erro = true;
 
-                    ErrosInferencia linha = new() 
+                    ErrosInferencia linha = new()
                     {
                         IndexLinha = i,
                         Id = ids[i],
                         Erro = ex.Message,
-                        Outputs = new() 
+                        Outputs = new()
                     };
+
                     foreach (var col in colunasFeature)
                         linha.Outputs.Add(col.Nome, col.PegarValor(i));
 
@@ -63,25 +69,30 @@ namespace IntegradorAplicacao.InferenciaAplicacao
 
                 if (erro)
                 {
-                    // Preenche a linha inteira para não deixar "buraco" no tensor
                     for (int j = 0; j < features; j++)
                     {
                         dados[startIndex + j] = 0f;
                     }
 
-                    // Avança o index corretamente para a próxima linha
                     index = startIndex + features;
                 }
             }
 
-            var tensor = new DenseTensor<float>(dados, new[] { linhas, features });
+            var tensor = new DenseTensor<float>(
+                dados,
+                new[] { linhas, features });
 
-            inputs.Add(NamedOnnxValue.CreateFromTensor(inputName, tensor));
+            inputs.Add(
+                NamedOnnxValue.CreateFromTensor(
+                    inputName,
+                    tensor));
 
             return inputs;
         }
 
-        public List<NamedOnnxValue> AjustarInputsParaModelo(List<NamedOnnxValue> inputs, InferenceSession session)
+        public List<NamedOnnxValue> AjustarInputsParaModelo(
+            List<NamedOnnxValue> inputs,
+            InferenceSession session)
         {
             var nomesEsperados = session.InputMetadata.Keys.ToList();
 
@@ -90,28 +101,65 @@ namespace IntegradorAplicacao.InferenciaAplicacao
             for (int i = 0; i < nomesEsperados.Count; i++)
             {
                 var nomeEsperado = nomesEsperados[i];
+
                 var tensor = inputs[i].AsTensor<float>();
 
-                novosInputs.Add(NamedOnnxValue.CreateFromTensor(nomeEsperado, tensor));
+                if (tensor == null)
+                    throw new Exception(
+                        $"Tensor nulo no input: {nomeEsperado}");
+
+                // 🔥 MATERIALIZA
+                var dados = tensor.ToArray();
+                var dims = tensor.Dimensions.ToArray();
+
+                var novoTensor = new DenseTensor<float>(
+                    dados,
+                    dims);
+
+                novosInputs.Add(
+                    NamedOnnxValue.CreateFromTensor(
+                        nomeEsperado,
+                        novoTensor));
             }
 
             return novosInputs;
         }
 
-        public List<NamedOnnxValue> ConverterParaInputs(IDisposableReadOnlyCollection<DisposableNamedOnnxValue> resultados)
+        // 🔥 CORREÇÃO PRINCIPAL
+        public List<NamedOnnxValue> ConverterParaInputs(
+            IDisposableReadOnlyCollection<DisposableNamedOnnxValue> resultados)
         {
             var inputs = new List<NamedOnnxValue>();
 
             foreach (var r in resultados)
             {
                 var tensor = r.AsTensor<float>();
-                inputs.Add(NamedOnnxValue.CreateFromTensor(r.Name, tensor));
+
+                if (tensor == null)
+                    throw new Exception($"Tensor nulo: {r.Name}");
+
+                // 🔥 COPIA REAL DOS DADOS
+                var dados = tensor.ToArray();
+
+                // 🔥 COPIA REAL DAS DIMENSÕES
+                var dims = tensor.Dimensions.ToArray();
+
+                // 🔥 NOVO TENSOR GERENCIADO
+                var novoTensor = new DenseTensor<float>(
+                    dados,
+                    dims);
+
+                inputs.Add(
+                    NamedOnnxValue.CreateFromTensor(
+                        r.Name,
+                        novoTensor));
             }
 
             return inputs;
         }
 
-        private Dictionary<string, float[]> ConverterSaida(IDisposableReadOnlyCollection<DisposableNamedOnnxValue> resultados)
+        private Dictionary<string, float[]> ConverterSaida(
+            IDisposableReadOnlyCollection<DisposableNamedOnnxValue> resultados)
         {
             var output = new Dictionary<string, float[]>();
 
@@ -124,18 +172,23 @@ namespace IntegradorAplicacao.InferenciaAplicacao
                     output[r.Name] = tl.Select(x => (float)x).ToArray();
 
                 else
-                    throw new Exception($"Tipo não suportado: {r.Value.GetType()}");
+                    throw new Exception(
+                        $"Tipo não suportado: {r.Value.GetType()}");
             }
 
             return output;
         }
 
-        private bool DeveIgnorar(Dictionary<int, SchemaDTO>? schemaDicionario, string nomeColuna)
+        private bool DeveIgnorar(
+            Dictionary<int, SchemaDTO>? schemaDicionario,
+            string nomeColuna)
         {
-            var valor = schemaDicionario.Values.FirstOrDefault(c => c.NomeColuna == nomeColuna);
+            var valor = schemaDicionario.Values
+                .FirstOrDefault(c => c.NomeColuna == nomeColuna);
 
             if (valor is null)
-                throw new Exception($"Coluna não tratada: {nomeColuna}");
+                throw new Exception(
+                    $"Coluna não tratada: {nomeColuna}");
 
             return valor.Finalidade != "Feature";
         }
@@ -148,22 +201,28 @@ namespace IntegradorAplicacao.InferenciaAplicacao
             {
                 var valorFloat = (float)d;
 
-                if (float.IsNaN(valorFloat) || float.IsInfinity(valorFloat))
-                    throw new Exception($"Overflow ao converter double: {d}");
+                if (float.IsNaN(valorFloat) ||
+                    float.IsInfinity(valorFloat))
+                {
+                    throw new Exception(
+                        $"Overflow ao converter double: {d}");
+                }
 
                 return valorFloat;
-
             }
 
             if (valor is int i) return i;
 
-            if (valor == null) throw new Exception("Linha com valor vazio");
+            if (valor == null)
+                throw new Exception("Linha com valor vazio");
 
             if (float.TryParse(valor.ToString(), out var result))
             {
-                if (float.IsNaN(result) || float.IsInfinity(result))
+                if (float.IsNaN(result) ||
+                    float.IsInfinity(result))
                 {
-                    throw new Exception($"Valor inválido: {result}");
+                    throw new Exception(
+                        $"Valor inválido: {result}");
                 }
 
                 return result;
@@ -172,13 +231,15 @@ namespace IntegradorAplicacao.InferenciaAplicacao
             throw new Exception($"Valor inválido: {valor}");
         }
 
-        public List<ResultadoInferencia> ReconstruirSaidaComId(IDisposableReadOnlyCollection<DisposableNamedOnnxValue> resultados, string[] ids)
+        public List<ResultadoInferencia> ReconstruirSaidaComId(
+            IDisposableReadOnlyCollection<DisposableNamedOnnxValue> resultados,
+            string[] ids)
         {
             var resultado = new List<ResultadoInferencia>();
 
-            var indicesComErro = new HashSet<int>(ListaErros.Select(e => e.IndexLinha));
+            var indicesComErro = new HashSet<int>(
+                ListaErros.Select(e => e.IndexLinha));
 
-            // 🔥 mapa fixo de índices válidos
             var indicesValidos = new List<int>();
 
             for (int i = 0; i < ids.Length; i++)
@@ -197,24 +258,54 @@ namespace IntegradorAplicacao.InferenciaAplicacao
 
             foreach (var r in resultados)
             {
-                var tensor = r.AsTensor<float>();
-                var dims = tensor.Dimensions.ToArray();
+                float[] valores;
+                int[] dims;
+
+                if (r.Value is DenseTensor<float> tf)
+                {
+                    valores = tf.ToArray();
+                    dims = tf.Dimensions.ToArray();
+                }
+                else if (r.Value is DenseTensor<long> tl)
+                {
+                    valores = tl.Select(x => (float)x).ToArray();
+                    dims = tl.Dimensions.ToArray();
+                }
+                else if (r.Value is DenseTensor<int> ti)
+                {
+                    valores = ti.Select(x => (float)x).ToArray();
+                    dims = ti.Dimensions.ToArray();
+                }
+                else if (r.Value is DenseTensor<double> td)
+                {
+                    valores = td.Select(x => (float)x).ToArray();
+                    dims = td.Dimensions.ToArray();
+                }
+                else if (r.Value is DenseTensor<bool> tb)
+                {
+                    valores = tb.Select(x => x ? 1f : 0f).ToArray();
+                    dims = tb.Dimensions.ToArray();
+                }
+                else
+                {
+                    throw new Exception(
+                        $"Tipo não suportado: {r.Value.GetType()}");
+                }
 
                 int tamanhoPorLinha = dims.Length == 1
                     ? 1
-                    : dims.Skip(1).Aggregate(1, (a, b) => a * b);
-
-                var valores = tensor.ToArray();
+                    : dims
+                        .Skip(1)
+                        .Aggregate(1, (a, b) => a * b);
 
                 for (int j = 0; j < indicesValidos.Count; j++)
                 {
-                    int i = indicesValidos[j];
-
                     var slice = new float[tamanhoPorLinha];
 
+                    // 🔥 BUG CORRIGIDO
                     Array.Copy(
                         valores,
-                        i * tamanhoPorLinha,
+                        j * tamanhoPorLinha,
                         slice,
                         0,
                         tamanhoPorLinha
