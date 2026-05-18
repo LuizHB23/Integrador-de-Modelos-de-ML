@@ -33,20 +33,21 @@ namespace IntegradorAplicacao.InferenciaAplicacao
             int linhas = df.QuantidadeLinhas;
             int features = colunasFeature.Count;
 
-            var dados = new float[linhas * features];
+            var dados = new List<float>();
 
-            int index = 0;
+            int linhasValidas = 0;
 
             for (int i = 0; i < linhas; i++)
             {
-                int startIndex = index;
                 bool erro = false;
+                var linhaTemp = new List<float>();
 
                 try
                 {
                     foreach (var col in colunasFeature)
                     {
-                        dados[index++] = ConverterParaFloat(col.PegarValor(i));
+                        linhaTemp.Add(
+                            ConverterParaFloat(col.PegarValor(i)));
                     }
                 }
                 catch (Exception ex)
@@ -67,20 +68,14 @@ namespace IntegradorAplicacao.InferenciaAplicacao
                     ListaErros.Add(linha);
                 }
 
-                if (erro)
+                if (!erro)
                 {
-                    for (int j = 0; j < features; j++)
-                    {
-                        dados[startIndex + j] = 0f;
-                    }
-
-                    index = startIndex + features;
+                    dados.AddRange(linhaTemp);
+                    linhasValidas++;
                 }
             }
 
-            var tensor = new DenseTensor<float>(
-                dados,
-                new[] { linhas, features });
+            var tensor = new DenseTensor<float>(dados.ToArray(), new[] { linhasValidas, features });
 
             inputs.Add(
                 NamedOnnxValue.CreateFromTensor(
@@ -156,27 +151,6 @@ namespace IntegradorAplicacao.InferenciaAplicacao
             }
 
             return inputs;
-        }
-
-        private Dictionary<string, float[]> ConverterSaida(
-            IDisposableReadOnlyCollection<DisposableNamedOnnxValue> resultados)
-        {
-            var output = new Dictionary<string, float[]>();
-
-            foreach (var r in resultados)
-            {
-                if (r.Value is DenseTensor<float> tf)
-                    output[r.Name] = tf.ToArray();
-
-                else if (r.Value is DenseTensor<long> tl)
-                    output[r.Name] = tl.Select(x => (float)x).ToArray();
-
-                else
-                    throw new Exception(
-                        $"Tipo não suportado: {r.Value.GetType()}");
-            }
-
-            return output;
         }
 
         private bool DeveIgnorar(
