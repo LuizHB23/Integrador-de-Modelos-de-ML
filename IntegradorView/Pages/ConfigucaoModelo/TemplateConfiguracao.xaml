@@ -9,6 +9,21 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              Background="{DynamicResource MaterialDesignPaper}">
+
+    <UserControl.Resources>
+        <DataTemplate DataType="{x:Type vmsconfiguracao:ConfiguracaoModeloViewModel}">
+            <local:ConfiguracaoModelo />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vmsconfiguracao:MetricasModeloViewModel}">
+            <local:MetricasModelo />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vmsconfiguracao:HistoricoPredicoesViewModel}">
+            <local:HistoricoPredicoes />
+        </DataTemplate>
+    </UserControl.Resources>
+    
     <Grid>
         <DockPanel>
             <Grid DockPanel.Dock="Top">
@@ -50,41 +65,15 @@
             <ContentControl>
                 <ContentControl.Style>
                     <Style TargetType="ContentControl">
+                        <Setter Property="Content" Value="{Binding ConfigVM}" />
+
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsChecked, ElementName=RbConfiguracoes}" Value="True">
-                                <Setter Property="Content">
-                                    <Setter.Value>
-                                        <local:ConfiguracaoModelo>
-                                            <local:ConfiguracaoModelo.DataContext>
-                                                <vmsconfiguracao:ConfiguracaoModeloViewModel/>
-                                            </local:ConfiguracaoModelo.DataContext>
-                                        </local:ConfiguracaoModelo>
-                                    </Setter.Value>
-                                </Setter>
+                            <DataTrigger Binding="{Binding ElementName=RbMetricas, Path=IsChecked}" Value="True">
+                                <Setter Property="Content" Value="{Binding MetricasVM}" />
                             </DataTrigger>
 
-                            <DataTrigger Binding="{Binding IsChecked, ElementName=RbMetricas}" Value="True">
-                                <Setter Property="Content">
-                                    <Setter.Value>
-                                        <local:MetricasModelo>
-                                            <local:MetricasModelo.DataContext>
-                                                <vmsconfiguracao:MetricasModeloViewModel/>
-                                            </local:MetricasModelo.DataContext>
-                                        </local:MetricasModelo>
-                                    </Setter.Value>
-                                </Setter>
-                            </DataTrigger>
-
-                            <DataTrigger Binding="{Binding IsChecked, ElementName=RbHistorico}" Value="True">
-                                <Setter Property="Content">
-                                    <Setter.Value>
-                                        <local:HistoricoPredicoes>
-                                            <local:HistoricoPredicoes.DataContext>
-                                                <vmsconfiguracao:HistoricoPredicoesViewModel/>
-                                            </local:HistoricoPredicoes.DataContext>
-                                        </local:HistoricoPredicoes>
-                                    </Setter.Value>
-                                </Setter>
+                            <DataTrigger Binding="{Binding ElementName=RbHistorico, Path=IsChecked}" Value="True">
+                                <Setter Property="Content" Value="{Binding HistoricoVM}" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>

@@ -19,103 +19,452 @@
 
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                         <Button Content="CANCELAR" 
-                                    Margin="0,0,10,0" 
-                                    Style="{StaticResource MaterialDesignOutlinedButton}"/>
+                                Margin="0,0,10,0" 
+                                Style="{StaticResource MaterialDesignOutlinedButton}"/>
                         <Button Content="APLICAR ALTERAÇÕES" 
-                                    Width="Auto" 
-                                    Style="{StaticResource MaterialDesignRaisedButton}"
-                                    Background="#0D47A1"/>
+                                Width="Auto" 
+                                Style="{StaticResource MaterialDesignRaisedButton}"
+                                Background="#0D47A1"/>
                     </StackPanel>
                 </Grid>
             </Grid>
 
             <ScrollViewer VerticalScrollBarVisibility="Auto">
 
-                <Grid Margin="0,0,0,30">
+                <Grid Margin="24">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="24"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="24"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    
-                    <Expander Style="{StaticResource MaterialDesignExpander}"
-                              Margin="20"
-                              Grid.Row="0"
-                              Background="white">
-                        <Expander.Header>
-                            <Grid HorizontalAlignment="Stretch" Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Expander}, Path=ActualWidth, ConverterParameter=60}">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
 
-                                <materialDesign:PackIcon Kind="InformationOutline" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                    <!-- MODEL CARD -->
+                    <Border Grid.Row="0"
+                            Padding="24"
+                            CornerRadius="20"
+                            Background="White"
+                            BorderBrush="#E6E6E6"
+                            BorderThickness="1">
 
-                                <TextBlock Text="Informações do Projeto" 
-                                           Grid.Column="1"
-                                           VerticalAlignment="Center"
-                                           Style="{StaticResource MaterialDesignSubtitle1TextBlock}"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
 
-                                <Border Grid.Column="2" 
-                                        Background="Green" 
-                                        CornerRadius="10"
-                                        HorizontalAlignment="Left"
-                                        Margin="0,0,80,0"
-                                        Padding="8,2">
-                                    <TextBlock Text="Ativo" Foreground="White" FontSize="10"/>
-                                </Border>
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon
+                                                    Kind="CubeOutline"
+                                                    Width="28"
+                                                    Height="28"
+                                                    Foreground="#5B5CEB"
+                                                    VerticalAlignment="Center"/>
+
+                                    <TextBlock Margin="12,0,0,0"
+                                               FontSize="24"
+                                               FontWeight="SemiBold"
+                                               VerticalAlignment="Center"
+                                               Text="Churn_Prediction_Model"/>
+
+                                    <Border Margin="16,0,0,0"
+                                            Padding="10,4"
+                                            Background="#DCFCE7"
+                                            CornerRadius="12"
+                                            VerticalAlignment="Center">
+
+                                        <TextBlock Text="Ativo"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="#15803D"/>
+                                    </Border>
+                                </StackPanel>
+
+                                <UniformGrid Margin="0,24,0,0" Columns="5">
+
+                                    <StackPanel>
+                                        <TextBlock Foreground="#7A7A7A"
+                                                   FontSize="13"
+                                                   Text="Versão"/>
+
+                                        <TextBlock Margin="0,6,0,0"
+                                                   FontWeight="SemiBold"
+                                                   FontSize="16"
+                                                   Text="1.0.0"/>
+                                    </StackPanel>
+
+                                    <StackPanel>
+                                        <TextBlock Foreground="#7A7A7A"
+                                                   FontSize="13"
+                                                   Text="Formato"/>
+
+                                        <TextBlock Margin="0,6,0,0"
+                                                   FontWeight="SemiBold"
+                                                   FontSize="16"
+                                                   Text="ONNX"/>
+                                    </StackPanel>
+
+                                    <StackPanel>
+                                        <TextBlock Foreground="#7A7A7A"
+                                                   FontSize="13"
+                                                   Text="Criado em"/>
+
+                                        <TextBlock Margin="0,6,0,0"
+                                                   FontWeight="SemiBold"
+                                                   FontSize="16"
+                                                   Text="12/05/2026 14:30"/>
+                                    </StackPanel>
+
+                                    <StackPanel>
+                                        <TextBlock Foreground="#7A7A7A"
+                                                   FontSize="13"
+                                                   Text="Atualizado em"/>
+
+                                        <TextBlock Margin="0,6,0,0"
+                                                   FontWeight="SemiBold"
+                                                   FontSize="16"
+                                                   Text="18/05/2026 09:15"/>
+                                    </StackPanel>
+
+                                    <StackPanel>
+                                        <TextBlock Foreground="#7A7A7A"
+                                                   FontSize="13"
+                                                   Text="Arquivo"/>
+
+                                        <TextBlock Margin="0,6,0,0"
+                                                   FontWeight="SemiBold"
+                                                   FontSize="16"
+                                                   Text="churn_model_v1.onnx"/>
+                                    </StackPanel>
+
+                                </UniformGrid>
+                            </StackPanel>
+
+                            <Button Grid.Column="1"
+                                    Height="42"
+                                    Padding="24,0"
+                                    VerticalAlignment="Top"
+                                    Style="{StaticResource MaterialDesignOutlinedButton}"
+                                    Content="Atualizar Modelo"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- CARDS -->
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="24"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="24"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- SCHEMA -->
+                        <Border Grid.Column="0"
+                                Padding="20"
+                                Background="White"
+                                CornerRadius="20"
+                                BorderBrush="#E6E6E6"
+                                BorderThickness="1">
+
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="16"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="16"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <Grid>
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon
+                                                        Kind="TableColumn"
+                                                        Width="22"
+                                                        Height="22"
+                                                        Foreground="#5B5CEB"/>
+
+                                        <TextBlock Margin="12,0,0,0"
+                                                   FontSize="20"
+                                                   FontWeight="SemiBold"
+                                                   Text="Schema"/>
+                                    </StackPanel>
+
+                                    <Border DockPanel.Dock="Right"
+                                            Padding="10,4"
+                                            Background="#EEF2FF"
+                                            CornerRadius="10"
+                                            HorizontalAlignment="Right">
+
+                                        <TextBlock Text="v3"
+                                                   Foreground="#4338CA"
+                                                   FontWeight="SemiBold"/>
+                                    </Border>
+                                </Grid>
+
+                                <DataGrid Grid.Row="2"
+                                          AutoGenerateColumns="False"
+                                          HeadersVisibility="Column"
+                                          CanUserAddRows="False"
+                                          BorderThickness="0"
+                                          RowBackground="Transparent"
+                                          AlternatingRowBackground="#FAFAFA">
+
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Coluna" Binding="{Binding Column}" Width="*"/>
+                                        <DataGridTextColumn Header="Finalidade" Binding="{Binding Column}" Width="*"/>
+                                        <DataGridTextColumn Header="Tipo" Binding="{Binding Type}" Width="*"/>
+                                        <DataGridCheckBoxColumn Header="Categórica" Binding="{Binding Required}" Width="*"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+
+                                <Button Grid.Row="4"
+                                        Height="42"
+                                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                                        Content="Atualizar Schema"/>
                             </Grid>
-                        </Expander.Header>
+                        </Border>
 
-                        <StackPanel Margin="16" Orientation="Vertical">
-                            <TextBlock Text="Aqui vai o conteúdo que desliza para baixo." 
-                                       Style="{StaticResource MaterialDesignBody1TextBlock}"/>
-                            <Button Content="Ação Interna" 
-                                    Margin="0,10,0,0"
-                                    Style="{StaticResource MaterialDesignFlatButton}"/>
-                        </StackPanel>
-                    </Expander>
+                        <!-- PIPELINE -->
+                        <Border Grid.Column="2"
+                                Padding="20"
+                                Background="White"
+                                CornerRadius="20"
+                                BorderBrush="#E6E6E6"
+                                BorderThickness="1">
 
-                    <materialDesign:Card Grid.Column="0" Margin="20" Padding="20" Grid.Row="1">
-                        <StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
-                                <materialDesign:PackIcon Kind="VectorSquare" Foreground="#1976D2" VerticalAlignment="Center"/>
-                                <TextBlock Text="Artefato do Modelo (.onnx)" FontWeight="Bold" Margin="10,0"/>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="16"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="16"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <Grid>
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon
+                                                        Kind="SourceBranch"
+                                                        Width="22"
+                                                        Height="22"
+                                                        Foreground="#5B5CEB"/>
+
+                                        <TextBlock Margin="12,0,0,0"
+                                                   FontSize="20"
+                                                   FontWeight="SemiBold"
+                                                   Text="Pipeline"/>
+                                    </StackPanel>
+
+                                    <Border DockPanel.Dock="Right"
+                                            Padding="10,4"
+                                            Background="#EEF2FF"
+                                            CornerRadius="10"
+                                            HorizontalAlignment="Right">
+
+                                        <TextBlock Text="v5"
+                                                   Foreground="#4338CA"
+                                                   FontWeight="SemiBold"/>
+                                    </Border>
+                                </Grid>
+
+                                <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+
+                                    <ItemsControl ItemsSource="{Binding Pipeline}"
+                                                  MaxHeight="350">
+                                        <ItemsControl.Template>
+                                            <ControlTemplate TargetType="ItemsControl">
+                                                <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                                                              HorizontalScrollBarVisibility="Disabled">
+                                                    <ItemsPresenter />
+                                                </ScrollViewer>
+                                            </ControlTemplate>
+                                        </ItemsControl.Template>
+
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <VirtualizingStackPanel Margin="0,0,10,0"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Expander Style="{StaticResource MaterialDesignExpander}"
+                                                          Margin="0,0,0,12"
+                                                          Padding="14"
+                                                          Background="#FAFAFA">
+
+                                                    <Expander.Header>
+                                                        <TextBlock FontWeight="SemiBold"
+                                                                   FontSize="20"
+                                                                   Text="{Binding Key}"/>
+
+                                                    </Expander.Header>
+
+                                                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="20">
+                                                        <TextBox  Text="{Binding Value, Mode=OneWay}"
+                                                                  Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                                                  FontFamily="Consolas" 
+                                                                  FontSize="14"
+                                                                  IsReadOnly="True"
+                                                                  VerticalScrollBarVisibility="Auto"
+                                                                  HorizontalScrollBarVisibility="Auto"
+                                                                  TextWrapping="Wrap"
+                                                                  Margin="10"
+                                                                  VerticalAlignment="Stretch"
+                                                                  MinHeight="200">
+
+                                                        </TextBox>
+                                                    </ScrollViewer>
+
+                                                </Expander>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+
+                                <Button Grid.Row="4"
+                                        Height="42"
+                                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                                        Content="Atualizar Pipeline"/>
+                                        </Grid>
+                        </Border>
+
+                        <!-- RESOURCES -->
+                        <Border Grid.Column="4"
+                                Padding="20"
+                                Background="White"
+                                CornerRadius="20"
+                                BorderBrush="#E6E6E6"
+                                BorderThickness="1">
+
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="20"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon
+                                                    Kind="DatabaseOutline"
+                                                    Width="22"
+                                                    Height="22"
+                                                    Foreground="#5B5CEB"/>
+
+                                    <TextBlock Margin="12,0,0,0"
+                                               FontSize="20"
+                                               FontWeight="SemiBold"
+                                               Text="Recursos"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="2">
+
+                                    <Border Margin="0,0,0,16"
+                                            Padding="16"
+                                            Background="#FAFAFA"
+                                            CornerRadius="16">
+
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <StackPanel>
+                                                <TextBlock FontWeight="SemiBold"
+                                                           Text="Transformadores"/>
+
+                                                <TextBlock Margin="0,6,0,0"
+                                                           Foreground="#7A7A7A"
+                                                           Text="scaler_features.pkl"/>
+                                            </StackPanel>
+
+                                            <Button Grid.Column="1"
+                                                    Width="110"
+                                                    Height="38"
+                                                    Style="{StaticResource MaterialDesignOutlinedButton}"
+                                                    Content="Atualizar"/>
+                                        </Grid>
+                                    </Border>
+
+                                    <Border Padding="16"
+                                            Background="#FAFAFA"
+                                            CornerRadius="16">
+
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <StackPanel>
+                                                <TextBlock FontWeight="SemiBold"
+                                                           Text="Validações"/>
+
+                                                <TextBlock Margin="0,6,0,0"
+                                                           Foreground="#7A7A7A"
+                                                           Text="15 regras configuradas"/>
+                                            </StackPanel>
+
+                                            <Button Grid.Column="1"
+                                                    Width="110"
+                                                    Height="38"
+                                                    Style="{StaticResource MaterialDesignOutlinedButton}"
+                                                    Content="Atualizar"/>
+                                        </Grid>
+                                    </Border>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </Grid>
+
+                    <!-- VERSION HISTORY -->
+                    <Border Grid.Row="4"
+                            Padding="20"
+                            Background="White"
+                            CornerRadius="20"
+                            BorderBrush="#E6E6E6"
+                            BorderThickness="1">
+
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon
+                                                Kind="History"
+                                                Width="22"
+                                                Height="22"
+                                                Foreground="#5B5CEB"/>
+
+                                <TextBlock Margin="12,0,0,0"
+                                           FontSize="20"
+                                           FontWeight="SemiBold"
+                                           Text="Histórico de Versões"/>
                             </StackPanel>
 
-                            <ComboBox ItemsSource="{Binding ListaVersoesModelo}" 
-                                                SelectedItem="{Binding VersaoSelecionada}"
-                                                materialDesign:HintAssist.Hint="Versão Atual (ex: v1.2)"
-                                                Style="{StaticResource MaterialDesignOutlinedComboBox}"/>
+                            <DataGrid Grid.Row="2"
+                                      AutoGenerateColumns="False"
+                                      CanUserAddRows="False"
+                                      BorderThickness="0"
+                                      HeadersVisibility="Column"
+                                      RowBackground="Transparent"
+                                      AlternatingRowBackground="#FAFAFA">
 
-                            <Button Content="ATUALIZAR MODELO" 
-                                            Command="{Binding AtualizarModeloCommand}"
-                                            Style="{StaticResource MaterialDesignRaisedButton}"
-                                            Margin="0,15,0,0" Background="#1976D2"/>
-                            <TextBlock Text="Caminho: models/regressao_v1.2.onnx" FontSize="11" Foreground="Gray" Margin="0,10,0,0" TextTrimming="CharacterEllipsis"/>
-                        </StackPanel>
-                    </materialDesign:Card>
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Componente" Binding="{Binding Component}" Width="*"/>
+                                    <DataGridTextColumn Header="Versão Atual" Binding="{Binding Version}" Width="160"/>
+                                    <DataGridTextColumn Header="Atualizado Em" Binding="{Binding UpdatedAt}" Width="220"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                    </Border>
 
-                    <materialDesign:Card Grid.Row="2" Margin="20" Padding="20">
-                        <StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
-                                <materialDesign:PackIcon Kind="Pipe" Foreground="#388E3C" VerticalAlignment="Center"/>
-                                <TextBlock Text="Pipeline de Dados (DSL/C#)" FontWeight="Bold" Margin="10,0"/>
-                            </StackPanel>
-
-                            <ComboBox ItemsSource="{Binding ListaVersoesPipeline}" 
-                                      SelectedItem="{Binding PipelineSelecionado}"
-                                      materialDesign:HintAssist.Hint="Versão do Pipeline (ex: v2.0)"
-                                      Style="{StaticResource MaterialDesignOutlinedComboBox}"/>
-
-                            <Button Content="ATUALIZAR PIPELINE" 
-                                    Command="{Binding AtualizarPipelineCommand}"
-                                    Style="{StaticResource MaterialDesignRaisedButton}"
-                                    Margin="0,15,0,0" Background="#388E3C" BorderBrush="#388E3C"/>
-                            <TextBlock Text="Script: pipelines/preprocess_v2.json" FontSize="11" Foreground="Gray" Margin="0,10,0,0"/>
-                        </StackPanel>
-                    </materialDesign:Card>
                 </Grid>
             </ScrollViewer>
         </DockPanel>

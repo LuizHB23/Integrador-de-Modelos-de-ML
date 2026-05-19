@@ -105,7 +105,6 @@ namespace IntegradorAplicacao.InferenciaAplicacao
                 throw new Exception("Erro ao ajustar onnx");
             }
 
-
             return session.Run(inputsFinais);
         }
 

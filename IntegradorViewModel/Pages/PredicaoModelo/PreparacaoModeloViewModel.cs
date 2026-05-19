@@ -21,7 +21,6 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
         IDialogService _dialogService;
         IContext<ArquivoDadosDTO> _context;
 
-
         public PreparacaoModeloViewModel(INavigationService navigation, IDialogService dialogService, IContext<ArquivoDadosDTO> context)
         {
             Navigation = navigation;
