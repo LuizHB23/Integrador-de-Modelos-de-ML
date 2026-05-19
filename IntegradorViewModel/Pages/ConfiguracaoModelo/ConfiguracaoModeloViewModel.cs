@@ -7,6 +7,7 @@ using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Shared.Context;
 using IntegradorViewModel.Shared.Interfaces;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.Xml.Linq;
 
 namespace IntegradorViewModel.Pages.ConfiguracaoModelo
@@ -19,26 +20,73 @@ namespace IntegradorViewModel.Pages.ConfiguracaoModelo
         [ObservableProperty]
         private string _caminhoArquivoDados;
 
+        [ObservableProperty]
+        private DataView _schemaPreview;
+
+        public ObservableCollection<TransformadorDTO> Transformadores { get; }
+
         public Dictionary<string, string> Pipeline { get; set; }
 
-        IConverteJson<Dictionary<int, FuncaoDTO>> _conversorSchema;
-        IContext<ModeloDTO> _context;
+        IConverteJson<Dictionary<int, TransformadorDTO>> _conversorTransformador;
+        IConverteJson<Dictionary<int, FuncaoDTO>> _conversorPipeline;
+        IConverteJson<Dictionary<int, SchemaDTO>> _conversorSchema;
+        IContext <ModeloDTO> _context;
         IDialogService _dialogService;
 
         private ModeloDTO _modelo;
-        public ConfiguracaoModeloViewModel(INavigationService navigation, IDialogService dialogService, IContext<ModeloDTO> context, IConverteJson<Dictionary<int, FuncaoDTO>> conversorSchema)
+        public ConfiguracaoModeloViewModel(INavigationService navigation, IDialogService dialogService, IContext<ModeloDTO> context, IConverteJson<Dictionary<int, TransformadorDTO>> conversorTransformador, IConverteJson<Dictionary<int, FuncaoDTO>> conversorPipeline, IConverteJson<Dictionary<int, SchemaDTO>> conversorSchema)
         {
             Navigation = navigation;
 
             _context = context;
             _dialogService = dialogService;
+            _conversorPipeline = conversorPipeline;
             _conversorSchema = conversorSchema;
+            _conversorTransformador = conversorTransformador;
 
             _modelo = _context.RecebeMensagem();
 
             CaminhoArquivoDados = string.Empty;
 
             Pipeline = CarregarPipeline();
+            SchemaPreview = CarregarSchema();
+            Transformadores = CarregarTransformadores();
+        }
+
+        private DataView? CarregarSchema()
+        {
+            DataTable dataTable = new DataTable();
+
+            dataTable.Columns.Add("Coluna", typeof(string));
+            dataTable.Columns.Add("Finalidade", typeof(string));
+            dataTable.Columns.Add("Tipo", typeof(string));
+            dataTable.Columns.Add("Categorico", typeof(bool));
+
+            string caminhoSchema = Path.Combine(Path.GetDirectoryName(_modelo.CaminhoPasta)!, "schema.json");
+
+            if (!File.Exists(caminhoSchema))
+            {
+                return dataTable.DefaultView;
+            }
+
+            var schema = _conversorSchema.CarregarJson(caminhoSchema);
+
+            string nomeColuna;
+            string finalidade;
+            string tipo;
+            bool categorico;
+
+            foreach (var item in schema)
+            {
+                nomeColuna = item.Value.NomeColuna;
+                finalidade = item.Value.Finalidade;
+                tipo = item.Value.Tipo;
+                categorico = item.Value.Categorico;
+
+                dataTable.Rows.Add(nomeColuna, finalidade, tipo, categorico);
+            }
+
+            return dataTable.DefaultView;
         }
 
         private Dictionary<string, string> CarregarPipeline()
@@ -46,7 +94,13 @@ namespace IntegradorViewModel.Pages.ConfiguracaoModelo
             Dictionary<string, string> dicionarioPipeline = new();
 
             string caminhoPipeline = Path.Combine(Path.GetDirectoryName(_modelo.CaminhoPasta)!, "pipeline.json");
-            var pipeline =  _conversorSchema.CarregarJson(caminhoPipeline);
+
+            if (!File.Exists(caminhoPipeline))
+            {
+                return dicionarioPipeline;
+            }
+
+            var pipeline = _conversorPipeline.CarregarJson(caminhoPipeline);
 
             string codigo = string.Empty;
 
@@ -67,30 +121,30 @@ namespace IntegradorViewModel.Pages.ConfiguracaoModelo
             return dicionarioPipeline;
         }
 
-        //public void ConfigurarFuncao(ConfiguracaoCardFuncaoViewModel cardSchema)
-        //{
-        //    var caminhoPasta = _provider.GetCaminhoModelo();
-        //    caminhoPasta = Path.Combine(caminhoPasta, _nomeModelo, _json);
+        private ObservableCollection<TransformadorDTO> CarregarTransformadores()
+        {
+            ObservableCollection<TransformadorDTO> listaTransformadores = new();
 
-        //    var dicionarioFuncoes = _converter.CarregarJson(caminhoPasta);
-        //    var codigo = string.Empty;
+            string caminhoTransformadores = Path.Combine(Path.GetDirectoryName(_modelo.CaminhoPasta)!, "transformador.json");
 
-        //    foreach (var elemento in dicionarioFuncoes)
-        //    {
-        //        if (elemento.Value.NomeFuncao == cardSchema.NomeMetodo)
-        //        {
-        //            codigo = $"{cardSchema.NomeMetodo}()" + "\n{";
+            if (!File.Exists(caminhoTransformadores))
+            {
+                return listaTransformadores;
+            }
 
-        //            foreach (var linha in elemento.Value.Codigo)
-        //            {
+            var transformadores = _conversorTransformador.CarregarJson(caminhoTransformadores);
 
-        //                codigo += $"\n{linha}\n";
-        //            }
-        //            codigo += "}";
-        //        }
-        //    }
+            foreach (var item in transformadores)
+            {
+                var nome = item.Value.NomeTransformador;
+                var arquivo = !string.IsNullOrEmpty(item.Value.CaminhoTransformador)
+                              ? Path.GetFileName(item.Value.CaminhoTransformador)
+                              : string.Empty;
 
-        //    _textBox.ScriptCodigo = codigo;
-        //}
+                listaTransformadores.Add(new TransformadorDTO(nome, arquivo));
+            }
+
+            return listaTransformadores;
+        }
     }
 }

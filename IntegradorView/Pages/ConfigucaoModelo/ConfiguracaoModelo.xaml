@@ -204,18 +204,52 @@
                                 </Grid>
 
                                 <DataGrid Grid.Row="2"
+                                          ItemsSource="{Binding SchemaPreview}"
                                           AutoGenerateColumns="False"
                                           HeadersVisibility="Column"
                                           CanUserAddRows="False"
                                           BorderThickness="0"
+                                          MaxHeight="350"
                                           RowBackground="Transparent"
                                           AlternatingRowBackground="#FAFAFA">
 
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Coluna" Binding="{Binding Column}" Width="*"/>
-                                        <DataGridTextColumn Header="Finalidade" Binding="{Binding Column}" Width="*"/>
-                                        <DataGridTextColumn Header="Tipo" Binding="{Binding Type}" Width="*"/>
-                                        <DataGridCheckBoxColumn Header="Categórica" Binding="{Binding Required}" Width="*"/>
+                                        <DataGridTextColumn Header="Coluna" Binding="{Binding Coluna}" Width="3*" IsReadOnly="True"/>
+                                        <DataGridTextColumn Header="Finalidade" Binding="{Binding Finalidade}" Width="2*" IsReadOnly="True"/>
+                                        <DataGridTextColumn Header="Tipo" Binding="{Binding Tipo}" Width="2*" IsReadOnly="True"/>
+
+                                        <DataGridTemplateColumn Header="Categórica" Width="3*">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+
+                                                        <CheckBox IsChecked="{Binding Categorico, Mode=OneWay}" 
+                                                                  IsHitTestVisible="False" 
+                                                                  Focusable="False"
+                                                                  VerticalAlignment="Center"/>
+
+                                                        <Button Content="Verificar"
+                                                                Margin="10,0,0,0"
+                                                                Padding="8,2"
+                                                                FontSize="11"
+                                                                VerticalAlignment="Center">
+                                                            <Button.Style>
+                                                                <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignOutlinedButton}">
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding Categorico}" Value="True">
+                                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Button.Style>
+                                                        </Button>
+
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
                                     </DataGrid.Columns>
                                 </DataGrid>
 
@@ -269,41 +303,40 @@
                                     </Border>
                                 </Grid>
 
-                                <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
-
-                                    <ItemsControl ItemsSource="{Binding Pipeline}"
-                                                  MaxHeight="350">
-                                        <ItemsControl.Template>
-                                            <ControlTemplate TargetType="ItemsControl">
-                                                <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                                <ItemsControl ItemsSource="{Binding Pipeline}"
+                                              Grid.Row="2"
+                                              MaxHeight="350">
+                                    <ItemsControl.Template>
+                                        <ControlTemplate TargetType="ItemsControl">
+                                            <ScrollViewer VerticalScrollBarVisibility="Auto" 
                                                               HorizontalScrollBarVisibility="Disabled">
-                                                    <ItemsPresenter />
-                                                </ScrollViewer>
-                                            </ControlTemplate>
-                                        </ItemsControl.Template>
+                                                <ItemsPresenter />
+                                            </ScrollViewer>
+                                        </ControlTemplate>
+                                    </ItemsControl.Template>
 
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <VirtualizingStackPanel Margin="0,0,10,0"/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <VirtualizingStackPanel Margin="0,0,10,0"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
 
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <Expander Style="{StaticResource MaterialDesignExpander}"
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Expander Style="{StaticResource MaterialDesignExpander}"
                                                           Margin="0,0,0,12"
                                                           Padding="14"
                                                           Background="#FAFAFA">
 
-                                                    <Expander.Header>
-                                                        <TextBlock FontWeight="SemiBold"
+                                                <Expander.Header>
+                                                    <TextBlock FontWeight="SemiBold"
                                                                    FontSize="20"
                                                                    Text="{Binding Key}"/>
 
-                                                    </Expander.Header>
+                                                </Expander.Header>
 
-                                                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="20">
-                                                        <TextBox  Text="{Binding Value, Mode=OneWay}"
+                                                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="20">
+                                                    <TextBox  Text="{Binding Value, Mode=OneWay}"
                                                                   Style="{StaticResource MaterialDesignOutlinedTextBox}"
                                                                   FontFamily="Consolas" 
                                                                   FontSize="14"
@@ -315,14 +348,13 @@
                                                                   VerticalAlignment="Stretch"
                                                                   MinHeight="200">
 
-                                                        </TextBox>
-                                                    </ScrollViewer>
+                                                    </TextBox>
+                                                </ScrollViewer>
 
-                                                </Expander>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </ScrollViewer>
+                                            </Expander>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
 
                                 <Button Grid.Row="4"
                                         Height="42"
@@ -331,7 +363,7 @@
                                         </Grid>
                         </Border>
 
-                        <!-- RESOURCES -->
+                        <!-- Transformadores -->
                         <Border Grid.Column="4"
                                 Padding="20"
                                 Background="White"
@@ -342,80 +374,68 @@
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="20"/>
+                                    <RowDefinition Height="16"/>
                                     <RowDefinition Height="*"/>
+                                    <RowDefinition Height="16"/>
+                                    <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
-                                <StackPanel Orientation="Horizontal">
-                                    <materialDesign:PackIcon
-                                                    Kind="DatabaseOutline"
-                                                    Width="22"
-                                                    Height="22"
-                                                    Foreground="#5B5CEB"/>
+                                <StackPanel Orientation="Horizontal" Grid.Row="0">
+                                    <materialDesign:PackIcon Kind="DatabaseOutline"
+                                                             Width="22"
+                                                             Height="22"
+                                                             Foreground="#5B5CEB"/>
 
                                     <TextBlock Margin="12,0,0,0"
                                                FontSize="20"
                                                FontWeight="SemiBold"
-                                               Text="Recursos"/>
+                                               Text="Transformadores"/>
                                 </StackPanel>
 
-                                <StackPanel Grid.Row="2">
+                                <ItemsControl ItemsSource="{Binding Transformadores}"
+                                              Grid.Row="2"
+                                              MinHeight="350"
+                                              MaxHeight="350">
+                                    <ItemsControl.Template>
+                                        <ControlTemplate TargetType="ItemsControl">
+                                            <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                                                          HorizontalScrollBarVisibility="Disabled">
+                                                <ItemsPresenter />
+                                            </ScrollViewer>
+                                        </ControlTemplate>
+                                    </ItemsControl.Template>
 
-                                    <Border Margin="0,0,0,16"
-                                            Padding="16"
-                                            Background="#FAFAFA"
-                                            CornerRadius="16">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <VirtualizingStackPanel Margin="0,0,10,0"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
 
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Margin="0,0,0,16"
+                                                    Padding="16"
+                                                    Background="#FAFAFA"
+                                                    CornerRadius="16">
+                                                <Grid>
+                                                    <StackPanel>
+                                                        <TextBlock FontWeight="SemiBold"
+                                                                   Text="{Binding NomeTransformador}"/>
 
-                                            <StackPanel>
-                                                <TextBlock FontWeight="SemiBold"
-                                                           Text="Transformadores"/>
+                                                        <TextBlock Margin="0,6,0,0"
+                                                                   Foreground="#7A7A7A"
+                                                                   Text="{Binding CaminhoTransformador}"/>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
 
-                                                <TextBlock Margin="0,6,0,0"
-                                                           Foreground="#7A7A7A"
-                                                           Text="scaler_features.pkl"/>
-                                            </StackPanel>
-
-                                            <Button Grid.Column="1"
-                                                    Width="110"
-                                                    Height="38"
-                                                    Style="{StaticResource MaterialDesignOutlinedButton}"
-                                                    Content="Atualizar"/>
-                                        </Grid>
-                                    </Border>
-
-                                    <Border Padding="16"
-                                            Background="#FAFAFA"
-                                            CornerRadius="16">
-
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-
-                                            <StackPanel>
-                                                <TextBlock FontWeight="SemiBold"
-                                                           Text="Validações"/>
-
-                                                <TextBlock Margin="0,6,0,0"
-                                                           Foreground="#7A7A7A"
-                                                           Text="15 regras configuradas"/>
-                                            </StackPanel>
-
-                                            <Button Grid.Column="1"
-                                                    Width="110"
-                                                    Height="38"
-                                                    Style="{StaticResource MaterialDesignOutlinedButton}"
-                                                    Content="Atualizar"/>
-                                        </Grid>
-                                    </Border>
-                                </StackPanel>
+                                <Button Grid.Row="4"
+                                        Height="42"
+                                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                                        Content="Atualizar Transformadores"/>
                             </Grid>
                         </Border>
                     </Grid>
