@@ -7,7 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="TransformDataView\" />
+    <Compile Remove="TransformDataView\**" />
+    <EmbeddedResource Remove="TransformDataView\**" />
+    <None Remove="TransformDataView\**" />
   </ItemGroup>
 
 </Project>

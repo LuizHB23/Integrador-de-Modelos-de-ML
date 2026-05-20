@@ -1,6 +1,6 @@
-﻿using IntegradorAplicacao.CaminhoProvider;
-using IntegradorAplicacao.ConversorJson;
-using IntegradorAplicacao.DTO;
+﻿using IntegradorAplicacao.DTO;
+using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
+using IntegradorAplicacao.Infraestrutura.ConversorJSON;
 using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.ControleUsuario.ConfiguracaoMetodo.EstadoDataFrame;
 using IntegradorViewModel.ItensViewModel;

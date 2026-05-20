@@ -1,9 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using IntegradorAplicacao.CaminhoProvider;
-using IntegradorAplicacao.ConversorJson;
 using IntegradorAplicacao.DTO;
-using IntegradorAplicacao.Gerenciador;
+using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
+using IntegradorAplicacao.Infraestrutura.ConversorJSON;
+using IntegradorAplicacao.Infraestrutura.Gerenciador;
 using IntegradorViewModel.ControleUsuario.ConfiguracaoCard;
 using IntegradorViewModel.ItensViewModel;
 using IntegradorViewModel.JanelaModelo;

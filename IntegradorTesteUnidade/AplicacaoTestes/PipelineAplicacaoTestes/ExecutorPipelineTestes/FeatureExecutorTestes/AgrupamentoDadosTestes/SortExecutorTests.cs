@@ -1,6 +1,6 @@
 ﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.AgrupamentoDados;
-using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.FeatureEngineering.AgrupamentoDados;
+using IntegradorDominio.Models.DataFrameModel;
 
 namespace IntegradorTesteUnidade.AplicacaoTestes.PipelineAplicacaoTestes.ExecutorPipelineTestes.FeatureExecutorTestes.AgrupamentoDadosTestes
 {

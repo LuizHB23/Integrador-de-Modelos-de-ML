@@ -1,6 +1,6 @@
 ﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.LimpezaDados;
-using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.FeatureEngineering.LimpezaDados;
+using IntegradorDominio.Models.DataFrameModel;
 using System;
 using System.Collections.Generic;
 using System.Text;

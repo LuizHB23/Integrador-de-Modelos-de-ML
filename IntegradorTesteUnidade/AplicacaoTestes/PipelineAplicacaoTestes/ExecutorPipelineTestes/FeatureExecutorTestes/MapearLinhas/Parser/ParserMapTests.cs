@@ -1,4 +1,4 @@
-﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.Parser;
+﻿using IntegradorAplicacao.Aplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas.Parser;
 using IntegradorDominio.FeatureEngineering.MapearLinhas.CasosLinha;
 using System;
 using System.Collections.Generic;

@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using IntegradorDominio.DataFrameModel;
-using IntegradorDominio.Inferencia;
+using IntegradorDominio.Models.DataFrameModel;
+using IntegradorDominio.Models.Inferencia;
 using IntegradorViewModel.ControleUsuario.ConfiguracaoMetodo.EstadoDataFrame;
 using IntegradorViewModel.ControleUsuario.ConfiguracaoTextBox;
 using System.Data;

@@ -1,7 +1,7 @@
 ﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas;
-using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.FeatureEngineering.MapearLinhas;
 using IntegradorDominio.FeatureEngineering.MapearLinhas.CasosLinha;
+using IntegradorDominio.Models.DataFrameModel;
 using System;
 using System.Collections.Generic;
 using System.Text;

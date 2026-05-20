@@ -1,6 +1,6 @@
-﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.Executors;
+﻿using IntegradorAplicacao.Aplicacao.PipelineAplicacao.ExecutorPipeline.Executors;
 using IntegradorDominio.Attributes;
-using IntegradorDominio.DataFrameModel;
+using IntegradorDominio.Models.DataFrameModel;
 using System;
 using System.Collections.Generic;
 using System.Text;

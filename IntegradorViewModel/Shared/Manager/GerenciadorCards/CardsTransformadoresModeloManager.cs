@@ -1,5 +1,5 @@
-﻿using IntegradorAplicacao.ConversorJson;
-using IntegradorAplicacao.DTO;
+﻿using IntegradorAplicacao.DTO;
+using IntegradorAplicacao.Infraestrutura.ConversorJSON;
 using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.ControleUsuario.ConfiguracaoCard;
 using IntegradorViewModel.ItensViewModel;

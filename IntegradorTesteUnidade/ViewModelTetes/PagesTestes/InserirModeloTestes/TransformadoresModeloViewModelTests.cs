@@ -1,7 +1,7 @@
-﻿using IntegradorAplicacao.CaminhoProvider;
-using IntegradorAplicacao.ConversorJson;
-using IntegradorAplicacao.DTO;
-using IntegradorAplicacao.Gerenciador;
+﻿using IntegradorAplicacao.DTO;
+using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
+using IntegradorAplicacao.Infraestrutura.ConversorJSON;
+using IntegradorAplicacao.Infraestrutura.Gerenciador;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.InserirModelo;
 using IntegradorViewModel.Pages.PrincipalModelo;

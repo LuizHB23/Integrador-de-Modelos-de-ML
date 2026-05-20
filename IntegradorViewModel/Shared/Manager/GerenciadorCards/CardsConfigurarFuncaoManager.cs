@@ -1,5 +1,5 @@
-﻿using IntegradorAplicacao.ConversorJson;
-using IntegradorAplicacao.DTO.Interfaces;
+﻿using IntegradorAplicacao.DTO.Interfaces;
+using IntegradorAplicacao.Infraestrutura.ConversorJSON;
 using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.ItensViewModel;
 using IntegradorViewModel.Shared.Factory;

@@ -1,10 +1,10 @@
-﻿using IntegradorAplicacao.CaminhoProvider;
-using IntegradorAplicacao.ConversorJson;
-using IntegradorAplicacao.DTO;
+﻿using IntegradorAplicacao.DTO;
 using Microsoft.Extensions.DependencyInjection;
-using IntegradorAplicacao.InferenciaAplicacao;
-using IntegradorAplicacao.Gerenciador;
-using IntegradorAplicacao.ConversorJson.CardsJson;
+using IntegradorAplicacao.Aplicacao.InferenciaAplicacao;
+using IntegradorAplicacao.Infraestrutura.Gerenciador;
+using IntegradorAplicacao.Infraestrutura.ConversorJSON;
+using IntegradorAplicacao.Infraestrutura.ConversorJSON.CardsJson;
+using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
 
 namespace IntegradorAplicacao
 {

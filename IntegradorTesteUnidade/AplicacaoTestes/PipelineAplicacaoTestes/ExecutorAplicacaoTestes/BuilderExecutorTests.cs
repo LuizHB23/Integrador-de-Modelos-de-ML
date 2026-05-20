@@ -1,6 +1,6 @@
-﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao;
+﻿using IntegradorAplicacao.Aplicacao.PipelineAplicacao.ExecutorAplicacao;
 using IntegradorDominio.AST;
-using IntegradorDominio.DataFrameModel;
+using IntegradorDominio.Models.DataFrameModel;
 
 namespace IntegradorTesteUnidade.AplicacaoTestes.PipelineAplicacaoTestes.ExecutorAplicacaoTestes
 {

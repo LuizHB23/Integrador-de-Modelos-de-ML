@@ -1,7 +1,7 @@
-﻿using IntegradorAplicacao.CaminhoProvider;
-using IntegradorAplicacao.ConversorJson;
-using IntegradorAplicacao.DTO;
-using IntegradorDominio.DataFrameModel;
+﻿using IntegradorAplicacao.DTO;
+using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
+using IntegradorAplicacao.Infraestrutura.ConversorJSON;
+using IntegradorDominio.Models.DataFrameModel;
 using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.ControleUsuario.ConfiguracaoTextBox;
 using IntegradorViewModel.ItensViewModel;

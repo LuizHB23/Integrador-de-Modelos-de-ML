@@ -1,6 +1,6 @@
 ﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.AgrupamentoDados;
-using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.FeatureEngineering.AgrupamentoDados;
+using IntegradorDominio.Models.DataFrameModel;
 using System;
 using System.Collections.Generic;
 using System.Text;

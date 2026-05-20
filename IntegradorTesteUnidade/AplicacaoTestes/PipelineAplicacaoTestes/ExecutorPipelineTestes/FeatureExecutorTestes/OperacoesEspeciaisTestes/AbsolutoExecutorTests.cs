@@ -1,6 +1,6 @@
 ﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.OperacoesEspeciais;
-using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.FeatureEngineering.OperacoesEspeciais;
+using IntegradorDominio.Models.DataFrameModel;
 
 namespace IntegradorTesteUnidade.AplicacaoTestes.PipelineAplicacaoTestes.ExecutorPipelineTestes.FeatureExecutorTestes.OperacoesEspeciaisTestes
 {

@@ -1,8 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using IntegradorViewModel.ControleUsuario.ConfiguracaoMetodo.EstadoDataFrame;
-using IntegradorDominio.DataFrameModel;
 using System.Data;
 using IntegradorViewModel.ControleUsuario.ConfiguracaoTextBox;
+using IntegradorDominio.Models.DataFrameModel;
 
 namespace IntegradorViewModel.ControleUsuario
 {

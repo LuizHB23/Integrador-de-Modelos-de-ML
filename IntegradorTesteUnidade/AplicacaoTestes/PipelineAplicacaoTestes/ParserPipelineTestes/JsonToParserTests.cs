@@ -1,7 +1,7 @@
-﻿using IntegradorAplicacao.CaminhoProvider;
-using IntegradorAplicacao.ConversorJson;
+﻿using IntegradorAplicacao.Aplicacao.PipelineAplicacao.ParserPipeline;
 using IntegradorAplicacao.DTO;
-using IntegradorAplicacao.PipelineAplicacao.ParserPipeline;
+using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
+using IntegradorAplicacao.Infraestrutura.ConversorJSON;
 using IntegradorDominio.AST;
 using Moq;
 

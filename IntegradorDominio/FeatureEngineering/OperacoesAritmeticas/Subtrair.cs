@@ -1,5 +1,4 @@
 ﻿using IntegradorDominio.Attributes;
-using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.InterfacesSteps;
 
 namespace IntegradorDominio.FeatureEngineering.OperacoesAritmeticas

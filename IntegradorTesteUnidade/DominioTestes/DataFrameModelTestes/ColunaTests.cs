@@ -1,4 +1,4 @@
-﻿using IntegradorDominio.DataFrameModel;
+﻿using IntegradorDominio.Models.DataFrameModel;
 using System;
 using System.Collections.Generic;
 using System.Text;

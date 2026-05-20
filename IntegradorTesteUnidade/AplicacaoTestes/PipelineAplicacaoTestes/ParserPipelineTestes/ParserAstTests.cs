@@ -1,4 +1,4 @@
-﻿using IntegradorAplicacao.PipelineAplicacao.ParserPipeline;
+﻿using IntegradorAplicacao.Aplicacao.PipelineAplicacao.ParserPipeline;
 using IntegradorDominio.AST;
 using System;
 using System.Collections.Generic;

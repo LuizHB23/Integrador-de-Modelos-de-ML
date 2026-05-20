@@ -1,8 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using IntegradorAplicacao.ConversorJson;
 using IntegradorAplicacao.DTO;
-using IntegradorAplicacao.Gerenciador;
+using IntegradorAplicacao.Infraestrutura.ConversorJSON;
+using IntegradorAplicacao.Infraestrutura.Gerenciador;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.PrincipalModelo;
 using IntegradorViewModel.Shared.Context;

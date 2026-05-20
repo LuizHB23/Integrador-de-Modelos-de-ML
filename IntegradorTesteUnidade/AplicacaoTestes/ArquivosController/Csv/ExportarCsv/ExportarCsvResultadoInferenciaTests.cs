@@ -1,6 +1,6 @@
 ﻿using IntegradorAplicacao.ArquivosController.Csv.ExportarCsv;
-using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.Inferencia;
+using IntegradorDominio.Models.DataFrameModel;
 
 namespace IntegradorTesteUnidade.AplicacaoTestes.ArquivosController.Csv.ExportarCsv
 {

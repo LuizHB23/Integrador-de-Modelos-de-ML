@@ -1,11 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using IntegradorAplicacao.DTO;
-using IntegradorDominio.DataFrameModel;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Shared.Context;
 using IntegradorViewModel.Shared.Interfaces;
-using System.Diagnostics;
 using System.Text;
 
 namespace IntegradorViewModel.Pages.PredicaoModelo

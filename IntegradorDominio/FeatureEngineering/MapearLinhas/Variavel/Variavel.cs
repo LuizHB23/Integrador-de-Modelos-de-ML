@@ -1,6 +1,4 @@
-﻿using IntegradorDominio.DataFrameModel;
-
-namespace IntegradorDominio.FeatureEngineering.MapearLinhas.Variavel
+﻿namespace IntegradorDominio.FeatureEngineering.MapearLinhas.Variavel
 {
     public class Variavel<T>
     {

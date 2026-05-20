@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using IntegradorAplicacao.ConversorJson;
 using IntegradorAplicacao.DTO;
+using IntegradorAplicacao.Infraestrutura.ConversorJSON;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.ConfiguracaoModelo;
 using IntegradorViewModel.Pages.PredicaoModelo;

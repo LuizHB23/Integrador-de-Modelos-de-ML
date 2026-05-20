@@ -1,9 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using IntegradorAplicacao.CaminhoProvider;
-using IntegradorAplicacao.ConversorJson;
 using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.DTO.Interfaces;
-using IntegradorDominio.DataFrameModel;
+using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
+using IntegradorAplicacao.Infraestrutura.ConversorJSON;
+using IntegradorDominio.Models.DataFrameModel;
 using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.ControleUsuario.ConfiguracaoTextBox;
 using IntegradorViewModel.Shared.Context;

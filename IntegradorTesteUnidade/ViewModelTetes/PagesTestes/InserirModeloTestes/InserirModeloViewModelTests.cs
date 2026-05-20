@@ -1,6 +1,6 @@
-﻿using IntegradorAplicacao.ConversorJson;
-using IntegradorAplicacao.DTO;
-using IntegradorAplicacao.Gerenciador;
+﻿using IntegradorAplicacao.DTO;
+using IntegradorAplicacao.Infraestrutura.ConversorJSON;
+using IntegradorAplicacao.Infraestrutura.Gerenciador;
 using IntegradorDominio;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.InserirModelo;

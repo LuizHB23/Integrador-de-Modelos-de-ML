@@ -1,8 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using IntegradorAplicacao.CaminhoProvider;
-using IntegradorAplicacao.ConversorJson;
 using IntegradorAplicacao.DTO;
+using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
+using IntegradorAplicacao.Infraestrutura.ConversorJSON;
 using IntegradorDominio.Attributes;
 using IntegradorDominio.InterfacesSteps;
 using IntegradorViewModel.ControleUsuario;

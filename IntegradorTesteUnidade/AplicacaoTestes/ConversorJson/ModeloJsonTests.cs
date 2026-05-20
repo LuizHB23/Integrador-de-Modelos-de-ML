@@ -1,10 +1,10 @@
 ﻿using Xunit;
 using Moq;
-using IntegradorAplicacao.CaminhoProvider;
 using IntegradorAplicacao.DTO;
-using IntegradorAplicacao.ConversorJson;
 using System.IO;
 using System.Text.Json;
+using IntegradorAplicacao.Infraestrutura.ConversorJSON;
+using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
 
 namespace IntegradorAplicacao.Tests
 {

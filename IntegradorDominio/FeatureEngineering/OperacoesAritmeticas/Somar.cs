@@ -1,9 +1,5 @@
 ﻿using IntegradorDominio.Attributes;
-using IntegradorDominio.DataFrameModel;
 using IntegradorDominio.InterfacesSteps;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace IntegradorDominio.FeatureEngineering.OperacoesAritmeticas
 {

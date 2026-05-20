@@ -1,5 +1,4 @@
-﻿using IntegradorDominio.DataFrameModel;
-using IntegradorDominio.Inferencia;
+﻿using IntegradorDominio.Models.DataFrameModel;
 using System.Data;
 
 namespace IntegradorViewModel.ControleUsuario.ConfiguracaoTextBox

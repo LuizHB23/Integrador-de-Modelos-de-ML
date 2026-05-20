@@ -1,12 +1,8 @@
-﻿using IntegradorAplicacao.ArquivosController.Csv;
-using IntegradorAplicacao.DTO;
-using IntegradorAplicacao.PipelineAplicacao.ParserPipeline;
-using IntegradorDominio.DataFrameModel;
-using IntegradorDominio.Inferencia;
-using System;
-using System.Collections.Generic;
+﻿using IntegradorAplicacao.DTO;
+using IntegradorAplicacao.Infraestrutura.ArquivosController.Csv;
+using IntegradorDominio.Models.DataFrameModel;
+using IntegradorDominio.Models.Inferencia;
 using System.Globalization;
-using System.Text;
 
 namespace IntegradorViewModel.ControleUsuario.ConfiguracaoMetodo.EstadoDataFrame
 {

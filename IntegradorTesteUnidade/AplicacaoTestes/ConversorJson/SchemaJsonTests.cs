@@ -1,8 +1,8 @@
-﻿using IntegradorAplicacao.CaminhoProvider;
-using IntegradorAplicacao.DTO;
+﻿using IntegradorAplicacao.DTO;
 using System.Text.Json;
 using Moq;
-using IntegradorAplicacao.ConversorJson.CardsJson;
+using IntegradorAplicacao.Infraestrutura.ConversorJSON.CardsJson;
+using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
 
 namespace IntegradorTesteUnidade.AplicacaoTestes.ConversorJson
 {

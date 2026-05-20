@@ -1,7 +1,5 @@
-﻿using IntegradorAplicacao.DTO;
-using IntegradorAplicacao.PipelineAplicacao.ParserPipeline;
-using IntegradorDominio.DataFrameModel;
-using IntegradorDominio.Inferencia;
+﻿using IntegradorAplicacao.Aplicacao.PipelineAplicacao.ParserPipeline;
+using IntegradorDominio.Models.DataFrameModel;
 using IntegradorViewModel.Shared.Interfaces;
 using System.Data;
 

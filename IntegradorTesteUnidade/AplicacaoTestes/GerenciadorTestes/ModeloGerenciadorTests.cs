@@ -1,10 +1,10 @@
-﻿using IntegradorAplicacao.CaminhoProvider;
-using IntegradorAplicacao.DTO;
+﻿using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.Gerenciador;
 using Moq;
 using Xunit;
 using System;
 using System.IO;
+using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
 
 namespace IntegradorTesteUnidade.AplicacaoTestes.GerenciadorTestes
 {

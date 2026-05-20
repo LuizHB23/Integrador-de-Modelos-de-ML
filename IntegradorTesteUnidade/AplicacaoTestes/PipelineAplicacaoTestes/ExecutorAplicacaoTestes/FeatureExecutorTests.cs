@@ -1,8 +1,8 @@
-﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao;
-using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.Executors;
+﻿using IntegradorAplicacao.Aplicacao.PipelineAplicacao.ExecutorPipeline.Executors;
+using IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao;
 using IntegradorDominio.AST;
 using IntegradorDominio.Attributes;
-using IntegradorDominio.DataFrameModel;
+using IntegradorDominio.Models.DataFrameModel;
 using Moq;
 
 namespace IntegradorTesteUnidade.AplicacaoTestes.PipelineAplicacaoTestes.ExecutorAplicacaoTestes

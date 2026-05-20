@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using IntegradorAplicacao.ConversorJson;
 using IntegradorAplicacao.DTO;
+using IntegradorAplicacao.Infraestrutura.ConversorJSON;
 using IntegradorDominio.FeatureEngineering.ManipulacaoDados;
 using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.JanelaModelo;
