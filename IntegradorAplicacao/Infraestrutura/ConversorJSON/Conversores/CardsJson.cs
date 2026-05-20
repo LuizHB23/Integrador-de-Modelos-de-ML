@@ -1,12 +1,9 @@
 ﻿using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.DTO.Interfaces;
 using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 
-namespace IntegradorAplicacao.Infraestrutura.ConversorJSON
+namespace IntegradorAplicacao.Infraestrutura.ConversorJson.Conversores
 {
     public class CardsJson<T> : IConverteJson<Dictionary<int, T>> where T : IItemNomeModelo
     {
@@ -18,6 +15,7 @@ namespace IntegradorAplicacao.Infraestrutura.ConversorJSON
         {
             _provider = provider;
             _caminhoJson = string.Empty;
+            _json = PegaJson();
         }
 
         public void ConverteJson(Dictionary<int, T> objeto)
@@ -50,6 +48,17 @@ namespace IntegradorAplicacao.Infraestrutura.ConversorJSON
             }
 
             return new Dictionary<int, T>();
+        }
+
+        private string PegaJson()
+        {
+            return typeof(T) switch
+            {
+                Type tipo when tipo == typeof(SchemaDTO) => "schema.json",
+                Type tipo when tipo == typeof(FuncaoDTO) => "pipeline.json",
+                Type tipo when tipo == typeof(TransformadorDTO) => "transformador.json",
+                Type tipo when tipo == typeof(SaidaDTO) => "saida.json",
+            };
         }
     }
 }

@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
-using IntegradorAplicacao.Infraestrutura.ConversorJSON;
+using IntegradorAplicacao.Infraestrutura.ConversorJson;
 using IntegradorDominio.Attributes;
 using IntegradorDominio.InterfacesSteps;
 using IntegradorViewModel.ControleUsuario;
@@ -39,7 +39,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
 
         private readonly ScriptExecutorPipelineModeloManager _scriptManager;
 
-        public PipelineModeloViewModel(INavigationService navigation, IDialogService dialogService, IConverteJson<Dictionary<int, FuncaoDTO>> converter, IContext<ModeloDTO> contextModelo, IContext<ArquivoDadosDTO> contextArquivo, IPathProvider provider)
+        public PipelineModeloViewModel(INavigationService navigation, IDialogService dialogService, ConversorJson conversor, IContext<ModeloDTO> contextModelo, IContext<ArquivoDadosDTO> contextArquivo, IPathProvider provider)
         {
             Navigation = navigation;
             ListaFeatureEngineering = new();
@@ -51,7 +51,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
             OpcoesPosicao = new();
             TextBox = new ConfiguracaoPipelineTextBoxViewModel(new ConfiguracaoTextBoxViewModel(dialogService, AlterouTabela), DataPreview, new EstadoDataFrameViewModel(contextArquivo.RecebeMensagem()));
 
-            _scriptManager = new(dialogService, converter, contextModelo, contextArquivo, provider, CardsFuncoes, OpcoesPosicao, TextBox);
+            _scriptManager = new(dialogService, conversor, contextModelo, contextArquivo, provider, CardsFuncoes, OpcoesPosicao, TextBox);
         }
 
         [RelayCommand]

@@ -1,14 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using IntegradorAplicacao.DTO;
-using IntegradorAplicacao.Infraestrutura.ConversorJSON;
-using IntegradorDominio.FeatureEngineering.ManipulacaoDados;
-using IntegradorViewModel.ControleUsuario;
+using IntegradorAplicacao.Infraestrutura.ConversorJson;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Shared.Context;
 using IntegradorViewModel.Shared.Interfaces;
 using System.Collections.ObjectModel;
 using System.Data;
-using System.Xml.Linq;
 
 namespace IntegradorViewModel.Pages.ConfiguracaoModelo
 {
@@ -27,22 +24,18 @@ namespace IntegradorViewModel.Pages.ConfiguracaoModelo
 
         public Dictionary<string, string> Pipeline { get; set; }
 
-        IConverteJson<Dictionary<int, TransformadorDTO>> _conversorTransformador;
-        IConverteJson<Dictionary<int, FuncaoDTO>> _conversorPipeline;
-        IConverteJson<Dictionary<int, SchemaDTO>> _conversorSchema;
-        IContext <ModeloDTO> _context;
-        IDialogService _dialogService;
+        private IContext <ModeloDTO> _context;
+        private IDialogService _dialogService;
+        private ConversorJson _conversor;
 
         private ModeloDTO _modelo;
-        public ConfiguracaoModeloViewModel(INavigationService navigation, IDialogService dialogService, IContext<ModeloDTO> context, IConverteJson<Dictionary<int, TransformadorDTO>> conversorTransformador, IConverteJson<Dictionary<int, FuncaoDTO>> conversorPipeline, IConverteJson<Dictionary<int, SchemaDTO>> conversorSchema)
+        public ConfiguracaoModeloViewModel(INavigationService navigation, IDialogService dialogService, IContext<ModeloDTO> context, ConversorJson conversor)
         {
             Navigation = navigation;
 
             _context = context;
             _dialogService = dialogService;
-            _conversorPipeline = conversorPipeline;
-            _conversorSchema = conversorSchema;
-            _conversorTransformador = conversorTransformador;
+            _conversor = conversor;
 
             _modelo = _context.RecebeMensagem();
 
@@ -69,7 +62,7 @@ namespace IntegradorViewModel.Pages.ConfiguracaoModelo
                 return dataTable.DefaultView;
             }
 
-            var schema = _conversorSchema.CarregarJson(caminhoSchema);
+            var schema = _conversor.CarregarJson<Dictionary<int, SchemaDTO>>(caminhoSchema);
 
             string nomeColuna;
             string finalidade;
@@ -100,7 +93,7 @@ namespace IntegradorViewModel.Pages.ConfiguracaoModelo
                 return dicionarioPipeline;
             }
 
-            var pipeline = _conversorPipeline.CarregarJson(caminhoPipeline);
+            var pipeline = _conversor.CarregarJson<Dictionary<int, FuncaoDTO>>(caminhoPipeline);
 
             string codigo = string.Empty;
 
@@ -132,7 +125,7 @@ namespace IntegradorViewModel.Pages.ConfiguracaoModelo
                 return listaTransformadores;
             }
 
-            var transformadores = _conversorTransformador.CarregarJson(caminhoTransformadores);
+            var transformadores = _conversor.CarregarJson<Dictionary<int, TransformadorDTO>>(caminhoTransformadores);
 
             foreach (var item in transformadores)
             {

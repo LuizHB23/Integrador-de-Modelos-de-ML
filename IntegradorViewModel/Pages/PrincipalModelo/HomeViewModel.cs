@@ -1,7 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using IntegradorAplicacao.DTO;
-using IntegradorAplicacao.Infraestrutura.ConversorJSON;
+using IntegradorAplicacao.Infraestrutura.ConversorJson;
+using IntegradorDominio.Models.Configuracao;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.ConfiguracaoModelo;
 using IntegradorViewModel.Pages.PredicaoModelo;
@@ -19,11 +20,11 @@ namespace IntegradorViewModel.Pages.PrincipalModelo
         [ObservableProperty]
         private ObservableCollection<ModeloDTO> _listaModelos;
 
-        IConverteJson<ModeloDTO> _conversor;
-        IDialogService _dialogService;
-        IContext<ModeloDTO> _context;
+        private ConversorJson _conversor;
+        private IDialogService _dialogService;
+        private IContext<ModeloDTO> _context;
 
-        public HomeViewModel(INavigationService navigation, IConverteJson<ModeloDTO> conversor, IDialogService dialogService, IContext<ModeloDTO> context)
+        public HomeViewModel(INavigationService navigation, ConversorJson conversor, IDialogService dialogService, IContext<ModeloDTO> context)
         {
             _dialogService = dialogService;
             _conversor = conversor;
@@ -54,7 +55,9 @@ namespace IntegradorViewModel.Pages.PrincipalModelo
 
                 try
                 {
-                    ListaModelos.Add(_conversor.CarregarJson(caminhoJson));
+                    var modelo = _conversor.CarregarJson<ModeloConfiguracao>(caminhoJson);
+                    ModeloDTO modeloDTO = new ModeloDTO(modelo.NomeModelo, modelo.Tipo, modelo.CaminhoPasta);
+                    ListaModelos.Add(modeloDTO);
                 }
                 catch (Exception ex)
                 {

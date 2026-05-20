@@ -1,23 +1,19 @@
 ﻿using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
-using IntegradorAplicacao.Infraestrutura.ConversorJSON;
+using IntegradorAplicacao.Infraestrutura.ConversorJson;
 using IntegradorDominio.Models.DataFrameModel;
 using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.ControleUsuario.ConfiguracaoTextBox;
-using IntegradorViewModel.ItensViewModel;
 using IntegradorViewModel.Shared.Context;
 using IntegradorViewModel.Shared.Factory;
 using IntegradorViewModel.Shared.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 
 namespace IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor
 {
-    public partial class ScriptExecutorResultadoManager : ScriptExecutorManager <SaidaDTO>
+    public partial class ScriptExecutorResultadoManager : ScriptExecutorManager<SaidaDTO>
     {
-        public ScriptExecutorResultadoManager(IDialogService dialogService, IConverteJson<Dictionary<int, SaidaDTO>> converter, IContext<ModeloDTO> contextNomeModelo, IContext<ArquivoDadosDTO> contextArquivo, IPathProvider provider, ObservableCollection<ConfiguracaoCardFuncaoViewModel> cardsFuncoes, ObservableCollection<int> opcoesPosicao, IConfiguracaoTextBox textBox) : base(dialogService, converter, contextNomeModelo, contextArquivo, provider, cardsFuncoes, opcoesPosicao, textBox) 
+        public ScriptExecutorResultadoManager(IDialogService dialogService, ConversorJson conversor, IContext<ModeloDTO> contextNomeModelo, IContext<ArquivoDadosDTO> contextArquivo, IPathProvider provider, ObservableCollection<ConfiguracaoCardFuncaoViewModel> cardsFuncoes, ObservableCollection<int> opcoesPosicao, IConfiguracaoTextBox textBox) : base(dialogService, conversor, contextNomeModelo, contextArquivo, provider, cardsFuncoes, opcoesPosicao, textBox) 
         {
             onConstroiPipelineAsync = ConstroiPipelineAsync;
 
@@ -35,7 +31,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor
 
             if(File.Exists(caminhoPipeline))
             {
-                _cardsManager.CarregarPipeline(_converter, ConfigurarFuncao, RemoverFuncao, caminhoPipeline);
+                _cardsManager.CarregarPipeline(_conversor, ConfigurarFuncao, RemoverFuncao, caminhoPipeline);
             }
             else
             {

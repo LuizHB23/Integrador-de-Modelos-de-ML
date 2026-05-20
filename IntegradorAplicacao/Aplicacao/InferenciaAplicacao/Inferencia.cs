@@ -1,7 +1,7 @@
 ﻿using IntegradorAplicacao.Aplicacao.PipelineAplicacao.ExecutorAplicacao;
 using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.DTO.Interfaces;
-using IntegradorAplicacao.Infraestrutura.ConversorJSON;
+using IntegradorAplicacao.Infraestrutura.ConversorJson;
 using IntegradorDominio.Models.DataFrameModel;
 using IntegradorDominio.Models.Inferencia;
 using Microsoft.ML.OnnxRuntime;
@@ -10,9 +10,7 @@ namespace IntegradorAplicacao.Aplicacao.InferenciaAplicacao
 {
     public class Inferencia<T> where T : IPipelineExecutor
     {
-        private readonly IConverteJson<Dictionary<int, TransformadorDTO>> _conversorTransformadores;
-        private readonly IConverteJson<Dictionary<int, T>> _conversorPipeline;
-        private readonly IConverteJson<Dictionary<int, SchemaDTO>> _conversorSchema;
+        private readonly ConversorJson _conversor;
 
         private Dictionary<int, SchemaDTO>? _schemaDicionario;
         private readonly ConfiguraInputsOutputs _configuracao;
@@ -21,28 +19,26 @@ namespace IntegradorAplicacao.Aplicacao.InferenciaAplicacao
         public List<ErrosInferencia> ListaErros { get; private set; }
         public HistoricoInferencia Historico { get; private set; }
 
-        public Inferencia(IConverteJson<Dictionary<int, T>> conversorPipeline, IConverteJson<Dictionary<int, SchemaDTO>> conversorSchema, IConverteJson<Dictionary<int, TransformadorDTO>> conversorTransformadores)
+        public Inferencia(ConversorJson conversor)
         {
-            _conversorTransformadores = conversorTransformadores;
-            _conversorPipeline = conversorPipeline;
-            _conversorSchema = conversorSchema;
+            _conversor = conversor;
 
             ListaErros = new();
             Historico = new();
 
-            _executor = new(_conversorPipeline);
+            _executor = new(conversor);
             _configuracao = new(ListaErros);
         }
 
         public async Task<List<ResultadoInferencia>> RealizaInferenciaAsync(DataFrame dataFrame, string caminhoModelo, string caminhoSchema, string caminhoPipeline, string caminhoTransformador)
         {
-            _schemaDicionario = _conversorSchema.CarregarJson(caminhoSchema)
+            _schemaDicionario = _conversor.CarregarJson<Dictionary<int, SchemaDTO>>(caminhoSchema)
                 ?? throw new Exception("Schema não carregado.");
 
             var dataFrameNovo = await RealizaFeatureEngineeringAsync(dataFrame, caminhoPipeline);
             _executor = null;
 
-            var transformadores = _conversorTransformadores.CarregarJson(caminhoTransformador);
+            var transformadores = _conversor.CarregarJson<Dictionary<int, TransformadorDTO>>(caminhoTransformador);
 
             var ids = PegaIds(dataFrameNovo);
 

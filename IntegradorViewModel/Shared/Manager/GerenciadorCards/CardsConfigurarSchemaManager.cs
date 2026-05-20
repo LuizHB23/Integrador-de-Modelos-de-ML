@@ -1,12 +1,9 @@
 ﻿using IntegradorAplicacao.DTO;
-using IntegradorAplicacao.Infraestrutura.ConversorJSON;
+using IntegradorAplicacao.Infraestrutura.ConversorJson;
 using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.ItensViewModel;
 using IntegradorViewModel.Shared.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 
 namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
 {
@@ -27,7 +24,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
             AtualizaPosicoes();
         }
 
-        public void CarregarSchema(IDialogService _dialogService, IConverteJson<Dictionary<int, SchemaDTO>> _converter)
+        public void CarregarSchema(IDialogService _dialogService, ConversorJson conversor)
         {
             var _caminhoJson = _dialogService.GetCaminhoArquivo();
 
@@ -39,7 +36,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
             _cardsLista.Clear();
             _posicoesLista.Clear();
 
-            var schema = _converter.CarregarJson(_caminhoJson);
+            var schema = conversor.CarregarJson<Dictionary<int, SchemaDTO>>(_caminhoJson);
 
             foreach (var card in schema)
             {
@@ -52,7 +49,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
             AtualizaPosicoes();
         }
 
-        public void PreparaParaJson(IConverteJson<Dictionary<int, SchemaDTO>> _converter, string nomeModelo)
+        public void PreparaParaJson(ConversorJson conversor, string nomeModelo)
         {
             var schemaNovo = new Dictionary<int, SchemaDTO>();
 
@@ -62,7 +59,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
                 schemaNovo.Add(card.Posicao, schema);
             }
 
-            _converter.ConverteJson(schemaNovo);
+            conversor.ConverteJson(schemaNovo);
         }
 
         public override void AtualizaPosicoes() => base.AtualizaPosicoes();

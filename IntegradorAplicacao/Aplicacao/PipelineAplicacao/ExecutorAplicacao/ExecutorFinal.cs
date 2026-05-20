@@ -1,7 +1,6 @@
 ﻿using IntegradorAplicacao.Aplicacao.PipelineAplicacao.ParserPipeline;
-using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.DTO.Interfaces;
-using IntegradorAplicacao.Infraestrutura.ConversorJSON;
+using IntegradorAplicacao.Infraestrutura.ConversorJson;
 using IntegradorDominio.AST;
 using IntegradorDominio.Models.DataFrameModel;
 
@@ -9,12 +8,12 @@ namespace IntegradorAplicacao.Aplicacao.PipelineAplicacao.ExecutorAplicacao
 {
     public class ExecutorFinal<T> where T : IPipelineExecutor
     {
-        private readonly IConverteJson<Dictionary<int, T>> _conversor;
+        private readonly ConversorJson _conversor;
         private Dictionary<string, object?> _objetosUtilizados;
         private readonly Queue<BuilderExecutor> _executors;
         private ParserAst? _parser;
 
-        public ExecutorFinal(IConverteJson<Dictionary<int, T>> conversor)
+        public ExecutorFinal(ConversorJson conversor)
         {
             _objetosUtilizados = new();
             _executors = new Queue<BuilderExecutor>();
@@ -54,7 +53,7 @@ namespace IntegradorAplicacao.Aplicacao.PipelineAplicacao.ExecutorAplicacao
 
         private List<MetodoPipeline> RecuperaMetodoPipeline(string caminhoFuncao)
         {
-            var codigosJson = _conversor.CarregarJson(caminhoFuncao);
+            var codigosJson = _conversor.CarregarJson<Dictionary<int, T>>(caminhoFuncao);
             var listaMetodoPipeline = new List<MetodoPipeline>();
 
             foreach (var elemento in codigosJson)

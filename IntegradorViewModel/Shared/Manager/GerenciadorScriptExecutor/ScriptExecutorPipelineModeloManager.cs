@@ -1,24 +1,19 @@
-﻿using CommunityToolkit.Mvvm.Input;
-using IntegradorAplicacao.DTO;
-using IntegradorAplicacao.DTO.Interfaces;
+﻿using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
-using IntegradorAplicacao.Infraestrutura.ConversorJSON;
+using IntegradorAplicacao.Infraestrutura.ConversorJson;
 using IntegradorDominio.Models.DataFrameModel;
 using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.ControleUsuario.ConfiguracaoTextBox;
 using IntegradorViewModel.Shared.Context;
 using IntegradorViewModel.Shared.Factory;
 using IntegradorViewModel.Shared.Interfaces;
-using IntegradorViewModel.Shared.Manager.GerenciadorCards;
 using System.Collections.ObjectModel;
-using System.Data;
-
 
 namespace IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor
 {
     public partial class ScriptExecutorPipelineModeloManager : ScriptExecutorManager<FuncaoDTO>
     {
-        public ScriptExecutorPipelineModeloManager(IDialogService dialogService, IConverteJson<Dictionary<int, FuncaoDTO>> converter, IContext<ModeloDTO> contextNomeModelo, IContext<ArquivoDadosDTO> contextArquivo, IPathProvider provider, ObservableCollection<ConfiguracaoCardFuncaoViewModel> cardsFuncoes, ObservableCollection<int> opcoesPosicao, IConfiguracaoTextBox textBox) : base(dialogService, converter, contextNomeModelo, contextArquivo, provider, cardsFuncoes, opcoesPosicao, textBox) 
+        public ScriptExecutorPipelineModeloManager(IDialogService dialogService, ConversorJson conversor, IContext<ModeloDTO> contextNomeModelo, IContext<ArquivoDadosDTO> contextArquivo, IPathProvider provider, ObservableCollection<ConfiguracaoCardFuncaoViewModel> cardsFuncoes, ObservableCollection<int> opcoesPosicao, IConfiguracaoTextBox textBox) : base(dialogService, conversor, contextNomeModelo, contextArquivo, provider, cardsFuncoes, opcoesPosicao, textBox) 
         {
             onConstroiPipelineAsync = ConstroiPipelineAsync;
 
@@ -41,7 +36,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor
                     throw new Exception();
                 }
 
-                _cardsManager.CarregarPipeline(_converter, ConfigurarFuncao, RemoverFuncao, caminhoPipeline);
+                _cardsManager.CarregarPipeline(_conversor, ConfigurarFuncao, RemoverFuncao, caminhoPipeline);
             }
             catch (Exception)
             {

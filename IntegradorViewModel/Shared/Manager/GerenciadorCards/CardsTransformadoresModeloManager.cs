@@ -1,13 +1,9 @@
 ﻿using IntegradorAplicacao.DTO;
-using IntegradorAplicacao.Infraestrutura.ConversorJSON;
-using IntegradorViewModel.ControleUsuario;
+using IntegradorAplicacao.Infraestrutura.ConversorJson;
 using IntegradorViewModel.ControleUsuario.ConfiguracaoCard;
 using IntegradorViewModel.ItensViewModel;
 using IntegradorViewModel.Shared.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 
 namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
 {
@@ -28,7 +24,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
             AtualizaPosicoes();
         }
 
-        public void CarregarTransformador(IDialogService _dialogService, IConverteJson<Dictionary<int, TransformadorDTO>> _converter)
+        public void CarregarTransformador(IDialogService _dialogService, ConversorJson conversor)
         {
             var _caminhoJson = _dialogService.GetCaminhoArquivo();
 
@@ -40,7 +36,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
             _cardsLista.Clear();
             _posicoesLista.Clear();
 
-            var transformador = _converter.CarregarJson(_caminhoJson);
+            var transformador = conversor.CarregarJson<Dictionary<int, TransformadorDTO>>(_caminhoJson);
 
             foreach (var card in transformador)
             {
@@ -53,7 +49,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
             AtualizaPosicoes();
         }
 
-        public void PreparaParaJson(IConverteJson<Dictionary<int, TransformadorDTO>> _converter, string nomeModelo)
+        public void PreparaParaJson(ConversorJson conversor, string nomeModelo)
         {
             var transformadorNovo = new Dictionary<int, TransformadorDTO>();
 
@@ -63,7 +59,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
                 transformadorNovo.Add(card.Posicao, transformador);
             }
 
-            _converter.ConverteJson(transformadorNovo);
+            conversor.ConverteJson(transformadorNovo);
         }
 
         public override void AtualizaPosicoes() => base.AtualizaPosicoes();

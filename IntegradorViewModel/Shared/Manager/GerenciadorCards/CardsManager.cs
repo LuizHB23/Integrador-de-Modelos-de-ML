@@ -1,5 +1,4 @@
-﻿using IntegradorViewModel.ControleUsuario;
-using IntegradorViewModel.ControleUsuario.ConfiguracaoCard;
+﻿using IntegradorViewModel.ControleUsuario.ConfiguracaoCard;
 using System.Collections.ObjectModel;
 
 namespace IntegradorViewModel.Shared.Manager.GerenciadorCards

@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
-using IntegradorAplicacao.Infraestrutura.ConversorJSON;
+using IntegradorAplicacao.Infraestrutura.ConversorJson;
 using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.ItensViewModel;
 using IntegradorViewModel.JanelaModelo;
@@ -38,14 +38,14 @@ namespace IntegradorViewModel.Pages.InserirModelo
         private readonly CardsConfigurarSchemaManager _cardsManager;
 
 
-        private readonly IConverteJson<Dictionary<int, SchemaDTO>> _converter;
+        private readonly ConversorJson _conversor;
         private readonly IContext<ModeloDTO> _contextNomeModelo;
         private readonly IPathProvider _provider;
         private readonly IDialogService _dialogService;
 
-        public ConfigurarSchemaViewModel(INavigationService navigation, IDialogService dialogService, IConverteJson<Dictionary<int, SchemaDTO>> converter, IContext<ModeloDTO> contextNomeModelo, IPathProvider provider)
+        public ConfigurarSchemaViewModel(INavigationService navigation, IDialogService dialogService, ConversorJson conversor, IContext<ModeloDTO> contextNomeModelo, IPathProvider provider)
         {
-            _converter = converter;
+            _conversor = conversor;
             _contextNomeModelo = contextNomeModelo;
             _provider = provider;
             _dialogService = dialogService;
@@ -84,14 +84,14 @@ namespace IntegradorViewModel.Pages.InserirModelo
         }
 
         [RelayCommand]
-        public void CarregarSchema() => _cardsManager.CarregarSchema(_dialogService, _converter);
+        public void CarregarSchema() => _cardsManager.CarregarSchema(_dialogService, _conversor);
         private void RemoverColuna(ConfiguracaoCardSchemaViewModel cardSchema)
         {
             _cardsManager.RemoverCard(cardSchema);
             PreparaParaJson();
         }
         private void OrganizaPosicao(ConfiguracaoCardSchemaViewModel cardSchema, int posicaoNova) => _cardsManager.OrganizaPosicao(cardSchema, posicaoNova);
-        private void PreparaParaJson() => _cardsManager.PreparaParaJson(_converter, _nomeModelo);
+        private void PreparaParaJson() => _cardsManager.PreparaParaJson(_conversor, _nomeModelo);
 
 
         [RelayCommand]

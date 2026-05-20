@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
-using IntegradorAplicacao.Infraestrutura.ConversorJSON;
+using IntegradorAplicacao.Infraestrutura.ConversorJson;
 using IntegradorAplicacao.Infraestrutura.Gerenciador;
 using IntegradorViewModel.ControleUsuario.ConfiguracaoCard;
 using IntegradorViewModel.ItensViewModel;
@@ -34,15 +34,15 @@ namespace IntegradorViewModel.Pages.InserirModelo
         private string _caminhoProvisorio;
         private string _nomeModelo;
 
-        private readonly IConverteJson<Dictionary<int, TransformadorDTO>> _converter;
+        private readonly ConversorJson _conversor;
         private readonly IGerenciador<TransformadorDTO> _gerenciador;
         private readonly IContext<ModeloDTO> _contextNomeModelo;
         private readonly IPathProvider _provider;
         private readonly IDialogService _dialogService;
 
-        public TransformadoresModeloViewModel(INavigationService navigation, IDialogService dialogService, IConverteJson<Dictionary<int, TransformadorDTO>> converter, IContext<ModeloDTO> contextNomeModelo, IPathProvider provider, IGerenciador<TransformadorDTO> gerenciador)
+        public TransformadoresModeloViewModel(INavigationService navigation, IDialogService dialogService, ConversorJson conversor, IContext<ModeloDTO> contextNomeModelo, IPathProvider provider, IGerenciador<TransformadorDTO> gerenciador)
         {
-            _converter = converter;
+            _conversor = conversor;
             _contextNomeModelo = contextNomeModelo;
             _provider = provider;
             _dialogService = dialogService;
@@ -78,7 +78,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
         }
 
         [RelayCommand]
-        public void CarregarSchema() => _cardsManager.CarregarTransformador(_dialogService, _converter);
+        public void CarregarSchema() => _cardsManager.CarregarTransformador(_dialogService, _conversor);
 
         private void RemoverColuna(ConfiguracaoCardTransformadorViewModel cardTransformador)
         {
@@ -92,7 +92,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
             PreparaParaJson();
         }
 
-        private void PreparaParaJson() => _cardsManager.PreparaParaJson(_converter, _nomeModelo);
+        private void PreparaParaJson() => _cardsManager.PreparaParaJson(_conversor, _nomeModelo);
 
         [RelayCommand]
         public void CarregarCaminhoTransformadorOnnx()

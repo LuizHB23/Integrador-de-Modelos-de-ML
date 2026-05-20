@@ -4,7 +4,7 @@ using IntegradorAplicacao.Aplicacao.InferenciaAplicacao;
 using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.Infraestrutura.ArquivosController.Csv;
 using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
-using IntegradorAplicacao.Infraestrutura.ConversorJSON;
+using IntegradorAplicacao.Infraestrutura.ConversorJson;
 using IntegradorDominio.Models.DataFrameModel;
 using IntegradorDominio.Models.Inferencia;
 using IntegradorViewModel.ControleUsuario;
@@ -56,7 +56,7 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
 
         private ArquivoDadosDTO _arquivo { get; set; }
 
-        public ResultadoPredicaoViewModel(INavigationService navigation, IDialogService dialogService, IContext<ModeloDTO> contextModelo, IContext<ArquivoDadosDTO> contextArquivo, IConverteJson<Dictionary<int, SaidaDTO>> converter, IPathProvider provider, INotificationService notificationService, Inferencia<SaidaDTO> inferencia)
+        public ResultadoPredicaoViewModel(INavigationService navigation, IDialogService dialogService, IContext<ModeloDTO> contextModelo, IContext<ArquivoDadosDTO> contextArquivo, ConversorJson conversor, IPathProvider provider, INotificationService notificationService, Inferencia<SaidaDTO> inferencia)
         {
             Navigation = navigation;
             DataPreview = new();
@@ -73,7 +73,7 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
 
             TextBox = new ConfiguracaoResultadoTextBoxViewModel(new ConfiguracaoTextBoxViewModel(dialogService, AlterouTabela), DataPreview, new EstadoDataFrameViewModel(_arquivo));
 
-            _scriptManager = new(dialogService, converter, contextModelo, contextArquivo, provider, CardsFuncoes, OpcoesPosicao, TextBox);
+            _scriptManager = new(dialogService, conversor, contextModelo, contextArquivo, provider, CardsFuncoes, OpcoesPosicao, TextBox);
 
             Stopwatch = new Stopwatch();
         }
