@@ -1,7 +1,7 @@
 ﻿using IntegradorAplicacao.Aplicacao.PipelineAplicacao.ExecutorAplicacao;
 using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.DTO.Interfaces;
-using IntegradorAplicacao.Infraestrutura.ConversorJson;
+using IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson;
 using IntegradorDominio.Models.DataFrameModel;
 using IntegradorDominio.Models.Inferencia;
 using Microsoft.ML.OnnxRuntime;

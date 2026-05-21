@@ -1,9 +1,9 @@
-﻿using IntegradorAplicacao.DTO;
+﻿using IntegradorAplicacao.Infraestrutura.Conversores.ConversorEnum;
 using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
 using IntegradorDominio.Models.Configuracao;
 using System.Text.Json;
 
-namespace IntegradorAplicacao.Infraestrutura.ConversorJson.Conversores
+namespace IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson.ConverteJson
 {
     public class ModeloJson : IConverteJson<ModeloConfiguracao>
     {
@@ -17,7 +17,16 @@ namespace IntegradorAplicacao.Infraestrutura.ConversorJson.Conversores
         public void ConverteJson(ModeloConfiguracao modelo)
         {
             string caminhoJson = Path.Combine(_provider.GetCaminhoModelo(), modelo.NomeModelo, "modelo.json");
-            var texto = JsonSerializer.Serialize(modelo);
+
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true
+            };
+
+            options.Converters.Add(
+                new ParserTipoModeloJsonConverter());
+
+            var texto = JsonSerializer.Serialize(modelo, options);
             File.WriteAllText(caminhoJson, texto);
         }
 
@@ -29,7 +38,15 @@ namespace IntegradorAplicacao.Infraestrutura.ConversorJson.Conversores
 
                 if (!string.IsNullOrWhiteSpace(texto))
                 {
-                    return JsonSerializer.Deserialize<ModeloConfiguracao>(texto)
+                    var options = new JsonSerializerOptions
+                    {
+                        Converters =
+                            {
+                                new ParserTipoModeloJsonConverter()
+                            }
+                    };
+
+                    return JsonSerializer.Deserialize<ModeloConfiguracao>(texto, options)
                    ?? throw new Exception($"Arquivo corrompido: {caminho}");
                 }
             }

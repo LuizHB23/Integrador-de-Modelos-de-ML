@@ -3,7 +3,7 @@ using IntegradorAplicacao.DTO.Interfaces;
 using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
 using System.Text.Json;
 
-namespace IntegradorAplicacao.Infraestrutura.ConversorJson.Conversores
+namespace IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson.ConverteJson
 {
     public class CardsJson<T> : IConverteJson<Dictionary<int, T>> where T : IItemNomeModelo
     {

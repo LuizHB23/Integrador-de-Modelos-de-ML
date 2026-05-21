@@ -16,4 +16,8 @@
     <ProjectReference Include="..\IntegradorDominio\IntegradorDominio.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Infraestrutura\Versionamento\" />
+  </ItemGroup>
+
 </Project>

@@ -81,64 +81,70 @@
                                     </Border>
                                 </StackPanel>
 
-                                <UniformGrid Margin="0,24,0,0" Columns="5">
+                                <ContentControl  Content="{Binding Modelo}">
 
-                                    <StackPanel>
-                                        <TextBlock Foreground="#7A7A7A"
-                                                   FontSize="13"
-                                                   Text="Versão"/>
+                                    <ContentControl.ContentTemplate>
+                                        <DataTemplate>
+                                            <UniformGrid Margin="0,24,0,0" Columns="5">
+                                                <StackPanel>
+                                                    <TextBlock Foreground="#7A7A7A"
+                                                               FontSize="13"
+                                                               Text="Versão"/>
 
-                                        <TextBlock Margin="0,6,0,0"
-                                                   FontWeight="SemiBold"
-                                                   FontSize="16"
-                                                   Text="1.0.0"/>
-                                    </StackPanel>
+                                                    <TextBlock Margin="0,6,0,0"
+                                                               FontWeight="SemiBold"
+                                                               FontSize="16"
+                                                               Text="{Binding Versao}"/>
+                                                </StackPanel>
 
-                                    <StackPanel>
-                                        <TextBlock Foreground="#7A7A7A"
-                                                   FontSize="13"
-                                                   Text="Formato"/>
+                                                <StackPanel>
+                                                    <TextBlock Foreground="#7A7A7A"
+                                                               FontSize="13"
+                                                               Text="Formato"/>
 
-                                        <TextBlock Margin="0,6,0,0"
-                                                   FontWeight="SemiBold"
-                                                   FontSize="16"
-                                                   Text="ONNX"/>
-                                    </StackPanel>
+                                                    <TextBlock Margin="0,6,0,0"
+                                                               FontWeight="SemiBold"
+                                                               FontSize="16"
+                                                               Text="ONNX"/>
+                                                </StackPanel>
 
-                                    <StackPanel>
-                                        <TextBlock Foreground="#7A7A7A"
-                                                   FontSize="13"
-                                                   Text="Criado em"/>
+                                                <StackPanel>
+                                                    <TextBlock Foreground="#7A7A7A"
+                                                               FontSize="13"
+                                                               Text="Criado em"/>
 
-                                        <TextBlock Margin="0,6,0,0"
-                                                   FontWeight="SemiBold"
-                                                   FontSize="16"
-                                                   Text="12/05/2026 14:30"/>
-                                    </StackPanel>
+                                                    <TextBlock Margin="0,6,0,0"
+                                                               FontWeight="SemiBold"
+                                                               FontSize="16"
+                                                               Text="{Binding CriadoEm}"/>
+                                                </StackPanel>
 
-                                    <StackPanel>
-                                        <TextBlock Foreground="#7A7A7A"
-                                                   FontSize="13"
-                                                   Text="Atualizado em"/>
+                                                <StackPanel>
+                                                    <TextBlock Foreground="#7A7A7A"
+                                                               FontSize="13"
+                                                               Text="Atualizado em"/>
 
-                                        <TextBlock Margin="0,6,0,0"
-                                                   FontWeight="SemiBold"
-                                                   FontSize="16"
-                                                   Text="18/05/2026 09:15"/>
-                                    </StackPanel>
+                                                    <TextBlock Margin="0,6,0,0"
+                                                               FontWeight="SemiBold"
+                                                               FontSize="16"
+                                                               Text="{Binding AtualizadoEm}"/>
+                                                </StackPanel>
 
-                                    <StackPanel>
-                                        <TextBlock Foreground="#7A7A7A"
-                                                   FontSize="13"
-                                                   Text="Arquivo"/>
+                                                <StackPanel>
+                                                    <TextBlock Foreground="#7A7A7A"
+                                                               FontSize="13"
+                                                               Text="Arquivo"/>
 
-                                        <TextBlock Margin="0,6,0,0"
-                                                   FontWeight="SemiBold"
-                                                   FontSize="16"
-                                                   Text="churn_model_v1.onnx"/>
-                                    </StackPanel>
+                                                    <TextBlock Margin="0,6,0,0"
+                                                               FontWeight="SemiBold"
+                                                               FontSize="16"
+                                                               Text="{Binding CaminhoPasta}"/>
+                                                </StackPanel>
+                                            </UniformGrid>
+                                        </DataTemplate>
+                                    </ContentControl.ContentTemplate>
+                                </ContentControl>
 
-                                </UniformGrid>
                             </StackPanel>
 
                             <Button Grid.Column="1"

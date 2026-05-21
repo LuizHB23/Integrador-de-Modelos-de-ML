@@ -1,7 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using IntegradorAplicacao.DTO;
-using IntegradorAplicacao.Infraestrutura.ConversorJson;
+using IntegradorAplicacao.Infraestrutura.Conversores.ConversorEnum;
+using IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson;
 using IntegradorDominio.Models.Configuracao;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.ConfiguracaoModelo;
@@ -56,7 +57,7 @@ namespace IntegradorViewModel.Pages.PrincipalModelo
                 try
                 {
                     var modelo = _conversor.CarregarJson<ModeloConfiguracao>(caminhoJson);
-                    ModeloDTO modeloDTO = new ModeloDTO(modelo.NomeModelo, modelo.Tipo, modelo.CaminhoPasta);
+                    ModeloDTO modeloDTO = new ModeloDTO(modelo.NomeModelo, ParserTipoModelo.TipoModeloParaString(modelo.Tipo), modelo.CaminhoPasta, modelo.Versao);
                     ListaModelos.Add(modeloDTO);
                 }
                 catch (Exception ex)

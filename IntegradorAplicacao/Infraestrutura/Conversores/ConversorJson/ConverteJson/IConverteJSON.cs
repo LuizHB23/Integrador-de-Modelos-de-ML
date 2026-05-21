@@ -1,4 +1,4 @@
-﻿namespace IntegradorAplicacao.Infraestrutura.ConversorJson.Conversores
+﻿namespace IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson.ConverteJson
 {
     public interface IConverteJson<T> where T : class
     {

@@ -1,6 +1,6 @@
 ﻿using IntegradorAplicacao.Aplicacao.PipelineAplicacao.ParserPipeline;
 using IntegradorAplicacao.DTO.Interfaces;
-using IntegradorAplicacao.Infraestrutura.ConversorJson;
+using IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson;
 using IntegradorDominio.AST;
 using IntegradorDominio.Models.DataFrameModel;
 

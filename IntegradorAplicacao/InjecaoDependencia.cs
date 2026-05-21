@@ -2,8 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using IntegradorAplicacao.Aplicacao.InferenciaAplicacao;
 using IntegradorAplicacao.Infraestrutura.Gerenciador;
-using IntegradorAplicacao.Infraestrutura.ConversorJson;
 using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
+using IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson;
 
 namespace IntegradorAplicacao
 {

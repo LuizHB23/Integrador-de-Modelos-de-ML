@@ -4,7 +4,7 @@ using IntegradorAplicacao.Aplicacao.InferenciaAplicacao;
 using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.Infraestrutura.ArquivosController.Csv;
 using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
-using IntegradorAplicacao.Infraestrutura.ConversorJson;
+using IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson;
 using IntegradorDominio.Models.DataFrameModel;
 using IntegradorDominio.Models.Inferencia;
 using IntegradorViewModel.ControleUsuario;

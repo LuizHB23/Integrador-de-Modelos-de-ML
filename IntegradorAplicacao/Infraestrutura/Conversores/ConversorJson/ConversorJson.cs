@@ -1,9 +1,9 @@
 ﻿using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
-using IntegradorAplicacao.Infraestrutura.ConversorJson.Conversores;
+using IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson.ConverteJson;
 using IntegradorDominio.Models.Configuracao;
 
-namespace IntegradorAplicacao.Infraestrutura.ConversorJson
+namespace IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson
 {
     public class ConversorJson 
     {

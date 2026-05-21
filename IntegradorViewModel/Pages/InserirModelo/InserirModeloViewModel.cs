@@ -1,7 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using IntegradorAplicacao.DTO;
-using IntegradorAplicacao.Infraestrutura.ConversorJson;
+using IntegradorAplicacao.Infraestrutura.Conversores.ConversorEnum;
+using IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson;
 using IntegradorAplicacao.Infraestrutura.Gerenciador;
 using IntegradorDominio.Models.Configuracao;
 using IntegradorViewModel.JanelaModelo;
@@ -66,10 +67,10 @@ namespace IntegradorViewModel.Pages.InserirModelo
 
         private ModeloDTO ConfiguraModelo()
         {
-            ModeloDTO modelo = new ModeloDTO(NomeModelo, TipoModelo, CaminhoModelo);
-            CaminhoModelo = _gerenciador.Salvar(new ModeloDTO(NomeModelo, TipoModelo, CaminhoModelo));
+            ModeloDTO modelo = new ModeloDTO(NomeModelo, TipoModelo, CaminhoModelo, "1.0");
+            CaminhoModelo = _gerenciador.Salvar(new ModeloDTO(NomeModelo, TipoModelo, CaminhoModelo, "1.0"));
 
-            _conversor.ConverteJson(new ModeloConfiguracao(NomeModelo, TipoModelo, CaminhoModelo));
+            _conversor.ConverteJson(new ModeloConfiguracao(NomeModelo, ParserTipoModelo.StringParaTipoModelo(TipoModelo), CaminhoModelo));
 
             return modelo;
         }

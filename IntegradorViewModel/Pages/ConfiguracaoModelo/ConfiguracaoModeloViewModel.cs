@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using IntegradorAplicacao.DTO;
-using IntegradorAplicacao.Infraestrutura.ConversorJson;
+using IntegradorAplicacao.Infraestrutura.Conversores.ConversorEnum;
+using IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson;
+using IntegradorDominio.Models.Configuracao;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Shared.Context;
 using IntegradorViewModel.Shared.Interfaces;
@@ -20,6 +22,9 @@ namespace IntegradorViewModel.Pages.ConfiguracaoModelo
         [ObservableProperty]
         private DataView _schemaPreview;
 
+        [ObservableProperty]
+        private ModeloConfiguracao _modelo;
+
         public ObservableCollection<TransformadorDTO> Transformadores { get; }
 
         public Dictionary<string, string> Pipeline { get; set; }
@@ -28,7 +33,8 @@ namespace IntegradorViewModel.Pages.ConfiguracaoModelo
         private IDialogService _dialogService;
         private ConversorJson _conversor;
 
-        private ModeloDTO _modelo;
+        private ModeloDTO _modeloDTO;
+
         public ConfiguracaoModeloViewModel(INavigationService navigation, IDialogService dialogService, IContext<ModeloDTO> context, ConversorJson conversor)
         {
             Navigation = navigation;
@@ -37,7 +43,11 @@ namespace IntegradorViewModel.Pages.ConfiguracaoModelo
             _dialogService = dialogService;
             _conversor = conversor;
 
-            _modelo = _context.RecebeMensagem();
+            var caminhoModeloJson = Path.Combine(Path.GetDirectoryName(_context.RecebeMensagem().CaminhoPasta!)!, "modelo.json");
+            _modelo = _conversor.CarregarJson<ModeloConfiguracao>(caminhoModeloJson);
+
+            _modeloDTO = new ModeloDTO(_modelo.NomeModelo, ParserTipoModelo.TipoModeloParaString(_modelo.Tipo), _modelo.CaminhoPasta, _modelo.Versao);
+            _modelo.CaminhoPasta = Path.GetFileName(_modelo.CaminhoPasta);
 
             CaminhoArquivoDados = string.Empty;
 
@@ -55,7 +65,7 @@ namespace IntegradorViewModel.Pages.ConfiguracaoModelo
             dataTable.Columns.Add("Tipo", typeof(string));
             dataTable.Columns.Add("Categorico", typeof(bool));
 
-            string caminhoSchema = Path.Combine(Path.GetDirectoryName(_modelo.CaminhoPasta)!, "schema.json");
+            string caminhoSchema = Path.Combine(Path.GetDirectoryName(_modeloDTO.CaminhoPasta)!, "schema.json");
 
             if (!File.Exists(caminhoSchema))
             {
@@ -86,7 +96,7 @@ namespace IntegradorViewModel.Pages.ConfiguracaoModelo
         {
             Dictionary<string, string> dicionarioPipeline = new();
 
-            string caminhoPipeline = Path.Combine(Path.GetDirectoryName(_modelo.CaminhoPasta)!, "pipeline.json");
+            string caminhoPipeline = Path.Combine(Path.GetDirectoryName(_modeloDTO.CaminhoPasta)!, "pipeline.json");
 
             if (!File.Exists(caminhoPipeline))
             {
@@ -118,7 +128,7 @@ namespace IntegradorViewModel.Pages.ConfiguracaoModelo
         {
             ObservableCollection<TransformadorDTO> listaTransformadores = new();
 
-            string caminhoTransformadores = Path.Combine(Path.GetDirectoryName(_modelo.CaminhoPasta)!, "transformador.json");
+            string caminhoTransformadores = Path.Combine(Path.GetDirectoryName(_modeloDTO.CaminhoPasta)!, "transformador.json");
 
             if (!File.Exists(caminhoTransformadores))
             {
