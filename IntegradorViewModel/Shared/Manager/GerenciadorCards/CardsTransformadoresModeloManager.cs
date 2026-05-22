@@ -24,7 +24,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
             AtualizaPosicoes();
         }
 
-        public void CarregarTransformador(IDialogService _dialogService, ConversorJson conversor)
+        public async Task CarregarTransformador(IDialogService _dialogService, ConversorJson conversor)
         {
             var _caminhoJson = _dialogService.GetCaminhoArquivo();
 
@@ -36,7 +36,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
             _cardsLista.Clear();
             _posicoesLista.Clear();
 
-            var transformador = conversor.CarregarJson<Dictionary<int, TransformadorDTO>>(_caminhoJson);
+            var transformador = await conversor.CarregarJsonAsync<Dictionary<int, TransformadorDTO>>(_caminhoJson);
 
             foreach (var card in transformador)
             {
@@ -49,7 +49,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
             AtualizaPosicoes();
         }
 
-        public void PreparaParaJson(ConversorJson conversor, string nomeModelo)
+        public async Task PreparaParaJson(ConversorJson conversor, string nomeModelo)
         {
             var transformadorNovo = new Dictionary<int, TransformadorDTO>();
 
@@ -59,7 +59,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
                 transformadorNovo.Add(card.Posicao, transformador);
             }
 
-            conversor.ConverteJson(transformadorNovo);
+            await conversor.ConverteJsonAsync(transformadorNovo);
         }
 
         public override void AtualizaPosicoes() => base.AtualizaPosicoes();

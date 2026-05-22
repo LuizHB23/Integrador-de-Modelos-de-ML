@@ -19,7 +19,7 @@
                 <Button x:Name="BotaoCancelar" 
                     Content="Cancelar" 
                     Style="{StaticResource MaterialDesignOutlinedButton}"
-                    Command="{Binding NavigateToHomeCommand}"
+                    Command="{Binding NavigateToHomeCancelarCommand}"
                     Width="120"
                     Margin="10,0"
                     Cursor="Hand"/>

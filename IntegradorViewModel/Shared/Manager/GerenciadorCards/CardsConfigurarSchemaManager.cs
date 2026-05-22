@@ -24,7 +24,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
             AtualizaPosicoes();
         }
 
-        public void CarregarSchema(IDialogService _dialogService, ConversorJson conversor)
+        public async Task CarregarSchema(IDialogService _dialogService, ConversorJson conversor)
         {
             var _caminhoJson = _dialogService.GetCaminhoArquivo();
 
@@ -36,7 +36,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
             _cardsLista.Clear();
             _posicoesLista.Clear();
 
-            var schema = conversor.CarregarJson<Dictionary<int, SchemaDTO>>(_caminhoJson);
+            var schema = await conversor.CarregarJsonAsync<Dictionary<int, SchemaDTO>>(_caminhoJson);
 
             foreach (var card in schema)
             {
@@ -49,7 +49,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
             AtualizaPosicoes();
         }
 
-        public void PreparaParaJson(ConversorJson conversor, string nomeModelo)
+        public async Task PreparaParaJson(ConversorJson conversor, string nomeModelo)
         {
             var schemaNovo = new Dictionary<int, SchemaDTO>();
 
@@ -59,7 +59,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
                 schemaNovo.Add(card.Posicao, schema);
             }
 
-            conversor.ConverteJson(schemaNovo);
+            await conversor.ConverteJsonAsync(schemaNovo);
         }
 
         public override void AtualizaPosicoes() => base.AtualizaPosicoes();

@@ -65,18 +65,19 @@ namespace IntegradorViewModel.Pages.InserirModelo
             }
         }
 
-        private ModeloDTO ConfiguraModelo()
+        private async Task<ModeloDTO> ConfiguraModelo()
         {
             ModeloDTO modelo = new ModeloDTO(NomeModelo, TipoModelo, CaminhoModelo, "1.0");
             CaminhoModelo = _gerenciador.Salvar(new ModeloDTO(NomeModelo, TipoModelo, CaminhoModelo, "1.0"));
+            modelo.CaminhoPasta = CaminhoModelo;
 
-            _conversor.ConverteJson(new ModeloConfiguracao(NomeModelo, ParserTipoModelo.StringParaTipoModelo(TipoModelo), CaminhoModelo));
+            await _conversor.ConverteJsonAsync(new ModeloConfiguracao(NomeModelo, ParserTipoModelo.StringParaTipoModelo(TipoModelo), CaminhoModelo));
 
             return modelo;
         }
 
         [RelayCommand]
-        public void NavigateToConfigurarSchema()
+        public async Task NavigateToConfigurarSchema()
         {
             Navigation.NavigateTo<ConfigurarSchemaViewModel>();
             if (string.IsNullOrWhiteSpace(NomeModelo) || string.IsNullOrWhiteSpace(TipoModelo) || string.IsNullOrWhiteSpace(CaminhoModelo))
@@ -87,7 +88,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
 
             try
             {
-                var nomeModelo = ConfiguraModelo();
+                var nomeModelo = await ConfiguraModelo();
                 _contextNomeModelo.EnviaMensagem(nomeModelo);
                 Navigation.NavigateTo<ConfigurarSchemaViewModel>();
             }

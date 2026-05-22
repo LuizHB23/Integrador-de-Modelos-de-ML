@@ -14,7 +14,7 @@ namespace IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson.ConverteJ
             _provider = provider;
         }
 
-        public void ConverteJson(ModeloConfiguracao modelo)
+        public async Task ConverteJsonAsync(ModeloConfiguracao modelo)
         {
             string caminhoJson = Path.Combine(_provider.GetCaminhoModelo(), modelo.NomeModelo, "modelo.json");
 
@@ -30,7 +30,7 @@ namespace IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson.ConverteJ
             File.WriteAllText(caminhoJson, texto);
         }
 
-        public ModeloConfiguracao CarregarJson(string caminho)
+        public async Task<ModeloConfiguracao> CarregarJsonAsync(string caminho)
         {
             if (File.Exists(caminho))
             {

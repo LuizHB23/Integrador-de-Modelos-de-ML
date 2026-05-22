@@ -11,26 +11,26 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
     {
         public CardsConfigurarFuncaoManager(ObservableCollection<ConfiguracaoCardFuncaoViewModel> cardsLista, ObservableCollection<int> posicoesLista) : base(cardsLista, posicoesLista) { }
 
-        public void AdicionarCard(FuncaoItemViewModel funcaoItem, Func<ConfiguracaoCardFuncaoViewModel, Task> actionExcluir, Action<ConfiguracaoCardFuncaoViewModel, int> actionTrocarPosicao, Action<ConfiguracaoCardFuncaoViewModel> actionConfigurarFuncao)
+        public void AdicionarCard(FuncaoItemViewModel funcaoItem, Func<ConfiguracaoCardFuncaoViewModel, Task> functionExcluir, Action<ConfiguracaoCardFuncaoViewModel, int> actionTrocarPosicao, Func<ConfiguracaoCardFuncaoViewModel, Task> functionConfigurarFuncao)
         {
             if (funcaoItem is null)
             {
                 return;
             }
 
-            var cardFuncao = new ConfiguracaoCardFuncaoViewModel(funcaoItem, actionExcluir, actionTrocarPosicao, actionConfigurarFuncao);
+            var cardFuncao = new ConfiguracaoCardFuncaoViewModel(funcaoItem, functionExcluir, actionTrocarPosicao, functionConfigurarFuncao);
             _cardsLista.Add(cardFuncao);
             _posicoesLista.Add(cardFuncao.Posicao);
             AtualizaPosicoes();
         }
 
-        public void CarregarPipeline(ConversorJson conversor, Action<ConfiguracaoCardFuncaoViewModel> actionConfigurarFuncao, Func<ConfiguracaoCardFuncaoViewModel, Task> functionRemover,
+        public async Task CarregarPipeline(ConversorJson conversor, Func<ConfiguracaoCardFuncaoViewModel, Task> actionConfigurarFuncao, Func<ConfiguracaoCardFuncaoViewModel, Task> functionRemover,
             string caminhoJson)
         {
             _cardsLista.Clear();
             _posicoesLista.Clear();
 
-            var schema = conversor.CarregarJson<Dictionary<int, T>>(caminhoJson);
+            var schema = await conversor.CarregarJsonAsync<Dictionary<int, T>>(caminhoJson);
 
             foreach (var card in schema.OrderBy(x => x.Key))
             {
@@ -43,7 +43,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
             AtualizaPosicoes();
         }
 
-        public void PreparaParaJson<F>(ConversorJson conversor, string nomeModelo) where F : IPipelineExecutorFactory<T>
+        public async Task PreparaParaJson<F>(ConversorJson conversor, string nomeModelo) where F : IPipelineExecutorFactory<T>
         {
             var pipelineNovo = new Dictionary<int, T>();
 
@@ -53,7 +53,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
                 pipelineNovo.Add(card.Posicao, pipeline);
             }
 
-            conversor.ConverteJson(pipelineNovo);
+            await conversor.ConverteJsonAsync(pipelineNovo);
         }
 
         public override void RemoverCard(ConfiguracaoCardFuncaoViewModel card)

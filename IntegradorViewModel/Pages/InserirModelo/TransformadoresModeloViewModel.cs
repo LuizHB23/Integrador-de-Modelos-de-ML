@@ -4,6 +4,7 @@ using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
 using IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson;
 using IntegradorAplicacao.Infraestrutura.Gerenciador;
+using IntegradorDominio.Models.Configuracao;
 using IntegradorViewModel.ControleUsuario.ConfiguracaoCard;
 using IntegradorViewModel.ItensViewModel;
 using IntegradorViewModel.JanelaModelo;
@@ -36,14 +37,14 @@ namespace IntegradorViewModel.Pages.InserirModelo
 
         private readonly ConversorJson _conversor;
         private readonly IGerenciador<TransformadorDTO> _gerenciador;
-        private readonly IContext<ModeloDTO> _contextNomeModelo;
+        private readonly IContext<ModeloDTO> _contextModelo;
         private readonly IPathProvider _provider;
         private readonly IDialogService _dialogService;
 
-        public TransformadoresModeloViewModel(INavigationService navigation, IDialogService dialogService, ConversorJson conversor, IContext<ModeloDTO> contextNomeModelo, IPathProvider provider, IGerenciador<TransformadorDTO> gerenciador)
+        public TransformadoresModeloViewModel(INavigationService navigation, IDialogService dialogService, ConversorJson conversor, IContext<ModeloDTO> contextModelo, IPathProvider provider, IGerenciador<TransformadorDTO> gerenciador)
         {
             _conversor = conversor;
-            _contextNomeModelo = contextNomeModelo;
+            _contextModelo = contextModelo;
             _provider = provider;
             _dialogService = dialogService;
             _gerenciador = gerenciador;
@@ -55,7 +56,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
             OpcoesPosicao = new();
 
             _caminhoProvisorio = string.Empty;
-            _nomeModelo = contextNomeModelo.RecebeMensagem().NomeModelo;
+            _nomeModelo = contextModelo.RecebeMensagem().NomeModelo;
             _cardsManager = new(CardsTransformador, OpcoesPosicao);
         }
 
@@ -112,7 +113,19 @@ namespace IntegradorViewModel.Pages.InserirModelo
         }
 
         [RelayCommand]
-        public void NavigateToHome()
+        public async Task NavigateToHome()
+        {
+            var caminhoModelo = Path.Combine(Path.GetDirectoryName(_contextModelo.RecebeMensagem().CaminhoPasta)!, "modelo.json");
+            var modelo = await _conversor.CarregarJsonAsync<ModeloConfiguracao>(caminhoModelo);
+            modelo.TransformadoresVersao = "1.0";
+            await _conversor.ConverteJsonAsync(modelo);
+
+            Navigation.EndFlow();
+            Navigation.NavigateTo<HomeViewModel>();
+        }
+
+        [RelayCommand]
+        public void NavigateToHomeCancelar()
         {
             Navigation.EndFlow();
             Navigation.NavigateTo<HomeViewModel>();

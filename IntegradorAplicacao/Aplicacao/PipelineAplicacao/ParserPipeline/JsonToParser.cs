@@ -18,16 +18,16 @@ namespace IntegradorAplicacao.Aplicacao.PipelineAplicacao.ParserPipeline
             _parser = new ParserAst();
         }
 
-        public MetodoPipeline EnviaMetodoPipeline(string caminhoPipeline)
+        public async Task<MetodoPipeline> EnviaMetodoPipeline(string caminhoPipeline)
         {
-            var metodoNomeCorpo = CarregarCodigos(caminhoPipeline);
+            var metodoNomeCorpo = await CarregarCodigos(caminhoPipeline);
             return _parser.Parse(metodoNomeCorpo);
         }
 
-        private Dictionary<string, List<string>> CarregarCodigos(string caminhoPipeline)
+        private async Task<Dictionary<string, List<string>>> CarregarCodigos(string caminhoPipeline)
         {
             var listaCodigos = new Dictionary<string, List<string>>();
-            var codigosJson = _conversor.CarregarJson<Dictionary<int, FuncaoDTO>>(caminhoPipeline);
+            var codigosJson = await _conversor.CarregarJsonAsync<Dictionary<int, FuncaoDTO>>(caminhoPipeline);
 
             foreach(var elementos in codigosJson)
             {

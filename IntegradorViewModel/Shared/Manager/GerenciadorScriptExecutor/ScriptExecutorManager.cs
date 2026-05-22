@@ -154,7 +154,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor
             var caminhoPasta = _provider.GetCaminhoModelo();
             caminhoPasta = Path.Combine(caminhoPasta, _nomeModelo, _json);
 
-            var dicionarioFuncoes = _conversor.CarregarJson<Dictionary<int, T>>(caminhoPasta);
+            var dicionarioFuncoes = await _conversor.CarregarJsonAsync<Dictionary<int, T>>(caminhoPasta);
 
             foreach (var elemento in dicionarioFuncoes)
             {
@@ -167,7 +167,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor
 
                     var funcaoReserva = dicionarioFuncoes[posicao];
                     dicionarioFuncoes[posicao] = pipelineDto;
-                    _conversor.ConverteJson(dicionarioFuncoes);
+                    await _conversor.ConverteJsonAsync(dicionarioFuncoes);
 
                     try
                     {
@@ -179,7 +179,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor
                         _dialogService.ShowMessage($"Houve um erro no comando: {ex.Message}", "Erro de Comando");
 
                         dicionarioFuncoes[posicao] = funcaoReserva;
-                        _conversor.ConverteJson(dicionarioFuncoes);
+                        await _conversor.ConverteJsonAsync(dicionarioFuncoes);
                         await Task.Run(() => onConstroiPipelineAsync!());
                     }
 
@@ -191,12 +191,12 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor
         }
 
 
-        public void ConfigurarFuncao(ConfiguracaoCardFuncaoViewModel cardSchema)
+        public async Task ConfigurarFuncao(ConfiguracaoCardFuncaoViewModel cardSchema)
         {
             var caminhoPasta = _provider.GetCaminhoModelo();
             caminhoPasta = Path.Combine(caminhoPasta, _nomeModelo, _json);
 
-            var dicionarioFuncoes = _conversor.CarregarJson<Dictionary<int, T>>(caminhoPasta);
+            var dicionarioFuncoes = await _conversor.CarregarJsonAsync<Dictionary<int, T>>(caminhoPasta);
             var codigo = string.Empty;
 
             foreach (var elemento in dicionarioFuncoes)

@@ -5,6 +5,7 @@ using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
 using IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson;
 using IntegradorDominio.Attributes;
 using IntegradorDominio.InterfacesSteps;
+using IntegradorDominio.Models.Configuracao;
 using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.ControleUsuario.ConfiguracaoMetodo.EstadoDataFrame;
 using IntegradorViewModel.ItensViewModel;
@@ -39,6 +40,10 @@ namespace IntegradorViewModel.Pages.InserirModelo
 
         private readonly ScriptExecutorPipelineModeloManager _scriptManager;
 
+        private readonly ConversorJson _conversor;
+
+        private readonly string _caminhoModelo;
+
         public PipelineModeloViewModel(INavigationService navigation, IDialogService dialogService, ConversorJson conversor, IContext<ModeloDTO> contextModelo, IContext<ArquivoDadosDTO> contextArquivo, IPathProvider provider)
         {
             Navigation = navigation;
@@ -52,6 +57,8 @@ namespace IntegradorViewModel.Pages.InserirModelo
             TextBox = new ConfiguracaoPipelineTextBoxViewModel(new ConfiguracaoTextBoxViewModel(dialogService, AlterouTabela), DataPreview, new EstadoDataFrameViewModel(contextArquivo.RecebeMensagem()));
 
             _scriptManager = new(dialogService, conversor, contextModelo, contextArquivo, provider, CardsFuncoes, OpcoesPosicao, TextBox);
+            _conversor = conversor;
+            _caminhoModelo = contextModelo.RecebeMensagem().CaminhoPasta;
         }
 
         [RelayCommand]
@@ -66,8 +73,13 @@ namespace IntegradorViewModel.Pages.InserirModelo
         public void AlterouTabela(DataView dataView) => DataPreview = dataView;
 
         [RelayCommand]
-        public void NavigateToTransformers()
+        public async Task NavigateToTransformers()
         {
+            var caminhoModelo = Path.Combine(Path.GetDirectoryName(_caminhoModelo)!, "modelo.json");
+            var modelo = await _conversor.CarregarJsonAsync<ModeloConfiguracao>(caminhoModelo);
+            modelo.SchemaVersao = "1.0";
+            await _conversor.ConverteJsonAsync(modelo);
+
             Navigation.NavigateTo<TransformadoresModeloViewModel>();
         }
 

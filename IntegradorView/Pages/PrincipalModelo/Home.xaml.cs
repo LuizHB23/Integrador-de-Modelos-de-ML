@@ -1,4 +1,5 @@
-﻿using IntegradorViewModel.Pages.PrincipalModelo;
+﻿using IntegradorViewModel.Pages.ConfiguracaoModelo;
+using IntegradorViewModel.Pages.PrincipalModelo;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -12,6 +13,14 @@ namespace IntegradorView.Pages.PrincipalModelo
         public Home()
         {
             InitializeComponent();
+
+            Loaded += async (_, __) =>
+            {
+                if (DataContext is HomeViewModel vm)
+                {
+                    await vm.InicializarAsync();
+                }
+            };
         }
     }
 }

@@ -30,12 +30,12 @@ namespace IntegradorViewModel.Pages.PrincipalModelo
             _dialogService = dialogService;
             _conversor = conversor;
             _context = context;
-
             _navigation = navigation;
-            _listaModelos = CarregarModelos();
         }
 
-        public ObservableCollection<ModeloDTO> CarregarModelos()
+        public async Task InicializarAsync() => _listaModelos = await CarregarModelos();
+
+        public async Task<ObservableCollection<ModeloDTO>> CarregarModelos()
         {
             ListaModelos = new ObservableCollection<ModeloDTO>();
 
@@ -56,7 +56,7 @@ namespace IntegradorViewModel.Pages.PrincipalModelo
 
                 try
                 {
-                    var modelo = _conversor.CarregarJson<ModeloConfiguracao>(caminhoJson);
+                    var modelo = await _conversor.CarregarJsonAsync<ModeloConfiguracao>(caminhoJson);
                     ModeloDTO modeloDTO = new ModeloDTO(modelo.NomeModelo, ParserTipoModelo.TipoModeloParaString(modelo.Tipo), modelo.CaminhoPasta, modelo.Versao);
                     ListaModelos.Add(modeloDTO);
                 }

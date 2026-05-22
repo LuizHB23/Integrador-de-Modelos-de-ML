@@ -36,10 +36,10 @@ namespace IntegradorAplicacao.Aplicacao.PipelineAplicacao.ExecutorAplicacao
             return dataFrame;
         }
 
-        public void ConstroiSequenciaMetodoPipeline(string caminhoFuncao)
+        public async Task ConstroiSequenciaMetodoPipeline(string caminhoFuncao)
         {
             _objetosUtilizados["df"] = null;
-            var listaMetodoPipeline = RecuperaMetodoPipeline(caminhoFuncao);
+            var listaMetodoPipeline = await RecuperaMetodoPipeline(caminhoFuncao);
 
             foreach(var metodoPipeline in listaMetodoPipeline)
             {
@@ -51,9 +51,9 @@ namespace IntegradorAplicacao.Aplicacao.PipelineAplicacao.ExecutorAplicacao
             _parser = null;
         }
 
-        private List<MetodoPipeline> RecuperaMetodoPipeline(string caminhoFuncao)
+        private async Task<List<MetodoPipeline>> RecuperaMetodoPipeline(string caminhoFuncao)
         {
-            var codigosJson = _conversor.CarregarJson<Dictionary<int, T>>(caminhoFuncao);
+            var codigosJson = await _conversor.CarregarJsonAsync<Dictionary<int, T>>(caminhoFuncao);
             var listaMetodoPipeline = new List<MetodoPipeline>();
 
             foreach (var elemento in codigosJson)

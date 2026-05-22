@@ -32,13 +32,13 @@ namespace IntegradorAplicacao.Aplicacao.InferenciaAplicacao
 
         public async Task<List<ResultadoInferencia>> RealizaInferenciaAsync(DataFrame dataFrame, string caminhoModelo, string caminhoSchema, string caminhoPipeline, string caminhoTransformador)
         {
-            _schemaDicionario = _conversor.CarregarJson<Dictionary<int, SchemaDTO>>(caminhoSchema)
+            _schemaDicionario = await _conversor.CarregarJsonAsync<Dictionary<int, SchemaDTO>>(caminhoSchema)
                 ?? throw new Exception("Schema não carregado.");
 
             var dataFrameNovo = await RealizaFeatureEngineeringAsync(dataFrame, caminhoPipeline);
             _executor = null;
 
-            var transformadores = _conversor.CarregarJson<Dictionary<int, TransformadorDTO>>(caminhoTransformador);
+            var transformadores = await _conversor.CarregarJsonAsync<Dictionary<int, TransformadorDTO>>(caminhoTransformador);
 
             var ids = PegaIds(dataFrameNovo);
 

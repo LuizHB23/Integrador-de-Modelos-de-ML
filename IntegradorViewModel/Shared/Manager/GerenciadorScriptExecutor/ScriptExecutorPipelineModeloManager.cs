@@ -36,7 +36,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor
                     throw new Exception();
                 }
 
-                _cardsManager.CarregarPipeline(_conversor, ConfigurarFuncao, RemoverFuncao, caminhoPipeline);
+                await _cardsManager.CarregarPipeline(_conversor, ConfigurarFuncao, RemoverFuncao, caminhoPipeline);
             }
             catch (Exception)
             {

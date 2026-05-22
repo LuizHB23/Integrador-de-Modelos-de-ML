@@ -21,16 +21,16 @@ namespace IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson
             };
         }
 
-        public T CarregarJson<T>(string caminho) where T : class
+        public async Task<T> CarregarJsonAsync<T>(string caminho) where T : class
         {
             IConverteJson<T> conversor = (IConverteJson<T>)_conversores[typeof(T)];
-            return conversor.CarregarJson(caminho);
+            return await conversor.CarregarJsonAsync(caminho);
         }
 
-        public void ConverteJson<T>(T objeto) where T : class
+        public async Task ConverteJsonAsync<T>(T objeto) where T : class
         {
             IConverteJson<T> conversor = (IConverteJson<T>)_conversores[typeof(T)];
-            conversor.ConverteJson(objeto);
+            await conversor.ConverteJsonAsync(objeto);
         }
     }
 }

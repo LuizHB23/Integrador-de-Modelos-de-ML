@@ -1,4 +1,6 @@
-﻿using System;
+﻿using IntegradorViewModel.Pages.ConfiguracaoModelo;
+using IntegradorViewModel.Pages.PredicaoModelo;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -21,6 +23,14 @@ namespace IntegradorView.Pages.ConfigucaoModelo
         public ConfiguracaoModelo()
         {
             InitializeComponent();
+
+            Loaded += async (_, __) =>
+            {
+                if (DataContext is ConfiguracaoModeloViewModel vm)
+                {
+                    await vm.InicializarAsync();
+                }
+            };
         }
     }
 }

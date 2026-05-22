@@ -20,14 +20,16 @@ namespace IntegradorViewModel.Pages.ConfiguracaoModelo
         private string _caminhoArquivoDados;
 
         [ObservableProperty]
-        private DataView _schemaPreview;
+        private DataView? _schemaPreview;
 
         [ObservableProperty]
         private ModeloConfiguracao _modelo;
 
-        public ObservableCollection<TransformadorDTO> Transformadores { get; }
+        [ObservableProperty]
+        public ObservableCollection<TransformadorDTO> _transformadores;
 
-        public Dictionary<string, string> Pipeline { get; set; }
+        [ObservableProperty]
+        public Dictionary<string, string> _pipeline;
 
         private IContext <ModeloDTO> _context;
         private IDialogService _dialogService;
@@ -42,21 +44,24 @@ namespace IntegradorViewModel.Pages.ConfiguracaoModelo
             _context = context;
             _dialogService = dialogService;
             _conversor = conversor;
+        }
 
+        public async Task InicializarAsync()
+        {
             var caminhoModeloJson = Path.Combine(Path.GetDirectoryName(_context.RecebeMensagem().CaminhoPasta!)!, "modelo.json");
-            _modelo = _conversor.CarregarJson<ModeloConfiguracao>(caminhoModeloJson);
+            Modelo = await _conversor.CarregarJsonAsync<ModeloConfiguracao>(caminhoModeloJson);
 
-            _modeloDTO = new ModeloDTO(_modelo.NomeModelo, ParserTipoModelo.TipoModeloParaString(_modelo.Tipo), _modelo.CaminhoPasta, _modelo.Versao);
-            _modelo.CaminhoPasta = Path.GetFileName(_modelo.CaminhoPasta);
+            _modeloDTO = new ModeloDTO(Modelo.NomeModelo, ParserTipoModelo.TipoModeloParaString(Modelo.Tipo), Modelo.CaminhoPasta, Modelo.Versao);
+            Modelo.CaminhoPasta = Path.GetFileName(Modelo.CaminhoPasta);
 
             CaminhoArquivoDados = string.Empty;
 
-            Pipeline = CarregarPipeline();
-            SchemaPreview = CarregarSchema();
-            Transformadores = CarregarTransformadores();
+            Pipeline = await CarregarPipeline();
+            SchemaPreview = await CarregarSchema();
+            Transformadores = await CarregarTransformadores();
         }
 
-        private DataView? CarregarSchema()
+        private async Task<DataView?> CarregarSchema()
         {
             DataTable dataTable = new DataTable();
 
@@ -72,7 +77,7 @@ namespace IntegradorViewModel.Pages.ConfiguracaoModelo
                 return dataTable.DefaultView;
             }
 
-            var schema = _conversor.CarregarJson<Dictionary<int, SchemaDTO>>(caminhoSchema);
+            var schema = await _conversor.CarregarJsonAsync<Dictionary<int, SchemaDTO>>(caminhoSchema);
 
             string nomeColuna;
             string finalidade;
@@ -92,7 +97,7 @@ namespace IntegradorViewModel.Pages.ConfiguracaoModelo
             return dataTable.DefaultView;
         }
 
-        private Dictionary<string, string> CarregarPipeline()
+        private async Task<Dictionary<string, string>> CarregarPipeline()
         {
             Dictionary<string, string> dicionarioPipeline = new();
 
@@ -103,7 +108,7 @@ namespace IntegradorViewModel.Pages.ConfiguracaoModelo
                 return dicionarioPipeline;
             }
 
-            var pipeline = _conversor.CarregarJson<Dictionary<int, FuncaoDTO>>(caminhoPipeline);
+            var pipeline = await _conversor.CarregarJsonAsync<Dictionary<int, FuncaoDTO>>(caminhoPipeline);
 
             string codigo = string.Empty;
 
@@ -124,7 +129,7 @@ namespace IntegradorViewModel.Pages.ConfiguracaoModelo
             return dicionarioPipeline;
         }
 
-        private ObservableCollection<TransformadorDTO> CarregarTransformadores()
+        private async Task<ObservableCollection<TransformadorDTO>> CarregarTransformadores()
         {
             ObservableCollection<TransformadorDTO> listaTransformadores = new();
 
@@ -135,7 +140,7 @@ namespace IntegradorViewModel.Pages.ConfiguracaoModelo
                 return listaTransformadores;
             }
 
-            var transformadores = _conversor.CarregarJson<Dictionary<int, TransformadorDTO>>(caminhoTransformadores);
+            var transformadores = await _conversor.CarregarJsonAsync<Dictionary<int, TransformadorDTO>>(caminhoTransformadores);
 
             foreach (var item in transformadores)
             {

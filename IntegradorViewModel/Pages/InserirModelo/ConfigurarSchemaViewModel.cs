@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
 using IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson;
+using IntegradorDominio.Models.Configuracao;
 using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.ItensViewModel;
 using IntegradorViewModel.JanelaModelo;
@@ -39,14 +40,14 @@ namespace IntegradorViewModel.Pages.InserirModelo
 
 
         private readonly ConversorJson _conversor;
-        private readonly IContext<ModeloDTO> _contextNomeModelo;
+        private readonly IContext<ModeloDTO> _contextModelo;
         private readonly IPathProvider _provider;
         private readonly IDialogService _dialogService;
 
-        public ConfigurarSchemaViewModel(INavigationService navigation, IDialogService dialogService, ConversorJson conversor, IContext<ModeloDTO> contextNomeModelo, IPathProvider provider)
+        public ConfigurarSchemaViewModel(INavigationService navigation, IDialogService dialogService, ConversorJson conversor, IContext<ModeloDTO> contextModelo, IPathProvider provider)
         {
             _conversor = conversor;
-            _contextNomeModelo = contextNomeModelo;
+            _contextModelo = contextModelo;
             _provider = provider;
             _dialogService = dialogService;
             Navigation = navigation;
@@ -58,7 +59,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
             CardsSchema = new();
             OpcoesPosicao = new();
 
-            _nomeModelo = _contextNomeModelo.RecebeMensagem().NomeModelo;
+            _nomeModelo = _contextModelo.RecebeMensagem().NomeModelo;
             _cardsManager = new(CardsSchema, OpcoesPosicao);
         }
 
@@ -95,7 +96,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
 
 
         [RelayCommand]
-        public void NavigateToCarregarDados()
+        public async Task NavigateToCarregarDados()
         {
             Navigation.NavigateTo<CarregarDadosViewModel>();
             if (CardsSchema.Count == 0) 
@@ -105,6 +106,12 @@ namespace IntegradorViewModel.Pages.InserirModelo
             }
 
             PreparaParaJson();
+
+            var caminhoModelo = Path.Combine(Path.GetDirectoryName(_contextModelo.RecebeMensagem().CaminhoPasta)! , "modelo.json");
+            var modelo = await _conversor.CarregarJsonAsync<ModeloConfiguracao>(caminhoModelo); 
+            modelo.PipelineVersao = "1.0";
+            await _conversor.ConverteJsonAsync(modelo);
+
             Navigation.NavigateTo<CarregarDadosViewModel>();
         }
 

@@ -18,7 +18,7 @@ namespace IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson.ConverteJ
             _json = PegaJson();
         }
 
-        public void ConverteJson(Dictionary<int, T> objeto)
+        public async Task ConverteJsonAsync(Dictionary<int, T> objeto)
         {
             string texto = string.Empty;
 
@@ -34,7 +34,7 @@ namespace IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson.ConverteJ
             File.WriteAllText(_caminhoJson, texto);
         }
 
-        public Dictionary<int, T> CarregarJson(string caminho)
+        public async Task<Dictionary<int, T>> CarregarJsonAsync(string caminho)
         {
             if (File.Exists(caminho))
             {

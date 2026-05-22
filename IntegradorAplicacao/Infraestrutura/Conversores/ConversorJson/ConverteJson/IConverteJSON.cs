@@ -2,7 +2,7 @@
 {
     public interface IConverteJson<T> where T : class
     {
-        void ConverteJson(T objeto);
-        T CarregarJson(string caminho);
+        Task ConverteJsonAsync(T objeto);
+        Task<T> CarregarJsonAsync(string caminho);
     }
 }
