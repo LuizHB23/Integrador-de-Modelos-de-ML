@@ -13,7 +13,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor
 {
     public partial class ScriptExecutorPipelineModeloManager : ScriptExecutorManager<FuncaoDTO>
     {
-        public ScriptExecutorPipelineModeloManager(IDialogService dialogService, ConversorJson conversor, IContext<ModeloDTO> contextNomeModelo, IContext<ArquivoDadosDTO> contextArquivo, IPathProvider provider, ObservableCollection<ConfiguracaoCardFuncaoViewModel> cardsFuncoes, ObservableCollection<int> opcoesPosicao, IConfiguracaoTextBox textBox) : base(dialogService, conversor, contextNomeModelo, contextArquivo, provider, cardsFuncoes, opcoesPosicao, textBox) 
+        public ScriptExecutorPipelineModeloManager(IDialogService dialogService, IConversorJson conversor, IContext<ModeloDTO> contextNomeModelo, IContext<ArquivoDadosDTO> contextArquivo, IPathProvider provider, ObservableCollection<ConfiguracaoCardFuncaoViewModel> cardsFuncoes, ObservableCollection<int> opcoesPosicao, IConfiguracaoTextBox textBox) : base(dialogService, conversor, contextNomeModelo, contextArquivo, provider, cardsFuncoes, opcoesPosicao, textBox) 
         {
             onConstroiPipelineAsync = ConstroiPipelineAsync;
 

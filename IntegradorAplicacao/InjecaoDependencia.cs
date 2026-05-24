@@ -15,7 +15,7 @@ namespace IntegradorAplicacao
             services.AddTransient<IGerenciador<ModeloDTO>, ModeloGerenciador>();
             services.AddTransient<IGerenciador<TransformadorDTO>, TransformadorGerenciador>();
 
-            services.AddTransient<ConversorJson>();
+            services.AddTransient<IConversorJson,ConversorJson>();
 
             services.AddTransient<Inferencia<FuncaoDTO>>();
             services.AddTransient<Inferencia<SaidaDTO>>();

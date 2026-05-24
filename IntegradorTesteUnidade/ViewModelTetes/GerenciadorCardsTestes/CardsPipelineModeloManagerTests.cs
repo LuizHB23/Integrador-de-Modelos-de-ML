@@ -1,22 +1,19 @@
 ﻿using IntegradorAplicacao.DTO;
-using IntegradorAplicacao.Infraestrutura.ConversorJSON;
 using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.ItensViewModel;
 using IntegradorViewModel.Shared.Factory;
 using IntegradorViewModel.Shared.Interfaces;
 using IntegradorViewModel.Shared.Manager.GerenciadorCards;
-using Moq;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
+using Moq;
+using IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson;
 
 namespace IntegradorTesteUnidade.ViewModelTetes.GerenciadorCardsTestes
 {
     public class CardsPipelineModeloManagerTests
     {
         private readonly Mock<IDialogService> _dialogMock = new();
-        private readonly Mock<IConverteJson<Dictionary<int, FuncaoDTO>>> _converterMock = new();
+        private readonly Mock<IConversorJson> _converterMock = new();
 
         private CardsConfigurarFuncaoManager<FuncaoDTO> CriarManager(
             out ObservableCollection<ConfiguracaoCardFuncaoViewModel> cards,
@@ -39,7 +36,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.GerenciadorCardsTestes
             var manager = CriarManager(out var cards, out var posicoes);
 
             //Act
-            manager.AdicionarCard(null, _ => Task.CompletedTask, (_, __) => { }, _ => { });
+            manager.AdicionarCard(null, _ => Task.CompletedTask, (_, __) => { }, _ => Task.CompletedTask);
 
             //Assert
             Assert.Empty(cards);
@@ -55,7 +52,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.GerenciadorCardsTestes
             var item = new FuncaoItemViewModel(1, "Metodo", new List<string> { "linha" });
 
             //Act
-            manager.AdicionarCard(item, _ => Task.CompletedTask, (_, __) => { }, _ => { });
+            manager.AdicionarCard(item, _ => Task.CompletedTask, (_, __) => { }, _ => Task.CompletedTask);
 
             //Assert
             Assert.Single(cards);
@@ -68,7 +65,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.GerenciadorCardsTestes
         // =========================
 
         [Fact]
-        public void CarregarSchema_JogaExecao_QuandoCaminhoVazio()
+        public async Task CarregarSchema_JogaExecao_QuandoCaminhoVazio()
         {
             //Arrange
             var manager = CriarManager(out var cards, out var posicoes);
@@ -76,28 +73,28 @@ namespace IntegradorTesteUnidade.ViewModelTetes.GerenciadorCardsTestes
             _dialogMock.Setup(x => x.GetCaminhoArquivo()).Returns("");
 
             //Act +Assert
-            Assert.Throws<ArgumentNullException>(() => manager.CarregarPipeline(_converterMock.Object, _ => { }, _ => Task.CompletedTask, ""));
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await manager.CarregarPipeline(_converterMock.Object, _ => Task.CompletedTask , _ => Task.CompletedTask, ""));
             Assert.Empty(cards);
             Assert.Empty(posicoes);
         }
 
         [Fact]
-        public void CarregarSchema_CarregaCardsCorretamente()
+        public async Task CarregarSchema_CarregaCardsCorretamente()
         {
             //Arrange
             var manager = CriarManager(out var cards, out var posicoes);
 
             _dialogMock.Setup(x => x.GetCaminhoArquivo()).Returns("caminho.json");
 
-            _converterMock.Setup(x => x.CarregarJson(It.IsAny<string>()))
-                .Returns(new Dictionary<int, FuncaoDTO>
+            _converterMock.Setup(x => x.CarregarJsonAsync<Dictionary<int, FuncaoDTO>>(It.IsAny<string>()))
+                .ReturnsAsync(new Dictionary<int, FuncaoDTO>
                 {
                     { 1, new FuncaoDTO(){ NomeFuncao = "Metodo1", Codigo = new List<string>{ "a" }, NomeModelo = "modelo" } },
                     { 2, new FuncaoDTO(){ NomeFuncao = "Metodo2", Codigo = new List<string>{ "b" }, NomeModelo = "modelo" }  }
                 });
 
             //Act
-            manager.CarregarPipeline(_converterMock.Object, _ => { }, _ => Task.CompletedTask, "");
+            await manager.CarregarPipeline(_converterMock.Object, _ => Task.CompletedTask, _ => Task.CompletedTask, "");
 
             //Assert
             Assert.Equal(2, cards.Count);
@@ -119,15 +116,15 @@ namespace IntegradorTesteUnidade.ViewModelTetes.GerenciadorCardsTestes
             var item1 = new FuncaoItemViewModel(1, "Metodo1", new List<string> { "a" });
             var item2 = new FuncaoItemViewModel(2, "Metodo2", new List<string> { "b" });
 
-            manager.AdicionarCard(item1, _ => Task.CompletedTask, (_, __) => { }, _ => { });
-            manager.AdicionarCard(item2, _ => Task.CompletedTask, (_, __) => { }, _ => { });
+            manager.AdicionarCard(item1, _ => Task.CompletedTask, (_, __) => { }, _ => Task.CompletedTask);
+            manager.AdicionarCard(item2, _ => Task.CompletedTask, (_, __) => { }, _ => Task.CompletedTask);
 
             //Act
             manager.PreparaParaJson<FuncaoDTOFactory>(_converterMock.Object, "modelo");
 
             //Assert
             _converterMock.Verify(x =>
-                x.ConverteJson(It.Is<Dictionary<int, FuncaoDTO>>(d =>
+                x.ConverteJsonAsync(It.Is<Dictionary<int, FuncaoDTO>>(d =>
                     d.Count == 2 &&
                     d[1].NomeFuncao == "Metodo1" &&
                     d[2].NomeFuncao == "Metodo2"
@@ -147,7 +144,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.GerenciadorCardsTestes
 
             var item = new FuncaoItemViewModel(1, "Metodo", new List<string>());
 
-            manager.AdicionarCard(item, _ => Task.CompletedTask, (_, __) => { }, _ => { });
+            manager.AdicionarCard(item, _ => Task.CompletedTask, (_, __) => { }, _ => Task.CompletedTask);
 
             var card = cards[0];
 
@@ -168,8 +165,8 @@ namespace IntegradorTesteUnidade.ViewModelTetes.GerenciadorCardsTestes
             //Arrange
             var manager = CriarManager(out var cards, out var posicoes);
 
-            manager.AdicionarCard(new FuncaoItemViewModel(1, "A", new()), _ => Task.CompletedTask, (_, __) => { }, _ => { });
-            manager.AdicionarCard(new FuncaoItemViewModel(2, "B", new()), _ => Task.CompletedTask, (_, __) => { }, _ => { });
+            manager.AdicionarCard(new FuncaoItemViewModel(1, "A", new()), _ => Task.CompletedTask, (_, __) => { }, _ => Task.CompletedTask);
+            manager.AdicionarCard(new FuncaoItemViewModel(2, "B", new()), _ => Task.CompletedTask, (_, __) => { }, _ => Task.CompletedTask);
 
             var primeiro = cards[0];
 

@@ -1,14 +1,12 @@
 ﻿using IntegradorAplicacao.DTO;
-using IntegradorAplicacao.Infraestrutura.ConversorJSON;
+using IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson;
+using IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson.ConverteJson;
 using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.ItensViewModel;
 using IntegradorViewModel.Shared.Interfaces;
 using IntegradorViewModel.Shared.Manager.GerenciadorCards;
 using Moq;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 
 namespace IntegradorTesteUnidade.ViewModelTetes.GerenciadorCardsTestes
 {
@@ -16,6 +14,15 @@ namespace IntegradorTesteUnidade.ViewModelTetes.GerenciadorCardsTestes
     {
         private readonly ObservableCollection<ConfiguracaoCardSchemaViewModel> _cards = new();
         private readonly ObservableCollection<int> _posicoes = new();
+
+        private Mock<IDialogService> _dialogMock;
+        private Mock<IConversorJson> _converterMock;
+
+        public CardsConfigurarSchemaManagerTests()
+        {
+            _dialogMock = new Mock<IDialogService>();
+            _converterMock = new Mock<IConversorJson>();
+        }
 
         private CardsConfigurarSchemaManager CriarManager()
             => new(_cards, _posicoes);
@@ -52,54 +59,46 @@ namespace IntegradorTesteUnidade.ViewModelTetes.GerenciadorCardsTestes
         }
 
         [Fact]
-        public void CarregarSchema_DevePopularLista()
+        public async Task CarregarSchema_DevePopularLista()
         {
             var manager = CriarManager();
 
-            var dialogMock = new Mock<IDialogService>();
-            var converterMock = new Mock<IConverteJson<Dictionary<int, SchemaDTO>>>();
+            _dialogMock.Setup(x => x.GetCaminhoArquivo()).Returns("fake.json");
 
-            dialogMock.Setup(x => x.GetCaminhoArquivo()).Returns("fake.json");
-
-            converterMock.Setup(x => x.CarregarJson(It.IsAny<string>()))
-                .Returns(new Dictionary<int, SchemaDTO>
+            _converterMock.Setup(x => x.CarregarJsonAsync<Dictionary<int, SchemaDTO>>(It.IsAny<string>())).ReturnsAsync(new Dictionary<int, SchemaDTO>
                 {
                     { 1, new SchemaDTO("col1","target","float",false) { NomeModelo = "modelo"} }
                 });
 
-            manager.CarregarSchema(dialogMock.Object, converterMock.Object);
+            await manager.CarregarSchema(_dialogMock.Object, _converterMock.Object);
 
             Assert.Single(_cards);
             Assert.Single(_posicoes);
         }
 
         [Fact]
-        public void CarregarSchema_NaoFazNada_QuandoCaminhoVazio()
+        public async Task CarregarSchema_NaoFazNada_QuandoCaminhoVazio()
         {
             var manager = CriarManager();
 
-            var dialogMock = new Mock<IDialogService>();
-            var converterMock = new Mock<IConverteJson<Dictionary<int, SchemaDTO>>>();
+            _dialogMock.Setup(x => x.GetCaminhoArquivo()).Returns("");
 
-            dialogMock.Setup(x => x.GetCaminhoArquivo()).Returns("");
-
-            manager.CarregarSchema(dialogMock.Object, converterMock.Object);
+            await manager.CarregarSchema(_dialogMock.Object, _converterMock.Object);
 
             Assert.Empty(_cards);
         }
 
         [Fact]
-        public void PreparaParaJson_DeveChamarConversao()
+        public async Task PreparaParaJson_DeveChamarConversao()
         {
             var manager = CriarManager();
-            var converterMock = new Mock<IConverteJson<Dictionary<int, SchemaDTO>>>();
 
             _cards.Add(CriarCard());
 
-            manager.PreparaParaJson(converterMock.Object, "modelo");
+            await manager.PreparaParaJson(_converterMock.Object, "modelo");
 
-            converterMock.Verify(x =>
-                x.ConverteJson(It.IsAny<Dictionary<int, SchemaDTO>>()),
+            _converterMock.Verify(x =>
+                x.ConverteJsonAsync(It.IsAny<Dictionary<int, SchemaDTO>>()),
                 Times.Once);
         }
     }

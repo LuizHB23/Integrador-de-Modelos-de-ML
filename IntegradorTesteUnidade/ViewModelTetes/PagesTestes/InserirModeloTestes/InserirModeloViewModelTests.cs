@@ -1,24 +1,20 @@
 ﻿using IntegradorAplicacao.DTO;
-using IntegradorAplicacao.Infraestrutura.ConversorJSON;
+using IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson;
 using IntegradorAplicacao.Infraestrutura.Gerenciador;
-using IntegradorDominio;
+using IntegradorDominio.Models.Configuracao;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.InserirModelo;
 using IntegradorViewModel.Pages.PrincipalModelo;
 using IntegradorViewModel.Shared.Context;
 using IntegradorViewModel.Shared.Interfaces;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
 {
     public class InserirModeloViewModelTests
     {
         private readonly Mock<IGerenciador<ModeloDTO>> _mockGerenciador;
-        private readonly Mock<IConverteJson<ModeloDTO>> _mockConversor;
+        private readonly Mock<IConversorJson> _mockConversor;
         private readonly Mock<IDialogService> _mockDialog;
         private readonly Mock<INavigationService> _mockNavigation;
         private readonly Mock<IContext<ModeloDTO>> _mockContext;
@@ -27,7 +23,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
         public InserirModeloViewModelTests()
         {
             _mockNavigation = new Mock<INavigationService>();
-            _mockConversor = new Mock<IConverteJson<ModeloDTO>>();
+            _mockConversor = new Mock<IConversorJson>();
             _mockGerenciador = new Mock<IGerenciador<ModeloDTO>>();
             _mockDialog = new Mock<IDialogService>();
             _mockContext = new Mock<IContext<ModeloDTO>>();
@@ -90,22 +86,22 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
         }
 
         [Fact]
-        public void RetornaOkParaCamposVisitacosComSucessoNoFluxoEmNavigateToConfigurarSchemaCommand()
+        public async Task RetornaOkParaCamposVisitacosComSucessoNoFluxoEmNavigateToConfigurarSchemaCommand()
         {
             //Arrange
             _mockGerenciador.Setup(f => f.Salvar(It.IsAny<ModeloDTO>())).Returns("C://FakePath//modelo.onnx");
 
             _viewModel.NomeModelo = "Nome Qualquer";
-            _viewModel.TipoModelo = "Tipo Qualquer";
+            _viewModel.TipoModelo = "Regressão";
             _viewModel.CaminhoModelo = "Caminho Qualquer";
 
             //Act
-            _viewModel.NavigateToConfigurarSchemaCommand.Execute(null);
+            await _viewModel.NavigateToConfigurarSchemaCommand.ExecuteAsync(null);
 
             //Assert
             _mockContext.Verify(f => f.EnviaMensagem(It.IsAny<ModeloDTO>()), Times.Once);
             _mockGerenciador.Verify(f => f.Salvar(It.IsAny<ModeloDTO>()), Times.Once);
-            _mockConversor.Verify(f => f.ConverteJson(It.IsAny<ModeloDTO>()), Times.Once);
+            _mockConversor.Verify(f => f.ConverteJsonAsync(It.IsAny<ModeloConfiguracao>()), Times.Once);
             _mockNavigation.Verify(f => f.NavigateTo<ConfigurarSchemaViewModel>(), Times.Once);
         }
 
@@ -130,7 +126,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
             _viewModel.NavigateToConfigurarSchemaCommand.Execute(null);
 
             //Assert
-            _mockConversor.Verify(f => f.ConverteJson(It.IsAny<ModeloDTO>()), Times.Never);
+            _mockConversor.Verify(f => f.ConverteJsonAsync(It.IsAny<ModeloDTO>()), Times.Never);
             _mockDialog.Verify(f => f.ShowMessage($"Preencha corretamente os campos", "Campos Faltantes"), Times.Once);
         }
 

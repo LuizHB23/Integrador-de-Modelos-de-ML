@@ -8,28 +8,27 @@ namespace IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson.ConverteJ
     public class CardsJson<T> : IConverteJson<Dictionary<int, T>> where T : IItemNomeModelo
     {
         private readonly IPathProvider _provider;
-        private string _caminhoJson;
 
         public CardsJson(IPathProvider provider)
         {
             _provider = provider;
-            _caminhoJson = string.Empty;
         }
 
         public async Task ConverteJsonAsync(Dictionary<int, T> objeto)
         {
             string texto = string.Empty;
 
-            if (objeto.Count != 0)
+            if (objeto.Count > 0)
             {
                 var card = objeto.First();
 
-                _caminhoJson = PegaJson(card.Value.NomeModelo);
+                var caminhoJson = PegaJson(card.Value.NomeModelo);
 
                 texto = JsonSerializer.Serialize(objeto);
+
+                File.WriteAllText(caminhoJson, texto);
             }
 
-            File.WriteAllText(_caminhoJson, texto);
         }
 
         public async Task<Dictionary<int, T>> CarregarJsonAsync(string caminho)

@@ -8,12 +8,12 @@ namespace IntegradorAplicacao.Aplicacao.PipelineAplicacao.ExecutorAplicacao
 {
     public class ExecutorFinal<T> where T : IPipelineExecutor
     {
-        private readonly ConversorJson _conversor;
+        private readonly IConversorJson _conversor;
         private Dictionary<string, object?> _objetosUtilizados;
         private readonly Queue<BuilderExecutor> _executors;
         private ParserAst? _parser;
 
-        public ExecutorFinal(ConversorJson conversor)
+        public ExecutorFinal(IConversorJson conversor)
         {
             _objetosUtilizados = new();
             _executors = new Queue<BuilderExecutor>();

@@ -34,11 +34,11 @@ namespace IntegradorViewModel.Pages.ConfiguracaoModelo
 
         private IContext <ModeloDTO> _context;
         private IPathProvider _provider;
-        private ConversorJson _conversor;
+        private IConversorJson _conversor;
 
         private ModeloDTO _modeloDTO;
 
-        public ConfiguracaoModeloViewModel(INavigationService navigation, IPathProvider provider, IContext<ModeloDTO> context, ConversorJson conversor)
+        public ConfiguracaoModeloViewModel(INavigationService navigation, IPathProvider provider, IContext<ModeloDTO> context, IConversorJson conversor)
         {
             Navigation = navigation;
 

@@ -1,9 +1,6 @@
-﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.OperacoesAritmeticas;
+﻿using IntegradorAplicacao.Aplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.OperacoesAritmeticas;
 using IntegradorDominio.FeatureEngineering.OperacoesAritmeticas;
 using IntegradorDominio.Models.DataFrameModel;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace IntegradorTesteUnidade.AplicacaoTestes.PipelineAplicacaoTestes.ExecutorPipelineTestes.FeatureExecutorTestes.OperacoesAritmeticasTestes
 {

@@ -42,11 +42,11 @@ namespace IntegradorViewModel.Pages.InserirModelo
 
         private readonly ScriptExecutorPipelineModeloManager _scriptManager;
 
-        private readonly ConversorJson _conversor;
+        private readonly IConversorJson _conversor;
 
         private readonly string _nomeModelo;
 
-        public PipelineModeloViewModel(INavigationService navigation, IDialogService dialogService, ConversorJson conversor, IContext<ModeloDTO> contextModelo, IContext<ArquivoDadosDTO> contextArquivo, IPathProvider provider)
+        public PipelineModeloViewModel(INavigationService navigation, IDialogService dialogService, IConversorJson conversor, IContext<ModeloDTO> contextModelo, IContext<ArquivoDadosDTO> contextArquivo, IPathProvider provider)
         {
             Navigation = navigation;
             ListaFeatureEngineering = new();

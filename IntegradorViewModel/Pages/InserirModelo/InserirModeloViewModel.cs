@@ -32,9 +32,9 @@ namespace IntegradorViewModel.Pages.InserirModelo
         private readonly IGerenciador<ModeloDTO> _gerenciador;
         private readonly IDialogService _dialogService;
         private readonly IContext<ModeloDTO> _contextModelo;
-        private readonly ConversorJson _conversor;
+        private readonly IConversorJson _conversor;
 
-        public InserirModeloViewModel(INavigationService navigation, IGerenciador<ModeloDTO> gerenciador, IDialogService dialogService, ConversorJson conversor, IContext<ModeloDTO> contextModelo)
+        public InserirModeloViewModel(INavigationService navigation, IGerenciador<ModeloDTO> gerenciador, IDialogService dialogService, IConversorJson conversor, IContext<ModeloDTO> contextModelo)
         {
             _navigation = navigation;
             _gerenciador = gerenciador;

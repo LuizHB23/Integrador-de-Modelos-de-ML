@@ -1,17 +1,14 @@
 ﻿using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
-using IntegradorAplicacao.Infraestrutura.ConversorJSON;
 using IntegradorAplicacao.Infraestrutura.Gerenciador;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.InserirModelo;
 using IntegradorViewModel.Pages.PrincipalModelo;
 using IntegradorViewModel.Shared.Context;
 using IntegradorViewModel.Shared.Interfaces;
-using Moq;
-using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
+using Moq;
+using IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson;
 
 namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
 {
@@ -109,13 +106,13 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
         }
 
         [Fact]
-        public void DeveNavegarParaHome()
+        public async Task DeveNavegarParaHome()
         {
             var navigationMock = new Mock<INavigationService>();
 
             var vm = CriarViewModel(navigationMock: navigationMock);
 
-            vm.NavigateToHomeCommand.Execute(null);
+            await vm.NavigateToHomeCommand.ExecuteAsync(null);
 
             navigationMock.Verify(n => n.EndFlow(), Times.Once);
             navigationMock.Verify(n => n.NavigateTo<HomeViewModel>(), Times.Once);
@@ -124,21 +121,21 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
         private TransformadoresModeloViewModel CriarViewModel(
             Mock<INavigationService> navigationMock = null,
             Mock<IDialogService> dialogMock = null,
-            Mock<IConverteJson<Dictionary<int, TransformadorDTO>>> converterMock = null,
+            Mock<IConversorJson> converterMock = null,
             Mock<IContext<ModeloDTO>> contextMock = null,
             Mock<IPathProvider> providerMock = null,
             Mock<IGerenciador<TransformadorDTO>> gerenciadorMock = null)
         {
             navigationMock ??= new Mock<INavigationService>();
             dialogMock ??= new Mock<IDialogService>();
-            converterMock ??= new Mock<IConverteJson<Dictionary<int, TransformadorDTO>>>();
+            converterMock ??= new Mock<IConversorJson>();
             contextMock ??= new Mock<IContext<ModeloDTO>>();
             providerMock ??= new Mock<IPathProvider>();
             gerenciadorMock ??= new Mock<IGerenciador<TransformadorDTO>>();
 
             contextMock
                 .Setup(c => c.RecebeMensagem())
-                .Returns(new ModeloDTO("modelo_teste", "", ""));
+                .Returns(new ModeloDTO("modelo_teste", "", "", "1.0"));
 
             return new TransformadoresModeloViewModel(
                 navigationMock.Object,

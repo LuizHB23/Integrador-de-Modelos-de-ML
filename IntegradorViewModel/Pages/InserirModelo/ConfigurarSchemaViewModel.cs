@@ -39,12 +39,12 @@ namespace IntegradorViewModel.Pages.InserirModelo
         private readonly CardsConfigurarSchemaManager _cardsManager;
 
 
-        private readonly ConversorJson _conversor;
+        private readonly IConversorJson _conversor;
         private readonly IContext<ModeloDTO> _contextModelo;
         private readonly IPathProvider _provider;
         private readonly IDialogService _dialogService;
 
-        public ConfigurarSchemaViewModel(INavigationService navigation, IDialogService dialogService, ConversorJson conversor, IContext<ModeloDTO> contextModelo, IPathProvider provider)
+        public ConfigurarSchemaViewModel(INavigationService navigation, IDialogService dialogService, IConversorJson conversor, IContext<ModeloDTO> contextModelo, IPathProvider provider)
         {
             _conversor = conversor;
             _contextModelo = contextModelo;

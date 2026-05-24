@@ -1,46 +1,47 @@
-﻿using Xunit;
-using Moq;
-using IntegradorAplicacao.DTO;
-using System.IO;
-using System.Text.Json;
-using IntegradorAplicacao.Infraestrutura.ConversorJSON;
+﻿using IntegradorDominio.Models.Enums;
 using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
+using IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson;
+using IntegradorDominio.Models.Configuracao;
+using Moq;
 
 namespace IntegradorAplicacao.Tests
 {
     public class ModeloJsonTests : IDisposable
     {
         private readonly Mock<IPathProvider> _pathProviderMock;
-        private readonly ModeloJson _modeloJson;
+        private readonly IConversorJson _modeloJson;
         private readonly string _basePath;
 
         public ModeloJsonTests()
         {
             _pathProviderMock = new Mock<IPathProvider>();
-            _modeloJson = new ModeloJson(_pathProviderMock.Object);
+            _modeloJson = new ConversorJson(_pathProviderMock.Object);
 
             // Pasta temporária para o teste não sujar seu PC
-            _basePath = Path.Combine(Path.GetTempPath(), "ModeloJsonTests");
+            _basePath = Path.Combine(Path.GetTempPath(), "ModeloJsonTests", "config");
             if (!Directory.Exists(_basePath)) Directory.CreateDirectory(_basePath);
         }
 
         [Fact]
-        public void RetornaEhVerdadeiroEContemAoSalvarArquivoModeloNoCaminhoCorretoEmConverteJson()
+        public async Task RetornaEhVerdadeiroEContemAoSalvarArquivoModeloNoCaminhoCorretoEmConverteJson()
         {
             // Arrange
-            var modelo = new ModeloDTO("Nome Qualquer", "Tipo Qualquer", "Caminho Qualquer");
-            _pathProviderMock.Setup(p => p.GetCaminhoModelo()).Returns(_basePath);
+            var modelo = new ModeloConfiguracao("Nome Qualquer", TipoModelo.Classificao, "Caminho Qualquer");
 
-            string pastaModelo = Path.Combine(_basePath, modelo.NomeModelo);
-            Directory.CreateDirectory(pastaModelo); // Necessário para o File.WriteAllText não quebrar
-            string caminhoEsperado = Path.Combine(pastaModelo, "modelo.json");
+            string pastaDoModelo = Path.Combine(_basePath, modelo.NomeModelo, "config");
+            string caminhoEsperadoDoArquivo = Path.Combine(pastaDoModelo, "modelo.json");
+
+            Directory.CreateDirectory(pastaDoModelo);
+
+            _pathProviderMock.Setup(p => p.GetCaminhoModeloConfig("Nome Qualquer"))
+                             .Returns(caminhoEsperadoDoArquivo);
 
             // Act
-            _modeloJson.ConverteJson(modelo);
+            await _modeloJson.ConverteJsonAsync(modelo);
 
             // Assert
-            Assert.True(File.Exists(caminhoEsperado));
-            var jsonSalvo = File.ReadAllText(caminhoEsperado);
+            Assert.True(File.Exists(caminhoEsperadoDoArquivo));
+            var jsonSalvo = File.ReadAllText(caminhoEsperadoDoArquivo);
             Assert.Contains("Nome Qualquer", jsonSalvo);
         }
 

@@ -95,7 +95,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
         {
             if(string.IsNullOrWhiteSpace(CaminhoArquivoDados))
             {
-                _dialogService.ShowMessage("Precisa-se de um arquivo prévio", "Schema Vazio");
+                _dialogService.ShowMessage("Precisa-se de um arquivo prévio", "Caminho Vazio");
                 return;
             }
 

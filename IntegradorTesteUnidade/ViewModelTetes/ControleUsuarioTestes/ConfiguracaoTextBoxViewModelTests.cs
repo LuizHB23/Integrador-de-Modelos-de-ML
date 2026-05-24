@@ -1,13 +1,8 @@
-﻿using IntegradorAplicacao.DTO;
-using IntegradorDominio.DataFrameModel;
+﻿using IntegradorDominio.Models.DataFrameModel;
 using IntegradorViewModel.ControleUsuario;
-using IntegradorViewModel.ControleUsuario.ConfiguracaoMetodo.EstadoDataFrame;
 using IntegradorViewModel.Shared.Interfaces;
 using Moq;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Text;
 
 namespace IntegradorTesteUnidade.ViewModelTetes.ControleUsuarioTestes
 {

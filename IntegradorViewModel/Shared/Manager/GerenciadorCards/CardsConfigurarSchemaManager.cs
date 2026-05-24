@@ -24,7 +24,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
             AtualizaPosicoes();
         }
 
-        public async Task CarregarSchema(IDialogService _dialogService, ConversorJson conversor)
+        public async Task CarregarSchema(IDialogService _dialogService, IConversorJson conversor)
         {
             var _caminhoJson = _dialogService.GetCaminhoArquivo();
 
@@ -49,7 +49,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
             AtualizaPosicoes();
         }
 
-        public async Task PreparaParaJson(ConversorJson conversor, string nomeModelo)
+        public async Task PreparaParaJson(IConversorJson conversor, string nomeModelo)
         {
             var schemaNovo = new Dictionary<int, SchemaDTO>();
 

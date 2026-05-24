@@ -101,7 +101,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
         }
 
         [Fact]
-        public void NavigateToPipeline_SemCaminho_MostraMensagemEMesmoAssimNavega()
+        public void NavigateToPipeline_SemCaminho_MostraMensagemENaoNavega()
         {
             var vm = CriarVM();
 
@@ -110,11 +110,11 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
             vm.NavigateToPipelineModeloCommand.Execute(null);
 
             _dialogMock.Verify(x =>
-                x.ShowMessage("Precisa-se de um arquivo prévio", "Schema Vazio"),
+                x.ShowMessage("Precisa-se de um arquivo prévio", "Caminho Vazio"),
                 Times.Once);
 
             // ⚠️ comportamento atual: ainda navega
-            _navigationMock.Verify(x => x.NavigateTo<PipelineModeloViewModel>(), Times.Once);
+            _navigationMock.Verify(x => x.NavigateTo<PipelineModeloViewModel>(), Times.Never);
         }
 
         // =========================

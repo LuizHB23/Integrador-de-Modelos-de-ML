@@ -22,12 +22,12 @@ namespace IntegradorViewModel.Pages.PrincipalModelo
         [ObservableProperty]
         private ObservableCollection<ModeloDTO> _listaModelos;
 
-        private readonly ConversorJson _conversor;
+        private readonly IConversorJson _conversor;
         private readonly IDialogService _dialogService;
         private readonly IContext<ModeloDTO> _context;
         private readonly IPathProvider _provider;
 
-        public HomeViewModel(INavigationService navigation, ConversorJson conversor, IDialogService dialogService, IContext<ModeloDTO> context, IPathProvider provider)
+        public HomeViewModel(INavigationService navigation, IConversorJson conversor, IDialogService dialogService, IContext<ModeloDTO> context, IPathProvider provider)
         {
             _dialogService = dialogService;
             _conversor = conversor;

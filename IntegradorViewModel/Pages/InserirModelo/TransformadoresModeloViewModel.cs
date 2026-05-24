@@ -35,12 +35,12 @@ namespace IntegradorViewModel.Pages.InserirModelo
         private string _caminhoProvisorio;
         private string _nomeModelo;
 
-        private readonly ConversorJson _conversor;
+        private readonly IConversorJson _conversor;
         private readonly IGerenciador<TransformadorDTO> _gerenciador;
         private readonly IPathProvider _provider;
         private readonly IDialogService _dialogService;
 
-        public TransformadoresModeloViewModel(INavigationService navigation, IDialogService dialogService, ConversorJson conversor, IContext<ModeloDTO> contextModelo, IPathProvider provider, IGerenciador<TransformadorDTO> gerenciador)
+        public TransformadoresModeloViewModel(INavigationService navigation, IDialogService dialogService, IConversorJson conversor, IContext<ModeloDTO> contextModelo, IPathProvider provider, IGerenciador<TransformadorDTO> gerenciador)
         {
             _conversor = conversor;
             _provider = provider;

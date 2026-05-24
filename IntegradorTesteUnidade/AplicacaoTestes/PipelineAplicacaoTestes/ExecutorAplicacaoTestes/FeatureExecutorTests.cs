@@ -1,7 +1,6 @@
-﻿using IntegradorAplicacao.Aplicacao.PipelineAplicacao.ExecutorPipeline.Executors;
-using IntegradorAplicacao.PipelineAplicacao.ExecutorAplicacao;
+﻿using IntegradorAplicacao.Aplicacao.PipelineAplicacao.ExecutorAplicacao;
+using IntegradorAplicacao.Aplicacao.PipelineAplicacao.ExecutorPipeline.Executors;
 using IntegradorDominio.AST;
-using IntegradorDominio.Attributes;
 using IntegradorDominio.Models.DataFrameModel;
 using Moq;
 

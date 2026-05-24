@@ -1,9 +1,6 @@
-﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.ManipulacaoDados;
+﻿using IntegradorAplicacao.Aplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.ManipulacaoDados;
 using IntegradorDominio.FeatureEngineering.ManipulacaoDados;
 using IntegradorDominio.Models.DataFrameModel;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace IntegradorTesteUnidade.AplicacaoTestes.PipelineAplicacaoTestes.ExecutorPipelineTestes.FeatureExecutorTestes.ManipulacaoDadosTestes
 {

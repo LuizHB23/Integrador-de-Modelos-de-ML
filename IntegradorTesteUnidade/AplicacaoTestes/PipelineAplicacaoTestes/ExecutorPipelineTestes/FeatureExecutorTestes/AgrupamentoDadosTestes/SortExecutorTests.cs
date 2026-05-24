@@ -1,4 +1,4 @@
-﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.AgrupamentoDados;
+﻿using IntegradorAplicacao.Aplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.AgrupamentoDados;
 using IntegradorDominio.FeatureEngineering.AgrupamentoDados;
 using IntegradorDominio.Models.DataFrameModel;
 

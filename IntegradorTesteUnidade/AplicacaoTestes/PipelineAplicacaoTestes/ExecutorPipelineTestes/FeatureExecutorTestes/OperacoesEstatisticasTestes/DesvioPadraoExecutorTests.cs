@@ -1,10 +1,6 @@
-﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.OperacoesEstatisticas;
-using IntegradorDominio.DataFrameModel;
+﻿using IntegradorAplicacao.Aplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.OperacoesEstatisticas;
 using IntegradorDominio.FeatureEngineering.OperacoesEstatisticas;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
+using IntegradorDominio.Models.DataFrameModel;
 
 namespace IntegradorTesteUnidade.AplicacaoTestes.PipelineAplicacaoTestes.ExecutorPipelineTestes.FeatureExecutorTestes.OperacoesEstatisticasTestes
 {

@@ -8,14 +8,14 @@ using Bogus;
 using Moq;
 using IntegradorViewModel.Shared.Interfaces;
 using IntegradorViewModel.Shared.Context;
-using IntegradorAplicacao.Infraestrutura.ConversorJSON;
 using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
+using IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson;
 
 namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
 {
     public class ConfigurarSchemaViewModelTests
     {
-        private readonly Mock<IConverteJson<Dictionary<int, SchemaDTO>>> _mockConversor;
+        private readonly Mock<IConversorJson> _mockConversor;
         private readonly Mock<IDialogService> _mockDialog;
         private readonly Mock<INavigationService> _mockNavigation;
         private readonly Mock<IContext<ModeloDTO>> _mockContext;
@@ -26,13 +26,13 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
 
         public ConfigurarSchemaViewModelTests()
         {
-            _mockConversor = new Mock<IConverteJson<Dictionary<int, SchemaDTO>>>();
+            _mockConversor = new Mock<IConversorJson>();
             _mockDialog = new Mock<IDialogService>();
             _mockNavigation = new Mock<INavigationService>();
             _mockContext = new Mock<IContext<ModeloDTO>>();
             _mockProvider = new Mock<IPathProvider>();
 
-            _mockContext.Setup(f => f.RecebeMensagem()).Returns(new ModeloDTO("Nome Qualquer", "", ""));
+            _mockContext.Setup(f => f.RecebeMensagem()).Returns(new ModeloDTO("Nome Qualquer", "", "", "1.0"));
 
             _viewModel = new ConfigurarSchemaViewModel(_mockNavigation.Object, _mockDialog.Object, _mockConversor.Object, _mockContext.Object, _mockProvider.Object);
 
@@ -149,7 +149,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
             }
 
             // Assert
-            _mockConversor.Verify(f => f.ConverteJson(It.Is<Dictionary<int, SchemaDTO>>(dict =>
+            _mockConversor.Verify(f => f.ConverteJsonAsync(It.Is<Dictionary<int, SchemaDTO>>(dict =>
                 dict.Count == 3 &&
                 dict.ContainsKey(1) &&
                 dict.ContainsKey(2) &&
@@ -164,14 +164,14 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
             //Arrange
             string caminho = "Caminho Qualquer";
             _mockDialog.Setup(f => f.GetCaminhoArquivo()).Returns(caminho);
-            _mockConversor.Setup(f => f.CarregarJson(caminho)).Returns(new Dictionary<int, SchemaDTO>());
+            _mockConversor.Setup(f => f.CarregarJsonAsync<Dictionary<int, SchemaDTO>>(caminho)).ReturnsAsync(new Dictionary<int, SchemaDTO>());
 
             //Act
             _viewModel.CarregarSchemaCommand.Execute(null);
 
             //Assert
             _mockDialog.Verify(f => f.GetCaminhoArquivo(), Times.Once);
-            _mockConversor.Verify(f => f.CarregarJson("Caminho Qualquer"), Times.Once);
+            _mockConversor.Verify(f => f.CarregarJsonAsync<Dictionary<int, SchemaDTO>>("Caminho Qualquer"), Times.Once);
         }
 
         [Fact]
@@ -181,7 +181,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
 
             _viewModel.CarregarSchemaCommand.Execute(null);
 
-            _mockConversor.Verify(f => f.CarregarJson(It.IsAny<string>()), Times.Never);
+            _mockConversor.Verify(f => f.CarregarJsonAsync<Dictionary<int, SchemaDTO>>(It.IsAny<string>()), Times.Never);
             Assert.Empty(_viewModel.CardsSchema);
         }
 
@@ -199,7 +199,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
 
             var schema = new Dictionary<int, SchemaDTO>();
             schema.Add(1, new SchemaDTO(nomeColuna, finalidade, tipo, categorico) { NomeModelo = "Modelo Qualquer" });
-            _mockConversor.Setup(f => f.CarregarJson(caminho)).Returns(schema);
+            _mockConversor.Setup(f => f.CarregarJsonAsync<Dictionary<int, SchemaDTO>>(caminho)).ReturnsAsync(schema);
 
             //Act
             _viewModel.CarregarSchemaCommand.Execute(null);

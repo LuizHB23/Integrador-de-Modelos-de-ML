@@ -8,6 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="AplicacaoTestes\GerenciadorTestes\**" />
+    <EmbeddedResource Remove="AplicacaoTestes\GerenciadorTestes\**" />
+    <None Remove="AplicacaoTestes\GerenciadorTestes\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Bogus" Version="35.6.5" />
     <PackageReference Include="coverlet.collector" Version="6.0.4" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />

@@ -5,7 +5,7 @@ using IntegradorDominio.Models.Configuracao;
 
 namespace IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson
 {
-    public class ConversorJson 
+    public class ConversorJson : IConversorJson
     {
         private readonly Dictionary<Type, object> _conversores;
 

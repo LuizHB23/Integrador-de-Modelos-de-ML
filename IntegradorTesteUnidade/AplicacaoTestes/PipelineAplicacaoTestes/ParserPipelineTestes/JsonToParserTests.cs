@@ -1,7 +1,7 @@
 ﻿using IntegradorAplicacao.Aplicacao.PipelineAplicacao.ParserPipeline;
 using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
-using IntegradorAplicacao.Infraestrutura.ConversorJSON;
+using IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson;
 using IntegradorDominio.AST;
 using Moq;
 
@@ -9,13 +9,19 @@ namespace IntegradorTesteUnidade.AplicacaoTestes.PipelineAplicacaoTestes.ParserP
 {
     public class JsonToParserTests
     {
+        private Mock<IConversorJson> _mockConversor;
+        private Mock<IPathProvider> _mockProvider;
+
+        public JsonToParserTests()
+        {
+             _mockConversor = new Mock<IConversorJson>();
+             _mockProvider = new Mock<IPathProvider>();
+        }
+
         [Fact]
-        public void EnviaMetodoPipeline_DeveRetornarMetodoPipeline()
+        public async Task EnviaMetodoPipeline_DeveRetornarMetodoPipeline()
         {
             // Arrange
-            var mockConversor = new Mock<IConverteJson<Dictionary<int, FuncaoDTO>>>();
-            var mockProvider = new Mock<IPathProvider>();
-
             var funcaoDto = new FuncaoDTO
             {
                 NomeFuncao = "TesteFuncao", 
@@ -23,13 +29,12 @@ namespace IntegradorTesteUnidade.AplicacaoTestes.PipelineAplicacaoTestes.ParserP
                 NomeModelo = ""
             };
 
-            mockConversor.Setup(c => c.CarregarJson(It.IsAny<string>()))
-                         .Returns(new Dictionary<int, FuncaoDTO> { { 1, funcaoDto } });
+            _mockConversor.Setup(c => c.CarregarJsonAsync<Dictionary<int, FuncaoDTO>>(It.IsAny<string>())).ReturnsAsync(new Dictionary<int, FuncaoDTO> { { 1, funcaoDto } });
 
-            var parser = new JsonToParser(mockConversor.Object, mockProvider.Object);
+            var parser = new JsonToParser(_mockConversor.Object, _mockProvider.Object);
 
             // Act
-            var metodoPipeline = parser.EnviaMetodoPipeline("caminho/fake.json");
+            var metodoPipeline = await parser.EnviaMetodoPipeline("caminho/fake.json");
 
             // Assert
             Assert.NotNull(metodoPipeline);
@@ -40,12 +45,9 @@ namespace IntegradorTesteUnidade.AplicacaoTestes.PipelineAplicacaoTestes.ParserP
         }
 
         [Fact]
-        public void CarregarCodigos_DeveTransformarJsonEmDicionarioNomeCorpo()
+        public async Task CarregarCodigos_DeveTransformarJsonEmDicionarioNomeCorpo()
         {
             // Arrange
-            var mockConversor = new Mock<IConverteJson<Dictionary<int, FuncaoDTO>>>();
-            var mockProvider = new Mock<IPathProvider>();
-
             var funcaoDto1 = new FuncaoDTO
             {
                 NomeFuncao = "Funcao1",
@@ -60,20 +62,19 @@ namespace IntegradorTesteUnidade.AplicacaoTestes.PipelineAplicacaoTestes.ParserP
                 NomeModelo = ""
             };
 
-            mockConversor.Setup(c => c.CarregarJson(It.IsAny<string>()))
-                         .Returns(new Dictionary<int, FuncaoDTO>
+            _mockConversor.Setup(c => c.CarregarJsonAsync<Dictionary<int, FuncaoDTO>>(It.IsAny<string>())).ReturnsAsync(new Dictionary<int, FuncaoDTO>
                          {
                              { 1, funcaoDto1 },
                              { 2, funcaoDto2 }
                          });
 
-            var parser = new JsonToParser(mockConversor.Object, mockProvider.Object);
+            var parser = new JsonToParser(_mockConversor.Object, _mockProvider.Object);
 
             // Use reflection para chamar método privado CarregarCodigos
             var metodoPrivado = typeof(JsonToParser)
                 .GetMethod("CarregarCodigos", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 
-            var result = (Dictionary<string, List<string>>)metodoPrivado.Invoke(parser, new object[] { "caminho/fake.json" })!;
+            var result = await (Task<Dictionary<string, List<string>>>)metodoPrivado.Invoke(parser, new object[] { "caminho/fake.json" })!;
 
             // Assert
             Assert.Equal(2, result.Count);

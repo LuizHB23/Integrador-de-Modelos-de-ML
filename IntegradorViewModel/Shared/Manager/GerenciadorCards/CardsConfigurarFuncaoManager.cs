@@ -24,7 +24,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
             AtualizaPosicoes();
         }
 
-        public async Task CarregarPipeline(ConversorJson conversor, Func<ConfiguracaoCardFuncaoViewModel, Task> actionConfigurarFuncao, Func<ConfiguracaoCardFuncaoViewModel, Task> functionRemover,
+        public async Task CarregarPipeline(IConversorJson conversor, Func<ConfiguracaoCardFuncaoViewModel, Task> actionConfigurarFuncao, Func<ConfiguracaoCardFuncaoViewModel, Task> functionRemover,
             string caminhoJson)
         {
             _cardsLista.Clear();
@@ -43,7 +43,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
             AtualizaPosicoes();
         }
 
-        public async Task PreparaParaJson<F>(ConversorJson conversor, string nomeModelo) where F : IPipelineExecutorFactory<T>
+        public async Task PreparaParaJson<F>(IConversorJson conversor, string nomeModelo) where F : IPipelineExecutorFactory<T>
         {
             var pipelineNovo = new Dictionary<int, T>();
 

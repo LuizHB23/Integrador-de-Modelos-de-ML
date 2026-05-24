@@ -1,18 +1,14 @@
 ﻿using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
-using IntegradorAplicacao.Infraestrutura.ConversorJSON;
-using IntegradorViewModel.ControleUsuario;
-using IntegradorViewModel.ControleUsuario.ConfiguracaoMetodo.EstadoDataFrame;
-using IntegradorViewModel.ItensViewModel;
 using IntegradorViewModel.JanelaModelo;
 using IntegradorViewModel.Pages.InserirModelo;
 using IntegradorViewModel.Pages.PrincipalModelo;
 using IntegradorViewModel.Shared.Context;
 using IntegradorViewModel.Shared.Interfaces;
-using Moq;
 using System.Data;
-using System.Reflection;
 using System.Text;
+using Moq;
+using IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson;
 
 namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
 {
@@ -20,7 +16,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
     {
         private readonly Mock<INavigationService> _navigation = new();
         private readonly Mock<IDialogService> _dialog = new();
-        private readonly Mock<IConverteJson<Dictionary<int, FuncaoDTO>>> _converter = new();
+        private readonly Mock<IConversorJson> _converter = new();
         private readonly Mock<IContext<ModeloDTO>> _contextModelo = new();
         private readonly Mock<IContext<ArquivoDadosDTO>> _contextArquivo = new();
         private readonly Mock<IPathProvider> _path = new();
@@ -28,7 +24,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
         private PipelineModeloViewModel CreateVM()
         {
             _contextModelo.Setup(x => x.RecebeMensagem())
-                .Returns(new ModeloDTO("modelo", "", ""));
+                .Returns(new ModeloDTO("modelo", "", "", "1.0"));
 
             _contextArquivo.Setup(x => x.RecebeMensagem())
                 .Returns(new ArquivoDadosDTO("fake.csv", ',', Encoding.UTF8, '.', true));

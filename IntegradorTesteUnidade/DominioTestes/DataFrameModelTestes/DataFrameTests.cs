@@ -1,4 +1,4 @@
-﻿using IntegradorDominio.DataFrameModel;
+﻿using IntegradorDominio.Models.DataFrameModel;
 
 namespace IntegradorTesteUnidade.DominioTestes.DataFrameModelTestes
 {

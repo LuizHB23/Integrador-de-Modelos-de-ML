@@ -56,7 +56,7 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
 
         private ArquivoDadosDTO _arquivo { get; set; }
 
-        public ResultadoPredicaoViewModel(INavigationService navigation, IDialogService dialogService, IContext<ModeloDTO> contextModelo, IContext<ArquivoDadosDTO> contextArquivo, ConversorJson conversor, IPathProvider provider, INotificationService notificationService, Inferencia<SaidaDTO> inferencia)
+        public ResultadoPredicaoViewModel(INavigationService navigation, IDialogService dialogService, IContext<ModeloDTO> contextModelo, IContext<ArquivoDadosDTO> contextArquivo, IConversorJson conversor, IPathProvider provider, INotificationService notificationService, Inferencia<SaidaDTO> inferencia)
         {
             Navigation = navigation;
             DataPreview = new();

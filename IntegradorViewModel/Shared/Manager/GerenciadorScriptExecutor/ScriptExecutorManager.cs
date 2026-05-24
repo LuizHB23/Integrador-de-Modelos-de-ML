@@ -24,7 +24,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor
         protected readonly IContext<ArquivoDadosDTO> _contextArquivo;
         protected readonly IContext<ModeloDTO> _contextNomeModelo;
         protected readonly IPathProvider _provider;
-        protected readonly ConversorJson _conversor;
+        protected readonly IConversorJson _conversor;
 
         public ObservableCollection<int> OpcoesPosicao;
         public ObservableCollection<ConfiguracaoCardFuncaoViewModel> CardsFuncoes { get; }
@@ -36,7 +36,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor
         protected Func<Task>? onConstroiPipelineAsync;
         protected string _json;
 
-        public ScriptExecutorManager(IDialogService dialogService, ConversorJson conversor, IContext<ModeloDTO> contextNomeModelo, IContext<ArquivoDadosDTO> contextArquivo, IPathProvider provider, ObservableCollection<ConfiguracaoCardFuncaoViewModel> cardsFuncoes, ObservableCollection<int> opcoesPosicao, IConfiguracaoTextBox textBox)
+        public ScriptExecutorManager(IDialogService dialogService, IConversorJson conversor, IContext<ModeloDTO> contextNomeModelo, IContext<ArquivoDadosDTO> contextArquivo, IPathProvider provider, ObservableCollection<ConfiguracaoCardFuncaoViewModel> cardsFuncoes, ObservableCollection<int> opcoesPosicao, IConfiguracaoTextBox textBox)
         {
             OpcoesPosicao = opcoesPosicao;
             CardsFuncoes = cardsFuncoes;

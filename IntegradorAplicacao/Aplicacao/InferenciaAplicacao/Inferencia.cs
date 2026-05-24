@@ -10,7 +10,7 @@ namespace IntegradorAplicacao.Aplicacao.InferenciaAplicacao
 {
     public class Inferencia<T> where T : IPipelineExecutor
     {
-        private readonly ConversorJson _conversor;
+        private readonly IConversorJson _conversor;
 
         private Dictionary<int, SchemaDTO>? _schemaDicionario;
         private readonly ConfiguraInputsOutputs _configuracao;
@@ -19,7 +19,7 @@ namespace IntegradorAplicacao.Aplicacao.InferenciaAplicacao
         public List<ErrosInferencia> ListaErros { get; private set; }
         public HistoricoInferencia Historico { get; private set; }
 
-        public Inferencia(ConversorJson conversor)
+        public Inferencia(IConversorJson conversor)
         {
             _conversor = conversor;
 

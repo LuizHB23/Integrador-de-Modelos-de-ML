@@ -1,10 +1,6 @@
-﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas;
+﻿using IntegradorAplicacao.Aplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.MapearLinhas;
 using IntegradorDominio.FeatureEngineering.MapearLinhas;
-using IntegradorDominio.FeatureEngineering.MapearLinhas.CasosLinha;
 using IntegradorDominio.Models.DataFrameModel;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace IntegradorTesteUnidade.AplicacaoTestes.PipelineAplicacaoTestes.ExecutorPipelineTestes.FeatureExecutorTestes.MapearLinhas
 {

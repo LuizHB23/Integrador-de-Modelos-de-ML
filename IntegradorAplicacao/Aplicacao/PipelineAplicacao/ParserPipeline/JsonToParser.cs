@@ -7,11 +7,11 @@ namespace IntegradorAplicacao.Aplicacao.PipelineAplicacao.ParserPipeline
 {
     public class JsonToParser
     {
-        private readonly ConversorJson _conversor;
+        private readonly IConversorJson _conversor;
         private readonly IPathProvider _provider;
         private readonly ParserAst _parser;
 
-        public JsonToParser(ConversorJson conversor, IPathProvider provider)
+        public JsonToParser(IConversorJson conversor, IPathProvider provider)
         {
             _conversor = conversor;
             _provider = provider;

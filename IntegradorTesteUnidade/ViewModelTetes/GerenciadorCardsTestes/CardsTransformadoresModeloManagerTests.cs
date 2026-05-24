@@ -1,5 +1,5 @@
 ﻿using IntegradorAplicacao.DTO;
-using IntegradorAplicacao.Infraestrutura.ConversorJSON;
+using IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson;
 using IntegradorViewModel.ControleUsuario.ConfiguracaoCard;
 using IntegradorViewModel.ItensViewModel;
 using IntegradorViewModel.Shared.Interfaces;
@@ -15,7 +15,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.GerenciadorCardsTestes
     public class CardsTransformadoresModeloManagerTests
     {
         private readonly Mock<IDialogService> _dialogMock = new();
-        private readonly Mock<IConverteJson<Dictionary<int, TransformadorDTO>>> _converterMock = new();
+        private readonly Mock<IConversorJson> _converterMock = new();
 
         private CardsTransformadoresModeloManager CriarManager(
             out ObservableCollection<ConfiguracaoCardTransformadorViewModel> cards,
@@ -80,8 +80,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.GerenciadorCardsTestes
 
             _dialogMock.Setup(x => x.GetCaminhoArquivo()).Returns("caminho.json");
 
-            _converterMock.Setup(x => x.CarregarJson(It.IsAny<string>()))
-                .Returns(new Dictionary<int, TransformadorDTO>
+            _converterMock.Setup(x => x.CarregarJsonAsync<Dictionary<int, TransformadorDTO>>(It.IsAny<string>())).ReturnsAsync(new Dictionary<int, TransformadorDTO>
                 {
                     { 1, new TransformadorDTO("T1", "path1") { NomeModelo = "modelo" } },
                     { 2, new TransformadorDTO("T2", "path2") { NomeModelo = "modelo" } }
@@ -113,7 +112,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.GerenciadorCardsTestes
             manager.PreparaParaJson(_converterMock.Object, "modelo");
 
             _converterMock.Verify(x =>
-                x.ConverteJson(It.Is<Dictionary<int, TransformadorDTO>>(d =>
+                x.ConverteJsonAsync(It.Is<Dictionary<int, TransformadorDTO>>(d =>
                     d.Count == 2 &&
                     d[1].NomeTransformador == "T1" &&
                     d[2].NomeTransformador == "T2"

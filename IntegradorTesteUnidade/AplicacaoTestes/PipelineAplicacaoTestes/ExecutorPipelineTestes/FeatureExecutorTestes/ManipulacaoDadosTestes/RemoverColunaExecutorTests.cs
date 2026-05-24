@@ -1,4 +1,4 @@
-﻿using IntegradorAplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.ManipulacaoDados;
+﻿using IntegradorAplicacao.Aplicacao.PipelineAplicacao.ExecutorPipeline.FeatureExecutor.ManipulacaoDados;
 using IntegradorDominio.FeatureEngineering.ManipulacaoDados;
 using IntegradorDominio.Models.DataFrameModel;
 
