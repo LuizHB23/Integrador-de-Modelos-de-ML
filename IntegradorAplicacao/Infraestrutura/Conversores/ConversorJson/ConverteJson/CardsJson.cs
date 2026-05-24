@@ -9,13 +9,11 @@ namespace IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson.ConverteJ
     {
         private readonly IPathProvider _provider;
         private string _caminhoJson;
-        protected string _json;
 
         public CardsJson(IPathProvider provider)
         {
             _provider = provider;
             _caminhoJson = string.Empty;
-            _json = PegaJson();
         }
 
         public async Task ConverteJsonAsync(Dictionary<int, T> objeto)
@@ -26,7 +24,7 @@ namespace IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson.ConverteJ
             {
                 var card = objeto.First();
 
-                _caminhoJson = Path.Combine(_provider.GetCaminhoModelo(), card.Value.NomeModelo, _json);
+                _caminhoJson = PegaJson(card.Value.NomeModelo);
 
                 texto = JsonSerializer.Serialize(objeto);
             }
@@ -50,14 +48,14 @@ namespace IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson.ConverteJ
             return new Dictionary<int, T>();
         }
 
-        private string PegaJson()
+        private string PegaJson(string nomeModelo)
         {
             return typeof(T) switch
             {
-                Type tipo when tipo == typeof(SchemaDTO) => "schema.json",
-                Type tipo when tipo == typeof(FuncaoDTO) => "pipeline.json",
-                Type tipo when tipo == typeof(TransformadorDTO) => "transformador.json",
-                Type tipo when tipo == typeof(SaidaDTO) => "saida.json",
+                Type tipo when tipo == typeof(SchemaDTO) => _provider.GetCaminhoSchemaConfig(nomeModelo),
+                Type tipo when tipo == typeof(FuncaoDTO) => _provider.GetCaminhoPipelineConfig(nomeModelo),
+                Type tipo when tipo == typeof(TransformadorDTO) => _provider.GetCaminhoTransformadorConfig(nomeModelo),
+                Type tipo when tipo == typeof(SaidaDTO) => _provider.GetCaminhoSaidaConfig(nomeModelo),
             };
         }
     }

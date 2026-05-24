@@ -45,7 +45,7 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
         private readonly ScriptExecutorResultadoManager _scriptManager;
         private readonly INotificationService _notificationService;
         private readonly IContext<ModeloDTO> _contextModelo;
-        private readonly IDialogService _dialogService;
+        private readonly IPathProvider _provider;
 
         private List<ErrosInferencia>? _listaErros;
         private DataFrame? _resultadosDataFrame;
@@ -66,7 +66,7 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
             _arquivo = contextArquivo.RecebeMensagem();
             _notificationService = notificationService;
             _contextModelo = contextModelo;
-            _dialogService = dialogService;
+            _provider = provider;
 
             _csvController = new CsvController();
             _inferencia = inferencia;
@@ -138,10 +138,10 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
             }
 
             var caminhoModelo = _contextModelo.RecebeMensagem().CaminhoPasta;
-            var caminhoPasta = Path.GetDirectoryName(caminhoModelo);
-            var caminhoSchema = Path.Combine(caminhoPasta!, "schema.json");
-            var caminhoPipeline = Path.Combine(caminhoPasta!, "pipeline.json");
-            var caminhoTransformador = Path.Combine(caminhoPasta!, "transformador.json");
+            var nomeModelo = _contextModelo.RecebeMensagem().NomeModelo;
+            var caminhoSchema = _provider.GetCaminhoSchemaConfig(nomeModelo);
+            var caminhoPipeline = _provider.GetCaminhoPipelineConfig(nomeModelo);
+            var caminhoTransformador = _provider.GetCaminhoTransformadorConfig(nomeModelo);
 
             var resultados = await _inferencia.RealizaInferenciaAsync(
                 await CarregarDataFrameAsync(),
@@ -164,7 +164,7 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
 
             if(!erroCarregarPipeline)
             {
-                var caminhoSaida = Path.Combine(caminhoPasta!, "saida.json");
+                var caminhoSaida = _provider.GetCaminhoSaidaConfig(nomeModelo);
                 _resultadosDataFrame = await _scriptManager.CarregarPipeline(caminhoSaida);
             }
             else

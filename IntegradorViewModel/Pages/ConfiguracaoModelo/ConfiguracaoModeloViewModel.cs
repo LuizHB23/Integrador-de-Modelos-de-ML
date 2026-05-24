@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using IntegradorAplicacao.DTO;
+using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
 using IntegradorAplicacao.Infraestrutura.Conversores.ConversorEnum;
 using IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson;
 using IntegradorDominio.Models.Configuracao;
@@ -32,23 +33,23 @@ namespace IntegradorViewModel.Pages.ConfiguracaoModelo
         public Dictionary<string, string> _pipeline;
 
         private IContext <ModeloDTO> _context;
-        private IDialogService _dialogService;
+        private IPathProvider _provider;
         private ConversorJson _conversor;
 
         private ModeloDTO _modeloDTO;
 
-        public ConfiguracaoModeloViewModel(INavigationService navigation, IDialogService dialogService, IContext<ModeloDTO> context, ConversorJson conversor)
+        public ConfiguracaoModeloViewModel(INavigationService navigation, IPathProvider provider, IContext<ModeloDTO> context, ConversorJson conversor)
         {
             Navigation = navigation;
 
             _context = context;
-            _dialogService = dialogService;
+            _provider = provider;
             _conversor = conversor;
         }
 
         public async Task InicializarAsync()
         {
-            var caminhoModeloJson = Path.Combine(Path.GetDirectoryName(_context.RecebeMensagem().CaminhoPasta!)!, "modelo.json");
+            var caminhoModeloJson = _provider.GetCaminhoModeloConfig(_context.RecebeMensagem().NomeModelo);
             Modelo = await _conversor.CarregarJsonAsync<ModeloConfiguracao>(caminhoModeloJson);
 
             _modeloDTO = new ModeloDTO(Modelo.NomeModelo, ParserTipoModelo.TipoModeloParaString(Modelo.Tipo), Modelo.CaminhoPasta, Modelo.Versao);
@@ -70,7 +71,7 @@ namespace IntegradorViewModel.Pages.ConfiguracaoModelo
             dataTable.Columns.Add("Tipo", typeof(string));
             dataTable.Columns.Add("Categorico", typeof(bool));
 
-            string caminhoSchema = Path.Combine(Path.GetDirectoryName(_modeloDTO.CaminhoPasta)!, "schema.json");
+            string caminhoSchema = _provider.GetCaminhoSchemaConfig(_context.RecebeMensagem().NomeModelo);
 
             if (!File.Exists(caminhoSchema))
             {
@@ -101,7 +102,7 @@ namespace IntegradorViewModel.Pages.ConfiguracaoModelo
         {
             Dictionary<string, string> dicionarioPipeline = new();
 
-            string caminhoPipeline = Path.Combine(Path.GetDirectoryName(_modeloDTO.CaminhoPasta)!, "pipeline.json");
+            string caminhoPipeline = _provider.GetCaminhoPipelineConfig(_context.RecebeMensagem().NomeModelo);
 
             if (!File.Exists(caminhoPipeline))
             {
@@ -133,7 +134,7 @@ namespace IntegradorViewModel.Pages.ConfiguracaoModelo
         {
             ObservableCollection<TransformadorDTO> listaTransformadores = new();
 
-            string caminhoTransformadores = Path.Combine(Path.GetDirectoryName(_modeloDTO.CaminhoPasta)!, "transformador.json");
+            string caminhoTransformadores = _provider.GetCaminhoTransformadorConfig(_context.RecebeMensagem().NomeModelo);
 
             if (!File.Exists(caminhoTransformadores))
             {

@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using IntegradorAplicacao.DTO;
+using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
 using IntegradorAplicacao.Infraestrutura.Conversores.ConversorEnum;
 using IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson;
 using IntegradorDominio.Models.Configuracao;
@@ -21,16 +22,18 @@ namespace IntegradorViewModel.Pages.PrincipalModelo
         [ObservableProperty]
         private ObservableCollection<ModeloDTO> _listaModelos;
 
-        private ConversorJson _conversor;
-        private IDialogService _dialogService;
-        private IContext<ModeloDTO> _context;
+        private readonly ConversorJson _conversor;
+        private readonly IDialogService _dialogService;
+        private readonly IContext<ModeloDTO> _context;
+        private readonly IPathProvider _provider;
 
-        public HomeViewModel(INavigationService navigation, ConversorJson conversor, IDialogService dialogService, IContext<ModeloDTO> context)
+        public HomeViewModel(INavigationService navigation, ConversorJson conversor, IDialogService dialogService, IContext<ModeloDTO> context, IPathProvider provider)
         {
             _dialogService = dialogService;
             _conversor = conversor;
             _context = context;
             _navigation = navigation;
+            _provider = provider;
         }
 
         public async Task InicializarAsync() => _listaModelos = await CarregarModelos();
@@ -39,20 +42,19 @@ namespace IntegradorViewModel.Pages.PrincipalModelo
         {
             ListaModelos = new ObservableCollection<ModeloDTO>();
 
-            string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            string caminhoFinal = Path.Combine(appDataPath, "Integrador", "Modelos");
+            string caminho = _provider.GetCaminhoPastasMatriz();
 
-            if (!Directory.Exists(caminhoFinal))
+            if (!Directory.Exists(caminho))
             {
                 return ListaModelos;
             }
 
-            var pastas = Directory.GetDirectories(caminhoFinal);
+            var pastas = Directory.GetDirectories(caminho);
             var caminhoJson = string.Empty;
 
             foreach (var pasta in pastas)
             {
-                caminhoJson = Path.Combine(caminhoFinal, pasta, "modelo.json");
+                caminhoJson = _provider.GetCaminhoModeloConfig(pasta);
 
                 try
                 {

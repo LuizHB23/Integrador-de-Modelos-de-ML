@@ -1,7 +1,4 @@
-﻿using IntegradorAplicacao.ArquivosController.Csv;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using IntegradorAplicacao.Infraestrutura.ArquivosController.Csv;
 
 namespace IntegradorTesteUnidade.AplicacaoTestes.ArquivosController.Csv
 {

@@ -21,7 +21,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor
         }
 
         private async Task<DataFrame> ConstroiPipelineAsync(string caminho) => await ExecutaPipeline(caminho);
-        private async Task ConstroiPipelineAsync() => await ExecutaPipeline(Path.Combine(_provider.GetCaminhoModelo(), _nomeModelo, _json));
+        private async Task ConstroiPipelineAsync() => await ExecutaPipeline(_provider.GetCaminhoPipelineConfig(_nomeModelo));
 
         public async Task CarregarPipeline()
         {

@@ -18,8 +18,8 @@ namespace IntegradorAplicacao.Infraestrutura.Gerenciador
 
         public string Salvar(TransformadorDTO transformador)
         {
-            string appFolder = _provider.GetCaminhoModelo();
-            appFolder = Path.Combine(appFolder, transformador.NomeModelo, "Transformadores");
+            string appFolder = _provider.GetCaminhoPastaModelo(transformador.NomeModelo);
+            appFolder = Path.Combine(appFolder, "Transformadores");
             Directory.CreateDirectory(appFolder);
 
             string nomeArquivo = Path.GetFileName(transformador.CaminhoTransformador);

@@ -15,9 +15,10 @@ namespace IntegradorAplicacao.Infraestrutura.Gerenciador
 
         public string Salvar(ModeloDTO modelo)
         {
-            string appFolder = _provider.GetCaminhoModelo();
-            appFolder = Path.Combine(appFolder, modelo.NomeModelo);
+            string appFolder = _provider.GetCaminhoPastaModelo(modelo.NomeModelo);
             Directory.CreateDirectory(appFolder);
+
+            Directory.CreateDirectory(_provider.GetCaminhoAppConfig(modelo.NomeModelo));
 
             string nomeArquivo = Path.GetFileName(modelo.CaminhoPasta);
             string caminhoDestino = Path.Combine(appFolder, nomeArquivo);

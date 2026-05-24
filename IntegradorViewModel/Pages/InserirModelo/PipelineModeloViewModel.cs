@@ -38,11 +38,13 @@ namespace IntegradorViewModel.Pages.InserirModelo
         public ObservableCollection<FeatureEngineeringItemViewModel> ListaFeatureEngineering { get; }
         public ObservableCollection<TransformDataViewItemViewModel> ListaTransformDataView { get; }
 
+        private readonly IPathProvider _pathProvider;
+
         private readonly ScriptExecutorPipelineModeloManager _scriptManager;
 
         private readonly ConversorJson _conversor;
 
-        private readonly string _caminhoModelo;
+        private readonly string _nomeModelo;
 
         public PipelineModeloViewModel(INavigationService navigation, IDialogService dialogService, ConversorJson conversor, IContext<ModeloDTO> contextModelo, IContext<ArquivoDadosDTO> contextArquivo, IPathProvider provider)
         {
@@ -58,7 +60,8 @@ namespace IntegradorViewModel.Pages.InserirModelo
 
             _scriptManager = new(dialogService, conversor, contextModelo, contextArquivo, provider, CardsFuncoes, OpcoesPosicao, TextBox);
             _conversor = conversor;
-            _caminhoModelo = contextModelo.RecebeMensagem().CaminhoPasta;
+            _nomeModelo = contextModelo.RecebeMensagem().NomeModelo;
+            _pathProvider = provider;
         }
 
         [RelayCommand]
@@ -75,7 +78,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
         [RelayCommand]
         public async Task NavigateToTransformers()
         {
-            var caminhoModelo = Path.Combine(Path.GetDirectoryName(_caminhoModelo)!, "modelo.json");
+            var caminhoModelo = _pathProvider.GetCaminhoModeloConfig(_nomeModelo);
             var modelo = await _conversor.CarregarJsonAsync<ModeloConfiguracao>(caminhoModelo);
             modelo.SchemaVersao = "1.0";
             await _conversor.ConverteJsonAsync(modelo);

@@ -37,14 +37,12 @@ namespace IntegradorViewModel.Pages.InserirModelo
 
         private readonly ConversorJson _conversor;
         private readonly IGerenciador<TransformadorDTO> _gerenciador;
-        private readonly IContext<ModeloDTO> _contextModelo;
         private readonly IPathProvider _provider;
         private readonly IDialogService _dialogService;
 
         public TransformadoresModeloViewModel(INavigationService navigation, IDialogService dialogService, ConversorJson conversor, IContext<ModeloDTO> contextModelo, IPathProvider provider, IGerenciador<TransformadorDTO> gerenciador)
         {
             _conversor = conversor;
-            _contextModelo = contextModelo;
             _provider = provider;
             _dialogService = dialogService;
             _gerenciador = gerenciador;
@@ -115,7 +113,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
         [RelayCommand]
         public async Task NavigateToHome()
         {
-            var caminhoModelo = Path.Combine(Path.GetDirectoryName(_contextModelo.RecebeMensagem().CaminhoPasta)!, "modelo.json");
+            var caminhoModelo = _provider.GetCaminhoModeloConfig(_nomeModelo);
             var modelo = await _conversor.CarregarJsonAsync<ModeloConfiguracao>(caminhoModelo);
             modelo.TransformadoresVersao = "1.0";
             await _conversor.ConverteJsonAsync(modelo);

@@ -16,7 +16,7 @@ namespace IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson.ConverteJ
 
         public async Task ConverteJsonAsync(ModeloConfiguracao modelo)
         {
-            string caminhoJson = Path.Combine(_provider.GetCaminhoModelo(), modelo.NomeModelo, "modelo.json");
+            string caminhoJson = _provider.GetCaminhoModeloConfig(modelo.NomeModelo);
 
             var options = new JsonSerializerOptions
             {

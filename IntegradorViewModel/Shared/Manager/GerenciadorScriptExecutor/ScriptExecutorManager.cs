@@ -151,8 +151,8 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor
                 return;
             }
 
-            var caminhoPasta = _provider.GetCaminhoModelo();
-            caminhoPasta = Path.Combine(caminhoPasta, _nomeModelo, _json);
+            var caminhoPasta = _provider.GetCaminhoAppConfig(_nomeModelo);
+            caminhoPasta = Path.Combine(caminhoPasta, _json);
 
             var dicionarioFuncoes = await _conversor.CarregarJsonAsync<Dictionary<int, T>>(caminhoPasta);
 
@@ -193,8 +193,8 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor
 
         public async Task ConfigurarFuncao(ConfiguracaoCardFuncaoViewModel cardSchema)
         {
-            var caminhoPasta = _provider.GetCaminhoModelo();
-            caminhoPasta = Path.Combine(caminhoPasta, _nomeModelo, _json);
+            var caminhoPasta = _provider.GetCaminhoAppConfig(_nomeModelo);
+            caminhoPasta = Path.Combine(caminhoPasta, _json);
 
             var dicionarioFuncoes = await _conversor.CarregarJsonAsync<Dictionary<int, T>>(caminhoPasta);
             var codigo = string.Empty;
