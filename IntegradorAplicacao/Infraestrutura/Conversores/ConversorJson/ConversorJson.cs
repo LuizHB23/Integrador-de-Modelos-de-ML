@@ -13,11 +13,11 @@ namespace IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson
         {
             _conversores = new Dictionary<Type, object>
             {
-                [typeof(ModeloConfiguracao)] = new ModeloJson(provider),
-                [typeof(Dictionary<int,SchemaDTO>)] = new CardsJson<SchemaDTO>(provider),
-                [typeof(Dictionary<int, FuncaoDTO>)] = new CardsJson<FuncaoDTO>(provider),
-                [typeof(Dictionary<int, TransformadorDTO>)] = new CardsJson<TransformadorDTO>(provider),
-                [typeof(Dictionary<int, SaidaDTO>)] = new CardsJson<SaidaDTO>(provider)
+                [typeof(ModeloEmUsoConfiguracao)] = new ModeloEmUsoJson(provider),
+                [typeof(Dictionary<int,SchemaDTO>)] = new ConfiguradoresJson<SchemaDTO>(provider),
+                [typeof(Dictionary<int, FuncaoDTO>)] = new ConfiguradoresJson<FuncaoDTO>(provider),
+                [typeof(Dictionary<int, TransformadorDTO>)] = new ConfiguradoresJson<TransformadorDTO>(provider),
+                [typeof(Dictionary<int, SaidaDTO>)] = new ConfiguradoresJson<SaidaDTO>(provider)
             };
         }
 

@@ -10,14 +10,14 @@ namespace IntegradorTesteUnidade.AplicacaoTestes.ConversorJson
     public class CardsJsonTests : IDisposable
     {
         private readonly Mock<IPathProvider> _pathProviderMock;
-        private readonly CardsJson<SchemaDTO> _cardsJson;
+        private readonly ConfiguradoresJson<SchemaDTO> _cardsJson;
         private readonly string _tempPath;
 
         public CardsJsonTests()
         {
             _pathProviderMock = new Mock<IPathProvider>();
 
-            _cardsJson = new CardsJson<SchemaDTO>(_pathProviderMock.Object);
+            _cardsJson = new ConfiguradoresJson<SchemaDTO>(_pathProviderMock.Object);
 
             _tempPath = Path.Combine(Path.GetTempPath(), "CardsJsonTests");
 
@@ -48,7 +48,7 @@ namespace IntegradorTesteUnidade.AplicacaoTestes.ConversorJson
                 .Setup(p => p.GetCaminhoSchemaConfig("ModeloTeste"))
                 .Returns(caminho);
 
-            var conversor = new CardsJson<SchemaDTO>(_pathProviderMock.Object);
+            var conversor = new ConfiguradoresJson<SchemaDTO>(_pathProviderMock.Object);
 
             // Act
             await conversor.ConverteJsonAsync(dados);
@@ -80,7 +80,7 @@ namespace IntegradorTesteUnidade.AplicacaoTestes.ConversorJson
                 .Setup(p => p.GetCaminhoPipelineConfig("ModeloTeste"))
                 .Returns(caminho);
 
-            var conversor = new CardsJson<FuncaoDTO>(_pathProviderMock.Object);
+            var conversor = new ConfiguradoresJson<FuncaoDTO>(_pathProviderMock.Object);
 
             // Act
             await conversor.ConverteJsonAsync(dados);
@@ -112,7 +112,7 @@ namespace IntegradorTesteUnidade.AplicacaoTestes.ConversorJson
                 .Setup(p => p.GetCaminhoTransformadorConfig("ModeloTeste"))
                 .Returns(caminho);
 
-            var conversor = new CardsJson<TransformadorDTO>(_pathProviderMock.Object);
+            var conversor = new ConfiguradoresJson<TransformadorDTO>(_pathProviderMock.Object);
 
             // Act
             await conversor.ConverteJsonAsync(dados);
@@ -144,7 +144,7 @@ namespace IntegradorTesteUnidade.AplicacaoTestes.ConversorJson
                 .Setup(p => p.GetCaminhoSaidaConfig("ModeloTeste"))
                 .Returns(caminho);
 
-            var conversor = new CardsJson<SaidaDTO>(_pathProviderMock.Object);
+            var conversor = new ConfiguradoresJson<SaidaDTO>(_pathProviderMock.Object);
 
             // Act
             await conversor.ConverteJsonAsync(dados);

@@ -5,16 +5,16 @@ using System.Text.Json;
 
 namespace IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson.ConverteJson
 {
-    public class ModeloJson : IConverteJson<ModeloConfiguracao>
+    public class ModeloEmUsoJson : IConverteJson<ModeloEmUsoConfiguracao>
     {
         private readonly IPathProvider _provider;
 
-        public ModeloJson(IPathProvider provider)
+        public ModeloEmUsoJson(IPathProvider provider)
         {
             _provider = provider;
         }
 
-        public async Task ConverteJsonAsync(ModeloConfiguracao modelo)
+        public async Task ConverteJsonAsync(ModeloEmUsoConfiguracao modelo)
         {
             string caminhoJson = _provider.GetCaminhoModeloConfig(modelo.NomeModelo);
 
@@ -30,7 +30,7 @@ namespace IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson.ConverteJ
             File.WriteAllText(caminhoJson, texto);
         }
 
-        public async Task<ModeloConfiguracao> CarregarJsonAsync(string caminho)
+        public async Task<ModeloEmUsoConfiguracao> CarregarJsonAsync(string caminho)
         {
             if (File.Exists(caminho))
             {
@@ -46,7 +46,7 @@ namespace IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson.ConverteJ
                             }
                     };
 
-                    return JsonSerializer.Deserialize<ModeloConfiguracao>(texto, options)
+                    return JsonSerializer.Deserialize<ModeloEmUsoConfiguracao>(texto, options)
                    ?? throw new Exception($"Arquivo corrompido: {caminho}");
                 }
             }

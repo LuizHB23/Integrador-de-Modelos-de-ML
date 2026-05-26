@@ -24,7 +24,7 @@ namespace IntegradorViewModel.Pages.ConfiguracaoModelo
         private DataView? _schemaPreview;
 
         [ObservableProperty]
-        private ModeloConfiguracao _modelo;
+        private ModeloEmUsoConfiguracao _modelo;
 
         [ObservableProperty]
         public ObservableCollection<TransformadorDTO> _transformadores;
@@ -50,16 +50,22 @@ namespace IntegradorViewModel.Pages.ConfiguracaoModelo
         public async Task InicializarAsync()
         {
             var caminhoModeloJson = _provider.GetCaminhoModeloConfig(_context.RecebeMensagem().NomeModelo);
-            Modelo = await _conversor.CarregarJsonAsync<ModeloConfiguracao>(caminhoModeloJson);
+            Modelo = await _conversor.CarregarJsonAsync<ModeloEmUsoConfiguracao>(caminhoModeloJson);
 
             _modeloDTO = new ModeloDTO(Modelo.NomeModelo, ParserTipoModelo.TipoModeloParaString(Modelo.Tipo), Modelo.CaminhoPasta, Modelo.Versao);
             Modelo.CaminhoPasta = Path.GetFileName(Modelo.CaminhoPasta);
 
             CaminhoArquivoDados = string.Empty;
 
-            Pipeline = await CarregarPipeline();
-            SchemaPreview = await CarregarSchema();
-            Transformadores = await CarregarTransformadores();
+            var taskPipeline = CarregarPipeline();
+            var taskSchema = CarregarSchema();
+            var taskTransformadores = CarregarTransformadores();
+
+            await Task.WhenAll(taskPipeline, taskSchema, taskTransformadores);
+
+            Pipeline = await taskPipeline;
+            SchemaPreview = await taskSchema;
+            Transformadores = await taskTransformadores;
         }
 
         private async Task<DataView?> CarregarSchema()

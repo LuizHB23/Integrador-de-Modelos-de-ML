@@ -17,10 +17,12 @@
         public string GetCaminhoPastasMatriz() => _appDataPath;
         public string GetCaminhoPastaModelo(string nomeModelo) => Path.Combine(_appDataPath, nomeModelo);
         public string GetCaminhoAppConfig(string nomeModelo) => Path.Combine(GetCaminhoPastaModelo(nomeModelo), PastaConfig);
+        public string GetCaminhoModeloEmUsoConfig(string nomeModelo) => Path.Combine(GetCaminhoAppConfig(nomeModelo), "modelo_em_uso.json");
         public string GetCaminhoModeloConfig(string nomeModelo) => Path.Combine(GetCaminhoAppConfig(nomeModelo), "modelo.json");
         public string GetCaminhoSchemaConfig(string nomeModelo) => Path.Combine(GetCaminhoAppConfig(nomeModelo), "schema.json");
         public string GetCaminhoPipelineConfig(string nomeModelo) => Path.Combine(GetCaminhoAppConfig(nomeModelo), "pipeline.json");
         public string GetCaminhoTransformadorConfig(string nomeModelo) => Path.Combine(GetCaminhoAppConfig(nomeModelo), "transformador.json");
         public string GetCaminhoSaidaConfig(string nomeModelo) => Path.Combine(GetCaminhoAppConfig(nomeModelo), "saida.json");
+
     }
 }

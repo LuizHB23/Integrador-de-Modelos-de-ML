@@ -101,7 +101,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
             //Assert
             _mockContext.Verify(f => f.EnviaMensagem(It.IsAny<ModeloDTO>()), Times.Once);
             _mockGerenciador.Verify(f => f.Salvar(It.IsAny<ModeloDTO>()), Times.Once);
-            _mockConversor.Verify(f => f.ConverteJsonAsync(It.IsAny<ModeloConfiguracao>()), Times.Once);
+            _mockConversor.Verify(f => f.ConverteJsonAsync(It.IsAny<ModeloEmUsoConfiguracao>()), Times.Once);
             _mockNavigation.Verify(f => f.NavigateTo<ConfigurarSchemaViewModel>(), Times.Once);
         }
 

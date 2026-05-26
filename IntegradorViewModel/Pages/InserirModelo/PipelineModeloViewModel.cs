@@ -79,7 +79,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
         public async Task NavigateToTransformers()
         {
             var caminhoModelo = _pathProvider.GetCaminhoModeloConfig(_nomeModelo);
-            var modelo = await _conversor.CarregarJsonAsync<ModeloConfiguracao>(caminhoModelo);
+            var modelo = await _conversor.CarregarJsonAsync<ModeloEmUsoConfiguracao>(caminhoModelo);
             modelo.SchemaVersao = "1.0";
             await _conversor.ConverteJsonAsync(modelo);
 

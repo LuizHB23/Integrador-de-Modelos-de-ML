@@ -58,7 +58,7 @@ namespace IntegradorViewModel.Pages.PrincipalModelo
 
                 try
                 {
-                    var modelo = await _conversor.CarregarJsonAsync<ModeloConfiguracao>(caminhoJson);
+                    var modelo = await _conversor.CarregarJsonAsync<ModeloEmUsoConfiguracao>(caminhoJson);
                     ModeloDTO modeloDTO = new ModeloDTO(modelo.NomeModelo, ParserTipoModelo.TipoModeloParaString(modelo.Tipo), modelo.CaminhoPasta, modelo.Versao);
                     ListaModelos.Add(modeloDTO);
                 }

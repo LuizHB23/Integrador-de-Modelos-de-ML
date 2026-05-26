@@ -108,7 +108,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
             PreparaParaJson();
 
             var caminhoModelo = _provider.GetCaminhoModeloConfig(_nomeModelo);
-            var modelo = await _conversor.CarregarJsonAsync<ModeloConfiguracao>(caminhoModelo); 
+            var modelo = await _conversor.CarregarJsonAsync<ModeloEmUsoConfiguracao>(caminhoModelo); 
             modelo.PipelineVersao = "1.0";
             await _conversor.ConverteJsonAsync(modelo);
 

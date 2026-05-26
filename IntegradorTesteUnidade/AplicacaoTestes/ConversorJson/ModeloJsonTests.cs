@@ -26,7 +26,7 @@ namespace IntegradorAplicacao.Tests
         public async Task RetornaEhVerdadeiroEContemAoSalvarArquivoModeloNoCaminhoCorretoEmConverteJson()
         {
             // Arrange
-            var modelo = new ModeloConfiguracao("Nome Qualquer", TipoModelo.Classificao, "Caminho Qualquer");
+            var modelo = new ModeloEmUsoConfiguracao("Nome Qualquer", TipoModelo.Classificao, "Caminho Qualquer");
 
             string pastaDoModelo = Path.Combine(_basePath, modelo.NomeModelo, "config");
             string caminhoEsperadoDoArquivo = Path.Combine(pastaDoModelo, "modelo.json");

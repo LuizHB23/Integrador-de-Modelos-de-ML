@@ -203,7 +203,21 @@
                                             CornerRadius="10"
                                             HorizontalAlignment="Right">
 
-                                        <TextBlock Text="v3"
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Modelo}" Value="{x:Null}">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Modelo.SchemaVersao, TargetNullValue='', FallbackValue=''}" Value="">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+
+                                        <TextBlock Text="{Binding Modelo.SchemaVersao}"
                                                    Foreground="#4338CA"
                                                    FontWeight="SemiBold"/>
                                     </Border>
@@ -303,9 +317,24 @@
                                             CornerRadius="10"
                                             HorizontalAlignment="Right">
 
-                                        <TextBlock Text="v5"
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Modelo}" Value="{x:Null}">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Modelo.PipelineVersao, TargetNullValue='', FallbackValue=''}" Value="">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+
+                                        <TextBlock Text="{Binding Modelo.PipelineVersao}"
                                                    Foreground="#4338CA"
                                                    FontWeight="SemiBold"/>
+                                        
                                     </Border>
                                 </Grid>
 
@@ -343,16 +372,16 @@
 
                                                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="20">
                                                     <TextBox  Text="{Binding Value, Mode=OneWay}"
-                                                                  Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                                                                  FontFamily="Consolas" 
-                                                                  FontSize="14"
-                                                                  IsReadOnly="True"
-                                                                  VerticalScrollBarVisibility="Auto"
-                                                                  HorizontalScrollBarVisibility="Auto"
-                                                                  TextWrapping="Wrap"
-                                                                  Margin="10"
-                                                                  VerticalAlignment="Stretch"
-                                                                  MinHeight="200">
+                                                              Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                                              FontFamily="Consolas" 
+                                                              FontSize="14"
+                                                              IsReadOnly="True"
+                                                              VerticalScrollBarVisibility="Auto"
+                                                              HorizontalScrollBarVisibility="Auto"
+                                                              TextWrapping="Wrap"
+                                                              Margin="10"
+                                                              VerticalAlignment="Stretch"
+                                                              MinHeight="200">
 
                                                     </TextBox>
                                                 </ScrollViewer>
@@ -386,17 +415,46 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
-                                <StackPanel Orientation="Horizontal" Grid.Row="0">
-                                    <materialDesign:PackIcon Kind="DatabaseOutline"
-                                                             Width="22"
-                                                             Height="22"
-                                                             Foreground="#5B5CEB"/>
+                                <Grid Grid.Row="0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="DatabaseOutline"
+                                                                 Width="22"
+                                                                 Height="22"
+                                                                 Foreground="#5B5CEB"/>
 
-                                    <TextBlock Margin="12,0,0,0"
-                                               FontSize="20"
-                                               FontWeight="SemiBold"
-                                               Text="Transformadores"/>
-                                </StackPanel>
+                                        <TextBlock Margin="12,0,0,0"
+                                                   FontSize="20"
+                                                   FontWeight="SemiBold"
+                                                   Text="Transformadores"/>
+
+                                    </StackPanel>
+                                    
+                                    <Border DockPanel.Dock="Right"
+                                            Padding="10,4"
+                                            Background="#EEF2FF"
+                                            CornerRadius="10"
+                                            HorizontalAlignment="Right">
+
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Modelo}" Value="{x:Null}">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Modelo.TransformadoresVersao, TargetNullValue='', FallbackValue=''}" Value="">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+
+                                        <TextBlock Text="{Binding Modelo.TransformadoresVersao}"
+                                                    Foreground="#4338CA"
+                                                    FontWeight="SemiBold"/>
+                                    </Border>
+                                </Grid>
+
 
                                 <ItemsControl ItemsSource="{Binding Transformadores}"
                                               Grid.Row="2"
