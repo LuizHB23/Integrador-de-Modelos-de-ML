@@ -7,9 +7,9 @@ namespace IntegradorDominio.Models.Configuracao
     {
         public string NomeModelo { get; set; }
         public string Versao { get; set; }
-        public Dictionary<int, Pipeline> ScriptCodigo { get; set; }
+        public Dictionary<int, PipelineTratamento> ScriptCodigo { get; set; }
 
-        public PipelineConfiguracao(string nomeModelo, string versao, Dictionary<int, Pipeline> scriptCodigo)
+        public PipelineConfiguracao(string nomeModelo, string versao, Dictionary<int, PipelineTratamento> scriptCodigo)
         {
             NomeModelo = nomeModelo;
             Versao = versao;
