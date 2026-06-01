@@ -109,11 +109,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
                 return;
             }
 
-            await PreparaParaJson();
-
-            var modelo = await _conversor.CarregarJsonAsync<ModeloEmUsoConfiguracao>(_modelo.NomeModelo); 
-            modelo.PipelineVersao = "1.0";
-            await _conversor.ConverteJsonAsync(modelo, modelo.NomeModelo);
+            await Versionamento();
 
             Navigation.NavigateTo<CarregarDadosViewModel>();
         }
@@ -123,6 +119,29 @@ namespace IntegradorViewModel.Pages.InserirModelo
         {
             Navigation.EndFlow();
             Navigation.NavigateTo<HomeViewModel>();
+        }
+
+        private async Task Versionamento()
+        {
+            var nomeModelo = _contextModelo.RecebeMensagem().NomeModelo;
+
+            var taskModelo = _conversor.CarregarJsonAsync<ModeloEmUsoConfiguracao>(nomeModelo);
+            var taskSchema = _conversor.CarregarJsonAsync<SchemaConfiguracao>(nomeModelo);
+
+            await Task.WhenAll(taskModelo, taskSchema);
+
+            var modelo = await taskModelo;
+            var schema = await taskSchema;
+
+            modelo.PipelineVersao = "1.0";
+            schema.Versao = "1.0";
+
+            var listaPipeline = new List<SchemaConfiguracao>() { schema };
+
+            var taskModeloJson = _conversor.ConverteJsonAsync(modelo, nomeModelo);
+            var taskSchemaJson = _conversor.ConverteJsonAsync(listaPipeline, nomeModelo);
+
+            await Task.WhenAll(taskModeloJson, taskSchemaJson);
         }
     }
 }

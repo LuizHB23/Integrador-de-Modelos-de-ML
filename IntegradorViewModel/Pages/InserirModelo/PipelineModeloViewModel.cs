@@ -109,7 +109,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
             var taskModeloJson = _conversor.ConverteJsonAsync(modelo, _nomeModelo);
             var taskPipelineJson = _conversor.ConverteJsonAsync(listaPipeline, _nomeModelo);
 
-            await Task.WhenAll(taskModeloJson, taskPipeline);
+            await Task.WhenAll(taskModeloJson, taskPipelineJson);
         }
 
         private void CarregarListas()

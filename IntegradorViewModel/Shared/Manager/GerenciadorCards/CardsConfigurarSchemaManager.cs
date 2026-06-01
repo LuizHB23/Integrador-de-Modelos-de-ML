@@ -67,15 +67,6 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
         {
             var schemaNovo = new Dictionary<int, Schema>();
 
-
-
-
-            //Parte do Versionador
-
-
-
-
-
             foreach (var card in _cardsLista)
             {
                 var schema = new Schema()
