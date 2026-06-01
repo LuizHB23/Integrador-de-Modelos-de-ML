@@ -4,6 +4,8 @@ using IntegradorAplicacao.Aplicacao.InferenciaAplicacao;
 using IntegradorAplicacao.Infraestrutura.Gerenciador;
 using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
 using IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson;
+using IntegradorDominio.Models.Configuracao;
+using IntegradorAplicacao.Infraestrutura.Profiles;
 
 namespace IntegradorAplicacao
 {
@@ -15,11 +17,13 @@ namespace IntegradorAplicacao
             services.AddTransient<IGerenciador<ModeloDTO>, ModeloGerenciador>();
             services.AddTransient<IGerenciador<TransformadorDTO>, TransformadorGerenciador>();
 
-            services.AddTransient<IConversorJson,ConversorJson>();
+            services.AddTransient<Inferencia<PipelineTratamentoConfiguracao>>();
+            services.AddTransient<Inferencia<PipelineSaidaInferenciaConfiguracao>>();
 
-            services.AddTransient<Inferencia<FuncaoDTO>>();
-            services.AddTransient<Inferencia<SaidaDTO>>();
+            services.AddLogging();
+            services.AddAutoMapper(cfg => { }, typeof(PipelineProfile), typeof(SchemaProfile));
 
+            services.AddSingleton<IConversorJson,ConversorJson>();
             services.AddSingleton<IPathProvider, PathProvider>();
 
             return services;

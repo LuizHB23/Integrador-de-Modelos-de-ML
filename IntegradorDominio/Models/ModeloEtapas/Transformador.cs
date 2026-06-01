@@ -2,7 +2,7 @@
 {
     public class Transformador
     {
-        public string NomeTransformadors { get; set; }
+        public string NomeTransformador { get; set; }
         public string CaminhoTransformador { get; set; }
     }
 }

@@ -10,8 +10,8 @@ namespace IntegradorViewModel.ControleUsuario.ConfiguracaoCard
 {
     public partial class ConfiguracaoCardTransformadorViewModel : ObservableObject, IConfiguracaoCard
     {
-        private readonly Action<ConfiguracaoCardTransformadorViewModel, int> _onTrocarPosicao;
-        private readonly Action<ConfiguracaoCardTransformadorViewModel> _onExcluir;
+        private readonly Func<ConfiguracaoCardTransformadorViewModel, int, Task> _onTrocarPosicao;
+        private readonly Func<ConfiguracaoCardTransformadorViewModel, Task> _onExcluir;
         private TransformadorItemViewModel _transformadorItem;
 
         [ObservableProperty]
@@ -29,11 +29,11 @@ namespace IntegradorViewModel.ControleUsuario.ConfiguracaoCard
         public bool EstouReposicionando { get; set; }
         public string CaminhoProvisorio { get; set; }
 
-        public ConfiguracaoCardTransformadorViewModel(TransformadorItemViewModel transformadorItem, Action<ConfiguracaoCardTransformadorViewModel> actionExcluir, Action<ConfiguracaoCardTransformadorViewModel, int> actionTrocarPosicao)
+        public ConfiguracaoCardTransformadorViewModel(TransformadorItemViewModel transformadorItem, Func<ConfiguracaoCardTransformadorViewModel, Task> funcExcluir, Func<ConfiguracaoCardTransformadorViewModel, int, Task> funcTrocarPosicao)
         {
             _transformadorItem = transformadorItem;
-            _onTrocarPosicao = actionTrocarPosicao;
-            _onExcluir = actionExcluir;
+            _onTrocarPosicao = funcTrocarPosicao;
+            _onExcluir = funcExcluir;
 
             OpcoesPosicao = new();
             Posicao = transformadorItem.Posicao;

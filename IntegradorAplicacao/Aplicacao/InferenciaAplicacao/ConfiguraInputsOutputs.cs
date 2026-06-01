@@ -1,9 +1,9 @@
 ﻿using IntegradorAplicacao.DTO;
 using IntegradorDominio.Models.DataFrameModel;
 using IntegradorDominio.Models.Inferencia;
+using IntegradorDominio.Models.ModeloEtapas;
 using Microsoft.ML.OnnxRuntime;
 using Microsoft.ML.OnnxRuntime.Tensors;
-using System.Diagnostics;
 
 namespace IntegradorAplicacao.Aplicacao.InferenciaAplicacao
 {
@@ -19,7 +19,7 @@ namespace IntegradorAplicacao.Aplicacao.InferenciaAplicacao
         public List<NamedOnnxValue> CriarInputs(
             DataFrame df,
             InferenceSession session,
-            Dictionary<int, SchemaDTO>? schemaDicionario,
+            Dictionary<int, Schema>? schemaDicionario,
             string[]? ids)
         {
             var inputs = new List<NamedOnnxValue>();
@@ -154,7 +154,7 @@ namespace IntegradorAplicacao.Aplicacao.InferenciaAplicacao
         }
 
         private bool DeveIgnorar(
-            Dictionary<int, SchemaDTO>? schemaDicionario,
+            Dictionary<int, Schema>? schemaDicionario,
             string nomeColuna)
         {
             var valor = schemaDicionario.Values

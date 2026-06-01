@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using AutoMapper;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
@@ -35,20 +36,20 @@ namespace IntegradorViewModel.Pages.InserirModelo
         public ObservableCollection<int> OpcoesPosicao;
         public ObservableCollection<ConfiguracaoCardSchemaViewModel> CardsSchema { get; }
 
-        private readonly string _nomeModelo;
+        private readonly ModeloDTO _modelo;
         private readonly CardsConfigurarSchemaManager _cardsManager;
 
 
         private readonly IConversorJson _conversor;
         private readonly IContext<ModeloDTO> _contextModelo;
-        private readonly IPathProvider _provider;
         private readonly IDialogService _dialogService;
+        private readonly IMapper _mapper;
 
-        public ConfigurarSchemaViewModel(INavigationService navigation, IDialogService dialogService, IConversorJson conversor, IContext<ModeloDTO> contextModelo, IPathProvider provider)
+        public ConfigurarSchemaViewModel(INavigationService navigation, IDialogService dialogService, IConversorJson conversor, IContext<ModeloDTO> contextModelo, IMapper mapper)
         {
+            _mapper = mapper;
             _conversor = conversor;
             _contextModelo = contextModelo;
-            _provider = provider;
             _dialogService = dialogService;
             Navigation = navigation;
 
@@ -59,12 +60,12 @@ namespace IntegradorViewModel.Pages.InserirModelo
             CardsSchema = new();
             OpcoesPosicao = new();
 
-            _nomeModelo = _contextModelo.RecebeMensagem().NomeModelo;
-            _cardsManager = new(CardsSchema, OpcoesPosicao);
+            _modelo = _contextModelo.RecebeMensagem();
+            _cardsManager = new(CardsSchema, OpcoesPosicao, _modelo);
         }
 
         [RelayCommand]
-        public void AdicinarColuna()
+        public async Task AdicinarColuna()
         {
             if (string.IsNullOrWhiteSpace(NomeColuna) || string.IsNullOrWhiteSpace(Finalidade) || string.IsNullOrWhiteSpace(Tipo))
             {
@@ -76,7 +77,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
             var schemaItem = new SchemaItemViewModel(posicao, NomeColuna, Finalidade, Tipo, Categorico);
             _cardsManager.AdicinarColuna(schemaItem, RemoverColuna, OrganizaPosicao);
 
-            PreparaParaJson();
+            await PreparaParaJson();
 
             NomeColuna = string.Empty;
             Finalidade = string.Empty;
@@ -85,14 +86,17 @@ namespace IntegradorViewModel.Pages.InserirModelo
         }
 
         [RelayCommand]
-        public void CarregarSchema() => _cardsManager.CarregarSchema(_dialogService, _conversor);
-        private void RemoverColuna(ConfiguracaoCardSchemaViewModel cardSchema)
+        public async Task CarregarSchema()
         {
-            _cardsManager.RemoverCard(cardSchema);
-            PreparaParaJson();
+            await _cardsManager.CarregarSchema(_dialogService, _conversor, _mapper);
         }
-        private void OrganizaPosicao(ConfiguracaoCardSchemaViewModel cardSchema, int posicaoNova) => _cardsManager.OrganizaPosicao(cardSchema, posicaoNova);
-        private void PreparaParaJson() => _cardsManager.PreparaParaJson(_conversor, _nomeModelo);
+        private async Task RemoverColuna(ConfiguracaoCardSchemaViewModel cardSchema)
+        {
+            await _cardsManager.RemoverCard(cardSchema);
+            await PreparaParaJson();
+        }
+        private async Task OrganizaPosicao(ConfiguracaoCardSchemaViewModel cardSchema, int posicaoNova) => await _cardsManager.OrganizaPosicao(cardSchema, posicaoNova);
+        private async Task PreparaParaJson() => await _cardsManager.PreparaParaJson(_conversor, _modelo.NomeModelo);
 
 
         [RelayCommand]
@@ -105,12 +109,11 @@ namespace IntegradorViewModel.Pages.InserirModelo
                 return;
             }
 
-            PreparaParaJson();
+            await PreparaParaJson();
 
-            var caminhoModelo = _provider.GetCaminhoModeloConfig(_nomeModelo);
-            var modelo = await _conversor.CarregarJsonAsync<ModeloEmUsoConfiguracao>(caminhoModelo); 
+            var modelo = await _conversor.CarregarJsonAsync<ModeloEmUsoConfiguracao>(_modelo.NomeModelo); 
             modelo.PipelineVersao = "1.0";
-            await _conversor.ConverteJsonAsync(modelo);
+            await _conversor.ConverteJsonAsync(modelo, modelo.NomeModelo);
 
             Navigation.NavigateTo<CarregarDadosViewModel>();
         }

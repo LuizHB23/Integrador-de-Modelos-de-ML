@@ -1,37 +1,24 @@
-﻿using IntegradorAplicacao.DTO;
-using IntegradorAplicacao.DTO.Interfaces;
-using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
+﻿using IntegradorDominio.Models.Configuracao.Interfaces;
 using System.Text.Json;
 
 namespace IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson.ConverteJson
 {
-    public class CardsJson<T> : IConverteJson<Dictionary<int, T>> where T : IItemNomeModelo
+    public class ConfiguradoresJson<T> : IConverteJson<List<T>> where T : IListaConfiguracao
     {
-        private readonly IPathProvider _provider;
-
-        public CardsJson(IPathProvider provider)
-        {
-            _provider = provider;
-        }
-
-        public async Task ConverteJsonAsync(Dictionary<int, T> objeto)
+        public async Task ConverteJsonAsync(List<T> objeto, string caminho)
         {
             string texto = string.Empty;
 
             if (objeto.Count > 0)
             {
-                var card = objeto.First();
-
-                var caminhoJson = PegaJson(card.Value.NomeModelo);
-
                 texto = JsonSerializer.Serialize(objeto);
 
-                File.WriteAllText(caminhoJson, texto);
+                File.WriteAllText(caminho, texto);
             }
 
         }
 
-        public async Task<Dictionary<int, T>> CarregarJsonAsync(string caminho)
+        public async Task<List<T>> CarregarJsonAsync(string caminho)
         {
             if (File.Exists(caminho))
             {
@@ -39,23 +26,12 @@ namespace IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson.ConverteJ
 
                 if (!string.IsNullOrWhiteSpace(texto))
                 {
-                    return JsonSerializer.Deserialize<Dictionary<int, T>>(texto)
-                   ?? new Dictionary<int, T>();
+                    return JsonSerializer.Deserialize<List<T>>(texto)
+                   ?? new List<T>();
                 }
             }
 
-            return new Dictionary<int, T>();
-        }
-
-        private string PegaJson(string nomeModelo)
-        {
-            return typeof(T) switch
-            {
-                Type tipo when tipo == typeof(SchemaDTO) => _provider.GetCaminhoSchemaConfig(nomeModelo),
-                Type tipo when tipo == typeof(FuncaoDTO) => _provider.GetCaminhoPipelineConfig(nomeModelo),
-                Type tipo when tipo == typeof(TransformadorDTO) => _provider.GetCaminhoTransformadorConfig(nomeModelo),
-                Type tipo when tipo == typeof(SaidaDTO) => _provider.GetCaminhoSaidaConfig(nomeModelo),
-            };
+            return new List<T>();
         }
     }
 }

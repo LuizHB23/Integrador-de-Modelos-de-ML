@@ -26,18 +26,20 @@ namespace IntegradorAplicacao.Tests
         public async Task RetornaEhVerdadeiroEContemAoSalvarArquivoModeloNoCaminhoCorretoEmConverteJson()
         {
             // Arrange
-            var modelo = new ModeloEmUsoConfiguracao("Nome Qualquer", TipoModelo.Classificao, "Caminho Qualquer");
+            string nomeModelo = "Nome Qualquer";
+
+            var modelo = new ModeloEmUsoConfiguracao(nomeModelo, TipoModelo.Classificao, "Caminho Qualquer");
 
             string pastaDoModelo = Path.Combine(_basePath, modelo.NomeModelo, "config");
             string caminhoEsperadoDoArquivo = Path.Combine(pastaDoModelo, "modelo.json");
 
             Directory.CreateDirectory(pastaDoModelo);
 
-            _pathProviderMock.Setup(p => p.GetCaminhoModeloConfig("Nome Qualquer"))
+            _pathProviderMock.Setup(p => p.GetCaminhoModeloEmUsoConfig(nomeModelo))
                              .Returns(caminhoEsperadoDoArquivo);
 
             // Act
-            await _modeloJson.ConverteJsonAsync(modelo);
+            await _modeloJson.ConverteJsonAsync(modelo, nomeModelo);
 
             // Assert
             Assert.True(File.Exists(caminhoEsperadoDoArquivo));

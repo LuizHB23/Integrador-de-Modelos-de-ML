@@ -18,9 +18,6 @@ namespace IntegradorViewModel.Pages.ConfiguracaoModelo
         private INavigationService _navigation;
 
         [ObservableProperty]
-        private string _caminhoArquivoDados;
-
-        [ObservableProperty]
         private DataView? _schemaPreview;
 
         [ObservableProperty]
@@ -36,8 +33,6 @@ namespace IntegradorViewModel.Pages.ConfiguracaoModelo
         private IPathProvider _provider;
         private IConversorJson _conversor;
 
-        private ModeloDTO _modeloDTO;
-
         public ConfiguracaoModeloViewModel(INavigationService navigation, IPathProvider provider, IContext<ModeloDTO> context, IConversorJson conversor)
         {
             Navigation = navigation;
@@ -49,13 +44,8 @@ namespace IntegradorViewModel.Pages.ConfiguracaoModelo
 
         public async Task InicializarAsync()
         {
-            var caminhoModeloJson = _provider.GetCaminhoModeloConfig(_context.RecebeMensagem().NomeModelo);
-            Modelo = await _conversor.CarregarJsonAsync<ModeloEmUsoConfiguracao>(caminhoModeloJson);
-
-            _modeloDTO = new ModeloDTO(Modelo.NomeModelo, ParserTipoModelo.TipoModeloParaString(Modelo.Tipo), Modelo.CaminhoPasta, Modelo.Versao);
+            Modelo = await _conversor.CarregarJsonAsync<ModeloEmUsoConfiguracao>(_context.RecebeMensagem().NomeModelo);
             Modelo.CaminhoPasta = Path.GetFileName(Modelo.CaminhoPasta);
-
-            CaminhoArquivoDados = string.Empty;
 
             var taskPipeline = CarregarPipeline();
             var taskSchema = CarregarSchema();
@@ -77,21 +67,22 @@ namespace IntegradorViewModel.Pages.ConfiguracaoModelo
             dataTable.Columns.Add("Tipo", typeof(string));
             dataTable.Columns.Add("Categorico", typeof(bool));
 
-            string caminhoSchema = _provider.GetCaminhoSchemaConfig(_context.RecebeMensagem().NomeModelo);
+            string nomeModelo = Modelo.NomeModelo;
+            string caminhoSchema = _provider.GetCaminhoSchemaConfig(nomeModelo);
 
             if (!File.Exists(caminhoSchema))
             {
                 return dataTable.DefaultView;
             }
 
-            var schema = await _conversor.CarregarJsonAsync<Dictionary<int, SchemaDTO>>(caminhoSchema);
+            var schema = (await _conversor.CarregarJsonAsync<List<SchemaConfiguracao>>(nomeModelo)).First(s => s.Versao == Modelo.SchemaVersao);
 
             string nomeColuna;
             string finalidade;
             string tipo;
             bool categorico;
 
-            foreach (var item in schema)
+            foreach (var item in schema.Colunas)
             {
                 nomeColuna = item.Value.NomeColuna;
                 finalidade = item.Value.Finalidade;
@@ -108,18 +99,19 @@ namespace IntegradorViewModel.Pages.ConfiguracaoModelo
         {
             Dictionary<string, string> dicionarioPipeline = new();
 
-            string caminhoPipeline = _provider.GetCaminhoPipelineConfig(_context.RecebeMensagem().NomeModelo);
+            string nomeModelo = Modelo.NomeModelo;
+            string caminhoPipeline = _provider.GetCaminhoPipelineConfig(nomeModelo);
 
             if (!File.Exists(caminhoPipeline))
             {
                 return dicionarioPipeline;
             }
 
-            var pipeline = await _conversor.CarregarJsonAsync<Dictionary<int, FuncaoDTO>>(caminhoPipeline);
+            var pipeline = (await _conversor.CarregarJsonAsync<List<PipelineTratamentoConfiguracao>>(nomeModelo)).First(p => p.Versao == Modelo.PipelineVersao);
 
             string codigo = string.Empty;
 
-            foreach (var item in pipeline)
+            foreach (var item in pipeline.ScriptCodigo)
             {
                 codigo = $"{item.Value.NomeFuncao}()" + "\n{";
 
@@ -140,16 +132,17 @@ namespace IntegradorViewModel.Pages.ConfiguracaoModelo
         {
             ObservableCollection<TransformadorDTO> listaTransformadores = new();
 
-            string caminhoTransformadores = _provider.GetCaminhoTransformadorConfig(_context.RecebeMensagem().NomeModelo);
+            string nomeModelo = Modelo.NomeModelo;
+            string caminhoTransformadores = _provider.GetCaminhoTransformadorConfig(nomeModelo);
 
             if (!File.Exists(caminhoTransformadores))
             {
                 return listaTransformadores;
             }
 
-            var transformadores = await _conversor.CarregarJsonAsync<Dictionary<int, TransformadorDTO>>(caminhoTransformadores);
+            var transformadores = (await _conversor.CarregarJsonAsync<List<TransformadorConfiguracao>>(nomeModelo)).First(t => t.Versao == Modelo.TransformadoresVersao);
 
-            foreach (var item in transformadores)
+            foreach (var item in transformadores.Transformadores)
             {
                 var nome = item.Value.NomeTransformador;
                 var arquivo = !string.IsNullOrEmpty(item.Value.CaminhoTransformador)

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace IntegradorAplicacao.DTO
 {
-    public record FuncaoDTO() : IItemNomeModelo, IPipelineExecutor
+    public record FuncaoDTO() : IItemNomeModelo, IPipelineDTO
     {
         public string NomeFuncao { get; set; }
         public List<string> Codigo { get; set; }

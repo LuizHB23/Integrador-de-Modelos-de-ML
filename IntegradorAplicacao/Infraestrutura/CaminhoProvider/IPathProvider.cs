@@ -11,5 +11,6 @@
         string GetCaminhoPipelineConfig(string nomeModelo);
         string GetCaminhoTransformadorConfig(string nomeModelo);
         string GetCaminhoSaidaConfig(string nomeModelo);
+        string GetCaminhoTempConfig(string nomeModelo);
     }
 }

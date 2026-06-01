@@ -1,18 +1,22 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using AutoMapper;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using IntegradorAplicacao.Aplicacao.InferenciaAplicacao;
 using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.Infraestrutura.ArquivosController.Csv;
 using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
 using IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson;
+using IntegradorDominio.Models.Configuracao;
 using IntegradorDominio.Models.DataFrameModel;
 using IntegradorDominio.Models.Inferencia;
 using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.ControleUsuario.ConfiguracaoMetodo.EstadoDataFrame;
 using IntegradorViewModel.JanelaModelo;
+using IntegradorViewModel.Pages.InserirModelo;
 using IntegradorViewModel.Shared.Context;
 using IntegradorViewModel.Shared.Interfaces;
 using IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor;
+using System.CodeDom.Compiler;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Diagnostics;
@@ -45,18 +49,19 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
         private readonly ScriptExecutorResultadoManager _scriptManager;
         private readonly INotificationService _notificationService;
         private readonly IContext<ModeloDTO> _contextModelo;
+        private readonly IConversorJson _conversor;
         private readonly IPathProvider _provider;
 
         private List<ErrosInferencia>? _listaErros;
         private DataFrame? _resultadosDataFrame;
-        private Inferencia<SaidaDTO> _inferencia;
+        private Inferencia<PipelineTratamentoConfiguracao> _inferencia;
         private CsvController _csvController;
 
         public Stopwatch Stopwatch { get; set; }
 
         private ArquivoDadosDTO _arquivo { get; set; }
 
-        public ResultadoPredicaoViewModel(INavigationService navigation, IDialogService dialogService, IContext<ModeloDTO> contextModelo, IContext<ArquivoDadosDTO> contextArquivo, IConversorJson conversor, IPathProvider provider, INotificationService notificationService, Inferencia<SaidaDTO> inferencia)
+        public ResultadoPredicaoViewModel(INavigationService navigation, IDialogService dialogService, IContext<ModeloDTO> contextModelo, IContext<ArquivoDadosDTO> contextArquivo, IConversorJson conversor, IPathProvider provider, INotificationService notificationService, IMapper mapper, Inferencia<PipelineTratamentoConfiguracao> inferencia)
         {
             Navigation = navigation;
             DataPreview = new();
@@ -66,6 +71,7 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
             _arquivo = contextArquivo.RecebeMensagem();
             _notificationService = notificationService;
             _contextModelo = contextModelo;
+            _conversor = conversor;
             _provider = provider;
 
             _csvController = new CsvController();
@@ -73,7 +79,7 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
 
             TextBox = new ConfiguracaoResultadoTextBoxViewModel(new ConfiguracaoTextBoxViewModel(dialogService, AlterouTabela), DataPreview, new EstadoDataFrameViewModel(_arquivo));
 
-            _scriptManager = new(dialogService, conversor, contextModelo, contextArquivo, provider, CardsFuncoes, OpcoesPosicao, TextBox);
+            _scriptManager = new(dialogService, conversor, contextModelo, contextArquivo, provider, mapper, CardsFuncoes, OpcoesPosicao, TextBox);
 
             Stopwatch = new Stopwatch();
         }
@@ -137,19 +143,33 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
                 erroCarregarPipeline = true;
             }
 
-            var caminhoModelo = _contextModelo.RecebeMensagem().CaminhoPasta;
             var nomeModelo = _contextModelo.RecebeMensagem().NomeModelo;
-            var caminhoSchema = _provider.GetCaminhoSchemaConfig(nomeModelo);
-            var caminhoPipeline = _provider.GetCaminhoPipelineConfig(nomeModelo);
-            var caminhoTransformador = _provider.GetCaminhoTransformadorConfig(nomeModelo);
+            var caminhoModelo = _contextModelo.RecebeMensagem().CaminhoPasta;
+
+            var modelo = await _conversor.CarregarJsonAsync<ModeloEmUsoConfiguracao>(nomeModelo);
+
+            var _schema = (await _conversor.CarregarJsonAsync<List<SchemaConfiguracao>>(nomeModelo)).First(p => p.Versao == modelo.SchemaVersao);
+
+            PipelineTratamentoConfiguracao? pipeline = null;
+            if (!string.IsNullOrWhiteSpace(modelo.PipelineVersao))
+            {
+                pipeline = (await _conversor.CarregarJsonAsync<List<PipelineTratamentoConfiguracao>>(nomeModelo)).First(p => p.Versao == modelo.PipelineVersao);
+            }
+
+            TransformadorConfiguracao? transformadores = null;
+            if (!string.IsNullOrWhiteSpace(modelo.TransformadoresVersao))
+            {
+                transformadores = (await _conversor.CarregarJsonAsync<List<TransformadorConfiguracao>>(nomeModelo)).First(p => p.Versao == modelo.TransformadoresVersao);
+            }
 
             var resultados = await _inferencia.RealizaInferenciaAsync(
                 await CarregarDataFrameAsync(),
-                caminhoModelo,
-                caminhoSchema!,
-                caminhoPipeline!,
-                caminhoTransformador!
+                _schema,
+                pipeline,
+                transformadores,
+                caminhoModelo
             );
+
             LinhasInferencia = resultados.Count;
 
             _listaErros = _inferencia.ListaErros;
@@ -164,8 +184,7 @@ namespace IntegradorViewModel.Pages.PredicaoModelo
 
             if(!erroCarregarPipeline)
             {
-                var caminhoSaida = _provider.GetCaminhoSaidaConfig(nomeModelo);
-                _resultadosDataFrame = await _scriptManager.CarregarPipeline(caminhoSaida);
+                _resultadosDataFrame = await _scriptManager.CarregarPipeline(nomeModelo);
             }
             else
             {

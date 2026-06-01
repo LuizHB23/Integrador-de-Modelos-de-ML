@@ -1,7 +1,8 @@
 ﻿using IntegradorAplicacao.DTO;
-using IntegradorAplicacao.DTO.Interfaces;
 using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
 using IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson.ConverteJson;
+using IntegradorDominio.Models.Configuracao;
+using IntegradorDominio.Models.ModeloEtapas;
 using Moq;
 using System.Text.Json;
 
@@ -10,14 +11,14 @@ namespace IntegradorTesteUnidade.AplicacaoTestes.ConversorJson
     public class CardsJsonTests : IDisposable
     {
         private readonly Mock<IPathProvider> _pathProviderMock;
-        private readonly ConfiguradoresJson<SchemaDTO> _cardsJson;
+        private readonly ConfiguradoresJson<SchemaConfiguracao> _cardsJson;
         private readonly string _tempPath;
 
         public CardsJsonTests()
         {
             _pathProviderMock = new Mock<IPathProvider>();
 
-            _cardsJson = new ConfiguradoresJson<SchemaDTO>(_pathProviderMock.Object);
+            _cardsJson = new ConfiguradoresJson<SchemaConfiguracao>();
 
             _tempPath = Path.Combine(Path.GetTempPath(), "CardsJsonTests");
 
@@ -25,134 +26,6 @@ namespace IntegradorTesteUnidade.AplicacaoTestes.ConversorJson
             {
                 Directory.CreateDirectory(_tempPath);
             }
-        }
-
-        [Fact]
-        public async Task UsaCaminhoSchemaQuandoTipoForSchemaDTO()
-        {
-            // Arrange
-            var dados = new Dictionary<int, SchemaDTO>
-                {
-                    {
-                        1,
-                        new SchemaDTO("Coluna", "Finalidade", "Tipo", true)
-                        {
-                            NomeModelo = "ModeloTeste"
-                        }
-                    }
-                };
-
-            string caminho = Path.Combine(_tempPath, "schema.json");
-
-            _pathProviderMock
-                .Setup(p => p.GetCaminhoSchemaConfig("ModeloTeste"))
-                .Returns(caminho);
-
-            var conversor = new ConfiguradoresJson<SchemaDTO>(_pathProviderMock.Object);
-
-            // Act
-            await conversor.ConverteJsonAsync(dados);
-
-            // Assert
-            _pathProviderMock.Verify(
-                p => p.GetCaminhoSchemaConfig("ModeloTeste"),
-                Times.Once);
-        }
-
-        [Fact]
-        public async Task UsaCaminhoPipelineQuandoTipoForFuncaoDTO()
-        {
-            // Arrange
-            var dados = new Dictionary<int, FuncaoDTO>
-                {
-                    {
-                        1,
-                        new FuncaoDTO()
-                        {
-                            NomeModelo = "ModeloTeste"
-                        }
-                    }
-                };
-
-            string caminho = Path.Combine(_tempPath, "pipeline.json");
-
-            _pathProviderMock
-                .Setup(p => p.GetCaminhoPipelineConfig("ModeloTeste"))
-                .Returns(caminho);
-
-            var conversor = new ConfiguradoresJson<FuncaoDTO>(_pathProviderMock.Object);
-
-            // Act
-            await conversor.ConverteJsonAsync(dados);
-
-            // Assert
-            _pathProviderMock.Verify(
-                p => p.GetCaminhoPipelineConfig("ModeloTeste"),
-                Times.Once);
-        }
-
-        [Fact]
-        public async Task UsaCaminhoTransformadorQuandoTipoForTransformadorDTO()
-        {
-            // Arrange
-            var dados = new Dictionary<int, TransformadorDTO>
-                {
-                    {
-                        1,
-                        new TransformadorDTO("", "")
-                        {
-                            NomeModelo = "ModeloTeste"
-                        }
-                    }
-                };
-
-            string caminho = Path.Combine(_tempPath, "transformador.json");
-
-            _pathProviderMock
-                .Setup(p => p.GetCaminhoTransformadorConfig("ModeloTeste"))
-                .Returns(caminho);
-
-            var conversor = new ConfiguradoresJson<TransformadorDTO>(_pathProviderMock.Object);
-
-            // Act
-            await conversor.ConverteJsonAsync(dados);
-
-            // Assert
-            _pathProviderMock.Verify(
-                p => p.GetCaminhoTransformadorConfig("ModeloTeste"),
-                Times.Once);
-        }
-
-        [Fact]
-        public async Task UsaCaminhoSaidaQuandoTipoForSaidaDTO()
-        {
-            // Arrange
-            var dados = new Dictionary<int, SaidaDTO>
-                {
-                    {
-                        1,
-                        new SaidaDTO()
-                        {
-                            NomeModelo = "ModeloTeste"
-                        }
-                    }
-                };
-
-            string caminho = Path.Combine(_tempPath, "saida.json");
-
-            _pathProviderMock
-                .Setup(p => p.GetCaminhoSaidaConfig("ModeloTeste"))
-                .Returns(caminho);
-
-            var conversor = new ConfiguradoresJson<SaidaDTO>(_pathProviderMock.Object);
-
-            // Act
-            await conversor.ConverteJsonAsync(dados);
-
-            // Assert
-            _pathProviderMock.Verify(
-                p => p.GetCaminhoSaidaConfig("ModeloTeste"),
-                Times.Once);
         }
 
         [Fact]
@@ -173,18 +46,24 @@ namespace IntegradorTesteUnidade.AplicacaoTestes.ConversorJson
         public async Task RetornaDicionarioPreenchidoSeArquivoValidoEmCarregarJsonAsync()
         {
             // Arrange
-            var dados = new Dictionary<int, SchemaDTO>
+            var nomeModelo = "Nome Qualquer";
+
+            var dados = new List<SchemaConfiguracao>()
             {
                 {
-                    10,
-                    new SchemaDTO(
-                        "Nome Coluna Qualquer",
-                        "Finalidade Qualquer",
-                        "Tipo Qualquer",
-                        true)
+                    new SchemaConfiguracao(nomeModelo, "1.0", new Dictionary<int, Schema>()
                     {
-                        NomeModelo = "Nome Modelo Qualquer"
-                    }
+                        {
+                            10,
+                            new Schema()
+                            {
+                                NomeColuna = "Nome Coluna",
+                                Finalidade = "Finalidade",
+                                Tipo = "Tipo",
+                                Categorico = true
+                            }
+                        }
+                    })
                 }
             };
 
@@ -199,20 +78,23 @@ namespace IntegradorTesteUnidade.AplicacaoTestes.ConversorJson
 
             // Assert
             Assert.Single(resultado);
-
-            Assert.Equal(
-                "Nome Modelo Qualquer",
-                resultado[10].NomeModelo);
+            Assert.Equal(nomeModelo, dados.First().NomeModelo);
+            Assert.Equal("Nome Coluna", dados.First().Colunas[10].NomeColuna);
+            Assert.Equal("Finalidade", dados.First().Colunas[10].Finalidade);
+            Assert.Equal("Tipo", dados.First().Colunas[10].Tipo);
+            Assert.True(dados.First().Colunas[10].Categorico);
         }
 
         [Fact]
         public async Task NaoCriaArquivoQuandoDicionarioEstiverVazioEmConverteJsonAsync()
         {
             // Arrange
-            var dados = new Dictionary<int, SchemaDTO>();
+            string nomeModelo = "Nome Qualquer";
+
+            var dados = new List<SchemaConfiguracao>();
 
             // Act
-            await _cardsJson.ConverteJsonAsync(dados);
+            await _cardsJson.ConverteJsonAsync(dados, nomeModelo);
 
             // Assert
             Assert.Empty(Directory.GetFiles(_tempPath));

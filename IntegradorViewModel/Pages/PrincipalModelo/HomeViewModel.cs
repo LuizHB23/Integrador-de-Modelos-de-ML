@@ -36,7 +36,7 @@ namespace IntegradorViewModel.Pages.PrincipalModelo
             _provider = provider;
         }
 
-        public async Task InicializarAsync() => _listaModelos = await CarregarModelos();
+        public async Task InicializarAsync() => ListaModelos = await CarregarModelos();
 
         public async Task<ObservableCollection<ModeloDTO>> CarregarModelos()
         {
@@ -50,15 +50,12 @@ namespace IntegradorViewModel.Pages.PrincipalModelo
             }
 
             var pastas = Directory.GetDirectories(caminho);
-            var caminhoJson = string.Empty;
 
             foreach (var pasta in pastas)
             {
-                caminhoJson = _provider.GetCaminhoModeloConfig(pasta);
-
                 try
                 {
-                    var modelo = await _conversor.CarregarJsonAsync<ModeloEmUsoConfiguracao>(caminhoJson);
+                    var modelo = await _conversor.CarregarJsonAsync<ModeloEmUsoConfiguracao>(pasta);
                     ModeloDTO modeloDTO = new ModeloDTO(modelo.NomeModelo, ParserTipoModelo.TipoModeloParaString(modelo.Tipo), modelo.CaminhoPasta, modelo.Versao);
                     ListaModelos.Add(modeloDTO);
                 }

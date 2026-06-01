@@ -4,10 +4,10 @@ using System.Text;
 
 namespace IntegradorAplicacao.DTO.Interfaces
 {
-    public interface IPipelineExecutor
+    public interface IPipelineDTO
     {
+        public string NomeModelo { get; set; }
         string NomeFuncao { get; set; }
         List<string> Codigo { get; set; }
-        public string NomeModelo { get; set; }
     }
 }

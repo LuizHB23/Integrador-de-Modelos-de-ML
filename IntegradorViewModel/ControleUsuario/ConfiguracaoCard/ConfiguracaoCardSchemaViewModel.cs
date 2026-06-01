@@ -8,8 +8,8 @@ namespace IntegradorViewModel.ControleUsuario
 {
     public partial class ConfiguracaoCardSchemaViewModel : ObservableObject, IConfiguracaoCard
     {
-        private readonly Action<ConfiguracaoCardSchemaViewModel, int> _onTrocarPosicao;
-        private readonly Action<ConfiguracaoCardSchemaViewModel> _onExcluir;
+        private readonly Func<ConfiguracaoCardSchemaViewModel, int, Task> _onTrocarPosicao;
+        private readonly Func<ConfiguracaoCardSchemaViewModel, Task> _onExcluir;
         private SchemaItemViewModel _schemaItem;
 
         [ObservableProperty]
@@ -32,10 +32,10 @@ namespace IntegradorViewModel.ControleUsuario
 
         public bool EstouReposicionando { get; set; }
 
-        public ConfiguracaoCardSchemaViewModel(SchemaItemViewModel schemaItem, Action<ConfiguracaoCardSchemaViewModel> actionExcluir, Action<ConfiguracaoCardSchemaViewModel, int> actionTrocarPosicao)
+        public ConfiguracaoCardSchemaViewModel(SchemaItemViewModel schemaItem, Func<ConfiguracaoCardSchemaViewModel, Task> funcExcluir, Func<ConfiguracaoCardSchemaViewModel, int, Task> funcTrocarPosicao)
         {
-            _onTrocarPosicao = actionTrocarPosicao;
-            _onExcluir = actionExcluir;
+            _onTrocarPosicao = funcTrocarPosicao;
+            _onExcluir = funcExcluir;
             _schemaItem = schemaItem;
 
             OpcoesPosicao = new();

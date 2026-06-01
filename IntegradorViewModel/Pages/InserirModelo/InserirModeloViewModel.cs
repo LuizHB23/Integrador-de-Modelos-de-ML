@@ -71,7 +71,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
             CaminhoModelo = _gerenciador.Salvar(new ModeloDTO(NomeModelo, TipoModelo, CaminhoModelo, "1.0"));
             modelo.CaminhoPasta = CaminhoModelo;
 
-            await _conversor.ConverteJsonAsync(new ModeloEmUsoConfiguracao(NomeModelo, ParserTipoModelo.StringParaTipoModelo(TipoModelo), CaminhoModelo));
+            await _conversor.ConverteJsonAsync(new ModeloEmUsoConfiguracao(NomeModelo, ParserTipoModelo.StringParaTipoModelo(TipoModelo), CaminhoModelo), NomeModelo);
 
             return modelo;
         }

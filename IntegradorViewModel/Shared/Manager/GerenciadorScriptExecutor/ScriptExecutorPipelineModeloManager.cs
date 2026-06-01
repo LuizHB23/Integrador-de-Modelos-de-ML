@@ -1,7 +1,10 @@
-﻿using IntegradorAplicacao.DTO;
+﻿using AutoMapper;
+using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
 using IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson;
+using IntegradorDominio.Models.Configuracao;
 using IntegradorDominio.Models.DataFrameModel;
+using IntegradorDominio.Models.ModeloEtapas;
 using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.ControleUsuario.ConfiguracaoTextBox;
 using IntegradorViewModel.Shared.Context;
@@ -11,21 +14,21 @@ using System.Collections.ObjectModel;
 
 namespace IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor
 {
-    public partial class ScriptExecutorPipelineModeloManager : ScriptExecutorManager<FuncaoDTO>
+    public partial class ScriptExecutorPipelineModeloManager : ScriptExecutorManager<FuncaoDTO, PipelineTratamentoConfiguracao>
     {
-        public ScriptExecutorPipelineModeloManager(IDialogService dialogService, IConversorJson conversor, IContext<ModeloDTO> contextNomeModelo, IContext<ArquivoDadosDTO> contextArquivo, IPathProvider provider, ObservableCollection<ConfiguracaoCardFuncaoViewModel> cardsFuncoes, ObservableCollection<int> opcoesPosicao, IConfiguracaoTextBox textBox) : base(dialogService, conversor, contextNomeModelo, contextArquivo, provider, cardsFuncoes, opcoesPosicao, textBox) 
+        public ScriptExecutorPipelineModeloManager(IDialogService dialogService, IConversorJson conversor, IContext<ModeloDTO> contextNomeModelo, IContext<ArquivoDadosDTO> contextArquivo, IPathProvider provider, IMapper mapper, ObservableCollection<ConfiguracaoCardFuncaoViewModel> cardsFuncoes, ObservableCollection<int> opcoesPosicao, IConfiguracaoTextBox textBox) : base(dialogService, conversor, contextNomeModelo, contextArquivo, provider, mapper, cardsFuncoes, opcoesPosicao, textBox) 
         {
-            onConstroiPipelineAsync = ConstroiPipelineAsync;
-
-            _json = "pipeline.json";
+            _onConstroiPipelineAsync = ConstroiPipelineAsync;
         }
 
-        private async Task<DataFrame> ConstroiPipelineAsync(string caminho) => await ExecutaPipeline(caminho);
-        private async Task ConstroiPipelineAsync() => await ExecutaPipeline(_provider.GetCaminhoPipelineConfig(_nomeModelo));
+        private async Task<DataFrame> ConstroiPipelineAsync() => await ExecutaPipeline(await PreparaScriptCodigo());
+        private async Task<DataFrame> ConstroiPipelineAsync(PipelineTratamentoConfiguracao pipeline) => await ExecutaPipeline(pipeline);
 
         public async Task CarregarPipeline()
         {
             string? caminhoPipeline = null;
+
+            PipelineTratamentoConfiguracao pipelineTratamentoConfiguracao;
 
             try
             {
@@ -36,21 +39,33 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor
                     throw new Exception();
                 }
 
-                await _cardsManager.CarregarPipeline(_conversor, ConfigurarFuncao, RemoverFuncao, caminhoPipeline);
+
+                var pipeline = await _conversor.CarregarJsonAsync<Dictionary<int, FuncaoDTO>>(caminhoPipeline);
+
+                var pipelineMapeado = _mapper.Map<Dictionary<int, Pipeline>>(pipeline);
+
+                var nomeModelo = _contextNomeModelo.RecebeMensagem().NomeModelo;
+
+                pipelineTratamentoConfiguracao = new(nomeModelo, "1.0", pipelineMapeado);
+
+                await _cardsManager.CarregarPipeline(ConfigurarFuncao, RemoverFuncao, pipelineMapeado);
+
+                await _conversor.ConverteJsonAsync(pipelineTratamentoConfiguracao, nomeModelo);
             }
             catch (Exception)
             {
                 return;
             }
 
-            await CarregarPipeline<FuncaoDTOFactory>(ConstroiPipelineAsync, caminhoPipeline);
+            await CarregarPipeline<FuncaoDTOFactory>(ConstroiPipelineAsync, pipelineTratamentoConfiguracao);
+
         }
 
         public async Task AtualizaFuncao() => await AtualizaFuncao<FuncaoDTOFactory>();
 
-        protected override void AoAlterarPipeline()
-        {
-            PreparaParaJson<FuncaoDTOFactory>();
-        }
+        protected override async Task AoAlterarPipeline() => await PreparaParaJson<FuncaoDTOFactory>();
+
+        private async Task<PipelineTratamentoConfiguracao> PreparaScriptCodigo() => await _conversor.CarregarJsonAsync<PipelineTratamentoConfiguracao>(_modelo.NomeModelo);
+
     }
 }

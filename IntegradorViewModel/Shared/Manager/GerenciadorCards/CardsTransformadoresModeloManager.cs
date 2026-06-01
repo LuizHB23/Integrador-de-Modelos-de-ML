@@ -1,5 +1,7 @@
 ﻿using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson;
+using IntegradorDominio.Models.Configuracao;
+using IntegradorDominio.Models.ModeloEtapas;
 using IntegradorViewModel.ControleUsuario.ConfiguracaoCard;
 using IntegradorViewModel.ItensViewModel;
 using IntegradorViewModel.Shared.Interfaces;
@@ -9,16 +11,16 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
 {
     public class CardsTransformadoresModeloManager : CardsManager<ConfiguracaoCardTransformadorViewModel>
     {
-        public CardsTransformadoresModeloManager(ObservableCollection<ConfiguracaoCardTransformadorViewModel> cardsLista, ObservableCollection<int> posicoesLista) : base(cardsLista, posicoesLista) { }
+        public CardsTransformadoresModeloManager(ObservableCollection<ConfiguracaoCardTransformadorViewModel> cardsLista, ObservableCollection<int> posicoesLista, ModeloDTO modelo) : base(cardsLista, posicoesLista, modelo) { }
 
-        public void AdicinarColuna(TransformadorItemViewModel transformadorItem, Action<ConfiguracaoCardTransformadorViewModel> actionExcluir, Action<ConfiguracaoCardTransformadorViewModel, int> actionTrocarPosicao)
+        public void AdicinarColuna(TransformadorItemViewModel transformadorItem, Func<ConfiguracaoCardTransformadorViewModel, Task> funcExcluir, Func<ConfiguracaoCardTransformadorViewModel, int, Task> funcTrocarPosicao)
         {
             if (transformadorItem is null)
             {
                 return;
             }
 
-            var cardSchema = new ConfiguracaoCardTransformadorViewModel(transformadorItem, actionExcluir, actionTrocarPosicao);
+            var cardSchema = new ConfiguracaoCardTransformadorViewModel(transformadorItem, funcExcluir, funcTrocarPosicao);
             _cardsLista.Add(cardSchema);
             _posicoesLista.Add(transformadorItem.Posicao);
             AtualizaPosicoes();
@@ -51,21 +53,30 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
 
         public async Task PreparaParaJson(IConversorJson conversor, string nomeModelo)
         {
-            var transformadorNovo = new Dictionary<int, TransformadorDTO>();
+            var transformadorNovo = new Dictionary<int, Transformador>();
 
             foreach (var card in _cardsLista)
             {
-                var transformador = new TransformadorDTO(card.NomeTransformador, card.CaminhoProvisorio) { NomeModelo = nomeModelo };
+                var transformador = new Transformador()
+                {
+                    NomeTransformador = card.NomeTransformador, 
+                    CaminhoTransformador = card.CaminhoProvisorio
+                };
                 transformadorNovo.Add(card.Posicao, transformador);
             }
 
-            await conversor.ConverteJsonAsync(transformadorNovo);
+            var listaTransformadoresConfiguracao = new List<TransformadorConfiguracao>()
+            {
+                new TransformadorConfiguracao(nomeModelo, "1.0", transformadorNovo)
+            };
+
+            await conversor.ConverteJsonAsync(listaTransformadoresConfiguracao, nomeModelo);
         }
 
         public override void AtualizaPosicoes() => base.AtualizaPosicoes();
 
-        public override void OrganizaPosicao(ConfiguracaoCardTransformadorViewModel card, int posicaoNova) => base.OrganizaPosicao(card, posicaoNova);
+        public override async Task OrganizaPosicao(ConfiguracaoCardTransformadorViewModel card, int posicaoNova) => await base.OrganizaPosicao(card, posicaoNova);
 
-        public override void RemoverCard(ConfiguracaoCardTransformadorViewModel card) => base.RemoverCard(card);
+        public override async Task RemoverCard(ConfiguracaoCardTransformadorViewModel card) => await base.RemoverCard(card);
     }
 }

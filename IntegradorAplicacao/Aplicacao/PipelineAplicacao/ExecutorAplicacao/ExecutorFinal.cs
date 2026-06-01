@@ -2,23 +2,23 @@
 using IntegradorAplicacao.DTO.Interfaces;
 using IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson;
 using IntegradorDominio.AST;
+using IntegradorDominio.Models.Configuracao;
+using IntegradorDominio.Models.Configuracao.Interfaces;
 using IntegradorDominio.Models.DataFrameModel;
 
 namespace IntegradorAplicacao.Aplicacao.PipelineAplicacao.ExecutorAplicacao
 {
-    public class ExecutorFinal<T> where T : IPipelineExecutor
+    public class ExecutorFinal<T> where T : IPipelineConfiguracao
     {
-        private readonly IConversorJson _conversor;
         private Dictionary<string, object?> _objetosUtilizados;
         private readonly Queue<BuilderExecutor> _executors;
         private ParserAst? _parser;
 
-        public ExecutorFinal(IConversorJson conversor)
+        public ExecutorFinal()
         {
             _objetosUtilizados = new();
             _executors = new Queue<BuilderExecutor>();
             _parser = new ParserAst();
-            _conversor = conversor;
         }
 
         public DataFrame ExecutarTudo(DataFrame dataFrame)
@@ -36,10 +36,10 @@ namespace IntegradorAplicacao.Aplicacao.PipelineAplicacao.ExecutorAplicacao
             return dataFrame;
         }
 
-        public async Task ConstroiSequenciaMetodoPipeline(string caminhoFuncao)
+        public async Task ConstroiSequenciaMetodoPipeline(T codigo)
         {
             _objetosUtilizados["df"] = null;
-            var listaMetodoPipeline = await RecuperaMetodoPipeline(caminhoFuncao);
+            var listaMetodoPipeline = await RecuperaMetodoPipeline(codigo);
 
             foreach(var metodoPipeline in listaMetodoPipeline)
             {
@@ -51,12 +51,11 @@ namespace IntegradorAplicacao.Aplicacao.PipelineAplicacao.ExecutorAplicacao
             _parser = null;
         }
 
-        private async Task<List<MetodoPipeline>> RecuperaMetodoPipeline(string caminhoFuncao)
+        private async Task<List<MetodoPipeline>> RecuperaMetodoPipeline(T codigo)
         {
-            var codigosJson = await _conversor.CarregarJsonAsync<Dictionary<int, T>>(caminhoFuncao);
             var listaMetodoPipeline = new List<MetodoPipeline>();
 
-            foreach (var elemento in codigosJson)
+            foreach (var elemento in codigo.Dicionario)
             {
                 var metodoNomeCorpo = new Dictionary<string, List<string>>
                     {

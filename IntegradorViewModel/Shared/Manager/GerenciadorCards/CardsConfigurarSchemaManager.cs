@@ -1,5 +1,8 @@
-﻿using IntegradorAplicacao.DTO;
+﻿using AutoMapper;
+using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson;
+using IntegradorDominio.Models.Configuracao;
+using IntegradorDominio.Models.ModeloEtapas;
 using IntegradorViewModel.ControleUsuario;
 using IntegradorViewModel.ItensViewModel;
 using IntegradorViewModel.Shared.Interfaces;
@@ -9,22 +12,22 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
 {
     public class CardsConfigurarSchemaManager : CardsManager<ConfiguracaoCardSchemaViewModel>
     {
-        public CardsConfigurarSchemaManager(ObservableCollection<ConfiguracaoCardSchemaViewModel> cardsLista, ObservableCollection<int> posicoesLista) : base(cardsLista, posicoesLista) { }
+        public CardsConfigurarSchemaManager(ObservableCollection<ConfiguracaoCardSchemaViewModel> cardsLista, ObservableCollection<int> posicoesLista, ModeloDTO modelo) : base(cardsLista, posicoesLista, modelo) { }
 
-        public void AdicinarColuna(SchemaItemViewModel schemaItem, Action<ConfiguracaoCardSchemaViewModel> actionExcluir, Action<ConfiguracaoCardSchemaViewModel, int> actionTrocarPosicao)
+        public void AdicinarColuna(SchemaItemViewModel schemaItem, Func<ConfiguracaoCardSchemaViewModel, Task> funcExcluir, Func<ConfiguracaoCardSchemaViewModel, int, Task> funcTrocarPosicao)
         {
             if (schemaItem is null)
             {
                 return;
             }
 
-            var cardSchema = new ConfiguracaoCardSchemaViewModel(schemaItem, actionExcluir, actionTrocarPosicao);
+            var cardSchema = new ConfiguracaoCardSchemaViewModel(schemaItem, funcExcluir, funcTrocarPosicao);
             _cardsLista.Add(cardSchema);
             _posicoesLista.Add(schemaItem.Posicao);
             AtualizaPosicoes();
         }
 
-        public async Task CarregarSchema(IDialogService _dialogService, IConversorJson conversor)
+        public async Task CarregarSchema(IDialogService _dialogService, IConversorJson conversor, IMapper mapper)
         {
             var _caminhoJson = _dialogService.GetCaminhoArquivo();
 
@@ -38,6 +41,11 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
 
             var schema = await conversor.CarregarJsonAsync<Dictionary<int, SchemaDTO>>(_caminhoJson);
 
+            if(schema.Count == 0)
+            {
+                return;
+            }
+
             foreach (var card in schema)
             {
                 var schemaItem = new SchemaItemViewModel(card.Key, card.Value.NomeColuna, card.Value.Finalidade, card.Value.Tipo, card.Value.Categorico);
@@ -47,25 +55,49 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
             }
 
             AtualizaPosicoes();
+
+            string nomeModelo = _modelo.NomeModelo;
+
+            SchemaConfiguracao schemaConfiguracao = new(nomeModelo, "1.0", mapper.Map<Dictionary<int, Schema>>(schema));
+
+            await conversor.ConverteJsonAsync(schemaConfiguracao, nomeModelo);
         }
 
         public async Task PreparaParaJson(IConversorJson conversor, string nomeModelo)
         {
-            var schemaNovo = new Dictionary<int, SchemaDTO>();
+            var schemaNovo = new Dictionary<int, Schema>();
+
+
+
+
+            //Parte do Versionador
+
+
+
+
 
             foreach (var card in _cardsLista)
             {
-                var schema = new SchemaDTO(card.NomeColuna, card.Finalidade, card.Tipo, card.Categorico) { NomeModelo = nomeModelo };
+                var schema = new Schema()
+                    {
+                        NomeColuna = card.NomeColuna,
+                        Finalidade = card.Finalidade, 
+                        Tipo = card.Tipo, 
+                        Categorico = card.Categorico
+                    };
+
                 schemaNovo.Add(card.Posicao, schema);
             }
 
-            await conversor.ConverteJsonAsync(schemaNovo);
+            var schemaConfiguracao = new SchemaConfiguracao(nomeModelo, "1.0", schemaNovo);
+
+            await conversor.ConverteJsonAsync(schemaConfiguracao, nomeModelo);
         }
 
         public override void AtualizaPosicoes() => base.AtualizaPosicoes();
 
-        public override void OrganizaPosicao(ConfiguracaoCardSchemaViewModel card, int posicaoNova) => base.OrganizaPosicao(card, posicaoNova);
+        public override async Task OrganizaPosicao(ConfiguracaoCardSchemaViewModel card, int posicaoNova) => await base.OrganizaPosicao(card, posicaoNova);
 
-        public override void RemoverCard(ConfiguracaoCardSchemaViewModel card) => base.RemoverCard(card);
+        public override async Task RemoverCard(ConfiguracaoCardSchemaViewModel card) => await base.RemoverCard(card);
     }
 }

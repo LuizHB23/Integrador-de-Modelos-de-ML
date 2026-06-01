@@ -8,7 +8,7 @@ namespace IntegradorViewModel.ControleUsuario
 {
     public partial class ConfiguracaoCardFuncaoViewModel : ObservableObject, IConfiguracaoCard
     {
-        private readonly Action<ConfiguracaoCardFuncaoViewModel, int> _onTrocarPosicao;
+        private readonly Func<ConfiguracaoCardFuncaoViewModel, int, Task> _onTrocarPosicao;
         private readonly Func<ConfiguracaoCardFuncaoViewModel, Task> _onConfigurarFuncao;
         private readonly Func<ConfiguracaoCardFuncaoViewModel, Task> _onExcluir;
         private FuncaoItemViewModel _funcaoItem;
@@ -25,10 +25,10 @@ namespace IntegradorViewModel.ControleUsuario
         public bool EstouReposicionando { get; set; }
         public FuncaoItemViewModel FuncaoItem { get => _funcaoItem; }
 
-        public ConfiguracaoCardFuncaoViewModel(FuncaoItemViewModel funcaoItem, Func<ConfiguracaoCardFuncaoViewModel, Task> funcExcluir, Action<ConfiguracaoCardFuncaoViewModel, int> actionTrocarPosicao, Func<ConfiguracaoCardFuncaoViewModel, Task> functionConfigurarFuncao)
+        public ConfiguracaoCardFuncaoViewModel(FuncaoItemViewModel funcaoItem, Func<ConfiguracaoCardFuncaoViewModel, Task> funcExcluir, Func<ConfiguracaoCardFuncaoViewModel, int, Task> funcTrocarPosicao, Func<ConfiguracaoCardFuncaoViewModel, Task> functionConfigurarFuncao)
         {
             _onConfigurarFuncao = functionConfigurarFuncao;
-            _onTrocarPosicao = actionTrocarPosicao;
+            _onTrocarPosicao = funcTrocarPosicao;
             _onExcluir = funcExcluir;
             _funcaoItem = funcaoItem;
 

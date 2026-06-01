@@ -1,84 +1,80 @@
 ﻿using IntegradorAplicacao.Aplicacao.PipelineAplicacao.ExecutorAplicacao;
-using IntegradorAplicacao.DTO;
-using IntegradorAplicacao.DTO.Interfaces;
-using IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson;
+using IntegradorDominio.Models.Configuracao;
+using IntegradorDominio.Models.Configuracao.Interfaces;
 using IntegradorDominio.Models.DataFrameModel;
 using IntegradorDominio.Models.Inferencia;
+using IntegradorDominio.Models.ModeloEtapas;
 using Microsoft.ML.OnnxRuntime;
+using System.Diagnostics;
 
 namespace IntegradorAplicacao.Aplicacao.InferenciaAplicacao
 {
-    public class Inferencia<T> where T : IPipelineExecutor
+    public class Inferencia<T> where T : IPipelineConfiguracao
     {
-        private readonly IConversorJson _conversor;
-
-        private Dictionary<int, SchemaDTO>? _schemaDicionario;
+        private Dictionary<int, Schema>? _schemaDicionario;
         private readonly ConfiguraInputsOutputs _configuracao;
         private ExecutorFinal<T>? _executor;
 
         public List<ErrosInferencia> ListaErros { get; private set; }
         public HistoricoInferencia Historico { get; private set; }
 
-        public Inferencia(IConversorJson conversor)
+        public Inferencia()
         {
-            _conversor = conversor;
-
             ListaErros = new();
             Historico = new();
 
-            _executor = new(conversor);
+            _executor = new();
             _configuracao = new(ListaErros);
         }
 
-        public async Task<List<ResultadoInferencia>> RealizaInferenciaAsync(DataFrame dataFrame, string caminhoModelo, string caminhoSchema, string caminhoPipeline, string caminhoTransformador)
+        public async Task<List<ResultadoInferencia>> RealizaInferenciaAsync(DataFrame dataFrame, SchemaConfiguracao schema, T? pipeline, TransformadorConfiguracao? transformadores, string caminhoModelo)
         {
-            _schemaDicionario = await _conversor.CarregarJsonAsync<Dictionary<int, SchemaDTO>>(caminhoSchema)
-                ?? throw new Exception("Schema não carregado.");
+            _schemaDicionario = schema.Dicionario;
 
-            var dataFrameNovo = await RealizaFeatureEngineeringAsync(dataFrame, caminhoPipeline);
+            var dataFrameNovo = await RealizaFeatureEngineeringAsync(dataFrame, pipeline);
             _executor = null;
-
-            var transformadores = await _conversor.CarregarJsonAsync<Dictionary<int, TransformadorDTO>>(caminhoTransformador);
 
             var ids = PegaIds(dataFrameNovo);
 
             List<NamedOnnxValue> inputs;
 
-            if (transformadores.Count > 0)
+            if(transformadores is not null)
             {
-                using (var primeiraSession = new InferenceSession(transformadores.First().Value.CaminhoTransformador))
+                if (transformadores.Dicionario.Count > 0)
                 {
-                    inputs = _configuracao.CriarInputs(dataFrameNovo, primeiraSession, _schemaDicionario, ids);
+                    using (var primeiraSession = new InferenceSession(transformadores.Dicionario.First().Value.CaminhoTransformador))
+                    {
+                        inputs = _configuracao.CriarInputs(dataFrameNovo, primeiraSession, _schemaDicionario, ids);
+                    }
+
+                    IDisposableReadOnlyCollection<DisposableNamedOnnxValue>? resultadosTranformadores = null;
+
+                    foreach (var transformador in transformadores.Dicionario.OrderBy(t => t.Key))
+                    {
+                        resultadosTranformadores = RealizaInferenciaOnnx(inputs, transformador.Value.CaminhoTransformador, ids);
+
+                        inputs = _configuracao.ConverterParaInputs(resultadosTranformadores);
+                    }
+
+                    var finalResultados = RealizaInferenciaOnnx(inputs, caminhoModelo, ids);
+
+                    GeraHistorico(finalResultados);
+
+                    return _configuracao.ReconstruirSaidaComId(finalResultados, ids);
                 }
 
-                IDisposableReadOnlyCollection<DisposableNamedOnnxValue>? resultados = null;
-
-                foreach (var transformador in transformadores.OrderBy(t => t.Key))
-                {
-                    resultados = RealizaInferenciaOnnx(inputs, transformador.Value.CaminhoTransformador, ids);
-
-                    inputs = _configuracao.ConverterParaInputs(resultados);
-                }
-
-                var finalResultados = RealizaInferenciaOnnx(inputs, caminhoModelo, ids);
-
-                GeraHistorico(finalResultados);
-
-                return _configuracao.ReconstruirSaidaComId(finalResultados, ids);
             }
-            else
-            {
-                var resultados = RealizaInferenciaOnnx(dataFrameNovo, caminhoModelo, ids);
+            
+            var resultados = RealizaInferenciaOnnx(dataFrameNovo, caminhoModelo, ids);
 
-                GeraHistorico(resultados);
+            GeraHistorico(resultados);
 
-                return _configuracao.ReconstruirSaidaComId(resultados, ids);
-            }
+            return _configuracao.ReconstruirSaidaComId(resultados, ids);
         }
 
-        private async Task<DataFrame> RealizaFeatureEngineeringAsync(DataFrame dataFrame, string caminhoPipeline)
+        private async Task<DataFrame> RealizaFeatureEngineeringAsync(DataFrame dataFrame, T pipeline)
         {
-            await Task.Run(() => _executor.ConstroiSequenciaMetodoPipeline(caminhoPipeline));
+            await Task.Run(() => _executor.ConstroiSequenciaMetodoPipeline(pipeline));
             return await Task.Run(() => _executor.ExecutarTudo(dataFrame));
         }
 
@@ -100,6 +96,16 @@ namespace IntegradorAplicacao.Aplicacao.InferenciaAplicacao
             {
                 throw new Exception("Erro ao ajustar onnx");
             }
+
+            Debug.WriteLine("=================================");
+
+            foreach (var input in session.InputMetadata)
+            {
+                Debug.WriteLine($"Input: {input.Key}");
+                Debug.WriteLine($"Dimensões: {string.Join(",", input.Value.Dimensions)}");
+            }
+
+            Debug.WriteLine("=================================");
 
             return session.Run(inputsFinais);
         }

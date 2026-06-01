@@ -1,15 +1,24 @@
-﻿using IntegradorDominio.Models.DataFrameModel;
+﻿using IntegradorDominio.Models.Configuracao.Interfaces;
 using IntegradorDominio.Models.ModeloEtapas;
+using System.Text.Json.Serialization;
 
 namespace IntegradorDominio.Models.Configuracao
 {
-    public class PipelineConfiguracao
+    public class PipelineTratamentoConfiguracao : IListaConfiguracao, IPipelineConfiguracao
     {
         public string NomeModelo { get; set; }
         public string Versao { get; set; }
-        public Dictionary<int, PipelineTratamento> ScriptCodigo { get; set; }
+        public Dictionary<int, Pipeline> ScriptCodigo { get; set; }
 
-        public PipelineConfiguracao(string nomeModelo, string versao, Dictionary<int, PipelineTratamento> scriptCodigo)
+        [JsonIgnore]
+        public Dictionary<int, Pipeline> Dicionario
+        {
+            get => ScriptCodigo;
+
+            set;
+        }
+
+        public PipelineTratamentoConfiguracao(string nomeModelo, string versao, Dictionary<int, Pipeline> scriptCodigo)
         {
             NomeModelo = nomeModelo;
             Versao = versao;

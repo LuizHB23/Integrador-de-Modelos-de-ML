@@ -155,7 +155,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
                 dict.ContainsKey(2) &&
                 dict.ContainsKey(3) &&
                 dict[1].NomeColuna == itensFakes[0].NomeColuna
-            )), Times.AtLeastOnce);
+            ), "modelo"), Times.AtLeastOnce);
         }
 
         [Fact]
@@ -219,17 +219,19 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
         public void RetornaVazioQuandoElementoRemovidoDeCardsSchemaEmRemoverColuna()
         {
             //Arrange
-            Action<ConfiguracaoCardSchemaViewModel> removerFake = (vm) =>
+            Func<ConfiguracaoCardSchemaViewModel, Task> removerFake = (vm) =>
             {
                 _viewModel.CardsSchema.Remove(vm);
+                return Task.CompletedTask;
             };
 
             ConfiguracaoCardSchemaViewModel? recebidoVm = null;
             int recebidoIndice = -1;
-            Action<ConfiguracaoCardSchemaViewModel, int> trocarFake = (vm, indice) =>
+            Func<ConfiguracaoCardSchemaViewModel, int, Task> trocarFake = (vm, indice) =>
             {
                 recebidoVm = vm;
                 recebidoIndice = indice;
+                return Task.CompletedTask;
             };
 
             var schemaItem = new SchemaItemViewModel(1, "Nome Qualquer", "Finalidade Qualquer", "Tipo Qualquer", false);

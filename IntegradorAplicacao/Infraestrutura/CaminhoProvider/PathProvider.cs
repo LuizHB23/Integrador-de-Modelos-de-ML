@@ -24,5 +24,6 @@
         public string GetCaminhoTransformadorConfig(string nomeModelo) => Path.Combine(GetCaminhoAppConfig(nomeModelo), "transformador.json");
         public string GetCaminhoSaidaConfig(string nomeModelo) => Path.Combine(GetCaminhoAppConfig(nomeModelo), "saida.json");
 
+        public string GetCaminhoTempConfig(string nomeModelo) => Path.Combine(GetCaminhoAppConfig(nomeModelo), "config_temp.json");
     }
 }

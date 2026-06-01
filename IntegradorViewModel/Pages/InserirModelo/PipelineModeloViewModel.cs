@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using AutoMapper;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using IntegradorAplicacao.DTO;
 using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
@@ -46,7 +47,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
 
         private readonly string _nomeModelo;
 
-        public PipelineModeloViewModel(INavigationService navigation, IDialogService dialogService, IConversorJson conversor, IContext<ModeloDTO> contextModelo, IContext<ArquivoDadosDTO> contextArquivo, IPathProvider provider)
+        public PipelineModeloViewModel(INavigationService navigation, IDialogService dialogService, IConversorJson conversor, IContext<ModeloDTO> contextModelo, IContext<ArquivoDadosDTO> contextArquivo, IPathProvider provider, IMapper mapper)
         {
             Navigation = navigation;
             ListaFeatureEngineering = new();
@@ -58,7 +59,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
             OpcoesPosicao = new();
             TextBox = new ConfiguracaoPipelineTextBoxViewModel(new ConfiguracaoTextBoxViewModel(dialogService, AlterouTabela), DataPreview, new EstadoDataFrameViewModel(contextArquivo.RecebeMensagem()));
 
-            _scriptManager = new(dialogService, conversor, contextModelo, contextArquivo, provider, CardsFuncoes, OpcoesPosicao, TextBox);
+            _scriptManager = new(dialogService, conversor, contextModelo, contextArquivo, provider, mapper, CardsFuncoes, OpcoesPosicao, TextBox);
             _conversor = conversor;
             _nomeModelo = contextModelo.RecebeMensagem().NomeModelo;
             _pathProvider = provider;
@@ -78,10 +79,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
         [RelayCommand]
         public async Task NavigateToTransformers()
         {
-            var caminhoModelo = _pathProvider.GetCaminhoModeloConfig(_nomeModelo);
-            var modelo = await _conversor.CarregarJsonAsync<ModeloEmUsoConfiguracao>(caminhoModelo);
-            modelo.SchemaVersao = "1.0";
-            await _conversor.ConverteJsonAsync(modelo);
+            await Versionamento();
 
             Navigation.NavigateTo<TransformadoresModeloViewModel>();
         }
@@ -91,6 +89,27 @@ namespace IntegradorViewModel.Pages.InserirModelo
         {
             Navigation.EndFlow();
             Navigation.NavigateTo<HomeViewModel>();
+        }
+
+        private async Task Versionamento()
+        {
+            var taskModelo = _conversor.CarregarJsonAsync<ModeloEmUsoConfiguracao>(_nomeModelo);
+            var taskPipeline = _conversor.CarregarJsonAsync<PipelineTratamentoConfiguracao>(_nomeModelo);
+
+            await Task.WhenAll(taskModelo, taskPipeline);
+
+            var modelo =  await taskModelo;
+            var pipeline = await taskPipeline;
+
+            modelo.PipelineVersao = "1.0";
+            pipeline.Versao = "1.0";
+
+            var listaPipeline = new List<PipelineTratamentoConfiguracao>() { pipeline };
+
+            var taskModeloJson = _conversor.ConverteJsonAsync(modelo, _nomeModelo);
+            var taskPipelineJson = _conversor.ConverteJsonAsync(listaPipeline, _nomeModelo);
+
+            await Task.WhenAll(taskModeloJson, taskPipeline);
         }
 
         private void CarregarListas()

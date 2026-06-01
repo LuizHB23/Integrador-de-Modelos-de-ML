@@ -1,5 +1,4 @@
 ﻿using IntegradorAplicacao.Infraestrutura.Conversores.ConversorEnum;
-using IntegradorAplicacao.Infraestrutura.CaminhoProvider;
 using IntegradorDominio.Models.Configuracao;
 using System.Text.Json;
 
@@ -7,17 +6,8 @@ namespace IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson.ConverteJ
 {
     public class ModeloEmUsoJson : IConverteJson<ModeloEmUsoConfiguracao>
     {
-        private readonly IPathProvider _provider;
-
-        public ModeloEmUsoJson(IPathProvider provider)
+        public async Task ConverteJsonAsync(ModeloEmUsoConfiguracao modelo, string caminho)
         {
-            _provider = provider;
-        }
-
-        public async Task ConverteJsonAsync(ModeloEmUsoConfiguracao modelo)
-        {
-            string caminhoJson = _provider.GetCaminhoModeloConfig(modelo.NomeModelo);
-
             var options = new JsonSerializerOptions
             {
                 WriteIndented = true
@@ -27,7 +17,7 @@ namespace IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson.ConverteJ
                 new ParserTipoModeloJsonConverter());
 
             var texto = JsonSerializer.Serialize(modelo, options);
-            File.WriteAllText(caminhoJson, texto);
+            File.WriteAllText(caminho, texto);
         }
 
         public async Task<ModeloEmUsoConfiguracao> CarregarJsonAsync(string caminho)

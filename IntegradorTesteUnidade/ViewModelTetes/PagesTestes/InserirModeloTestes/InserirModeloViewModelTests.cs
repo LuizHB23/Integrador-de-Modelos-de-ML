@@ -89,9 +89,10 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
         public async Task RetornaOkParaCamposVisitacosComSucessoNoFluxoEmNavigateToConfigurarSchemaCommand()
         {
             //Arrange
+            string nomeModelo = "Nome Qualquer";
             _mockGerenciador.Setup(f => f.Salvar(It.IsAny<ModeloDTO>())).Returns("C://FakePath//modelo.onnx");
 
-            _viewModel.NomeModelo = "Nome Qualquer";
+            _viewModel.NomeModelo = nomeModelo;
             _viewModel.TipoModelo = "Regressão";
             _viewModel.CaminhoModelo = "Caminho Qualquer";
 
@@ -101,7 +102,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
             //Assert
             _mockContext.Verify(f => f.EnviaMensagem(It.IsAny<ModeloDTO>()), Times.Once);
             _mockGerenciador.Verify(f => f.Salvar(It.IsAny<ModeloDTO>()), Times.Once);
-            _mockConversor.Verify(f => f.ConverteJsonAsync(It.IsAny<ModeloEmUsoConfiguracao>()), Times.Once);
+            _mockConversor.Verify(f => f.ConverteJsonAsync(It.IsAny<ModeloEmUsoConfiguracao>(), nomeModelo), Times.Once);
             _mockNavigation.Verify(f => f.NavigateTo<ConfigurarSchemaViewModel>(), Times.Once);
         }
 
@@ -126,7 +127,7 @@ namespace IntegradorTesteUnidade.ViewModelTetes.PagesTestes.InserirModeloTestes
             _viewModel.NavigateToConfigurarSchemaCommand.Execute(null);
 
             //Assert
-            _mockConversor.Verify(f => f.ConverteJsonAsync(It.IsAny<ModeloDTO>()), Times.Never);
+            _mockConversor.Verify(f => f.ConverteJsonAsync(It.IsAny<ModeloDTO>(), nomeModelo), Times.Never);
             _mockDialog.Verify(f => f.ShowMessage($"Preencha corretamente os campos", "Campos Faltantes"), Times.Once);
         }
 

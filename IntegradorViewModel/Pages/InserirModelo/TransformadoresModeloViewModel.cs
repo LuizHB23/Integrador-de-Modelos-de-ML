@@ -33,17 +33,15 @@ namespace IntegradorViewModel.Pages.InserirModelo
 
         private readonly CardsTransformadoresModeloManager _cardsManager;
         private string _caminhoProvisorio;
-        private string _nomeModelo;
+        private ModeloDTO _modelo;
 
-        private readonly IConversorJson _conversor;
         private readonly IGerenciador<TransformadorDTO> _gerenciador;
-        private readonly IPathProvider _provider;
         private readonly IDialogService _dialogService;
+        private readonly IConversorJson _conversor;
 
-        public TransformadoresModeloViewModel(INavigationService navigation, IDialogService dialogService, IConversorJson conversor, IContext<ModeloDTO> contextModelo, IPathProvider provider, IGerenciador<TransformadorDTO> gerenciador)
+        public TransformadoresModeloViewModel(INavigationService navigation, IDialogService dialogService, IConversorJson conversor, IContext<ModeloDTO> contextModelo, IGerenciador<TransformadorDTO> gerenciador)
         {
             _conversor = conversor;
-            _provider = provider;
             _dialogService = dialogService;
             _gerenciador = gerenciador;
             Navigation = navigation;
@@ -54,12 +52,12 @@ namespace IntegradorViewModel.Pages.InserirModelo
             OpcoesPosicao = new();
 
             _caminhoProvisorio = string.Empty;
-            _nomeModelo = contextModelo.RecebeMensagem().NomeModelo;
-            _cardsManager = new(CardsTransformador, OpcoesPosicao);
+            _modelo = contextModelo.RecebeMensagem();
+            _cardsManager = new(CardsTransformador, OpcoesPosicao, _modelo);
         }
 
         [RelayCommand]
-        public void AdicionaTransformador()
+        public async Task AdicionaTransformador()
         {
             if(string.IsNullOrWhiteSpace(NomeTransformador) || string.IsNullOrWhiteSpace(CaminhoTransformador))
             {
@@ -67,31 +65,31 @@ namespace IntegradorViewModel.Pages.InserirModelo
                 return;
             }
 
-            var novoCaminho = _gerenciador.Salvar(new TransformadorDTO(NomeTransformador, _caminhoProvisorio) { NomeModelo = _nomeModelo });
+            var novoCaminho = _gerenciador.Salvar(new TransformadorDTO(NomeTransformador, _caminhoProvisorio) { NomeModelo = _modelo.NomeModelo });
 
             var transformadorItem = new TransformadorItemViewModel(CardsTransformador.Count + 1, NomeTransformador, novoCaminho);
 
             Debug.WriteLine(transformadorItem.CaminhoTransformador);
             _cardsManager.AdicinarColuna(transformadorItem, RemoverColuna, OrganizaPosicao);
-            PreparaParaJson();
+            await PreparaParaJson();
         }
 
         [RelayCommand]
-        public void CarregarSchema() => _cardsManager.CarregarTransformador(_dialogService, _conversor);
+        public async Task CarregarSchema() => await _cardsManager.CarregarTransformador(_dialogService, _conversor);
 
-        private void RemoverColuna(ConfiguracaoCardTransformadorViewModel cardTransformador)
+        private async Task RemoverColuna(ConfiguracaoCardTransformadorViewModel cardTransformador)
         {
-            _cardsManager.RemoverCard(cardTransformador);
-            PreparaParaJson();
+            await _cardsManager.RemoverCard(cardTransformador);
+            await PreparaParaJson();
         }
 
-        private void OrganizaPosicao(ConfiguracaoCardTransformadorViewModel cardTransformador, int posicaoNova)
+        private async Task OrganizaPosicao(ConfiguracaoCardTransformadorViewModel cardTransformador, int posicaoNova)
         {
-            _cardsManager.OrganizaPosicao(cardTransformador, posicaoNova);
-            PreparaParaJson();
+            await _cardsManager.OrganizaPosicao(cardTransformador, posicaoNova);
+            await PreparaParaJson();
         }
 
-        private void PreparaParaJson() => _cardsManager.PreparaParaJson(_conversor, _nomeModelo);
+        private async Task PreparaParaJson() => await _cardsManager.PreparaParaJson(_conversor, _modelo.NomeModelo);
 
         [RelayCommand]
         public void CarregarCaminhoTransformadorOnnx()
@@ -113,10 +111,9 @@ namespace IntegradorViewModel.Pages.InserirModelo
         [RelayCommand]
         public async Task NavigateToHome()
         {
-            var caminhoModelo = _provider.GetCaminhoModeloConfig(_nomeModelo);
-            var modelo = await _conversor.CarregarJsonAsync<ModeloEmUsoConfiguracao>(caminhoModelo);
+            var modelo = await _conversor.CarregarJsonAsync<ModeloEmUsoConfiguracao>(_modelo.NomeModelo);
             modelo.TransformadoresVersao = "1.0";
-            await _conversor.ConverteJsonAsync(modelo);
+            await _conversor.ConverteJsonAsync(modelo, _modelo.NomeModelo);
 
             Navigation.EndFlow();
             Navigation.NavigateTo<HomeViewModel>();

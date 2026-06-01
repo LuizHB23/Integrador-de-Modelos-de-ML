@@ -1,4 +1,5 @@
-﻿using IntegradorViewModel.ControleUsuario.ConfiguracaoCard;
+﻿using IntegradorAplicacao.DTO;
+using IntegradorViewModel.ControleUsuario.ConfiguracaoCard;
 using System.Collections.ObjectModel;
 
 namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
@@ -7,11 +8,13 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
     {
         protected ObservableCollection<T> _cardsLista;
         protected ObservableCollection<int> _posicoesLista;
+        protected ModeloDTO _modelo;
 
-        public CardsManager(ObservableCollection<T> cardsLista, ObservableCollection<int> posicoesLista)
+        public CardsManager(ObservableCollection<T> cardsLista, ObservableCollection<int> posicoesLista, ModeloDTO modelo)
         {
             _cardsLista = cardsLista;
             _posicoesLista = posicoesLista;
+            _modelo = modelo;
         }
 
         public virtual void AtualizaPosicoes()
@@ -28,7 +31,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
             }
         }
 
-        public virtual void OrganizaPosicao(T card, int posicaoNova)
+        public virtual async Task OrganizaPosicao(T card, int posicaoNova)
         {
             int posicaoOriginal = _cardsLista.IndexOf(card);
 
@@ -37,7 +40,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorCards
             AtualizaPosicoes();
         }
 
-        public virtual void RemoverCard(T card)
+        public virtual async Task RemoverCard(T card)
         {
             _cardsLista.Remove(card);
             _posicoesLista.Remove(_cardsLista.Count + 1);

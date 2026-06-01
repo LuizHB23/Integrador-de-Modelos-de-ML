@@ -7,7 +7,7 @@ namespace IntegradorAplicacao.Infraestrutura.Conversores.ConversorJson
 {
     public interface IConversorJson
     {
-        Task<T> CarregarJsonAsync<T>(string caminho) where T : class;
-        Task ConverteJsonAsync<T>(T objeto) where T : class;
+        Task ConverteJsonAsync<T>(T objeto, string nomeModelo) where T : class;
+        Task<T> CarregarJsonAsync<T>(string nomeModelo) where T : class;
     }
 }
