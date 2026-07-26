@@ -174,6 +174,8 @@ Ela suporta:
 - Operações matemáticas
 - Feature Engineering
 
+📖 [Documentação da DSL](docs/DocumentacaoDSL.md)
+
 ---
 
 # ✨ Principais Características
