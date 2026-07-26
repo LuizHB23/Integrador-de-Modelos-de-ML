@@ -53,7 +53,7 @@ O processamento ocorre em sete etapas principais.
 
 ## 📥 1. Ingestão dos Dados
 
-Arquivos CSV e TSV são processados utilizando `StreamReader`, realizando durante a leitura o tratamento de delimitadores, aspas e conversões numéricas.
+Arquivos CSV são processados utilizando `StreamReader`, realizando durante a leitura o tratamento de delimitadores, aspas e conversões numéricas.
 
 ---
 
