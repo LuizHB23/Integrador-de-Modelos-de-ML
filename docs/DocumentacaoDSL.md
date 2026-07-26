@@ -315,7 +315,7 @@ MergeFinal()
 
 Cada função produz um novo `DataFrame`, que pode ser reutilizado pelas próximas etapas do pipeline, permitindo a construção de fluxos de preparação de dados modulares e reutilizáveis.
 
-Também é possível encadear funções uma atrás da outra, desde que retorne um DataFrame, como por exemplo
+Também é possível encadear funções uma atrás da outra, desde que retorne um `DataFrame` (`DataFrames` são devolvidos pela maioria, exceto por operações estatísticas), como por exemplo
 
 ```text
 LimpezaColunas()
