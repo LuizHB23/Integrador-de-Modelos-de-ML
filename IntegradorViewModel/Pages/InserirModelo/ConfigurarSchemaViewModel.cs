@@ -102,7 +102,7 @@ namespace IntegradorViewModel.Pages.InserirModelo
         [RelayCommand]
         public async Task NavigateToCarregarDados()
         {
-            Navigation.NavigateTo<CarregarDadosViewModel>();
+            //Navigation.NavigateTo<CarregarDadosViewModel>();
             if (CardsSchema.Count == 0) 
             {
                 _dialogService.ShowMessage("Não se pode criar um Schema vazio.", "Schema Vazio");

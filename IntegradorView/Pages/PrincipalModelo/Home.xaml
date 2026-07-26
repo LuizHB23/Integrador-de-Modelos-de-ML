@@ -109,7 +109,7 @@
                                                             Padding="8,2" 
                                                             VerticalAlignment="Center"
                                                             Margin="5,0,0,0">
-                                                        <TextBlock Text="Testando"
+                                                        <TextBlock Text="{Binding Versao}"
                                                                     FontSize="16" 
                                                                     FontWeight="SemiBold" 
                                                                     Foreground="#546E7A"/>

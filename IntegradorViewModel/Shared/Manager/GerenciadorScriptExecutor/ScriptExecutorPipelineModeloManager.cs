@@ -57,7 +57,7 @@ namespace IntegradorViewModel.Shared.Manager.GerenciadorScriptExecutor
                 return;
             }
 
-            await CarregarPipeline<FuncaoDTOFactory>(ConstroiPipelineAsync, pipelineTratamentoConfiguracao);
+                await CarregarPipeline<FuncaoDTOFactory>(ConstroiPipelineAsync, pipelineTratamentoConfiguracao);
 
         }
 

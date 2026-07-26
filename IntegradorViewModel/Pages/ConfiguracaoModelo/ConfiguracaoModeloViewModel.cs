@@ -9,6 +9,7 @@ using IntegradorViewModel.Shared.Context;
 using IntegradorViewModel.Shared.Interfaces;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.Diagnostics;
 
 namespace IntegradorViewModel.Pages.ConfiguracaoModelo
 {
@@ -148,6 +149,8 @@ namespace IntegradorViewModel.Pages.ConfiguracaoModelo
                 var arquivo = !string.IsNullOrEmpty(item.Value.CaminhoTransformador)
                               ? Path.GetFileName(item.Value.CaminhoTransformador)
                               : string.Empty;
+
+                Debug.WriteLine(item.Value.NomeTransformador);
 
                 listaTransformadores.Add(new TransformadorDTO(nome, arquivo));
             }

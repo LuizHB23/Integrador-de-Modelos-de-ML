@@ -29,12 +29,6 @@
             <Grid DockPanel.Dock="Top">
                 <materialDesign:Card>
                     <StackPanel>
-                        <TextBlock Text="Seu Modelo"
-                                   HorizontalAlignment="Center"
-                                   Padding="20,5" 
-                                   FontSize="30"
-                                   FontWeight="Bold"/>
-                        
                         <StackPanel Orientation="Horizontal"
                             Grid.Row="0"
                             Margin="0,30"
