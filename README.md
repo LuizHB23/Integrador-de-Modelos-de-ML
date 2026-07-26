@@ -18,22 +18,22 @@ Além da execução dos modelos, o sistema gerencia automaticamente **schemas**,
 
 <div align="center">
 
-<img src="docs/imagens/Home.jpeg" width="425"/>
-<img src="docs/imagens/Schema.jpeg" width="425"/>
+<img src="docs/imagens/Home.jpeg" width="400"/>
+<img src="docs/imagens/Schema.jpeg" width="400"/>
 
 </div>
 
 <div align="center">
 
-<img src="docs/imagens/Pipeline.jpeg" width="500"/>
-<img src="docs/imagens/Transformador.jpeg" width="500"/>
+<img src="docs/imagens/Pipeline.jpeg" width="400"/>
+<img src="docs/imagens/Transformador.jpeg" width="400"/>
 
 </div>
 
 <div align="center">
   
-<img src="docs/imagens/Inferência.jpeg" width="500"/>
-<img src="docs/imagens/Configuração.jpeg" width="500"/>
+<img src="docs/imagens/Inferência.jpeg" width="400"/>
+<img src="docs/imagens/Configuração.jpeg" width="400"/>
 
 </div>
 
