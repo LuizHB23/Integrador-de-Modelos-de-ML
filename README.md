@@ -103,8 +103,7 @@ Após o pré-processamento, os dados são enviados ao runtime de inferência.
 Atualmente a aplicação suporta modelos executados através de:
 
 - ONNX Runtime
-- ML.NET
-
+- 
 ---
 
 ## 📤 7. Pós-processamento
@@ -186,7 +185,7 @@ Ela suporta:
 - ⚙️ Construção dinâmica de executores especializados
 - ⚡ Feature Engineering compilado em tempo de execução utilizando Expression Trees
 - 💾 Persistência completa das configurações em JSON
-- 🤖 Execução local de modelos ONNX Runtime e ML.NET
+- 🤖 Execução local de modelos ONNX Runtime
 - 📦 Processamento em lote com isolamento de erros
 - 🧱 Arquitetura baseada em Clean Architecture e Domain-Driven Design (DDD)
 
@@ -199,7 +198,7 @@ Ela suporta:
 | Linguagem | C# |
 | Framework | .NET |
 | Interface | WPF |
-| Inferência | ONNX Runtime, ML.NET |
+| Inferência | ONNX Runtime |
 | Serialização | System.Text.Json |
 | Mapeamento | AutoMapper |
 | Compilação Dinâmica | Expression Trees |
