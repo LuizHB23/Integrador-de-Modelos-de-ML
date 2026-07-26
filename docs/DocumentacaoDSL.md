@@ -314,3 +314,15 @@ MergeFinal()
 ```
 
 Cada função produz um novo `DataFrame`, que pode ser reutilizado pelas próximas etapas do pipeline, permitindo a construção de fluxos de preparação de dados modulares e reutilizáveis.
+
+Também é possível encadear funções um atrás do outro, como por exemplo
+
+```text
+LimpezaColunas()
+{
+df = df.Converter(col="GastoTotal", type="single").Converter(col="GastoMensal", type="single").Converter(col="TaxaDevolucao", type="single").Converter(col="GastoMedio", type="single").Converter(col="DiferencaTicketMedio",type="single").Converter(col="DiferencaTicketDesvio", type="single")
+
+return df
+}
+
+```
