@@ -18,8 +18,8 @@ Além da execução dos modelos, o sistema gerencia automaticamente **schemas**,
 
 <div align="center">
 
-<img src="docs/imagens/Home.jpeg" width="500"/>
-<img src="docs/imagens/Schema.jpeg" width="500"/>
+<img src="docs/imagens/Home.jpeg" width="300"/>
+<img src="docs/imagens/Schema.jpeg" width="300"/>
 
 </div>
 
