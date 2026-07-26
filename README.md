@@ -14,6 +14,31 @@ Além da execução dos modelos, o sistema gerencia automaticamente **schemas**,
 
 ---
 
+# 📸 Demonstração
+
+<div align="center">
+
+<img src="docs/imagens/Home.jpeg" width="500"/>
+<img src="docs/imagens/Schema.jpeg" width="500"/>
+
+</div>
+
+<div align="center">
+
+<img src="docs/imagens/Pipeline.jpeg" width="500"/>
+<img src="docs/imagens/Transformador.jpeg" width="500"/>
+
+</div>
+
+<div align="center">
+  
+<img src="docs/imagens/Inferência.jpeg" width="500"/>
+<img src="docs/imagens/Configuração.jpeg" width="500"/>
+
+</div>
+
+---
+
 # 🏗️ Arquitetura
 
 A solução foi desenvolvida seguindo os princípios de **Clean Architecture** e **Domain-Driven Design (DDD)**.
